@@ -27,7 +27,7 @@ interface PageProps {
 
 export default function CategoryPage({ recetas, category }: PageProps) {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-[#ecf0f1]">
       {/* Header */}
       <header className="sticky top-0 w-full text-white shadow-lg relative z-10 bg-[black]">
       <div className="max-w-5xl mx-auto px-2 py-2 flex flex-row md:flex-row items-center md:items-center gap-2">
