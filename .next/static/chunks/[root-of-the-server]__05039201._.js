@@ -522,60 +522,47 @@ function CategoryPage({ recetas, category }) {
         className: "min-h-screen flex flex-col bg-[#ecf0f1]",
         children: [
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("header", {
-                className: "sticky top-0 w-full text-white shadow-lg relative z-10 bg-[black]",
+                className: "sticky top-0 w-full text-white shadow-lg relative z-10 bg-black",
                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                    className: "max-w-5xl mx-auto px-2 py-2 flex flex-row md:flex-row items-center md:items-center gap-2",
+                    className: "max-w-5xl mx-auto px-2 py-2 flex items-center gap-4",
                     children: [
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                            className: "w-full md:w-[40%] flex justify-center md:justify-start items-center mb-4 md:mb-0",
-                            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$link$2e$js__$5b$client$5d$__$28$ecmascript$29$__["default"], {
-                                href: "/",
-                                className: "block w-[20vw] max-w-[40vw] md:w-full md:max-w-[30vw]",
-                                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$image$2e$js__$5b$client$5d$__$28$ecmascript$29$__["default"], {
-                                    src: "/logo.png",
-                                    alt: "Planeta Keto Logo",
-                                    width: 0,
-                                    height: 0,
-                                    sizes: "(max-width: 60vw), 180px",
-                                    className: "w-full h-auto object-contain",
-                                    priority: true
-                                }, void 0, false, {
-                                    fileName: "[project]/src/pages/[category].tsx",
-                                    lineNumber: 37,
-                                    columnNumber: 13
-                                }, this)
+                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$link$2e$js__$5b$client$5d$__$28$ecmascript$29$__["default"], {
+                            href: "/",
+                            className: "block",
+                            style: {
+                                height: "clamp(32px, 22vw, 200px)"
+                            },
+                            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$image$2e$js__$5b$client$5d$__$28$ecmascript$29$__["default"], {
+                                src: "/logo.png",
+                                alt: "Planeta Keto Logo",
+                                width: 0,
+                                height: 0,
+                                sizes: "100vw",
+                                className: "object-contain w-auto h-full max-h-full max-w-full",
+                                priority: true
                             }, void 0, false, {
                                 fileName: "[project]/src/pages/[category].tsx",
                                 lineNumber: 36,
-                                columnNumber: 11
+                                columnNumber: 7
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/pages/[category].tsx",
                             lineNumber: 35,
-                            columnNumber: 9
+                            columnNumber: 5
                         }, this),
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("nav", {
-                            className: "w-full md:w-[60%] flex justify-center md:justify-end items-center gap-1 flex-col md:flex-row",
+                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                            className: "flex flex-col flex-1 justify-start items-center",
                             children: [
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                    children: [
-                                        "  ",
-                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h1", {
-                                            className: "text-[9vw] font-bold uppercase text-white flex justify-center",
-                                            children: category.replace(/-/g, " ")
-                                        }, void 0, false, {
-                                            fileName: "[project]/src/pages/[category].tsx",
-                                            lineNumber: 51,
-                                            columnNumber: 16
-                                        }, this)
-                                    ]
-                                }, void 0, true, {
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h1", {
+                                    className: "text-[9vw] md:text-[3vw] font-bold uppercase text-white text-left leading-none",
+                                    children: category.replace(/-/g, " ")
+                                }, void 0, false, {
                                     fileName: "[project]/src/pages/[category].tsx",
-                                    lineNumber: 51,
-                                    columnNumber: 9
+                                    lineNumber: 48,
+                                    columnNumber: 7
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                    className: "w-full md:w-[60%] flex justify-center md:justify-end items-center gap-10 flex-row md:flex-row",
+                                    className: "flex gap-4 mt-2",
                                     children: [
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$link$2e$js__$5b$client$5d$__$28$ecmascript$29$__["default"], {
                                             href: "https://youtube.com/@PLANETAKETO",
@@ -584,8 +571,7 @@ function CategoryPage({ recetas, category }) {
                                             className: "flex items-center gap-2 font-bold text-white hover:text-yellow-300 transition text-[5vw] md:text-xl",
                                             children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("svg", {
                                                 width: "28",
-                                                height: "28" // Cambia aquí el tamaño del icono
-                                                ,
+                                                height: "28",
                                                 className: "w-8 h-8 md:w-8 md:h-8",
                                                 fill: "#FF0000",
                                                 viewBox: "0 0 24 24",
@@ -593,18 +579,18 @@ function CategoryPage({ recetas, category }) {
                                                     d: "M23.498 6.186a2.994 2.994 0 0 0-2.107-2.117C19.19 3.5 12 3.5 12 3.5s-7.19 0-9.391.569A2.994 2.994 0 0 0 .502 6.186C0 8.39 0 12 0 12s0 3.61.502 5.814a2.994 2.994 0 0 0 2.107 2.117C4.81 20.5 12 20.5 12 20.5s7.19 0 9.391-.569a2.994 2.994 0 0 0 2.107-2.117C24 15.61 24 12 24 12s0-3.61-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/pages/[category].tsx",
-                                                    lineNumber: 68,
-                                                    columnNumber: 7
+                                                    lineNumber: 59,
+                                                    columnNumber: 13
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/pages/[category].tsx",
-                                                lineNumber: 62,
-                                                columnNumber: 5
+                                                lineNumber: 58,
+                                                columnNumber: 11
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/src/pages/[category].tsx",
-                                            lineNumber: 56,
-                                            columnNumber: 3
+                                            lineNumber: 52,
+                                            columnNumber: 9
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$link$2e$js__$5b$client$5d$__$28$ecmascript$29$__["default"], {
                                             href: "mailto:info@planetaketo.es",
@@ -619,36 +605,36 @@ function CategoryPage({ recetas, category }) {
                                                     d: "M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 2v.01L12 13 4 6.01V6h16zm0 12H4V8.99l8 6.99 8-6.99V18z"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/pages/[category].tsx",
-                                                    lineNumber: 81,
-                                                    columnNumber: 7
+                                                    lineNumber: 67,
+                                                    columnNumber: 13
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/pages/[category].tsx",
-                                                lineNumber: 75,
-                                                columnNumber: 5
+                                                lineNumber: 66,
+                                                columnNumber: 11
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/src/pages/[category].tsx",
-                                            lineNumber: 71,
-                                            columnNumber: 3
+                                            lineNumber: 62,
+                                            columnNumber: 9
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/pages/[category].tsx",
-                                    lineNumber: 55,
-                                    columnNumber: 9
+                                    lineNumber: 51,
+                                    columnNumber: 7
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/pages/[category].tsx",
-                            lineNumber: 50,
-                            columnNumber: 9
+                            lineNumber: 47,
+                            columnNumber: 5
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/pages/[category].tsx",
                     lineNumber: 33,
-                    columnNumber: 7
+                    columnNumber: 3
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/pages/[category].tsx",
@@ -665,7 +651,7 @@ function CategoryPage({ recetas, category }) {
                             children: "No hay recetas en esta categoría."
                         }, void 0, false, {
                             fileName: "[project]/src/pages/[category].tsx",
-                            lineNumber: 92,
+                            lineNumber: 78,
                             columnNumber: 13
                         }, this),
                         recetas.map((receta)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$link$2e$js__$5b$client$5d$__$28$ecmascript$29$__["default"], {
@@ -686,7 +672,7 @@ function CategoryPage({ recetas, category }) {
                                             priority: false
                                         }, void 0, false, {
                                             fileName: "[project]/src/pages/[category].tsx",
-                                            lineNumber: 102,
+                                            lineNumber: 88,
                                             columnNumber: 5
                                         }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("img", {
                                             src: "https://via.placeholder.com/400x250?text=Sin+Imagen",
@@ -698,12 +684,12 @@ function CategoryPage({ recetas, category }) {
                                             }
                                         }, void 0, false, {
                                             fileName: "[project]/src/pages/[category].tsx",
-                                            lineNumber: 111,
+                                            lineNumber: 97,
                                             columnNumber: 5
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/src/pages/[category].tsx",
-                                        lineNumber: 100,
+                                        lineNumber: 86,
                                         columnNumber: 5
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -718,20 +704,20 @@ function CategoryPage({ recetas, category }) {
                                                         children: "NUEVO"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/pages/[category].tsx",
-                                                        lineNumber: 124,
+                                                        lineNumber: 110,
                                                         columnNumber: 11
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/pages/[category].tsx",
-                                                lineNumber: 120,
+                                                lineNumber: 106,
                                                 columnNumber: 7
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                                 className: "text-gray-500 text-sm"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/pages/[category].tsx",
-                                                lineNumber: 127,
+                                                lineNumber: 113,
                                                 columnNumber: 7
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -742,7 +728,7 @@ function CategoryPage({ recetas, category }) {
                                                         children: receta.preparationTime
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/pages/[category].tsx",
-                                                        lineNumber: 131,
+                                                        lineNumber: 117,
                                                         columnNumber: 9
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -750,36 +736,36 @@ function CategoryPage({ recetas, category }) {
                                                         children: receta.level
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/pages/[category].tsx",
-                                                        lineNumber: 132,
+                                                        lineNumber: 118,
                                                         columnNumber: 9
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/pages/[category].tsx",
-                                                lineNumber: 130,
+                                                lineNumber: 116,
                                                 columnNumber: 7
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/pages/[category].tsx",
-                                        lineNumber: 119,
+                                        lineNumber: 105,
                                         columnNumber: 5
                                     }, this)
                                 ]
                             }, receta.slug, true, {
                                 fileName: "[project]/src/pages/[category].tsx",
-                                lineNumber: 95,
+                                lineNumber: 81,
                                 columnNumber: 3
                             }, this))
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/pages/[category].tsx",
-                    lineNumber: 90,
+                    lineNumber: 76,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/pages/[category].tsx",
-                lineNumber: 89,
+                lineNumber: 75,
                 columnNumber: 7
             }, this)
         ]

@@ -29,62 +29,48 @@ export default function CategoryPage({ recetas, category }: PageProps) {
   return (
     <div className="min-h-screen flex flex-col bg-[#ecf0f1]">
       {/* Header */}
-      <header className="sticky top-0 w-full text-white shadow-lg relative z-10 bg-[black]">
-      <div className="max-w-5xl mx-auto px-2 py-2 flex flex-row md:flex-row items-center md:items-center gap-2">
-        {/* Logo: 100% en móvil, 40% en desktop */}
-        <div className="w-full md:w-[40%] flex justify-center md:justify-start items-center mb-4 md:mb-0">
-          <Link href="/" className="block w-[20vw] max-w-[40vw] md:w-full md:max-w-[30vw]">
-            <Image
-              src="/logo.png"
-              alt="Planeta Keto Logo"
-              width={0}
-              height={0}
-              sizes="(max-width: 60vw), 180px"
-              className="w-full h-auto object-contain"
-              priority
-            />
-          </Link>
-      
-        </div>
-        {/* Enlaces: 100% en móvil, 60% en desktop */}
-        <nav className="w-full md:w-[60%] flex justify-center md:justify-end items-center gap-1 flex-col md:flex-row">
-        <div>  <h1 className="text-[9vw] font-bold uppercase text-white flex justify-center">
-          {category.replace(/-/g, " ")}
-        </h1></div>
-
-        <div className="w-full md:w-[60%] flex justify-center md:justify-end items-center gap-10 flex-row md:flex-row">
-  <Link
-    href="https://youtube.com/@PLANETAKETO"
-    target="_blank"
-    rel="noopener noreferrer"
-    className="flex items-center gap-2 font-bold text-white hover:text-yellow-300 transition text-[5vw] md:text-xl"
-  >
-    <svg
-      width="28" height="28" // Cambia aquí el tamaño del icono
-      className="w-8 h-8 md:w-8 md:h-8"
-      fill="#FF0000"
-      viewBox="0 0 24 24"
-    >
-      <path d="M23.498 6.186a2.994 2.994 0 0 0-2.107-2.117C19.19 3.5 12 3.5 12 3.5s-7.19 0-9.391.569A2.994 2.994 0 0 0 .502 6.186C0 8.39 0 12 0 12s0 3.61.502 5.814a2.994 2.994 0 0 0 2.107 2.117C4.81 20.5 12 20.5 12 20.5s7.19 0 9.391-.569a2.994 2.994 0 0 0 2.107-2.117C24 15.61 24 12 24 12s0-3.61-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
-    </svg>
-  </Link>
-  <Link
-    href="mailto:info@planetaketo.es"
-    className="flex items-center gap-2 font-bold text-white hover:text-yellow-300 transition text-[5vw] md:text-xl"
-  >
-    <svg
-      width="28" height="28"
-      className="w-8 h-8 md:w-8 md:h-8"
-      fill="#fff"
-      viewBox="0 0 24 24"
-    >
-      <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 2v.01L12 13 4 6.01V6h16zm0 12H4V8.99l8 6.99 8-6.99V18z"/>
-    </svg>
-  </Link>
-  </div>
-</nav>
+      <header className="sticky top-0 w-full text-white shadow-lg relative z-10 bg-black">
+  <div className="max-w-5xl mx-auto px-2 py-2 flex items-center gap-4">
+    {/* Logo */}
+    <Link href="/" className="block" style={{ height: "clamp(32px, 22vw, 200px)" }}>
+      <Image
+        src="/logo.png"
+        alt="Planeta Keto Logo"
+        width={0}
+        height={0}
+        sizes="100vw"
+        className="object-contain w-auto h-full max-h-full max-w-full"
+        priority
+      />
+    </Link>
+    {/* Letras y enlaces */}
+    <div className="flex flex-col flex-1 justify-start items-center">
+      <h1 className="text-[9vw] md:text-[3vw] font-bold uppercase text-white text-left leading-none">
+        {category.replace(/-/g, " ")}
+      </h1>
+      <div className="flex gap-4 mt-2">
+        <Link
+          href="https://youtube.com/@PLANETAKETO"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-2 font-bold text-white hover:text-yellow-300 transition text-[5vw] md:text-xl"
+        >
+          <svg width="28" height="28" className="w-8 h-8 md:w-8 md:h-8" fill="#FF0000" viewBox="0 0 24 24">
+            <path d="M23.498 6.186a2.994 2.994 0 0 0-2.107-2.117C19.19 3.5 12 3.5 12 3.5s-7.19 0-9.391.569A2.994 2.994 0 0 0 .502 6.186C0 8.39 0 12 0 12s0 3.61.502 5.814a2.994 2.994 0 0 0 2.107 2.117C4.81 20.5 12 20.5 12 20.5s7.19 0 9.391-.569a2.994 2.994 0 0 0 2.107-2.117C24 15.61 24 12 24 12s0-3.61-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+          </svg>
+        </Link>
+        <Link
+          href="mailto:info@planetaketo.es"
+          className="flex items-center gap-2 font-bold text-white hover:text-yellow-300 transition text-[5vw] md:text-xl"
+        >
+          <svg width="28" height="28" className="w-8 h-8 md:w-8 md:h-8" fill="#fff" viewBox="0 0 24 24">
+            <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 2v.01L12 13 4 6.01V6h16zm0 12H4V8.99l8 6.99 8-6.99V18z"/>
+          </svg>
+        </Link>
       </div>
-    </header>
+    </div>
+  </div>
+</header>
       {/* Recetas */}
       <section className="w-full flex justify-center items-center py-12 md:py-20">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 max-w-5xl w-full px-4 justify-items-center">
