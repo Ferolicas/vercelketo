@@ -1,7 +1,9 @@
+// src/app/[category]/page.tsx
+
 import { client, urlFor } from '../../lib/sanityClient';
 import MainLayout from '../components/MainLayout';
-import Link from 'next/link';
-import Image from 'next/image'; // Add this import
+import Image from "next/image";
+import Link from "next/link";
 
 type SanityImage = { asset: { _ref: string; _type: string } };
 
@@ -13,11 +15,15 @@ interface Receta {
   categoriaSlug: string;
 }
 
+type CategoryPageProps = {
+  params: { category: string }
+};
+
 function isSanityImage(img: unknown): img is SanityImage {
   return typeof img === 'object' && img !== null && 'asset' in img;
 }
 
-export default async function CategoryPage({ params }: { params: { category: string } }) {
+export default async function CategoryPage({ params }: CategoryPageProps) {
   const { category } = params;
 
   const recetas: Receta[] = await client.fetch(
@@ -71,11 +77,12 @@ export default async function CategoryPage({ params }: { params: { category: str
               <div className="w-full h-[220px] bg-gray-100 flex items-center justify-center overflow-hidden">
                 {isSanityImage(receta.mainImage) && (
                   <Image
-                    src={urlFor(receta.mainImage).width(600).url()}
+                    src={urlFor(receta.mainImage).width(600).height(220).url()}
                     alt={receta.title}
                     width={600}
                     height={220}
                     className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    priority={false}
                   />
                 )}
               </div>
