@@ -30,7 +30,7 @@ export default function CategoryPage({ recetas, category }: PageProps) {
     <div className="min-h-screen bg-[#8fb454] flex flex-col">
       {/* Header */}
       <header className="w-full text-white shadow-md relative z-10 bg-[#8fb454]">
-      <div className="max-w-5xl mx-auto px-4 py-4 flex flex-row md:flex-row items-center md:items-center">
+      <div className="max-w-5xl mx-auto px-4 py-4 flex flex-col md:flex-row items-center md:items-center">
         {/* Logo: 100% en móvil, 40% en desktop */}
         <div className="w-full md:w-[40%] flex justify-center md:justify-start items-center mb-4 md:mb-0">
           <Link href="/" className="block w-[37vw] max-w-[40vw] md:w-full md:max-w-[30vw]">
@@ -46,12 +46,12 @@ export default function CategoryPage({ recetas, category }: PageProps) {
           </Link>
         </div>
         {/* Enlaces: 100% en móvil, 60% en desktop */}
-        <nav className="w-full md:w-[60%] flex justify-center md:justify-end items-center gap-6 flex-col md:flex-row">
+        <nav className="w-full md:w-[60%] flex justify-center md:justify-end items-center gap-6 flex-row md:flex-row">
   <Link
     href="https://youtube.com/@PLANETAKETO"
     target="_blank"
     rel="noopener noreferrer"
-    className="flex items-center gap-2 font-bold text-white hover:text-yellow-300 transition text-[7vw] md:text-xl"
+    className="flex items-center gap-2 font-bold text-white hover:text-yellow-300 transition text-[5vw] md:text-xl"
   >
     <svg
       width="28" height="28" // Cambia aquí el tamaño del icono
@@ -65,7 +65,7 @@ export default function CategoryPage({ recetas, category }: PageProps) {
   </Link>
   <Link
     href="mailto:info@planetaketo.es"
-    className="flex items-center gap-2 font-bold text-white hover:text-yellow-300 transition text-[7vw] md:text-xl"
+    className="flex items-center gap-2 font-bold text-white hover:text-yellow-300 transition text-[5vw] md:text-xl"
   >
     <svg
       width="28" height="28"

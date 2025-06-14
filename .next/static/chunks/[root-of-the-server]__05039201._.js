@@ -524,7 +524,7 @@ function CategoryPage({ recetas, category }) {
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("header", {
                 className: "w-full text-white shadow-md relative z-10 bg-[#8fb454]",
                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                    className: "max-w-5xl mx-auto px-4 py-4 flex flex-row md:flex-row items-center md:items-center",
+                    className: "max-w-5xl mx-auto px-4 py-4 flex flex-col md:flex-row items-center md:items-center",
                     children: [
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                             className: "w-full md:w-[40%] flex justify-center md:justify-start items-center mb-4 md:mb-0",
@@ -555,13 +555,13 @@ function CategoryPage({ recetas, category }) {
                             columnNumber: 9
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("nav", {
-                            className: "w-full md:w-[60%] flex justify-center md:justify-end items-center gap-6 flex-col md:flex-row",
+                            className: "w-full md:w-[60%] flex justify-center md:justify-end items-center gap-6 flex-row md:flex-row",
                             children: [
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$link$2e$js__$5b$client$5d$__$28$ecmascript$29$__["default"], {
                                     href: "https://youtube.com/@PLANETAKETO",
                                     target: "_blank",
                                     rel: "noopener noreferrer",
-                                    className: "flex items-center gap-2 font-bold text-white hover:text-yellow-300 transition text-[7vw] md:text-xl",
+                                    className: "flex items-center gap-2 font-bold text-white hover:text-yellow-300 transition text-[5vw] md:text-xl",
                                     children: [
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("svg", {
                                             width: "28",
@@ -597,7 +597,7 @@ function CategoryPage({ recetas, category }) {
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$link$2e$js__$5b$client$5d$__$28$ecmascript$29$__["default"], {
                                     href: "mailto:info@planetaketo.es",
-                                    className: "flex items-center gap-2 font-bold text-white hover:text-yellow-300 transition text-[7vw] md:text-xl",
+                                    className: "flex items-center gap-2 font-bold text-white hover:text-yellow-300 transition text-[5vw] md:text-xl",
                                     children: [
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("svg", {
                                             width: "28",
