@@ -18,7 +18,14 @@ function isSanityImage(img: unknown): img is SanityImage {
   return typeof img === 'object' && img !== null && 'asset' in img;
 }
 
-export default async function Page({ params }: { params: { category: string } }) {
+// Define el tipo de props para la página
+interface PageProps {
+  params: {
+    category: string;
+  };
+}
+
+export default async function Page({ params }: PageProps) {
   const { category } = params;
 
   const recetas: Receta[] = await client.fetch(
