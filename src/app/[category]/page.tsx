@@ -1,5 +1,4 @@
 // src/app/[category]/page.tsx
-
 import { client, urlFor } from '../../lib/sanityClient';
 import MainLayout from '../components/MainLayout';
 import Image from "next/image";
@@ -15,15 +14,11 @@ interface Receta {
   categoriaSlug: string;
 }
 
-type CategoryPageProps = {
-  params: { category: string }
-};
-
 function isSanityImage(img: unknown): img is SanityImage {
   return typeof img === 'object' && img !== null && 'asset' in img;
 }
 
-export default async function CategoryPage({ params }: CategoryPageProps) {
+export default async function CategoryPage({ params }: { params: { category: string } }) {
   const { category } = params;
 
   const recetas: Receta[] = await client.fetch(
