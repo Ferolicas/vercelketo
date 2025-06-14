@@ -24,12 +24,12 @@ interface HomeData {
   picksSubtitle?: string;
 }
 
-async function getHomeData() {
+async function getHomeData(): Promise<HomeData> {
   const homePageQuery = `*[_type == "homePage"][0]`;
   return client.fetch(homePageQuery);
 }
 
-async function getCategories() {
+async function getCategories(): Promise<Category[]> {
   const categoriesQuery = `*[_type == "category"]{ title, "slug": slug.current, categoryImage }`;
   return client.fetch(categoriesQuery);
 }
@@ -39,8 +39,8 @@ function isSanityImage(img: unknown): img is SanityImage {
 }
 
 export default async function Home() {
-  const homeData: HomeData = await getHomeData();
-  const categories: Category[] = await getCategories();
+  const homeData = await getHomeData();
+  const categories = await getCategories();
 
   return (
     <MainLayout title={homeData?.heroTitle || "Bienvenido"}>
@@ -48,10 +48,8 @@ export default async function Home() {
       <div className="hidden md:block bg-white">
         {/* Hero Section */}
         <section className="relative bg-[#8fb454] bg-[url('/plantomovil.png')] bg-cover bg-center bg-no-repeat py-6 w-full text-white overflow-hidden">
-          {/* Overlay */}
           <div className="absolute inset-0 bg-black/50 z-0" />
           <div className="relative z-10 container mx-auto px-6">
-            {/* Top Bar */}
             <div className="flex justify-between items-center mb-8">
               <span className="font-rubik text-4xl md:text-6xl font-bold uppercase text-white drop-shadow-lg tracking-tight">
                 {homeData?.siteTitle}
@@ -64,7 +62,6 @@ export default async function Home() {
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 text-white font-bold text-lg hover:text-yellow-300 transition"
                   >
-                    {/* YouTube Icon */}
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><path d="M2 8a4 4 0 0 1 4 -4h12a4 4 0 0 1 4 4v8a4 4 0 0 1 -4 4h-12a4 4 0 0 1 -4 -4v-8z"></path><path d="M10 9l5 3l-5 3z"></path></svg>
                     <span>{homeData?.youtubeDisplayText || homeData?.youtubeUrl}</span>
                   </a>
@@ -74,7 +71,6 @@ export default async function Home() {
                     href={`mailto:${homeData.email}`}
                     className="inline-flex items-center gap-2 text-white font-bold text-lg hover:text-yellow-300 transition"
                   >
-                    {/* Mail Icon */}
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><path d="M3 7a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10z"></path><path d="M3 7l9 6l9 -6"></path></svg>
                     <span>{homeData.email}</span>
                   </a>
@@ -84,14 +80,12 @@ export default async function Home() {
                     href={`tel:${homeData.phone}`}
                     className="inline-flex items-center gap-2 text-white font-bold text-lg hover:text-yellow-300 transition"
                   >
-                    {/* Phone Icon */}
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><path d="M5 4h4l2 5l-2.5 1.5a11 11 0 0 0 5 5l1.5 -2.5l5 2v4a2 2 0 0 1 -2 2a16 16 0 0 1 -15 -15a2 2 0 0 1 2 -2"></path></svg>
                     <span>{homeData.phone}</span>
                   </a>
                 )}
               </nav>
             </div>
-            {/* Main Content */}
             <div className="relative text-center py-8">
               <h1 className="text-4xl md:text-5xl font-extrabold drop-shadow-lg">{homeData?.heroTitle}</h1>
               <p className="max-w-2xl mx-auto mt-4 text-2xl font-bold text-white drop-shadow-lg">{homeData?.heroDescription}</p>
@@ -102,7 +96,6 @@ export default async function Home() {
                   className="mx-auto mt-8 w-full max-w-xs md:max-w-md drop-shadow-xl"
                 />
               )}
-              {/* Imágenes decorativas */}
               <img src="/perejil.webp" alt="Decoración perejil" className="hidden md:block absolute top-[43%] left-[12%] w-[380px] z-20" />
               <img src="/champinon.png" alt="Decoración champiñón" className="hidden md:block absolute top-[20%] left-[2%] w-[330px] z-20" />
               <img src="/lechuga.png" alt="Decoración lechuga" className="hidden md:block absolute top-[15%] right-[1%] w-[340px] rotate-12 z-20" />
@@ -110,7 +103,6 @@ export default async function Home() {
             </div>
           </div>
         </section>
-        {/* Picks Section */}
         <section className="text-center py-20 bg-white">
           <div className="container mx-auto px-6">
             <h2 className="text-3xl font-extrabold text-[#333]">{homeData?.picksTitle}</h2>

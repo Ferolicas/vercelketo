@@ -1,5 +1,13 @@
 // components/Footer.tsx
-const socialLinks = [
+import React from 'react';
+
+interface SocialLink {
+  href: string;
+  label: string;
+  icon: React.ReactNode;
+}
+
+const socialLinks: SocialLink[] = [
   {
     href: "https://m.webtoo.ls/@astro",
     label: "Follow Astro on Mastodon",

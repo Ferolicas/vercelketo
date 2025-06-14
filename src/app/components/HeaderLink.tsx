@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { useRouter } from "next/router";
 import { ReactNode } from "react";
+import { usePathname } from "next/navigation";
 
 interface HeaderLinkProps {
   href: string;
@@ -8,7 +8,7 @@ interface HeaderLinkProps {
 }
 
 export default function HeaderLink({ href, children }: HeaderLinkProps) {
-  const { pathname } = useRouter();
+  const pathname = usePathname();
   const isActive = pathname === href;
 
   return (
@@ -19,6 +19,7 @@ export default function HeaderLink({ href, children }: HeaderLinkProps) {
           ? "border-accent text-accent"
           : "border-transparent text-black hover:text-accent"
       }`}
+      aria-current={isActive ? "page" : undefined}
     >
       {children}
     </Link>

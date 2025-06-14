@@ -1,6 +1,6 @@
 // src/app/[category]/page.tsx
+
 import { client, urlFor } from '../../lib/sanityClient';
-import MainLayout from '../components/MainLayout';
 import Image from "next/image";
 import Link from "next/link";
 
@@ -18,7 +18,7 @@ function isSanityImage(img: unknown): img is SanityImage {
   return typeof img === 'object' && img !== null && 'asset' in img;
 }
 
-export default async function CategoryPage({ params }: { params: { category: string } }) {
+export default async function Page({ params }: { params: { category: string } }) {
   const { category } = params;
 
   const recetas: Receta[] = await client.fetch(
@@ -33,7 +33,8 @@ export default async function CategoryPage({ params }: { params: { category: str
   );
 
   return (
-    <MainLayout title={`${category.charAt(0).toUpperCase() + category.slice(1)} - Planeta Keto`}>
+    <div className="min-h-screen bg-[#f8f9fa]">
+      {/* Header */}
       <header className="w-full bg-[#8fb454] text-white shadow-md relative z-10">
         <div className="max-w-5xl mx-auto px-8 py-6 flex flex-col md:flex-row items-center justify-between gap-4">
           <span className="font-rubik text-3xl md:text-4xl font-bold tracking-wide drop-shadow-lg">PLANETA KETO</span>
@@ -58,7 +59,8 @@ export default async function CategoryPage({ params }: { params: { category: str
         </div>
       </header>
 
-      <section className="w-full flex justify-center items-center py-12 md:py-20 bg-[#f8f9fa]">
+      {/* Recetas */}
+      <section className="w-full flex justify-center items-center py-12 md:py-20">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 max-w-5xl w-full px-4">
           {recetas.length === 0 && (
             <div className="col-span-full text-center text-gray-500 text-xl">No hay recetas en esta categoría.</div>
@@ -88,6 +90,6 @@ export default async function CategoryPage({ params }: { params: { category: str
           ))}
         </div>
       </section>
-    </MainLayout>
+    </div>
   );
 }

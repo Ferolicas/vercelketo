@@ -1,3 +1,4 @@
+// components/Comments.tsx
 import { useEffect } from 'react';
 
 declare global {
@@ -35,6 +36,7 @@ export default function Comments({ pageUrl, pageIdentifier }: CommentsProps) {
     return () => {
       if (script.parentNode) script.parentNode.removeChild(script);
       delete window.DISQUS;
+      delete window.disqus_config;
     };
   }, [pageUrl, pageIdentifier]);
 
@@ -43,7 +45,11 @@ export default function Comments({ pageUrl, pageIdentifier }: CommentsProps) {
       <div id="disqus_thread" />
       <noscript>
         Please enable JavaScript to view the{' '}
-        <a href="https://disqus.com/?ref_noscript" rel="noopener noreferrer" target="_blank">
+        <a
+          href="https://disqus.com/?ref_noscript"
+          rel="noopener noreferrer"
+          target="_blank"
+        >
           comments powered by Disqus.
         </a>
       </noscript>
