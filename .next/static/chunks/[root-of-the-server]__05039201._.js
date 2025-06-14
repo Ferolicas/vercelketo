@@ -522,7 +522,7 @@ function CategoryPage({ recetas, category }) {
         className: "min-h-screen flex flex-col bg-[#ecf0f1]",
         children: [
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("header", {
-                className: "sticky top-0 w-full text-white shadow-lg relative z-10 bg-black",
+                className: "sticky top-0 w-full text-white shadow-lg relative z-10 bg-[#1e272e]",
                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                     className: "max-w-5xl mx-auto px-2 py-2 flex items-center gap-4",
                     children: [
@@ -570,22 +570,33 @@ function CategoryPage({ recetas, category }) {
                                             rel: "noopener noreferrer",
                                             className: "flex items-center gap-2 font-bold text-white hover:text-yellow-300 transition text-[5vw] md:text-xl",
                                             children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("svg", {
-                                                width: "28",
-                                                height: "28",
                                                 className: "w-8 h-8 md:w-8 md:h-8",
-                                                fill: "#FF0000",
                                                 viewBox: "0 0 24 24",
-                                                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("path", {
-                                                    d: "M23.498 6.186a2.994 2.994 0 0 0-2.107-2.117C19.19 3.5 12 3.5 12 3.5s-7.19 0-9.391.569A2.994 2.994 0 0 0 .502 6.186C0 8.39 0 12 0 12s0 3.61.502 5.814a2.994 2.994 0 0 0 2.107 2.117C4.81 20.5 12 20.5 12 20.5s7.19 0 9.391-.569a2.994 2.994 0 0 0 2.107-2.117C24 15.61 24 12 24 12s0-3.61-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"
-                                                }, void 0, false, {
-                                                    fileName: "[project]/src/pages/[category].tsx",
-                                                    lineNumber: 59,
-                                                    columnNumber: 13
-                                                }, this)
-                                            }, void 0, false, {
+                                                fill: "none",
+                                                children: [
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("rect", {
+                                                        width: "24",
+                                                        height: "24",
+                                                        rx: "4",
+                                                        fill: "#FF0000"
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/src/pages/[category].tsx",
+                                                        lineNumber: 59,
+                                                        columnNumber: 5
+                                                    }, this),
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("path", {
+                                                        d: "M9.545 15.568V8.432L15.818 12l-6.273 3.568z",
+                                                        fill: "#fff"
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/src/pages/[category].tsx",
+                                                        lineNumber: 60,
+                                                        columnNumber: 5
+                                                    }, this)
+                                                ]
+                                            }, void 0, true, {
                                                 fileName: "[project]/src/pages/[category].tsx",
                                                 lineNumber: 58,
-                                                columnNumber: 11
+                                                columnNumber: 3
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/src/pages/[category].tsx",
@@ -596,27 +607,162 @@ function CategoryPage({ recetas, category }) {
                                             href: "mailto:info@planetaketo.es",
                                             className: "flex items-center gap-2 font-bold text-white hover:text-yellow-300 transition text-[5vw] md:text-xl",
                                             children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("svg", {
-                                                width: "28",
-                                                height: "28",
                                                 className: "w-8 h-8 md:w-8 md:h-8",
-                                                fill: "#fff",
                                                 viewBox: "0 0 24 24",
-                                                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("path", {
-                                                    d: "M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 2v.01L12 13 4 6.01V6h16zm0 12H4V8.99l8 6.99 8-6.99V18z"
-                                                }, void 0, false, {
-                                                    fileName: "[project]/src/pages/[category].tsx",
-                                                    lineNumber: 67,
-                                                    columnNumber: 13
-                                                }, this)
-                                            }, void 0, false, {
+                                                fill: "none",
+                                                children: [
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("rect", {
+                                                        width: "24",
+                                                        height: "24",
+                                                        rx: "4",
+                                                        fill: "#EA4335"
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/src/pages/[category].tsx",
+                                                        lineNumber: 70,
+                                                        columnNumber: 5
+                                                    }, this),
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("path", {
+                                                        d: "M4 7L12 13L20 7",
+                                                        stroke: "#fff",
+                                                        strokeWidth: "2"
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/src/pages/[category].tsx",
+                                                        lineNumber: 71,
+                                                        columnNumber: 5
+                                                    }, this),
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("rect", {
+                                                        x: "4",
+                                                        y: "7",
+                                                        width: "16",
+                                                        height: "10",
+                                                        rx: "2",
+                                                        fill: "#fff"
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/src/pages/[category].tsx",
+                                                        lineNumber: 72,
+                                                        columnNumber: 5
+                                                    }, this),
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("path", {
+                                                        d: "M4 7L12 13L20 7",
+                                                        stroke: "#EA4335",
+                                                        strokeWidth: "2"
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/src/pages/[category].tsx",
+                                                        lineNumber: 73,
+                                                        columnNumber: 5
+                                                    }, this)
+                                                ]
+                                            }, void 0, true, {
                                                 fileName: "[project]/src/pages/[category].tsx",
-                                                lineNumber: 66,
-                                                columnNumber: 11
+                                                lineNumber: 69,
+                                                columnNumber: 3
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/src/pages/[category].tsx",
-                                            lineNumber: 62,
-                                            columnNumber: 9
+                                            lineNumber: 65,
+                                            columnNumber: 1
+                                        }, this),
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$link$2e$js__$5b$client$5d$__$28$ecmascript$29$__["default"], {
+                                            href: "https://www.amazon.es/",
+                                            target: "_blank",
+                                            rel: "noopener noreferrer",
+                                            className: "flex items-center gap-2 font-bold text-white hover:text-yellow-300 transition text-[5vw] md:text-xl",
+                                            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("svg", {
+                                                className: "w-8 h-8 md:w-8 md:h-8",
+                                                viewBox: "0 0 32 32",
+                                                fill: "none",
+                                                children: [
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("circle", {
+                                                        cx: "16",
+                                                        cy: "16",
+                                                        r: "16",
+                                                        fill: "#FF9900"
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/src/pages/[category].tsx",
+                                                        lineNumber: 85,
+                                                        columnNumber: 5
+                                                    }, this),
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("path", {
+                                                        d: "M10 21c2.5 1.5 9.5 1.5 12 0",
+                                                        stroke: "#fff",
+                                                        strokeWidth: "2",
+                                                        strokeLinecap: "round"
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/src/pages/[category].tsx",
+                                                        lineNumber: 86,
+                                                        columnNumber: 5
+                                                    }, this),
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("ellipse", {
+                                                        cx: "16",
+                                                        cy: "14",
+                                                        rx: "5",
+                                                        ry: "4",
+                                                        fill: "#fff"
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/src/pages/[category].tsx",
+                                                        lineNumber: 87,
+                                                        columnNumber: 5
+                                                    }, this),
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("ellipse", {
+                                                        cx: "16",
+                                                        cy: "14",
+                                                        rx: "3",
+                                                        ry: "2",
+                                                        fill: "#FF9900"
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/src/pages/[category].tsx",
+                                                        lineNumber: 88,
+                                                        columnNumber: 5
+                                                    }, this)
+                                                ]
+                                            }, void 0, true, {
+                                                fileName: "[project]/src/pages/[category].tsx",
+                                                lineNumber: 84,
+                                                columnNumber: 3
+                                            }, this)
+                                        }, void 0, false, {
+                                            fileName: "[project]/src/pages/[category].tsx",
+                                            lineNumber: 78,
+                                            columnNumber: 1
+                                        }, this),
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$link$2e$js__$5b$client$5d$__$28$ecmascript$29$__["default"], {
+                                            href: "https://www.hotmart.com/",
+                                            target: "_blank",
+                                            rel: "noopener noreferrer",
+                                            className: "flex items-center gap-2 font-bold text-white hover:text-yellow-300 transition text-[5vw] md:text-xl",
+                                            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("svg", {
+                                                className: "w-8 h-8 md:w-8 md:h-8",
+                                                viewBox: "0 0 32 32",
+                                                fill: "none",
+                                                children: [
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("circle", {
+                                                        cx: "16",
+                                                        cy: "16",
+                                                        r: "16",
+                                                        fill: "#FF5722"
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/src/pages/[category].tsx",
+                                                        lineNumber: 100,
+                                                        columnNumber: 5
+                                                    }, this),
+                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("path", {
+                                                        d: "M16 8c2.5 3.5 5 7 5 10a5 5 0 1 1-10 0c0-3 2.5-6.5 5-10z",
+                                                        fill: "#fff"
+                                                    }, void 0, false, {
+                                                        fileName: "[project]/src/pages/[category].tsx",
+                                                        lineNumber: 101,
+                                                        columnNumber: 5
+                                                    }, this)
+                                                ]
+                                            }, void 0, true, {
+                                                fileName: "[project]/src/pages/[category].tsx",
+                                                lineNumber: 99,
+                                                columnNumber: 3
+                                            }, this)
+                                        }, void 0, false, {
+                                            fileName: "[project]/src/pages/[category].tsx",
+                                            lineNumber: 93,
+                                            columnNumber: 1
                                         }, this)
                                     ]
                                 }, void 0, true, {
@@ -651,7 +797,7 @@ function CategoryPage({ recetas, category }) {
                             children: "No hay recetas en esta categoría."
                         }, void 0, false, {
                             fileName: "[project]/src/pages/[category].tsx",
-                            lineNumber: 78,
+                            lineNumber: 112,
                             columnNumber: 13
                         }, this),
                         recetas.map((receta)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$link$2e$js__$5b$client$5d$__$28$ecmascript$29$__["default"], {
@@ -659,7 +805,7 @@ function CategoryPage({ recetas, category }) {
                                 className: "card bg-base-100 w-96 shadow-sm hover:shadow-lg transition-transform duration-200 hover:-translate-y-1 overflow-hidden text-inherit no-underline group",
                                 children: [
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("figure", {
-                                        className: "flex items-center justify-center w-full h-64 bg-gray-100 overflow-hidden relative",
+                                        className: "flex items-center justify-center w-full h-64 bg-gray-100 overflow-hidden relative ",
                                         children: isSanityImage(receta.mainImage) ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$image$2e$js__$5b$client$5d$__$28$ecmascript$29$__["default"], {
                                             src: (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$sanityClient$2e$tsx__$5b$client$5d$__$28$ecmascript$29$__["urlFor"])(receta.mainImage).url(),
                                             alt: receta.title,
@@ -672,7 +818,7 @@ function CategoryPage({ recetas, category }) {
                                             priority: false
                                         }, void 0, false, {
                                             fileName: "[project]/src/pages/[category].tsx",
-                                            lineNumber: 88,
+                                            lineNumber: 122,
                                             columnNumber: 5
                                         }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("img", {
                                             src: "https://via.placeholder.com/400x250?text=Sin+Imagen",
@@ -684,19 +830,19 @@ function CategoryPage({ recetas, category }) {
                                             }
                                         }, void 0, false, {
                                             fileName: "[project]/src/pages/[category].tsx",
-                                            lineNumber: 97,
+                                            lineNumber: 131,
                                             columnNumber: 5
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/src/pages/[category].tsx",
-                                        lineNumber: 86,
+                                        lineNumber: 120,
                                         columnNumber: 5
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                        className: "card-body",
+                                        className: "card-body bg-[#1e272e]",
                                         children: [
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
-                                                className: "card-title text-[1.5rem]",
+                                                className: "card-title text-[1.5rem] text-white",
                                                 children: [
                                                     receta.title,
                                                     new Date(receta.publishedAt) > new Date(Date.now() - 1000 * 60 * 60 * 24 * 7) && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -704,68 +850,68 @@ function CategoryPage({ recetas, category }) {
                                                         children: "NUEVO"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/pages/[category].tsx",
-                                                        lineNumber: 110,
+                                                        lineNumber: 144,
                                                         columnNumber: 11
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/pages/[category].tsx",
-                                                lineNumber: 106,
+                                                lineNumber: 140,
                                                 columnNumber: 7
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                                 className: "text-gray-500 text-sm"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/pages/[category].tsx",
-                                                lineNumber: 113,
+                                                lineNumber: 147,
                                                 columnNumber: 7
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                 className: "card-actions justify-end",
                                                 children: [
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                        className: "badge badge-outline capitalize",
+                                                        className: "badge badge-outline capitalize text-white",
                                                         children: receta.preparationTime
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/pages/[category].tsx",
-                                                        lineNumber: 117,
+                                                        lineNumber: 151,
                                                         columnNumber: 9
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                        className: "badge badge-outline capitalize",
+                                                        className: "badge badge-outline capitalize text-white",
                                                         children: receta.level
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/pages/[category].tsx",
-                                                        lineNumber: 118,
+                                                        lineNumber: 152,
                                                         columnNumber: 9
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/pages/[category].tsx",
-                                                lineNumber: 116,
+                                                lineNumber: 150,
                                                 columnNumber: 7
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/pages/[category].tsx",
-                                        lineNumber: 105,
+                                        lineNumber: 139,
                                         columnNumber: 5
                                     }, this)
                                 ]
                             }, receta.slug, true, {
                                 fileName: "[project]/src/pages/[category].tsx",
-                                lineNumber: 81,
+                                lineNumber: 115,
                                 columnNumber: 3
                             }, this))
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/pages/[category].tsx",
-                    lineNumber: 76,
+                    lineNumber: 110,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/pages/[category].tsx",
-                lineNumber: 75,
+                lineNumber: 109,
                 columnNumber: 7
             }, this)
         ]

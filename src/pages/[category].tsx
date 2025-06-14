@@ -29,7 +29,7 @@ export default function CategoryPage({ recetas, category }: PageProps) {
   return (
     <div className="min-h-screen flex flex-col bg-[#ecf0f1]">
       {/* Header */}
-      <header className="sticky top-0 w-full text-white shadow-lg relative z-10 bg-black">
+      <header className="sticky top-0 w-full text-white shadow-lg relative z-10 bg-[#1e272e]">
   <div className="max-w-5xl mx-auto px-2 py-2 flex items-center gap-4">
     {/* Logo */}
     <Link href="/" className="block" style={{ height: "clamp(32px, 22vw, 200px)" }}>
@@ -50,23 +50,57 @@ export default function CategoryPage({ recetas, category }: PageProps) {
       </h1>
       <div className="flex gap-4 mt-2">
         <Link
-          href="https://youtube.com/@PLANETAKETO"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center gap-2 font-bold text-white hover:text-yellow-300 transition text-[5vw] md:text-xl"
-        >
-          <svg width="28" height="28" className="w-8 h-8 md:w-8 md:h-8" fill="#FF0000" viewBox="0 0 24 24">
-            <path d="M23.498 6.186a2.994 2.994 0 0 0-2.107-2.117C19.19 3.5 12 3.5 12 3.5s-7.19 0-9.391.569A2.994 2.994 0 0 0 .502 6.186C0 8.39 0 12 0 12s0 3.61.502 5.814a2.994 2.994 0 0 0 2.107 2.117C4.81 20.5 12 20.5 12 20.5s7.19 0 9.391-.569a2.994 2.994 0 0 0 2.107-2.117C24 15.61 24 12 24 12s0-3.61-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
-          </svg>
-        </Link>
-        <Link
-          href="mailto:info@planetaketo.es"
-          className="flex items-center gap-2 font-bold text-white hover:text-yellow-300 transition text-[5vw] md:text-xl"
-        >
-          <svg width="28" height="28" className="w-8 h-8 md:w-8 md:h-8" fill="#fff" viewBox="0 0 24 24">
-            <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 2v.01L12 13 4 6.01V6h16zm0 12H4V8.99l8 6.99 8-6.99V18z"/>
-          </svg>
-        </Link>
+  href="https://youtube.com/@PLANETAKETO"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="flex items-center gap-2 font-bold text-white hover:text-yellow-300 transition text-[5vw] md:text-xl"
+>
+  <svg className="w-8 h-8 md:w-8 md:h-8" viewBox="0 0 24 24" fill="none">
+    <rect width="24" height="24" rx="4" fill="#FF0000"/>
+    <path d="M9.545 15.568V8.432L15.818 12l-6.273 3.568z" fill="#fff"/>
+  </svg>
+</Link>
+
+{/* Correo (Gmail style, color) */}
+<Link
+  href="mailto:info@planetaketo.es"
+  className="flex items-center gap-2 font-bold text-white hover:text-yellow-300 transition text-[5vw] md:text-xl"
+>
+  <svg className="w-8 h-8 md:w-8 md:h-8" viewBox="0 0 24 24" fill="none">
+    <rect width="24" height="24" rx="4" fill="#EA4335"/>
+    <path d="M4 7L12 13L20 7" stroke="#fff" strokeWidth="2"/>
+    <rect x="4" y="7" width="16" height="10" rx="2" fill="#fff"/>
+    <path d="M4 7L12 13L20 7" stroke="#EA4335" strokeWidth="2"/>
+  </svg>
+</Link>
+
+{/* Amazon (color, sin negro) */}
+<Link
+  href="https://www.amazon.es/"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="flex items-center gap-2 font-bold text-white hover:text-yellow-300 transition text-[5vw] md:text-xl"
+>
+  <svg className="w-8 h-8 md:w-8 md:h-8" viewBox="0 0 32 32" fill="none">
+    <circle cx="16" cy="16" r="16" fill="#FF9900"/>
+    <path d="M10 21c2.5 1.5 9.5 1.5 12 0" stroke="#fff" strokeWidth="2" strokeLinecap="round"/>
+    <ellipse cx="16" cy="14" rx="5" ry="4" fill="#fff"/>
+    <ellipse cx="16" cy="14" rx="3" ry="2" fill="#FF9900"/>
+  </svg>
+</Link>
+
+{/* Hotmart (color, sin negro) */}
+<Link
+  href="https://www.hotmart.com/"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="flex items-center gap-2 font-bold text-white hover:text-yellow-300 transition text-[5vw] md:text-xl"
+>
+  <svg className="w-8 h-8 md:w-8 md:h-8" viewBox="0 0 32 32" fill="none">
+    <circle cx="16" cy="16" r="16" fill="#FF5722"/>
+    <path d="M16 8c2.5 3.5 5 7 5 10a5 5 0 1 1-10 0c0-3 2.5-6.5 5-10z" fill="#fff"/>
+  </svg>
+</Link>
       </div>
     </div>
   </div>
@@ -83,7 +117,7 @@ export default function CategoryPage({ recetas, category }: PageProps) {
     href={`/${receta.categoriaSlug}/${receta.slug}`}
     className="card bg-base-100 w-96 shadow-sm hover:shadow-lg transition-transform duration-200 hover:-translate-y-1 overflow-hidden text-inherit no-underline group"
   >
-    <figure className="flex items-center justify-center w-full h-64 bg-gray-100 overflow-hidden relative">
+    <figure className="flex items-center justify-center w-full h-64 bg-gray-100 overflow-hidden relative ">
   {isSanityImage(receta.mainImage) ? (
     <Image
       src={urlFor(receta.mainImage).url()}
@@ -102,8 +136,8 @@ export default function CategoryPage({ recetas, category }: PageProps) {
     />
   )}
 </figure>
-    <div className="card-body">
-      <h2 className="card-title text-[1.5rem]">
+    <div className="card-body bg-[#1e272e]">
+      <h2 className="card-title text-[1.5rem] text-white">
         {receta.title}
         {/* Badge de "NUEVO" si la receta es reciente (últimos 7 días) */}
         {new Date(receta.publishedAt) > new Date(Date.now() - 1000 * 60 * 60 * 24 * 7) && (
@@ -114,8 +148,8 @@ export default function CategoryPage({ recetas, category }: PageProps) {
         
       </p>
       <div className="card-actions justify-end">
-        <div className="badge badge-outline capitalize">{receta.preparationTime}</div>
-        <div className="badge badge-outline capitalize">{receta.level}</div>
+        <div className="badge badge-outline capitalize text-white">{receta.preparationTime}</div>
+        <div className="badge badge-outline capitalize text-white">{receta.level}</div>
       </div>
     </div>
   </Link>
