@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 15, "column": 0}, "map": {"version":3,"sources":["file:///C:/PLANETA%20KETO/next/src/pages/_app.tsx"],"sourcesContent":["// /pages/_app.tsx\r\nimport '../app/globals.css'; // Ajusta la ruta si tu CSS está en otro sitio\r\n\r\nimport type { AppProps } from 'next/app';\r\n\r\nexport default function MyApp({ Component, pageProps }: AppProps) {\r\n  return <Component {...pageProps} />;\r\n}"],"names":[],"mappings":"AAAA,kBAAkB;;;;;;;AAKH,SAAS,MAAM,EAAE,SAAS,EAAE,SAAS,EAAY;IAC9D,qBAAO,qKAAC;QAAW,GAAG,SAAS;;;;;;AACjC","debugId":null}}]
+}
