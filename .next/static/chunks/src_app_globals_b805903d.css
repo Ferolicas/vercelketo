@@ -462,152 +462,6 @@
 @layer components;
 
 @layer utilities {
-  .btn {
-    cursor: pointer;
-    text-align: center;
-    vertical-align: middle;
-    outline-offset: 2px;
-    webkit-user-select: none;
-    user-select: none;
-    padding-inline: var(--btn-p);
-    color: var(--btn-fg);
-    --tw-prose-links: var(--btn-fg);
-    height: var(--size);
-    font-size: var(--fontsize, .875rem);
-    outline-color: var(--btn-color, var(--color-base-content));
-    background-color: var(--btn-bg);
-    background-size: auto, calc(var(--noise) * 100%);
-    background-image: none, var(--btn-noise);
-    border-width: var(--border);
-    border-style: solid;
-    border-color: var(--btn-border);
-    text-shadow: 0 .5px oklch(100% 0 0 / calc(var(--depth) * .15));
-    touch-action: manipulation;
-    box-shadow: 0 .5px 0 .5px oklch(100% 0 0 / calc(var(--depth) * 6%)) inset, var(--btn-shadow);
-    --size: calc(var(--size-field, .25rem) * 10);
-    --btn-bg: var(--btn-color, var(--color-base-200));
-    --btn-fg: var(--color-base-content);
-    --btn-p: 1rem;
-    --btn-border: var(--btn-bg);
-    --btn-shadow: 0 3px 2px -2px var(--btn-bg), 0 4px 3px -2px var(--btn-bg);
-    --btn-noise: var(--fx-noise);
-    border-start-start-radius: var(--join-ss, var(--radius-field));
-    border-start-end-radius: var(--join-se, var(--radius-field));
-    border-end-end-radius: var(--join-ee, var(--radius-field));
-    border-end-start-radius: var(--join-es, var(--radius-field));
-    flex-wrap: nowrap;
-    flex-shrink: 0;
-    justify-content: center;
-    align-items: center;
-    gap: .375rem;
-    font-weight: 600;
-    transition-property: color, background-color, border-color, box-shadow;
-    transition-duration: .2s;
-    transition-timing-function: cubic-bezier(0, 0, .2, 1);
-    display: inline-flex;
-  }
-
-  :where(.btn) {
-    width: unset;
-  }
-
-  @supports (color: color-mix(in lab, red, red)) {
-    .btn {
-      --btn-border: color-mix(in oklab, var(--btn-bg), #000 calc(var(--depth) * 5%));
-      --btn-shadow: 0 3px 2px -2px color-mix(in oklab, var(--btn-bg) calc(var(--depth) * 30%), #0000), 0 4px 3px -2px color-mix(in oklab, var(--btn-bg) calc(var(--depth) * 30%), #0000);
-    }
-  }
-
-  .prose .btn {
-    text-decoration-line: none;
-  }
-
-  @media (hover: hover) {
-    .btn:hover {
-      --btn-bg: var(--btn-color, var(--color-base-200));
-    }
-
-    @supports (color: color-mix(in lab, red, red)) {
-      .btn:hover {
-        --btn-bg: color-mix(in oklab, var(--btn-color, var(--color-base-200)), #000 7%);
-      }
-    }
-  }
-
-  .btn:focus-visible {
-    isolation: isolate;
-    outline-width: 2px;
-    outline-style: solid;
-  }
-
-  .btn:active:not(.btn-active) {
-    --btn-bg: var(--btn-color, var(--color-base-200));
-    --btn-border: var(--btn-color, var(--color-base-200));
-    --btn-shadow: 0 0 0 0 oklch(0% 0 0 / 0), 0 0 0 0 oklch(0% 0 0 / 0);
-    translate: 0 .5px;
-  }
-
-  @supports (color: color-mix(in lab, red, red)) {
-    .btn:active:not(.btn-active) {
-      --btn-bg: color-mix(in oklab, var(--btn-color, var(--color-base-200)), #000 5%);
-      --btn-border: color-mix(in oklab, var(--btn-color, var(--color-base-200)), #000 7%);
-    }
-  }
-
-  .btn:is(:disabled, [disabled], .btn-disabled) {
-    pointer-events: none;
-    --btn-border: #0000;
-    --btn-noise: none;
-    --btn-fg: var(--color-base-content);
-  }
-
-  .btn:is(:disabled, [disabled], .btn-disabled):not(.btn-link, .btn-ghost) {
-    background-color: var(--color-base-content);
-    box-shadow: none;
-  }
-
-  @supports (color: color-mix(in lab, red, red)) {
-    .btn:is(:disabled, [disabled], .btn-disabled):not(.btn-link, .btn-ghost) {
-      background-color: color-mix(in oklab, var(--color-base-content) 10%, transparent);
-    }
-  }
-
-  @supports (color: color-mix(in lab, red, red)) {
-    .btn:is(:disabled, [disabled], .btn-disabled) {
-      --btn-fg: color-mix(in oklch, var(--color-base-content) 20%, #0000);
-    }
-  }
-
-  @media (hover: hover) {
-    .btn:is(:disabled, [disabled], .btn-disabled):hover {
-      pointer-events: none;
-      background-color: var(--color-neutral);
-      --btn-border: #0000;
-      --btn-fg: var(--color-base-content);
-    }
-
-    @supports (color: color-mix(in lab, red, red)) {
-      .btn:is(:disabled, [disabled], .btn-disabled):hover {
-        background-color: color-mix(in oklab, var(--color-neutral) 20%, transparent);
-        --btn-fg: color-mix(in oklch, var(--color-base-content) 20%, #0000);
-      }
-    }
-  }
-
-  .btn:is(input[type="checkbox"], input[type="radio"]) {
-    appearance: none;
-  }
-
-  .btn:is(input[type="checkbox"], input[type="radio"]):after {
-    content: attr(aria-label);
-  }
-
-  .btn:where(input:checked:not(.filter .btn)) {
-    --btn-color: var(--color-primary);
-    --btn-fg: var(--color-primary-content);
-    isolation: isolate;
-  }
-
   .card {
     border-radius: var(--radius-box);
     outline-offset: 2px;
@@ -816,6 +670,10 @@
     margin: calc(var(--spacing) * 0);
   }
 
+  .m-auto {
+    margin: auto;
+  }
+
   .mx-auto {
     margin-inline: auto;
   }
@@ -883,6 +741,10 @@
 
   .mt-12 {
     margin-top: calc(var(--spacing) * 12);
+  }
+
+  .mr-2 {
+    margin-right: calc(var(--spacing) * 2);
   }
 
   .mb-2 {
@@ -978,24 +840,6 @@
     display: inline-flex;
   }
 
-  .btn-circle {
-    width: var(--size);
-    height: var(--size);
-    border-radius: 3.40282e38px;
-    padding-inline: 0;
-  }
-
-  .btn-square {
-    width: var(--size);
-    height: var(--size);
-    padding-inline: 0;
-  }
-
-  .size-\[1\.2em\] {
-    width: 1.2em;
-    height: 1.2em;
-  }
-
   .h-16 {
     height: calc(var(--spacing) * 16);
   }
@@ -1006,6 +850,22 @@
 
   .h-64 {
     height: calc(var(--spacing) * 64);
+  }
+
+  .h-\[80\%\] {
+    height: 80%;
+  }
+
+  .h-\[90\%\] {
+    height: 90%;
+  }
+
+  .h-\[95\%\] {
+    height: 95%;
+  }
+
+  .h-\[100\%\] {
+    height: 100%;
   }
 
   .h-\[200px\] {
@@ -1026,6 +886,22 @@
 
   .w-96 {
     width: calc(var(--spacing) * 96);
+  }
+
+  .w-100 {
+    width: calc(var(--spacing) * 100);
+  }
+
+  .w-\[90\%\] {
+    width: 90%;
+  }
+
+  .w-\[95\%\] {
+    width: 95%;
+  }
+
+  .w-\[100\%\] {
+    width: 100%;
   }
 
   .w-\[330px\] {
@@ -1102,6 +978,10 @@
 
   .justify-end {
     justify-content: flex-end;
+  }
+
+  .justify-items-center {
+    justify-items: center;
   }
 
   .gap-2 {
@@ -1195,6 +1075,10 @@
     background-color: var(--color-gray-50);
   }
 
+  .bg-gray-100 {
+    background-color: var(--color-gray-100);
+  }
+
   .bg-white {
     background-color: var(--color-white);
   }
@@ -1228,6 +1112,10 @@
 
   .bg-no-repeat {
     background-repeat: no-repeat;
+  }
+
+  .object-contain {
+    object-fit: contain;
   }
 
   .object-cover {
@@ -1322,11 +1210,6 @@
     line-height: var(--tw-leading, var(--text-5xl--line-height));
   }
 
-  .text-6xl {
-    font-size: var(--text-6xl);
-    line-height: var(--tw-leading, var(--text-6xl--line-height));
-  }
-
   .text-lg {
     font-size: var(--text-lg);
     line-height: var(--tw-leading, var(--text-lg--line-height));
@@ -1340,6 +1223,10 @@
   .text-xl {
     font-size: var(--text-xl);
     line-height: var(--tw-leading, var(--text-xl--line-height));
+  }
+
+  .text-\[1\.5rem\] {
+    font-size: 1.5rem;
   }
 
   .font-bold {
@@ -1594,6 +1481,13 @@
   @media (width >= 48rem) {
     .md\:py-20 {
       padding-block: calc(var(--spacing) * 20);
+    }
+  }
+
+  @media (width >= 48rem) {
+    .md\:text-3xl {
+      font-size: var(--text-3xl);
+      line-height: var(--tw-leading, var(--text-3xl--line-height));
     }
   }
 

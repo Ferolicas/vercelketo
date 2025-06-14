@@ -29,29 +29,57 @@ export default function CategoryPage({ recetas, category }: PageProps) {
   return (
     <div className="min-h-screen bg-[#8fb454] flex flex-col">
       {/* Header */}
-      <header className="w-full text-white shadow-md relative z-10">
-        <div className="max-w-5xl mx-auto px-8 py-6 flex flex-col md:flex-row items-center justify-between gap-4">
-          <span className="font-rubik text-3xl md:text-4xl font-bold tracking-wide drop-shadow-lg">PLANETA KETO</span>
-          <nav className="flex gap-6">
-            <Link
-              href="https://youtube.com/@PLANETAKETO"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 font-bold text-white hover:text-yellow-300 transition"
-            >
-              <svg width="24" height="24" fill="#FF0000" viewBox="0 0 24 24"><path d="M23.498 6.186a2.994 2.994 0 0 0-2.107-2.117C19.19 3.5 12 3.5 12 3.5s-7.19 0-9.391.569A2.994 2.994 0 0 0 .502 6.186C0 8.39 0 12 0 12s0 3.61.502 5.814a2.994 2.994 0 0 0 2.107 2.117C4.81 20.5 12 20.5 12 20.5s7.19 0 9.391-.569a2.994 2.994 0 0 0 2.107-2.117C24 15.61 24 12 24 12s0-3.61-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-              <span>YOUTUBE</span>
-            </Link>
-            <Link
-              href="mailto:info@planetaketo.es"
-              className="flex items-center gap-2 font-bold text-white hover:text-yellow-300 transition"
-            >
-              <svg width="24" height="24" fill="#fff" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 2v.01L12 13 4 6.01V6h16zm0 12H4V8.99l8 6.99 8-6.99V18z"/></svg>
-              <span>CONTACTO</span>
-            </Link>
-          </nav>
+      <header className="w-full text-white shadow-md relative z-10 bg-[#8fb454]">
+      <div className="max-w-5xl mx-auto px-4 py-4 flex flex-row md:flex-row items-center md:items-center">
+        {/* Logo: 100% en móvil, 40% en desktop */}
+        <div className="w-full md:w-[40%] flex justify-center md:justify-start items-center mb-4 md:mb-0">
+          <Link href="/" className="block w-[37vw] max-w-[40vw] md:w-full md:max-w-[30vw]">
+            <Image
+              src="/logo.png"
+              alt="Planeta Keto Logo"
+              width={0}
+              height={0}
+              sizes="(max-width: 60vw), 180px"
+              className="w-full h-auto object-contain"
+              priority
+            />
+          </Link>
         </div>
-      </header>
+        {/* Enlaces: 100% en móvil, 60% en desktop */}
+        <nav className="w-full md:w-[60%] flex justify-center md:justify-end items-center gap-6 flex-col md:flex-row">
+  <Link
+    href="https://youtube.com/@PLANETAKETO"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="flex items-center gap-2 font-bold text-white hover:text-yellow-300 transition text-[7vw] md:text-xl"
+  >
+    <svg
+      width="28" height="28" // Cambia aquí el tamaño del icono
+      className="w-8 h-8 md:w-8 md:h-8"
+      fill="#FF0000"
+      viewBox="0 0 24 24"
+    >
+      <path d="M23.498 6.186a2.994 2.994 0 0 0-2.107-2.117C19.19 3.5 12 3.5 12 3.5s-7.19 0-9.391.569A2.994 2.994 0 0 0 .502 6.186C0 8.39 0 12 0 12s0 3.61.502 5.814a2.994 2.994 0 0 0 2.107 2.117C4.81 20.5 12 20.5 12 20.5s7.19 0 9.391-.569a2.994 2.994 0 0 0 2.107-2.117C24 15.61 24 12 24 12s0-3.61-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+    </svg>
+    <span>YOUTUBE</span>
+  </Link>
+  <Link
+    href="mailto:info@planetaketo.es"
+    className="flex items-center gap-2 font-bold text-white hover:text-yellow-300 transition text-[7vw] md:text-xl"
+  >
+    <svg
+      width="28" height="28"
+      className="w-8 h-8 md:w-8 md:h-8"
+      fill="#fff"
+      viewBox="0 0 24 24"
+    >
+      <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 2v.01L12 13 4 6.01V6h16zm0 12H4V8.99l8 6.99 8-6.99V18z"/>
+    </svg>
+    <span>CONTACTO</span>
+  </Link>
+</nav>
+      </div>
+    </header>
 
       {/* Título de la categoría */}
       <div className="max-w-5xl mx-auto px-8 mt-8">
@@ -62,7 +90,7 @@ export default function CategoryPage({ recetas, category }: PageProps) {
 
       {/* Recetas */}
       <section className="w-full flex justify-center items-center py-12 md:py-20">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 max-w-5xl w-full px-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 max-w-5xl w-full px-4 justify-items-center">
           {recetas.length === 0 && (
             <div className="col-span-full text-center text-gray-500 text-xl">No hay recetas en esta categoría.</div>
           )}
@@ -72,24 +100,25 @@ export default function CategoryPage({ recetas, category }: PageProps) {
     href={`/${receta.categoriaSlug}/${receta.slug}`}
     className="card bg-base-100 w-96 shadow-sm hover:shadow-lg transition-transform duration-200 hover:-translate-y-1 overflow-hidden text-inherit no-underline group"
   >
-    <figure>
-      {isSanityImage(receta.mainImage) ? (
-        <Image
-          src={urlFor(receta.mainImage).width(400).height(250).url()}
-          alt={receta.title}
-          width={400}
-          height={250}
-          className="object-cover w-full h-64 transition-transform duration-300 group-hover:scale-105"
-          priority={false}
-        />
-      ) : (
-        <img
-          src="https://via.placeholder.com/400x250?text=Sin+Imagen"
-          alt={receta.title}
-          className="object-cover w-full h-64"
-        />
-      )}
-    </figure>
+    <figure className="flex items-center justify-center w-full h-64 bg-gray-100 overflow-hidden relative">
+  {isSanityImage(receta.mainImage) ? (
+    <Image
+      src={urlFor(receta.mainImage).url()}
+      alt={receta.title}
+      fill
+      className="object-contain w-[100%] h-[100%] m-auto"
+      style={{ maxWidth: "100%", maxHeight: "100%" }}
+      priority={false}
+    />
+  ) : (
+    <img
+      src="https://via.placeholder.com/400x250?text=Sin+Imagen"
+      alt={receta.title}
+      className="object-contain w-[100%] h-[100%] m-auto"
+      style={{ maxWidth: "100%", maxHeight: "100%" }}
+    />
+  )}
+</figure>
     <div className="card-body">
       <h2 className="card-title text-[1.5rem]">
         {receta.title}
