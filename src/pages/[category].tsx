@@ -27,10 +27,10 @@ interface PageProps {
 
 export default function CategoryPage({ recetas, category }: PageProps) {
   return (
-    <div className="min-h-screen bg-[#8fb454] flex flex-col">
+    <div className="min-h-screen flex flex-col">
       {/* Header */}
-      <header className="w-full text-white shadow-md relative z-10 bg-[#8fb454]">
-      <div className="max-w-5xl mx-auto px-4 py-4 flex flex-col md:flex-row items-center md:items-center">
+      <header className="sticky top-0 w-full text-white shadow-lg relative z-10 bg-[black]">
+      <div className="max-w-5xl mx-auto px-2 py-2 flex flex-row md:flex-row items-center md:items-center gap-2">
         {/* Logo: 100% en móvil, 40% en desktop */}
         <div className="w-full md:w-[40%] flex justify-center md:justify-start items-center mb-4 md:mb-0">
           <Link href="/" className="block w-[37vw] max-w-[40vw] md:w-full md:max-w-[30vw]">
@@ -44,9 +44,15 @@ export default function CategoryPage({ recetas, category }: PageProps) {
               priority
             />
           </Link>
+      
         </div>
         {/* Enlaces: 100% en móvil, 60% en desktop */}
-        <nav className="w-full md:w-[60%] flex justify-center md:justify-end items-center gap-6 flex-row md:flex-row">
+        <nav className="w-full md:w-[60%] flex justify-center md:justify-end items-center gap-1 flex-col md:flex-row">
+        <div>  <h1 className="text-[9vw] font-bold uppercase text-white flex justify-center">
+          {category.replace(/-/g, " ")}
+        </h1></div>
+
+        <div className="w-full md:w-[60%] flex justify-center md:justify-end items-center gap-10 flex-row md:flex-row">
   <Link
     href="https://youtube.com/@PLANETAKETO"
     target="_blank"
@@ -61,7 +67,6 @@ export default function CategoryPage({ recetas, category }: PageProps) {
     >
       <path d="M23.498 6.186a2.994 2.994 0 0 0-2.107-2.117C19.19 3.5 12 3.5 12 3.5s-7.19 0-9.391.569A2.994 2.994 0 0 0 .502 6.186C0 8.39 0 12 0 12s0 3.61.502 5.814a2.994 2.994 0 0 0 2.107 2.117C4.81 20.5 12 20.5 12 20.5s7.19 0 9.391-.569a2.994 2.994 0 0 0 2.107-2.117C24 15.61 24 12 24 12s0-3.61-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
     </svg>
-    <span>YOUTUBE</span>
   </Link>
   <Link
     href="mailto:info@planetaketo.es"
@@ -75,19 +80,11 @@ export default function CategoryPage({ recetas, category }: PageProps) {
     >
       <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 2v.01L12 13 4 6.01V6h16zm0 12H4V8.99l8 6.99 8-6.99V18z"/>
     </svg>
-    <span>CONTACTO</span>
   </Link>
+  </div>
 </nav>
       </div>
     </header>
-
-      {/* Título de la categoría */}
-      <div className="max-w-5xl mx-auto px-8 mt-8">
-        <h1 className="text-5xl font-bold uppercase text-white mb-6">
-          {category.replace(/-/g, " ")}
-        </h1>
-      </div>
-
       {/* Recetas */}
       <section className="w-full flex justify-center items-center py-12 md:py-20">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 max-w-5xl w-full px-4 justify-items-center">
