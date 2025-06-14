@@ -1,5 +1,3 @@
-// src/app/[category]/page.tsx
-
 import { client, urlFor } from '../../lib/sanityClient';
 import Image from "next/image";
 import Link from "next/link";
@@ -18,14 +16,8 @@ function isSanityImage(img: unknown): img is SanityImage {
   return typeof img === 'object' && img !== null && 'asset' in img;
 }
 
-// Define el tipo de props para la página
-interface PageProps {
-  params: {
-    category: string;
-  };
-}
-
-export default async function Page({ params }: PageProps) {
+// NO EXPORTES NI IMPORTES PageProps
+export default async function Page({ params }: { params: { category: string } }) {
   const { category } = params;
 
   const recetas: Receta[] = await client.fetch(
