@@ -99,7 +99,7 @@ function CategoryPage({ recetas, category }) {
                             className: "w-full md:w-[40%] flex justify-center md:justify-start items-center mb-4 md:mb-0",
                             children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$link$2e$js__$5b$ssr$5d$__$28$ecmascript$29$__["default"], {
                                 href: "/",
-                                className: "block w-[37vw] max-w-[40vw] md:w-full md:max-w-[30vw]",
+                                className: "block w-[20vw] max-w-[40vw] md:w-full md:max-w-[30vw]",
                                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$image$2e$js__$5b$ssr$5d$__$28$ecmascript$29$__["default"], {
                                     src: "/logo.png",
                                     alt: "Planeta Keto Logo",

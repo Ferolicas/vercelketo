@@ -33,7 +33,7 @@ export default function CategoryPage({ recetas, category }: PageProps) {
       <div className="max-w-5xl mx-auto px-2 py-2 flex flex-row md:flex-row items-center md:items-center gap-2">
         {/* Logo: 100% en móvil, 40% en desktop */}
         <div className="w-full md:w-[40%] flex justify-center md:justify-start items-center mb-4 md:mb-0">
-          <Link href="/" className="block w-[37vw] max-w-[40vw] md:w-full md:max-w-[30vw]">
+          <Link href="/" className="block w-[20vw] max-w-[40vw] md:w-full md:max-w-[30vw]">
             <Image
               src="/logo.png"
               alt="Planeta Keto Logo"
