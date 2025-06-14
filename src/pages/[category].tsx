@@ -3,6 +3,7 @@ import { client, urlFor } from "../lib/sanityClient";
 import Image from "next/image";
 import Link from "next/link";
 
+
 type SanityImage = { asset: { _ref: string; _type: string } };
 
 interface Receta {
@@ -11,6 +12,8 @@ interface Receta {
   mainImage: SanityImage | null;
   publishedAt: string;
   categoriaSlug: string;
+  level?: string;
+  preparationTime: string;
 }
 
 function isSanityImage(img: unknown): img is SanityImage {
@@ -24,9 +27,9 @@ interface PageProps {
 
 export default function CategoryPage({ recetas, category }: PageProps) {
   return (
-    <div className="min-h-screen bg-[#f8f9fa]">
+    <div className="min-h-screen bg-[#8fb454] flex flex-col">
       {/* Header */}
-      <header className="w-full bg-[#8fb454] text-white shadow-md relative z-10">
+      <header className="w-full text-white shadow-md relative z-10">
         <div className="max-w-5xl mx-auto px-8 py-6 flex flex-col md:flex-row items-center justify-between gap-4">
           <span className="font-rubik text-3xl md:text-4xl font-bold tracking-wide drop-shadow-lg">PLANETA KETO</span>
           <nav className="flex gap-6">
@@ -52,7 +55,7 @@ export default function CategoryPage({ recetas, category }: PageProps) {
 
       {/* Título de la categoría */}
       <div className="max-w-5xl mx-auto px-8 mt-8">
-        <h1 className="text-2xl font-bold capitalize text-[#8fb454] mb-6">
+        <h1 className="text-5xl font-bold uppercase text-white mb-6">
           {category.replace(/-/g, " ")}
         </h1>
       </div>
@@ -88,7 +91,7 @@ export default function CategoryPage({ recetas, category }: PageProps) {
       )}
     </figure>
     <div className="card-body">
-      <h2 className="card-title">
+      <h2 className="card-title text-[1.5rem]">
         {receta.title}
         {/* Badge de "NUEVO" si la receta es reciente (últimos 7 días) */}
         {new Date(receta.publishedAt) > new Date(Date.now() - 1000 * 60 * 60 * 24 * 7) && (
@@ -96,10 +99,11 @@ export default function CategoryPage({ recetas, category }: PageProps) {
         )}
       </h2>
       <p className="text-gray-500 text-sm">
-        Publicado: {new Date(receta.publishedAt).toLocaleDateString()}
+        
       </p>
       <div className="card-actions justify-end">
-        <div className="badge badge-outline capitalize">{receta.categoriaSlug.replace(/-/g, " ")}</div>
+        <div className="badge badge-outline capitalize">{receta.preparationTime}</div>
+        <div className="badge badge-outline capitalize">{receta.level}</div>
       </div>
     </div>
   </Link>
@@ -134,7 +138,9 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
       "slug": slug.current,
       mainImage,
       publishedAt,
-      "categoriaSlug": category->slug.current
+      "categoriaSlug": category->slug.current,
+      level,
+      preparationTime
     }`,
     { categoriaSlug: category }
   );
