@@ -13,15 +13,11 @@ interface Receta {
   categoriaSlug: string;
 }
 
-interface Params {
-  params: { category: string };
-}
-
 function isSanityImage(img: unknown): img is SanityImage {
   return typeof img === 'object' && img !== null && 'asset' in img;
 }
 
-export default async function CategoryPage({ params }: Params) {
+export default async function CategoryPage({ params }: { params: { category: string } }) {
   const { category } = params;
 
   const recetas: Receta[] = await client.fetch(
