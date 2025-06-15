@@ -91,7 +91,7 @@ function CategoryPage({ recetas, category }) {
         className: "min-h-screen flex flex-col bg-[#ecf0f1]",
         children: [
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("header", {
-                className: "sticky top-0 w-full text-white shadow-2xl shadow-[#1e272e] relative z-10 bg-[#1e272e]",
+                className: "sticky top-0 w-full text-white shadow-2xl shadow-[#1e272e] relative z-10 bg-[#1e272e] rounded-4xl",
                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("div", {
                     className: "max-w-5xl mx-auto px-2 py-2 flex items-center gap-4",
                     children: [
@@ -124,6 +124,7 @@ function CategoryPage({ recetas, category }) {
                             children: [
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$externals$5d2f$react$2f$jsx$2d$dev$2d$runtime__$5b$external$5d$__$28$react$2f$jsx$2d$dev$2d$runtime$2c$__cjs$29$__["jsxDEV"])("h1", {
                                     className: "text-[14vw] md:text-[3vw] uppercase text-white text-left leading-none",
+                                    id: "titucatego",
                                     children: category.replace(/-/g, " ")
                                 }, void 0, false, {
                                     fileName: "[project]/src/pages/[category].tsx",

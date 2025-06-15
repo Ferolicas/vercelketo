@@ -94,6 +94,8 @@
     --tracking-wider: .05em;
     --radius-lg: .5rem;
     --radius-xl: .75rem;
+    --radius-2xl: 1rem;
+    --radius-4xl: 2rem;
     --drop-shadow-lg: 0 4px 4px #00000026;
     --drop-shadow-xl: 0 9px 7px #0000001a;
     --animate-pulse: pulse 2s cubic-bezier(.4, 0, .6, 1) infinite;
@@ -1008,6 +1010,14 @@
     overflow-x: hidden;
   }
 
+  .rounded-2xl {
+    border-radius: var(--radius-2xl);
+  }
+
+  .rounded-4xl {
+    border-radius: var(--radius-4xl);
+  }
+
   .rounded-full {
     border-radius: 3.40282e38px;
   }
@@ -1550,38 +1560,6 @@ body {
 }
 
 @font-face {
-  font-family: moofu_burstregular;
-  src: url("/fonts/moofu_burst-webfont.woff2") format("woff2"), url("/fonts/moofu_burst-webfont.woff") format("woff");
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: super_adorableregular;
-  src: url("/fonts/super_adorable-webfont.woff2") format("woff2"), url("/fonts/super_adorable-webfont.woff") format("woff");
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: vogueregular;
-  src: url("/fonts/vogue-webfont.woff2") format("woff2"), url("/fonts/vogue-webfont.woff") format("woff");
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: chickens_loversregular;
-  src: url("/fonts/chickens_lovers-webfont.woff2") format("woff2"), url("/fonts/chickens_lovers-webfont.woff") format("woff");
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
   font-family: anak_paudregular;
   src: url("/fonts/anak_paud-webfont.woff2") format("woff2"), url("/fonts/anak_paud-webfont.woff") format("woff");
   font-weight: normal;
@@ -1597,28 +1575,12 @@ body {
   font-display: swap;
 }
 
-@font-face {
-  font-family: moodcakeregular;
-  src: url("/fonts/moodcake-webfont.woff2") format("woff2"), url("/fonts/moodcake-webfont.woff") format("woff");
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: way_comeregular;
-  src: url("/fonts/way_come-webfont.woff2") format("woff2"), url("/fonts/way_come-webfont.woff") format("woff");
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-
 h1 {
   font-family: beautiful_valentineregular, sans-serif !important;
 }
 
 h2 {
-  font-family: vogueregular, sans-serif !important;
+  font-family: anak_paudregular, sans-serif !important;
 }
 
 @keyframes radio {

@@ -28,7 +28,7 @@ export default function CategoryPage({ recetas, category }: PageProps) {
   return (
     <div className="min-h-screen flex flex-col bg-[#ecf0f1]">
       {/* Header */}
-      <header className="sticky top-0 w-full text-white shadow-2xl shadow-[#1e272e] relative z-10 bg-[#1e272e]">
+      <header className="sticky top-0 w-full text-white shadow-2xl shadow-[#1e272e] relative z-10 bg-[#1e272e] rounded-4xl">
   <div className="max-w-5xl mx-auto px-2 py-2 flex items-center gap-4">
     {/* Logo */}
     <Link href="/" className="block" style={{ height: "clamp(32px, 22vw, 200px)" }}>
@@ -44,7 +44,7 @@ export default function CategoryPage({ recetas, category }: PageProps) {
     </Link>
     {/* Letras y enlaces */}
     <div className="flex flex-col flex-1 justify-start items-center">
-      <h1 className="text-[14vw] md:text-[3vw] uppercase text-white text-left leading-none">
+      <h1 className="text-[14vw] md:text-[3vw] uppercase text-white text-left leading-none" id="titucatego">
         {category.replace(/-/g, " ")}
       </h1>
       <div className="flex gap-4 mt-2">
