@@ -25,3 +25,93 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+
+@font-face {
+    font-family: 'moofu_burstregular';
+    src: url('/fonts/moofu_burst-webfont.woff2') format('woff2'),
+         url('/fonts/moofu_burst-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'super_adorableregular';
+    src: url('/fonts/super_adorable-webfont.woff2') format('woff2'),
+         url('/fonts/super_adorable-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'vogueregular';
+    src: url('/fonts/vogue-webfont.woff2') format('woff2'),
+         url('/fonts/vogue-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'chickens_loversregular';
+    src: url('/fonts/chickens_lovers-webfont.woff2') format('woff2'),
+         url('/fonts/chickens_lovers-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'anak_paudregular';
+    src: url('/fonts/anak_paud-webfont.woff2') format('woff2'),
+         url('/fonts/anak_paud-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+
+
+
+@font-face {
+    font-family: 'beautiful_valentineregular';
+    src: url('/fonts/beautiful_valentine-webfont.woff2') format('woff2'),
+         url('/fonts/beautiful_valentine-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+
+
+
+@font-face {
+    font-family: 'moodcakeregular';
+    src: url('/fonts/moodcake-webfont.woff2') format('woff2'),
+         url('/fonts/moodcake-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+
+
+
+@font-face {
+    font-family: 'way_comeregular';
+    src: url('/fonts/way_come-webfont.woff2') format('woff2'),
+         url('/fonts/way_come-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+h1 {
+  font-family: 'beautiful_valentineregular', sans-serif !important;
+}
+
+h2 {
+  font-family: 'vogueregular', sans-serif !important;
+}
