@@ -1,98 +1,60 @@
-// Tipos base de Sanity
-export interface SanityDocument {
+// types/sanity.ts - Tipos actualizados
+export interface Post {
   _id: string
-  _type: string
-  _createdAt: string
-  _updatedAt: string
-  _rev: string
-}
-
-export interface Slug {
-  _type: 'slug'
-  current: string
-}
-
-export interface SanityImage {
-  _type: 'image'
-  asset: {
-    _ref: string
-    _type: 'reference'
-  }
-  hotspot?: {
-    x: number
-    y: number
-    height: number
-    width: number
-  }
-}
-
-// Tipos específicos de tu esquema
-export interface Author extends SanityDocument {
-  _type: 'author'
-  name: string
-  slug: Slug
-  image?: SanityImage
-  bio?: any[]
-}
-
-export interface Category extends SanityDocument {
-  _type: 'category'
   title: string
-  slug: Slug
-  categoryImage?: SanityImage
-  description?: string
-  order: number
-}
-
-export interface Ingredient {
-  _type: 'ingredient'
-  name: string
-  quantity: string
-  unit?: string
-}
-
-export interface IngredientSection {
-  _type: 'ingredientSection'
-  sectionTitle?: string
-  ingredients: Ingredient[]
-}
-
-export interface Post extends SanityDocument {
-  _type: 'post'
-  title: string
-  slug: Slug
-  author: Author
-  mainImage?: SanityImage
-  category: Category
-  publishedAt: string
-  body?: any[]
+  slug: { current: string }
+  author?: { 
+    name: string
+    image?: any 
+  }
+  mainImage?: any
   youtubeUrl?: string
-  level: 'Principiante' | 'Intermedio' | 'Avanzado'
-  preparationTime: string
-  ingredients: IngredientSection[]
+  level?: string
+  preparationTime?: string
+  servings?: number
+  ingredients?: string[]
+  instructions?: string[]
+  body?: string
+  excerpt?: string
+  notes?: string
+  calories?: number
+  carbs?: number
+  protein?: number
+  fat?: number
+  publishedAt?: string
+  category?: {
+    title: string
+    slug: { current: string }
+  }
 }
 
-export interface HomePage extends SanityDocument {
-  _type: 'homePage'
-  siteTitle: string
+export interface Category {
+  _id: string
+  title: string
+  slug: { current: string }
+  categoryImage?: any
+  description?: string
+  order?: number
+}
+
+export interface Author {
+  _id: string
+  name: string
+  image?: any
+  bio?: string
+}
+
+export interface HomePage {
+  siteTitle?: string
   youtubeUrl?: string
   email?: string
-  heroTitle: string
+  phone?: string
+  heroTitle?: string
   heroDescription?: string
-  heroImage?: SanityImage
+  heroImage?: any
+  picksTitle?: string
+  youtubeDisplayText?: string
+  picksSubtitle?: string
+  amazonUrl?: string
   hotmartUrl?: string
-}
-
-// Tipos para las respuestas de las consultas
-export interface PostPreview {
-  _id: string
-  title: string
-  slug: Slug
-  mainImage?: SanityImage
-  preparationTime: string
-  level: 'Principiante' | 'Intermedio' | 'Avanzado'
-  author: {
-    name: string
-  }
-  publishedAt: string
 }
