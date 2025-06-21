@@ -6,9 +6,14 @@ import { urlFor } from '@/lib/sanity'
 import type { Post, Category, HomePage } from '@/types/sanity'
 import { Youtube, Mail, ShoppingCart, ExternalLink, Clock, ChefHat } from 'lucide-react'
 
-// Generar metadatos dinámicos
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  const category: Category = await client.fetch(queries.categoryBySlug, { slug: params.slug })
+// ✅ CORREGIDO: generateMetadata con params como Promise
+export async function generateMetadata({ 
+  params 
+}: { 
+  params: Promise<{ slug: string }> 
+}): Promise<Metadata> {
+  const { slug } = await params
+  const category: Category = await client.fetch(queries.categoryBySlug, { slug })
   
   return {
     title: `${category?.title || 'Categoría'} - Recetas Keto`,
@@ -16,11 +21,19 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   }
 }
 
-export default async function CategoryPage({ params }: { params: { slug: string } }) {
-  console.log('📂 PÁGINA DE CATEGORÍA CARGANDO:', params.slug)
+// ✅ CORREGIDO: params como Promise en Next.js 15
+export default async function CategoryPage({ 
+  params 
+}: { 
+  params: Promise<{ slug: string }> 
+}) {
+  // ✅ CORREGIDO: Await params para obtener los valores
+  const { slug } = await params
+  
+  console.log('📂 PÁGINA DE CATEGORÍA CARGANDO:', slug)
   
   // Primero obtenemos la categoría para obtener su ID
-  const category: Category = await client.fetch(queries.categoryBySlug, { slug: params.slug })
+  const category: Category = await client.fetch(queries.categoryBySlug, { slug })
   
   if (!category) {
     return <div>Categoría no encontrada</div>
@@ -126,7 +139,7 @@ export default async function CategoryPage({ params }: { params: { slug: string 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {posts.map((post) => (
               <div key={post._id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
-                <Link href={`/categorias/${params.slug}/${post.slug.current}`}>
+                <Link href={`/categorias/${slug}/${post.slug.current}`}>
                   {/* Imagen de la receta */}
                   <div className="relative h-48 w-full">
                     {post.mainImage ? (
@@ -196,8 +209,8 @@ export default async function CategoryPage({ params }: { params: { slug: string 
   )
 }
 
-// Generar rutas estáticas para mejor rendimiento
-export async function generateStaticParams() {
+// ✅ CORREGIDO: generateStaticParams con tipo de retorno explícito
+export async function generateStaticParams(): Promise<{ slug: string }[]> {
   const categories: Category[] = await client.fetch(queries.categories)
   
   return categories.map((category) => ({

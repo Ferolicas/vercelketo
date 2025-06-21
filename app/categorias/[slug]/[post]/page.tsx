@@ -22,14 +22,22 @@ function portableTextToPlainText(blocks: any[]): string {
     .join('\n\n')
 }
 
-export default async function PostPage({ params }: { params: { slug: string, post: string } }) {
-  console.log('📄 PÁGINA DE RECETA CARGANDO:', params.post)
+// ✅ CORREGIDO: params ahora es Promise en Next.js 15
+export default async function PostPage({ 
+  params 
+}: { 
+  params: Promise<{ slug: string; post: string }> 
+}) {
+  // ✅ CORREGIDO: Await params para obtener los valores
+  const { slug, post } = await params
   
-  const post: Post = await client.fetch(queries.postBySlug, { 
-    slug: params.post
+  console.log('📄 PÁGINA DE RECETA CARGANDO:', post)
+  
+  const postData: Post = await client.fetch(queries.postBySlug, { 
+    slug: post
   })
 
-  if (!post) {
+  if (!postData) {
     return (
       <div className="min-h-screen bg-orange-50 flex items-center justify-center">
         <div className="text-center">
@@ -68,15 +76,15 @@ export default async function PostPage({ params }: { params: { slug: string, pos
   }
 
   // Preparar datos para el componente cliente
-  const postData = {
-    title: post.title,
-    author: post.author,
-    preparationTime: post.preparationTime || 'No especificado',
-    level: post.level || 'No especificado',
-    youtubeUrl: post.youtubeUrl,
-    ingredients: post.ingredients || [],
-    body: processPostBody(post.body),
-    slug: post.slug.current
+  const processedPostData = {
+    title: postData.title,
+    author: postData.author,
+    preparationTime: postData.preparationTime || 'No especificado',
+    level: postData.level || 'No especificado',
+    youtubeUrl: postData.youtubeUrl,
+    ingredients: postData.ingredients || [],
+    body: processPostBody(postData.body),
+    slug: postData.slug.current
   }
 
   return (
@@ -84,7 +92,7 @@ export default async function PostPage({ params }: { params: { slug: string, pos
       {/* Botón de regreso */}
       <div className="container mx-auto px-4 pt-6">
         <Link 
-          href={`/categorias/${params.slug}`}
+          href={`/categorias/${slug}`}
           className="inline-flex items-center space-x-2 text-emerald-600 hover:text-emerald-700 font-medium transition-colors"
         >
           <ArrowLeft size={20} />
@@ -98,15 +106,15 @@ export default async function PostPage({ params }: { params: { slug: string, pos
           
           {/* Título de la receta */}
           <h1 className="text-4xl md:text-5xl font-bold text-gray-800 mb-6 leading-tight">
-            {postData.title}
+            {processedPostData.title}
           </h1>
 
           {/* Información básica (Server-side) */}
           <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
             <div className="mb-4 md:mb-0">
-              {postData.author && (
+              {processedPostData.author && (
                 <p className="text-lg text-gray-600">
-                  Por: <span className="font-semibold text-gray-800">{postData.author.name}</span>
+                  Por: <span className="font-semibold text-gray-800">{processedPostData.author.name}</span>
                 </p>
               )}
             </div>
@@ -117,17 +125,17 @@ export default async function PostPage({ params }: { params: { slug: string, pos
             <div className="flex items-center space-x-2">
               <Clock size={20} className="text-emerald-600" />
               <span className="font-medium text-gray-700">Duración:</span>
-              <span className="text-gray-600">{postData.preparationTime}</span>
+              <span className="text-gray-600">{processedPostData.preparationTime}</span>
             </div>
             <div className="flex items-center space-x-2">
               <ChefHat size={20} className="text-emerald-600" />
               <span className="font-medium text-gray-700">Dificultad:</span>
-              <span className="text-gray-600 capitalize">{postData.level}</span>
+              <span className="text-gray-600 capitalize">{processedPostData.level}</span>
             </div>
           </div>
 
           {/* Componente cliente con toda la interactividad */}
-          <PostContent postData={postData} />
+          <PostContent postData={processedPostData} />
 
         </div>
       </main>
@@ -135,8 +143,8 @@ export default async function PostPage({ params }: { params: { slug: string, pos
   )
 }
 
-// Generar rutas estáticas
-export async function generateStaticParams() {
+// ✅ CORREGIDO: generateStaticParams ahora retorna Promise
+export async function generateStaticParams(): Promise<{ slug: string; post: string }[]> {
   const posts: Post[] = await client.fetch(`
     *[_type == "post"] {
       slug,
@@ -150,6 +158,46 @@ export async function generateStaticParams() {
     slug: post.category?.slug?.current || 'sin-categoria',
     post: post.slug.current,
   }))
+}
+
+// ✅ CORREGIDO: generateMetadata también necesita params como Promise
+export async function generateMetadata({ 
+  params 
+}: { 
+  params: Promise<{ slug: string; post: string }> 
+}): Promise<Metadata> {
+  const { post } = await params
+  
+  const postData: Post = await client.fetch(queries.postBySlug, { 
+    slug: post
+  })
+
+  if (!postData) {
+    return {
+      title: 'Receta no encontrada',
+      description: 'La receta que buscas no existe.',
+    }
+  }
+
+  const description = postData.body && Array.isArray(postData.body) 
+    ? portableTextToPlainText(postData.body).substring(0, 160) + '...'
+    : 'Deliciosa receta keto para disfrutar'
+
+  return {
+    title: `${postData.title} | Planeta Keto`,
+    description,
+    openGraph: {
+      title: postData.title,
+      description,
+      type: 'article',
+      authors: postData.author?.name ? [postData.author.name] : undefined,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: postData.title,
+      description,
+    },
+  }
 }
 
 // Configurar revalidación para ISR
