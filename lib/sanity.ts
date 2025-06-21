@@ -1,6 +1,6 @@
 import { createClient } from '@sanity/client'
 import imageUrlBuilder from '@sanity/image-url'
-import { SanityImageSource } from '@sanity/image-url/lib/types/types'
+import type { SanityImageSource } from '@sanity/image-url/lib/types/types'
 
 // Configuración del cliente Sanity
 const config = {
@@ -17,8 +17,19 @@ export const client = createClient(config)
 // Builder para URLs de imágenes
 const builder = imageUrlBuilder(client)
 
+// ✅ CORREGIDO: Función urlFor con tipo correcto para TypeScript
 export function urlFor(source: SanityImageSource) {
-  return builder.image(source)
+  if (!source) {
+    console.error('❌ urlFor: source es null o undefined')
+    return builder.image({} as SanityImageSource) // Fallback seguro
+  }
+  
+  try {
+    return builder.image(source)
+  } catch (error) {
+    console.error('❌ Error en urlFor:', error, 'Source:', source)
+    return builder.image({} as SanityImageSource) // Fallback seguro
+  }
 }
 
 // Consultas GROQ optimizadas
@@ -49,21 +60,25 @@ export const queries = {
     hotmartUrl
   }`,
 
-  // Obtener todas las categorías ordenadas
+  // ✅ CORREGIDO: Query de categorías más detallada para debug
   categories: `*[_type == "category"] | order(order asc){
     _id,
     title,
     slug,
     categoryImage{
+      _type,
       asset->{
         _id,
+        _type,
         url,
         metadata{
           dimensions,
           lqip
         }
       },
-      alt
+      alt,
+      crop,
+      hotspot
     },
     description,
     order,
@@ -292,5 +307,25 @@ export const clearCache = () => {
   if (process.env.NODE_ENV === 'development') {
     // Limpiar caché de Sanity en desarrollo
     client.config().useCdn = false
+  }
+}
+
+// ✅ AGREGADO: Función helper para debug de imágenes
+export const debugImageUrl = (source: SanityImageSource) => {
+  console.log('🔍 DEBUG IMAGE SOURCE:', {
+    source,
+    type: typeof source,
+    hasAsset: !!(source as any)?.asset,
+    assetId: (source as any)?.asset?._id,
+    assetUrl: (source as any)?.asset?.url
+  })
+  
+  try {
+    const url = urlFor(source).width(400).height(300).url()
+    console.log('✅ URL generada:', url)
+    return url
+  } catch (error) {
+    console.error('❌ Error generando URL:', error)
+    return null
   }
 }

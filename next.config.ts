@@ -1,16 +1,19 @@
 import type { NextConfig } from "next";
 
-const nextConfig = {
+const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       {
         protocol: 'https',
         hostname: 'cdn.sanity.io',
         port: '',
-        pathname: '/images/**',
+        pathname: '/**',
       },
     ],
+    // Añadir configuración adicional para permitir parámetros de Sanity
+    dangerouslyAllowSVG: false,
+    contentDispositionType: 'attachment',
   },
 }
 
-module.exports = nextConfig
+export default nextConfig

@@ -141,13 +141,14 @@ export default async function CategoryPage({
               <div key={post._id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
                 <Link href={`/categorias/${slug}/${post.slug.current}`}>
                   {/* Imagen de la receta */}
-                  <div className="relative h-48 w-full">
+                  <div className="relative w-full h-64 bg-gradient-to-br from-orange-50 to-emerald-50 flex items-center justify-center">
                     {post.mainImage ? (
                       <Image
-                        src={urlFor(post.mainImage).width(400).height(300).url()}
+                        src={urlFor(post.mainImage).url()}
                         alt={post.title}
                         fill
-                        className="object-cover hover:scale-105 transition-transform duration-300"
+                        className="object-contain hover:scale-105 transition-transform duration-300"
+                        sizes="100vw"
                       />
                     ) : (
                       <div className="w-full h-full bg-gray-200 flex items-center justify-center">
