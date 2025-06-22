@@ -1,81 +1,81 @@
+// components/Header.tsx
 import Image from 'next/image'
 import Link from 'next/link'
-import { Youtube, Mail, ExternalLink } from 'lucide-react'
 import { urlFor } from '@/lib/sanity'
-import { HomePage } from '@/types/sanity'
+import type { HomePage } from '@/types/sanity'
+import { Youtube, Mail, ShoppingCart, ExternalLink } from 'lucide-react'
 
 interface HeaderProps {
   homePageData: HomePage
 }
 
-export default function Header({ homePageData }: HeaderProps) {
+export function Header({ homePageData }: HeaderProps) {
   return (
-    <header className="sticky top-0 z-50 bg-emerald-600 shadow-lg">
-      <div className="container mx-auto px-4 py-4">
-        <div className="flex items-center justify-between">
-          {/* Logo - 30% del ancho */}
-          <div className="w-[30%] flex justify-center">
-            <Link href="/" className="block">
-              {homePageData.heroImage && (
-                <div className="relative w-16 h-16 md:w-20 md:h-20">
-                  <Image
-                    src={urlFor(homePageData.heroImage).width(80).height(80).url()}
+    <header className="sticky top-0 z-50 bg-emerald-600 shadow-md shadow-black rounded-4xl">
+      <div className="container mx-auto px-4 py-3">
+        <div className="flex items-center h-20">
+          {/* Logo */}
+          <div className="flex-shrink-0 mr-6">
+            {homePageData.heroImage && (
+              <Link href="/">
+                <div className="relative w-24 h-24 cursor-pointer">
+                <Image
+                  src={urlFor(homePageData.heroImage).width(150).height(150).url()}
                     alt="Logo"
                     fill
-                    className="object-cover rounded-full"
-                    priority
+                    className="object-contain"
                   />
                 </div>
-              )}
-            </Link>
+              </Link>
+            )}
           </div>
 
-          {/* Título y Enlaces - 70% del ancho */}
-          <div className="w-[70%] flex flex-col items-start pl-4">
-            {/* Título del sitio */}
-            <Link href="/" className="block mb-3">
-              <h1 className="text-white text-xl md:text-2xl font-bold hover:text-emerald-100 transition-colors">
-                {homePageData.siteTitle}
+          {/* Contenido del sitio */}
+          <div className="flex-1 flex flex-col justify-center">
+            <Link href="/">
+              <h1 className="text-3xl md:text-xl font-bold text-white mb-2 leading-tight cursor-pointer hover:text-emerald-100 transition-colors text-center">
+                {homePageData.siteTitle || 'Mi Sitio'}
               </h1>
             </Link>
 
-            {/* Iconos de redes sociales */}
-            <div className="flex items-center space-x-4">
-              {/* YouTube */}
+            {/* Iconos en fila */}
+            <div className="flex space-x-3 justify-center">
               {homePageData.youtubeUrl && (
-                <a
-                  href={homePageData.youtubeUrl}
-                  target="_blank"
+                <Link 
+                  href={homePageData.youtubeUrl} 
+                  target="_blank" 
                   rel="noopener noreferrer"
                   className="text-white hover:text-red-300 transition-colors"
-                  title="YouTube"
                 >
-                  <Youtube size={20} />
-                </a>
+                  <Youtube size={40} />
+                </Link>
               )}
 
-              {/* Email */}
               {homePageData.email && (
-                <a
+                <Link 
                   href={`mailto:${homePageData.email}`}
                   className="text-white hover:text-blue-300 transition-colors"
-                  title="Email"
                 >
-                  <Mail size={20} />
-                </a>
+                  <Mail size={40} />
+                </Link>
               )}
 
-              {/* Hotmart */}
+              <Link 
+                href="#" 
+                className="text-white hover:text-yellow-300 transition-colors"
+              >
+                <ShoppingCart size={40} />
+              </Link>
+
               {homePageData.hotmartUrl && (
-                <a
-                  href={homePageData.hotmartUrl}
-                  target="_blank"
+                <Link 
+                  href={homePageData.hotmartUrl} 
+                  target="_blank" 
                   rel="noopener noreferrer"
-                  className="text-white hover:text-purple-300 transition-colors"
-                  title="Hotmart"
+                  className="text-white hover:text-orange-300 transition-colors"
                 >
-                  <ExternalLink size={20} />
-                </a>
+                  <ExternalLink size={40} />
+                </Link>
               )}
             </div>
           </div>

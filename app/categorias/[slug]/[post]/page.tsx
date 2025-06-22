@@ -3,10 +3,12 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { client, queries } from '@/lib/sanity'
-import type { Post } from '@/types/sanity'
+import type { Post, HomePage } from '@/types/sanity' // ✅ Agregar HomePage
 import { Clock, ChefHat, ArrowLeft } from 'lucide-react'
 import { Suspense } from 'react'
 import PostContent from './PostContent'
+import { Header } from '@/components/Header' // ✅ Importar el componente Header
+import { ScrollToTop } from '@/components/ScrollToTop' // ✅ Importar ScrollToTop
 
 // Función para convertir Portable Text a texto plano
 function portableTextToPlainText(blocks: any[]): string {
@@ -33,20 +35,28 @@ export default async function PostPage({
   
   console.log('📄 PÁGINA DE RECETA CARGANDO:', post)
   
-  const postData: Post = await client.fetch(queries.postBySlug, { 
-    slug: post
-  })
+ // ✅ AGREGAR: Obtener datos de homepage Y categoría para el header
+  const [postData, homePageData, categoryData]: [Post, HomePage, any] = await Promise.all([
+  client.fetch(queries.postBySlug, { slug: post }),
+  client.fetch(queries.homePage),
+  client.fetch(`*[_type == "category" && slug.current == $slug][0] { title, slug }`, { slug })
+])
 
   if (!postData) {
     return (
-      <div className="min-h-screen bg-orange-50 flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-800 mb-4">Receta no encontrada</h1>
-          <Link href="/">
-            <button className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-6 rounded-full transition-colors">
-              Volver al inicio
-            </button>
-          </Link>
+      <div className="min-h-screen bg-orange-50">
+        {/* ✅ Header incluso en página de error */}
+        <Header homePageData={homePageData} />
+        
+        <div className="flex items-center justify-center min-h-[calc(100vh-100px)]">
+          <div className="text-center">
+            <h1 className="text-2xl font-bold text-gray-800 mb-4">Receta no encontrada</h1>
+            <Link href="/">
+              <button className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-6 rounded-full transition-colors">
+                Volver al inicio
+              </button>
+            </Link>
+          </div>
         </div>
       </div>
     )
@@ -89,6 +99,9 @@ export default async function PostPage({
 
   return (
     <div className="min-h-screen bg-orange-50">
+      {/* ✅ Usar el componente Header */}
+      <Header homePageData={homePageData} />
+
       {/* Botón de regreso */}
       <div className="container mx-auto px-4 pt-6">
         <Link 
@@ -96,7 +109,7 @@ export default async function PostPage({
           className="inline-flex items-center space-x-2 text-emerald-600 hover:text-emerald-700 font-medium transition-colors"
         >
           <ArrowLeft size={20} />
-          <span>Volver a la categoría</span>
+          <span className="lowercase">Volver a {categoryData?.title || 'la categoría'}</span>
         </Link>
       </div>
 
@@ -139,6 +152,8 @@ export default async function PostPage({
 
         </div>
       </main>
+      {/* ✅ Botón de scroll to top */}
+            <ScrollToTop />
     </div>
   )
 }

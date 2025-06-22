@@ -4,7 +4,9 @@ import Link from 'next/link'
 import { client, queries, getPostsByCategory  } from '@/lib/sanity'
 import { urlFor } from '@/lib/sanity'
 import type { Post, Category, HomePage } from '@/types/sanity'
-import { Youtube, Mail, ShoppingCart, ExternalLink, Clock, ChefHat } from 'lucide-react'
+import { Clock, ChefHat, ArrowLeft } from 'lucide-react'
+import { Header } from '@/components/Header' // ✅ Importar el componente
+import { ScrollToTop } from '@/components/ScrollToTop' // ✅ Importar ScrollToTop
 
 // ✅ CORREGIDO: generateMetadata con params como Promise
 export async function generateMetadata({ 
@@ -47,78 +49,19 @@ export default async function CategoryPage({
 
   return (
     <div className="min-h-screen bg-orange-50">
-      {/* Header Sticky - Reutilizado de la página principal */}
-      <header className="sticky top-0 z-50 bg-emerald-600 shadow-lg">
-        <div className="container mx-auto px-4 py-3">
-          <div className="flex items-center h-20">
-            {/* Logo */}
-            <div className="w-2/5 flex justify-center">
-              {homePageData.heroImage && (
-                <Link href="/">
-                  <div className="relative w-20 h-20 cursor-pointer">
-                    <Image
-                      src={urlFor(homePageData.heroImage).width(80).height(80).url()}
-                      alt="Logo"
-                      fill
-                      className="object-contain"
-                    />
-                  </div>
-                </Link>
-              )}
-            </div>
+      {/* ✅ Usar el componente Header */}
+      <Header homePageData={homePageData} />
 
-            {/* Contenido del sitio */}
-            <div className="w-3/5 flex flex-col justify-center pl-6">
-              <Link href="/">
-                <h1 className="text-xl md:text-2xl font-bold text-white mb-2 leading-tight cursor-pointer hover:text-emerald-100 transition-colors">
-                  {homePageData.siteTitle || 'Mi Sitio'}
-                </h1>
-              </Link>
-
-              {/* Iconos en fila */}
-              <div className="flex space-x-3">
-                {homePageData.youtubeUrl && (
-                  <Link 
-                    href={homePageData.youtubeUrl} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="text-white hover:text-red-300 transition-colors"
-                  >
-                    <Youtube size={20} />
-                  </Link>
-                )}
-
-                {homePageData.email && (
-                  <Link 
-                    href={`mailto:${homePageData.email}`}
-                    className="text-white hover:text-blue-300 transition-colors"
-                  >
-                    <Mail size={20} />
-                  </Link>
-                )}
-
-                <Link 
-                  href="#" 
-                  className="text-white hover:text-yellow-300 transition-colors"
-                >
-                  <ShoppingCart size={20} />
-                </Link>
-
-                {homePageData.hotmartUrl && (
-                  <Link 
-                    href={homePageData.hotmartUrl} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="text-white hover:text-orange-300 transition-colors"
-                  >
-                    <ExternalLink size={20} />
-                  </Link>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      </header>
+      {/* Botón de regreso */}
+      <div className="container mx-auto px-4 pt-6">
+        <Link 
+          href={`/categorias/`}
+          className="inline-flex items-center space-x-2 text-emerald-600 hover:text-emerald-700 font-medium transition-colors"
+        >
+          <ArrowLeft size={20} />
+          <span>Volver a categorìas</span>
+        </Link>
+      </div>
 
       {/* Contenido principal */}
       <main className="container mx-auto px-4 py-8">
@@ -206,6 +149,8 @@ export default async function CategoryPage({
           </div>
         )}
       </main>
+      {/* ✅ Botón de scroll to top */}
+            <ScrollToTop />
     </div>
   )
 }
@@ -220,4 +165,4 @@ export async function generateStaticParams(): Promise<{ slug: string }[]> {
 }
 
 // Configurar revalidación para ISR
-export const revalidate = 60 // Revalida cada 60 segundos
+export const revalidate = 60

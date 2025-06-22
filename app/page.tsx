@@ -5,6 +5,7 @@ import { client, queries } from '@/lib/sanity'
 import { urlFor } from '@/lib/sanity'
 import type { HomePage } from '@/types/sanity'
 import { Youtube, Mail, ShoppingCart, ExternalLink } from 'lucide-react'
+import { Header } from '@/components/Header' // ✅ Importar el componente
 
 // Generar metadatos dinámicos
 export async function generateMetadata(): Promise<Metadata> {
@@ -23,79 +24,8 @@ export default async function HomePage() {
 
   return (
     <div className="h-screen bg-orange-50 overflow-hidden">
-      {/* Header Sticky - Altura reducida para dar más espacio al contenido */}
-      <header className="sticky top-0 z-50 bg-emerald-600 shadow-lg">
-        <div className="container mx-auto px-4 py-3">
-          <div className="flex items-center h-20">
-            {/* Logo - Más grande y mejor proporcionado */}
-            <div className="w-2/5 flex justify-start">
-              {homePageData.heroImage && (
-                <div className="relative w-23 h-23">
-                  <Image
-                    src={urlFor(homePageData.heroImage).width(80).height(80).url()}
-                    alt="Logo"
-                    fill
-                    className="object-contain"
-                  />
-                </div>
-              )}
-            </div>
-
-            {/* Contenido del sitio - Ajustado para mejor balance */}
-            <div className="w-5/5 flex flex-col justify-center pl-6">
-              {/* Nombre del sitio - Tamaño reducido para mejor proporción */}
-              <h1 className="text-3xl md:text-6xl font-bold text-white mb-2 leading-tight">
-                {homePageData.siteTitle || 'Mi Sitio'}
-              </h1>
-
-              {/* Iconos en fila - Tamaño ligeramente reducido */}
-              <div className="flex justify-center space-x-3">
-                {/* YouTube */}
-                {homePageData.youtubeUrl && (
-                  <Link 
-                    href={homePageData.youtubeUrl} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="text-white hover:text-red-300 transition-colors"
-                  >
-                    <Youtube size={30} />
-                  </Link>
-                )}
-
-                {/* Email */}
-                {homePageData.email && (
-                  <Link 
-                    href={`mailto:${homePageData.email}`}
-                    className="text-white hover:text-blue-300 transition-colors"
-                  >
-                    <Mail size={30} />
-                  </Link>
-                )}
-
-                {/* Amazon (icono de carrito de compras) */}
-                <Link 
-                  href="#" 
-                  className="text-white hover:text-yellow-300 transition-colors"
-                >
-                  <ShoppingCart size={30} />
-                </Link>
-
-                {/* Hotmart */}
-                {homePageData.hotmartUrl && (
-                  <Link 
-                    href={homePageData.hotmartUrl} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="text-white hover:text-orange-300 transition-colors"
-                  >
-                    <ExternalLink size={20} />
-                  </Link>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      </header>
+      {/* ✅ Usar el componente Header */}
+      <Header homePageData={homePageData} />
 
       {/* Contenido principal - Mejor distribución del espacio vertical */}
       <main className="flex flex-col" style={{ height: 'calc(100vh - 104px)' }}>
