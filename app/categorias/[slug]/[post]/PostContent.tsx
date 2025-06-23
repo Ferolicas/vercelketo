@@ -150,13 +150,21 @@ function DisqusComments({ postSlug, postTitle }: { postSlug: string, postTitle: 
   return (
     <div className="bg-white rounded-lg p-6 shadow-md">
       <h3 className="text-2xl font-bold text-gray-800 mb-6">Comentarios</h3>
-      <div id="disqus_thread"></div>
+      <div 
+        id="disqus_thread" 
+        className="min-h-0 overflow-hidden"
+        style={{ 
+          minHeight: 'auto',
+          height: 'auto',
+          overflow: 'hidden'
+        }}
+      ></div>
       <DiscussionEmbed
         shortname='planeta-keto'
         config={{
-          url: `https://tu-dominio.com/posts/${postSlug}`, // Construye la URL usando postSlug
-          identifier: postSlug, // Usa postSlug como identificador
-          title: postTitle, // Usa postTitle que recibes como prop
+          url: `https://tu-dominio.com/posts/${postSlug}`,
+          identifier: postSlug,
+          title: postTitle,
           language: 'es_ES'
         }}
       />
@@ -204,6 +212,14 @@ export default function PostContent({ postData }: { postData: PostData }) {
           />
         </div>
       )}
+
+      {/* Comentarios de Disqus */}
+      <div className="mt-12">
+        <DisqusComments 
+          postSlug={postData.slug} 
+          postTitle={postData.title}
+        />
+      </div>
     </>
   )
 }
