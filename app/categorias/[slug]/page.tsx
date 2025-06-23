@@ -8,6 +8,7 @@ import { Clock, ChefHat, ArrowLeft } from 'lucide-react'
 import { Header } from '@/components/Header' // ✅ Importar el componente
 import { ScrollToTop } from '@/components/ScrollToTop' // ✅ Importar ScrollToTop
 
+
 // ✅ CORREGIDO: generateMetadata con params como Promise
 export async function generateMetadata({ 
   params 
@@ -56,6 +57,7 @@ export default async function CategoryPage({
       <div className="container mx-auto px-4 pt-6">
         <Link 
           href={`/categorias/`}
+          scroll={false}
           className="inline-flex items-center space-x-2 text-emerald-600 hover:text-emerald-700 font-medium transition-colors"
         >
           <ArrowLeft size={20} />
@@ -82,7 +84,7 @@ export default async function CategoryPage({
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {posts.map((post) => (
               <div key={post._id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
-                <Link href={`/categorias/${slug}/${post.slug.current}`}>
+                <Link href={`/categorias/${slug}/${post.slug.current}`} scroll={false}>
                   {/* Imagen de la receta */}
                   <div className="relative w-full h-64 bg-gradient-to-br from-orange-50 to-emerald-50 flex items-center justify-center">
                     {post.mainImage ? (
@@ -141,7 +143,7 @@ export default async function CategoryPage({
             <p className="text-gray-500">
               Aún no se han publicado recetas en esta categoría.
             </p>
-            <Link href="/">
+            <Link href="/" scroll={false}>
               <button className="mt-6 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-6 rounded-full transition-colors">
                 Volver al inicio
               </button>

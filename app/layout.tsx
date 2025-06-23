@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { ScrollRestorationManager } from '../components/ScrollRestorationManager';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,11 +28,8 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-[100dvh]`}
       >
-        <div className="min-h-[100dvh] flex flex-col">
-          <main className="flex-1">
-            {children}
-          </main>
-        </div>
+        <ScrollRestorationManager />
+        {children}
       </body>
     </html>
   );

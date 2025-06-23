@@ -10,6 +10,7 @@ import PostContent from './PostContent'
 import { Header } from '@/components/Header' // ✅ Importar el componente Header
 import { ScrollToTop } from '@/components/ScrollToTop' // ✅ Importar ScrollToTop
 
+
 // Función para convertir Portable Text a texto plano
 function portableTextToPlainText(blocks: any[]): string {
   if (!blocks || !Array.isArray(blocks)) return ''
@@ -51,7 +52,7 @@ export default async function PostPage({
         <div className="flex items-center justify-center min-h-[calc(100vh-100px)]">
           <div className="text-center">
             <h1 className="text-2xl font-bold text-gray-800 mb-4">Receta no encontrada</h1>
-            <Link href="/">
+            <Link href="/" scroll={false}>
               <button className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-6 rounded-full transition-colors">
                 Volver al inicio
               </button>
@@ -106,6 +107,7 @@ export default async function PostPage({
       <div className="container mx-auto px-4 pt-6">
         <Link 
           href={`/categorias/${slug}`}
+          scroll={false}
           className="inline-flex items-center space-x-2 text-emerald-600 hover:text-emerald-700 font-medium transition-colors"
         >
           <ArrowLeft size={20} />
