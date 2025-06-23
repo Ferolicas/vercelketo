@@ -1,9 +1,9 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, Suspense } from 'react'
 import { usePathname, useSearchParams } from 'next/navigation'
 
-export function ScrollRestorationManager() {
+function ScrollRestorationManagerInner() {
   const pathname = usePathname()
   const searchParams = useSearchParams()
 
@@ -50,4 +50,12 @@ export function ScrollRestorationManager() {
 
   // Este componente no renderiza nada
   return null
+}
+
+export function ScrollRestorationManager() {
+  return (
+    <Suspense fallback={null}>
+      <ScrollRestorationManagerInner />
+    </Suspense>
+  )
 }
