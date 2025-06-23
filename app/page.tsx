@@ -5,7 +5,7 @@ import { client, queries } from '@/lib/sanity'
 import { urlFor } from '@/lib/sanity'
 import type { HomePage } from '@/types/sanity'
 import { Youtube, Mail, ShoppingCart, ExternalLink } from 'lucide-react'
-import { Header } from '@/components/Header' // ✅ Importar el componente
+import { Header } from '@/components/Header'
 
 // Generar metadatos dinámicos
 export async function generateMetadata(): Promise<Metadata> {
@@ -23,13 +23,13 @@ export default async function HomePage() {
   const homePageData: HomePage = await client.fetch(queries.homePage)
 
   return (
-    <div className="h-screen bg-orange-50 overflow-hidden">
-      {/* ✅ Usar el componente Header */}
+    <div className="min-h-screen bg-orange-50 flex flex-col">
+      {/* Header */}
       <Header homePageData={homePageData} />
 
-      {/* Contenido principal - Mejor distribución del espacio vertical */}
-      <main className="flex flex-col" style={{ height: 'calc(100vh - 104px)' }}>
-        {/* Título y descripción centrados - Espacio optimizado */}
+      {/* Contenido principal - Ocupa el resto del espacio disponible */}
+      <main className="flex-1 flex flex-col min-h-0">
+        {/* Título y descripción centrados - Ocupa la mayor parte del espacio */}
         <div className="flex-1 flex flex-col justify-center items-center px-4 py-8">
           <div className="text-center max-w-4xl">
             {/* Título principal - Tamaño responsivo mejorado */}
@@ -46,10 +46,10 @@ export default async function HomePage() {
           </div>
         </div>
 
-        {/* Botón en la parte inferior - Espaciado reducido */}
-        <div className="pb-8 flex justify-center">
+        {/* Botón en la parte inferior - Espaciado fijo */}
+        <div className="pb-8 pt-4 flex justify-center flex-shrink-0">
           <Link href="/categorias">
-            <button className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-6 md:py-4 md:px-8 rounded-full text-3xl md:text-xl shadow-lg transition-all duration-300 transform hover:scale-110 animate-bounce">
+            <button className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-6 md:py-4 md:px-8 rounded-full text-xl md:text-xl shadow-lg transition-all duration-300 transform hover:scale-110 animate-bounce">
               Ver Recetas
             </button>
           </Link>
