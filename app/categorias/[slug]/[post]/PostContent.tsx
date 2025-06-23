@@ -204,14 +204,6 @@ export default function PostContent({ postData }: { postData: PostData }) {
           />
         </div>
       )}
-
-      {/* Comentarios de Disqus */}
-      <div className="mt-12">
-        <DisqusComments 
-          postSlug={postData.slug} 
-          postTitle={postData.title}
-        />
-      </div>
     </>
   )
 }
