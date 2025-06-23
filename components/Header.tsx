@@ -12,15 +12,18 @@ interface HeaderProps {
 export function Header({ homePageData }: HeaderProps) {
   return (
     <header className="sticky top-0 z-50 bg-emerald-600 shadow-md shadow-black rounded-4xl">
-      <div className="container mx-auto px-4 py-3">
-        <div className="flex items-center h-20">
+      <div className="container mx-auto" style={{ padding: 'clamp(0.75rem, 2vw, 1.5rem) clamp(1rem, 3vw, 2rem)' }}>
+        <div className="flex items-center" style={{ height: 'clamp(4rem, 12vh, 8rem)' }}>
           {/* Logo */}
-          <div className="flex-shrink-0 mr-6">
+          <div className="flex-shrink-0" style={{ marginRight: 'clamp(1rem, 3vw, 2rem)' }}>
             {homePageData.heroImage && (
               <Link href="/">
-                <div className="relative w-24 h-24 cursor-pointer">
-                <Image
-                  src={urlFor(homePageData.heroImage).width(150).height(150).url()}
+                <div className="relative cursor-pointer" style={{
+                  width: 'clamp(5rem, 8vw, 8rem)',
+                  height: 'clamp(5rem, 8vw, 8rem)'
+                }}>
+                  <Image
+                    src={urlFor(homePageData.heroImage).width(150).height(150).url()}
                     alt="Logo"
                     fill
                     className="object-contain"
@@ -33,13 +36,16 @@ export function Header({ homePageData }: HeaderProps) {
           {/* Contenido del sitio */}
           <div className="flex-1 flex flex-col justify-center">
             <Link href="/">
-              <h1 className="text-3xl md:text-xl font-bold text-white mb-2 leading-tight cursor-pointer hover:text-emerald-100 transition-colors text-center">
+              <h1 className="font-bold text-white leading-tight cursor-pointer hover:text-emerald-100 transition-colors text-center" style={{
+                fontSize: 'clamp(1.91rem, 8vw, 4rem)',
+                marginBottom: 'clamp(0.5rem, 1.5vh, 1rem)'
+              }}>
                 {homePageData.siteTitle || 'Mi Sitio'}
               </h1>
             </Link>
 
             {/* Iconos en fila */}
-            <div className="flex space-x-3 justify-center">
+            <div className="flex justify-center" style={{ gap: 'clamp(0.75rem, 2.5vw, 1.5rem)' }}>
               {homePageData.youtubeUrl && (
                 <Link 
                   href={homePageData.youtubeUrl} 
@@ -47,7 +53,7 @@ export function Header({ homePageData }: HeaderProps) {
                   rel="noopener noreferrer"
                   className="text-white hover:text-red-300 transition-colors"
                 >
-                  <Youtube size={40} />
+                  <Youtube style={{ width: 'clamp(2rem, 4vw, 5rem)', height: 'clamp(2rem, 4vw, 5rem)' }} />
                 </Link>
               )}
 
@@ -56,7 +62,7 @@ export function Header({ homePageData }: HeaderProps) {
                   href={`mailto:${homePageData.email}`}
                   className="text-white hover:text-blue-300 transition-colors"
                 >
-                  <Mail size={40} />
+                  <Mail style={{ width: 'clamp(2rem, 4vw, 5rem)', height: 'clamp(2rem, 4vw, 5rem)' }} />
                 </Link>
               )}
 
@@ -64,7 +70,7 @@ export function Header({ homePageData }: HeaderProps) {
                 href="#" 
                 className="text-white hover:text-yellow-300 transition-colors"
               >
-                <ShoppingCart size={40} />
+                <ShoppingCart style={{ width: 'clamp(2rem, 4vw, 5rem)', height: 'clamp(2rem, 4vw, 5rem)' }} />
               </Link>
 
               {homePageData.hotmartUrl && (
@@ -74,7 +80,7 @@ export function Header({ homePageData }: HeaderProps) {
                   rel="noopener noreferrer"
                   className="text-white hover:text-orange-300 transition-colors"
                 >
-                  <ExternalLink size={40} />
+                  <ExternalLink style={{ width: 'clamp(2rem, 4vw, 5rem)', height: 'clamp(2rem, 4vw, 5rem)' }} />
                 </Link>
               )}
             </div>
