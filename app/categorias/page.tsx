@@ -26,7 +26,6 @@ export default async function CategoriasPage() {
       <div className="container mx-auto px-4 pt-6">
         <Link 
           href={`/`}  
-          scroll={false}
           className="inline-flex items-center space-x-2 text-emerald-600 hover:text-emerald-700 font-medium transition-colors"
         >
           <ArrowLeft size={20} />
@@ -48,7 +47,7 @@ export default async function CategoriasPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6">
             {categories.map((category) => (
               <div key={category._id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 group">
-                <Link href={`/categorias/${category.slug.current}`} scroll={false} className="block">
+                <Link href={`/categorias/${category.slug.current}`} className="block">
                   <div className="relative w-full h-58 bg-gradient-to-br from-orange-50 to-emerald-50 flex items-center justify-center">
                     {category.categoryImage ? (
                       <div className="relative w-full h-full">
@@ -98,7 +97,7 @@ export default async function CategoriasPage() {
             <p className="text-gray-500">
               Aún no se han creado categorías.
             </p>
-            <Link href="/" scroll={false}>
+            <Link href="/">
               <button className="mt-6 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-6 rounded-full transition-colors">
                 Volver al inicio
               </button>

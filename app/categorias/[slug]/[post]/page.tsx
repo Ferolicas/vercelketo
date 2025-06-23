@@ -1,58 +1,57 @@
-// app/categorias/[slug]/[post]/page.tsx (Server Component - SIN "use client")
+// app/categorias/[slug]/[post]/page.tsx
+import { Metadata } from 'next';
+import Link from 'next/link'; // Todavía útil para el enlace de "Volver al inicio"
+import { client, queries } from '@/lib/sanity';
+import type { Post, HomePage } from '@/types/sanity';
+import { Clock, ChefHat } from 'lucide-react'; // ArrowLeft ya no se importa aquí directamente
+import { Suspense } from 'react';
+import PostContent from './PostContent';
+import { Header } from '@/components/Header';
+import { ScrollToTop } from '@/components/ScrollToTop';
+import { BackButton } from '@/components/BackButton'; // ¡Importamos el componente general de cliente!
 
-import { Metadata } from 'next'
-import Link from 'next/link'
-import { client, queries } from '@/lib/sanity'
-import type { Post, HomePage } from '@/types/sanity' // ✅ Agregar HomePage
-import { Clock, ChefHat, ArrowLeft } from 'lucide-react'
-import { Suspense } from 'react'
-import PostContent from './PostContent'
-import { Header } from '@/components/Header' // ✅ Importar el componente Header
-import { ScrollToTop } from '@/components/ScrollToTop' // ✅ Importar ScrollToTop
-
+// NOTA: 'useRouter' ya NO se importa aquí porque este es un Server Component.
+// El BackButton.tsx ahora maneja la lógica de navegación del cliente.
 
 // Función para convertir Portable Text a texto plano
 function portableTextToPlainText(blocks: any[]): string {
-  if (!blocks || !Array.isArray(blocks)) return ''
-  
+  if (!blocks || !Array.isArray(blocks)) return '';
+
   return blocks
     .map((block) => {
       if (block._type !== 'block' || !block.children) {
-        return ''
+        return '';
       }
-      return block.children.map((child: any) => child.text).join('')
+      return block.children.map((child: any) => child.text).join('');
     })
-    .join('\n\n')
+    .join('\n\n');
 }
 
-// ✅ CORREGIDO: params ahora es Promise en Next.js 15
-export default async function PostPage({ 
-  params 
-}: { 
-  params: Promise<{ slug: string; post: string }> 
+export default async function PostPage({
+  params,
+}: {
+  params: Promise<{ slug: string; post: string }>;
 }) {
-  // ✅ CORREGIDO: Await params para obtener los valores
-  const { slug, post } = await params
-  
-  console.log('📄 PÁGINA DE RECETA CARGANDO:', post)
-  
- // ✅ AGREGAR: Obtener datos de homepage Y categoría para el header
-  const [postData, homePageData, categoryData]: [Post, HomePage, any] = await Promise.all([
-  client.fetch(queries.postBySlug, { slug: post }),
-  client.fetch(queries.homePage),
-  client.fetch(`*[_type == "category" && slug.current == $slug][0] { title, slug }`, { slug })
-])
+  const { slug, post } = await params;
+
+  console.log('📄 PÁGINA DE RECETA CARGANDO:', post);
+
+  const [postData, homePageData, categoryData]: [Post, HomePage, any] =
+    await Promise.all([
+      client.fetch(queries.postBySlug, { slug: post }),
+      client.fetch(queries.homePage),
+      client.fetch(`*[_type == "category" && slug.current == $slug][0] { title, slug }`, { slug }),
+    ]);
 
   if (!postData) {
     return (
       <div className="min-h-screen bg-orange-50">
-        {/* ✅ Header incluso en página de error */}
         <Header homePageData={homePageData} />
-        
+
         <div className="flex items-center justify-center min-h-[calc(100vh-100px)]">
           <div className="text-center">
             <h1 className="text-2xl font-bold text-gray-800 mb-4">Receta no encontrada</h1>
-            <Link href="/" scroll={false}>
+            <Link href="/">
               <button className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-6 rounded-full transition-colors">
                 Volver al inicio
               </button>
@@ -60,31 +59,21 @@ export default async function PostPage({
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   // Función mejorada para procesar el body
   const processPostBody = (body: any): string => {
-    // Si no hay body, retorna string vacío
-    if (!body) return ''
-    
-    // Si ya es string, lo retorna tal cual
-    if (typeof body === 'string') return body
-    
-    // Si es array (Portable Text), lo convierte a texto plano
-    if (Array.isArray(body)) return portableTextToPlainText(body)
-    
-    // Si es objeto pero no array, intenta extraer texto
+    if (!body) return '';
+    if (typeof body === 'string') return body;
+    if (Array.isArray(body)) return portableTextToPlainText(body);
     if (typeof body === 'object') {
-      // Si tiene una propiedad que indica que es Portable Text
       if (body._type === 'block' || (body.children && Array.isArray(body.children))) {
-        return portableTextToPlainText([body])
+        return portableTextToPlainText([body]);
       }
     }
-    
-    // Como último recurso, intenta convertir a string
-    return String(body) || ''
-  }
+    return String(body) || '';
+  };
 
   // Preparar datos para el componente cliente
   const processedPostData = {
@@ -95,30 +84,22 @@ export default async function PostPage({
     youtubeUrl: postData.youtubeUrl,
     ingredients: postData.ingredients || [],
     body: processPostBody(postData.body),
-    slug: postData.slug.current
-  }
+    slug: postData.slug.current,
+  };
 
   return (
     <div className="min-h-screen bg-orange-50">
-      {/* ✅ Usar el componente Header */}
       <Header homePageData={homePageData} />
 
       {/* Botón de regreso */}
       <div className="container mx-auto px-4 pt-6">
-        <Link 
-          href={`/categorias/${slug}`}
-          scroll={false}
-          className="inline-flex items-center space-x-2 text-emerald-600 hover:text-emerald-700 font-medium transition-colors"
-        >
-          <ArrowLeft size={20} />
-          <span className="lowercase">Volver a {categoryData?.title || 'la categoría'}</span>
-        </Link>
+        {/* ¡Usamos el componente BackButton genérico aquí! */}
+        <BackButton text={`Volver a ${categoryData?.title || 'la categoría'}`} />
       </div>
 
       {/* Contenido principal */}
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
-          
           {/* Título de la receta */}
           <h1 className="text-4xl md:text-5xl font-bold text-gray-800 mb-6 leading-tight">
             {processedPostData.title}
@@ -150,17 +131,17 @@ export default async function PostPage({
           </div>
 
           {/* Componente cliente con toda la interactividad */}
-          <PostContent postData={processedPostData} />
-
+          <Suspense fallback={<div>Cargando contenido de la receta...</div>}>
+            <PostContent postData={processedPostData} />
+          </Suspense>
         </div>
       </main>
-      {/* ✅ Botón de scroll to top */}
-            <ScrollToTop />
+      {/* Botón de scroll to top */}
+      <ScrollToTop />
     </div>
-  )
+  );
 }
 
-// ✅ CORREGIDO: generateStaticParams ahora retorna Promise
 export async function generateStaticParams(): Promise<{ slug: string; post: string }[]> {
   const posts: Post[] = await client.fetch(`
     *[_type == "post"] {
@@ -169,36 +150,36 @@ export async function generateStaticParams(): Promise<{ slug: string; post: stri
         slug
       }
     }
-  `)
-  
+  `);
+
   return posts.map((post) => ({
     slug: post.category?.slug?.current || 'sin-categoria',
     post: post.slug.current,
-  }))
+  }));
 }
 
-// ✅ CORREGIDO: generateMetadata también necesita params como Promise
-export async function generateMetadata({ 
-  params 
-}: { 
-  params: Promise<{ slug: string; post: string }> 
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string; post: string }>;
 }): Promise<Metadata> {
-  const { post } = await params
-  
-  const postData: Post = await client.fetch(queries.postBySlug, { 
-    slug: post
-  })
+  const { post } = await params;
+
+  const postData: Post = await client.fetch(queries.postBySlug, {
+    slug: post,
+  });
 
   if (!postData) {
     return {
       title: 'Receta no encontrada',
       description: 'La receta que buscas no existe.',
-    }
+    };
   }
 
-  const description = postData.body && Array.isArray(postData.body) 
-    ? portableTextToPlainText(postData.body).substring(0, 160) + '...'
-    : 'Deliciosa receta keto para disfrutar'
+  const description =
+    postData.body && Array.isArray(postData.body)
+      ? portableTextToPlainText(postData.body).substring(0, 160) + '...'
+      : 'Deliciosa receta keto para disfrutar';
 
   return {
     title: `${postData.title} | Planeta Keto`,
@@ -214,8 +195,8 @@ export async function generateMetadata({
       title: postData.title,
       description,
     },
-  }
+  };
 }
 
 // Configurar revalidación para ISR
-export const revalidate = 60
+export const revalidate = 60;

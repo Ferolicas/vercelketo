@@ -1,68 +1,78 @@
-import { Metadata } from 'next'
-import Image from 'next/image'
-import Link from 'next/link'
-import { client, queries, getPostsByCategory  } from '@/lib/sanity'
-import { urlFor } from '@/lib/sanity'
-import type { Post, Category, HomePage } from '@/types/sanity'
-import { Clock, ChefHat, ArrowLeft } from 'lucide-react'
-import { Header } from '@/components/Header' // ✅ Importar el componente
-import { ScrollToTop } from '@/components/ScrollToTop' // ✅ Importar ScrollToTop
+// app/categorias/[slug]/page.tsx
+import { Metadata, ResolvingMetadata } from 'next';
+import Image from 'next/image';
+import Link from 'next/link';
+import { client, queries, getPostsByCategory } from '@/lib/sanity';
+import { urlFor } from '@/lib/sanity';
+import type { Post, Category, HomePage } from '@/types/sanity';
+import { Clock, ChefHat } from 'lucide-react';
+import { Header } from '@/components/Header';
+import { ScrollToTop } from '@/components/ScrollToTop';
+import { BackButton } from '@/components/BackButton';
 
+// generateMetadata con el tipado ajustado para evitar el error de build
+export async function generateMetadata(
+  // Importante: Usamos 'any' para params aquí para evitar el error de tipado interno de Next.js
+  { params }: { params: any },
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  // Accede a slug directamente, ya que Next.js ya resuelve los params para generateMetadata
+  const { slug } = params;
 
-// ✅ CORREGIDO: generateMetadata con params como Promise
-export async function generateMetadata({ 
-  params 
-}: { 
-  params: Promise<{ slug: string }> 
-}): Promise<Metadata> {
-  const { slug } = await params
-  const category: Category = await client.fetch(queries.categoryBySlug, { slug })
-  
+  const category: Category = await client.fetch(queries.categoryBySlug, { slug });
+
   return {
     title: `${category?.title || 'Categoría'} - Recetas Keto`,
     description: `Recetas de ${category?.title || 'esta categoría'} para tu estilo de vida keto`,
-  }
+  };
 }
 
-// ✅ CORREGIDO: params como Promise en Next.js 15
-export default async function CategoryPage({ 
-  params 
-}: { 
-  params: Promise<{ slug: string }> 
+// Componente de página
+export default async function CategoryPage({
+  params,
+}: {
+  // Aquí params sigue siendo una Promise, como se espera para el componente de página
+  params: Promise<{ slug: string }>;
 }) {
-  // ✅ CORREGIDO: Await params para obtener los valores
-  const { slug } = await params
-  
-  console.log('📂 PÁGINA DE CATEGORÍA CARGANDO:', slug)
-  
-  // Primero obtenemos la categoría para obtener su ID
-  const category: Category = await client.fetch(queries.categoryBySlug, { slug })
-  
+  // Aquí SÍ necesitas 'await params' para obtener los valores
+  const { slug } = await params;
+
+  console.log('📂 PÁGINA DE CATEGORÍA CARGANDO:', slug);
+
+  // Intentar obtener la categoría y los datos de la página principal en paralelo
+  const [category, homePageData]: [Category, HomePage] = await Promise.all([
+    client.fetch(queries.categoryBySlug, { slug }),
+    client.fetch(queries.homePage), // Siempre intenta obtener homePageData
+  ]);
+
   if (!category) {
-    return <div>Categoría no encontrada</div>
+    return (
+      <div className="min-h-screen bg-orange-50">
+        <Header homePageData={homePageData} />
+        <div className="flex items-center justify-center min-h-[calc(100vh-100px)]">
+          <div className="text-center">
+            <h1 className="text-2xl font-bold text-gray-800 mb-4">Categoría no encontrada</h1>
+            <Link href="/" passHref>
+              <button className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-6 rounded-full transition-colors">
+                Volver al inicio
+              </button>
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
   }
 
-  // Luego obtenemos los datos restantes
-  const [homePageData, posts]: [HomePage, Post[]] = await Promise.all([
-    client.fetch(queries.homePage),
-    getPostsByCategory(category._id, 1, 12)
-  ])
+  // Si la categoría se encuentra, obtenemos los posts de esa categoría
+  const posts: Post[] = await getPostsByCategory(category._id, 1, 12);
 
   return (
     <div className="min-h-screen bg-orange-50">
-      {/* ✅ Usar el componente Header */}
       <Header homePageData={homePageData} />
 
-      {/* Botón de regreso */}
+      {/* Botón de regreso usando el componente BackButton general */}
       <div className="container mx-auto px-4 pt-6">
-        <Link 
-          href={`/categorias/`}
-          scroll={false}
-          className="inline-flex items-center space-x-2 text-emerald-600 hover:text-emerald-700 font-medium transition-colors"
-        >
-          <ArrowLeft size={20} />
-          <span>Volver a categorìas</span>
-        </Link>
+        <BackButton text="Volver a categorías" />
       </div>
 
       {/* Contenido principal */}
@@ -84,7 +94,7 @@ export default async function CategoryPage({
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {posts.map((post) => (
               <div key={post._id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
-                <Link href={`/categorias/${slug}/${post.slug.current}`} scroll={false}>
+                <Link href={`/categorias/${slug}/${post.slug.current}`}>
                   {/* Imagen de la receta */}
                   <div className="relative w-full h-64 bg-gradient-to-br from-orange-50 to-emerald-50 flex items-center justify-center">
                     {post.mainImage ? (
@@ -151,20 +161,19 @@ export default async function CategoryPage({
           </div>
         )}
       </main>
-      {/* ✅ Botón de scroll to top */}
-            <ScrollToTop />
+      <ScrollToTop />
     </div>
-  )
+  );
 }
 
-// ✅ CORREGIDO: generateStaticParams con tipo de retorno explícito
+// generateStaticParams con tipo de retorno explícito
 export async function generateStaticParams(): Promise<{ slug: string }[]> {
-  const categories: Category[] = await client.fetch(queries.categories)
-  
+  const categories: Category[] = await client.fetch(queries.categories);
+
   return categories.map((category) => ({
     slug: category.slug.current,
-  }))
+  }));
 }
 
 // Configurar revalidación para ISR
-export const revalidate = 60
+export const revalidate = 60;

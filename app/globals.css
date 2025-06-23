@@ -25,11 +25,11 @@
 }
 
 html {
-  height: 100%;
   width: 100%;
   margin: 0;
   padding: 0;
   overflow-x: hidden;
+  /* La propiedad 'height: 100%' ha sido eliminada. */
 }
 
 body {
@@ -38,18 +38,19 @@ body {
   font-family: Arial, Helvetica, sans-serif;
   margin: 0;
   padding: 0;
-  height: 100%;
   width: 100%;
   overflow-x: hidden;
   position: relative;
+  /* Elimina esta línea */
+  /* min-height: 100vh; */
 }
 
 /* Next.js root container */
 #__next {
-  height: 100%;
   width: 100%;
-  min-height: 100vh;
-  min-height: 100dvh; /* Dynamic viewport height for modern browsers */
+  /* Elimina 'height: 100%' y 'min-height'.
+     El body ya se encarga de la altura mínima.
+     #__next se expandirá de forma natural dentro del body. */
 }
 
 /* Fix específico para WebKit browsers (Safari/Chrome) */
