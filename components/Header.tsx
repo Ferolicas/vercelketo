@@ -19,8 +19,8 @@ export function Header({ homePageData }: HeaderProps) {
             {homePageData.heroImage && (
               <Link href="/">
                 <div className="relative cursor-pointer" style={{
-                  width: 'clamp(5rem, 22vw, 30rem)',
-                  height: 'clamp(5rem, 22vw, 30rem)'
+                  width: 'clamp(5rem, 23vw, 10rem)',
+                  height: 'clamp(5rem, 23vw, 10rem)'
                 }}>
                   <Image
                     src={urlFor(homePageData.heroImage).width(150).height(150).url()}
@@ -37,7 +37,7 @@ export function Header({ homePageData }: HeaderProps) {
           <div className="flex-1 flex flex-col justify-center">
             <Link href="/">
               <h1 className="font-bold text-white leading-tight cursor-pointer hover:text-emerald-100 transition-colors text-center" style={{
-                fontSize: 'clamp(1.91rem, 8vw, 4rem)',
+                fontSize: 'clamp(1.8rem, 8vw, 3.5rem)',
                 marginBottom: 'clamp(0.5rem, 1.5vh, 1rem)'
               }}>
                 {homePageData.siteTitle || 'Mi Sitio'}
