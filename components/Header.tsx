@@ -19,8 +19,8 @@ export function Header({ homePageData }: HeaderProps) {
             {homePageData.heroImage && (
               <Link href="/">
                 <div className="relative cursor-pointer" style={{
-                  width: 'clamp(5rem, 8vw, 10rem)',
-                  height: 'clamp(5rem, 8vw, 10rem)'
+                  width: 'clamp(5rem, 22vw, 30rem)',
+                  height: 'clamp(5rem, 22vw, 30rem)'
                 }}>
                   <Image
                     src={urlFor(homePageData.heroImage).width(150).height(150).url()}
