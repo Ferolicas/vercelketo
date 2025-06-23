@@ -23,7 +23,7 @@ export default async function HomePage() {
   const homePageData: HomePage = await client.fetch(queries.homePage)
 
   return (
-    <div className="min-h-[100dvh] bg-orange-50 flex flex-col">
+    <div className="w-full min-h-[100dvh] bg-orange-50 flex flex-col">
       {/* Header */}
       <Header homePageData={homePageData} />
 
