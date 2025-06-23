@@ -4,6 +4,7 @@
 
 import { Star, ChevronDown, ChevronUp } from 'lucide-react'
 import { Suspense, useState } from 'react'
+import { DiscussionEmbed } from 'disqus-react';
 
 // Tipos para los datos del post
 interface PostData {
@@ -150,29 +151,15 @@ function DisqusComments({ postSlug, postTitle }: { postSlug: string, postTitle: 
     <div className="bg-white rounded-lg p-6 shadow-md">
       <h3 className="text-2xl font-bold text-gray-800 mb-6">Comentarios</h3>
       <div id="disqus_thread"></div>
-      <script
-        dangerouslySetInnerHTML={{
-          __html: `
-            var disqus_config = function () {
-              this.page.url = window.location.href;
-              this.page.identifier = '${postSlug}';
-              this.page.title = '${postTitle}';
-            };
-            (function() {
-              var d = document, s = d.createElement('script');
-              s.src = 'https://TU-SITIO-DISQUS.disqus.com/embed.js'; // Reemplaza TU-SITIO-DISQUS con tu shortname de Disqus
-              s.setAttribute('data-timestamp', +new Date());
-              (d.head || d.body).appendChild(s);
-            })();
-          `,
+      <DiscussionEmbed
+        shortname='planeta-keto'
+        config={{
+          url: `https://tu-dominio.com/posts/${postSlug}`, // Construye la URL usando postSlug
+          identifier: postSlug, // Usa postSlug como identificador
+          title: postTitle, // Usa postTitle que recibes como prop
+          language: 'es_ES'
         }}
       />
-      <noscript>
-        Please enable JavaScript to view the{' '}
-        <a href="https://disqus.com/?ref_noscript">
-          comments powered by Disqus.
-        </a>
-      </noscript>
     </div>
   )
 }
