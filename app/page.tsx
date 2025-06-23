@@ -49,7 +49,7 @@ export default async function HomePage() {
         {/* Botón en la parte inferior - Espaciado fijo */}
         <div className="pb-8 pt-4 flex justify-center flex-shrink-0">
           <Link href="/categorias">
-            <button className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-6 md:py-4 md:px-8 rounded-full text-xl md:text-xl shadow-lg transition-all duration-300 transform hover:scale-110 animate-bounce">
+            <button className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-6 md:py-4 md:px-8 rounded-full text-3xl md:text-xl shadow-lg transition-all duration-300 transform hover:scale-110 animate-bounce">
               Ver Recetas
             </button>
           </Link>
