@@ -53,7 +53,7 @@ export function Header({ homePageData }: HeaderProps) {
                   rel="noopener noreferrer"
                   className="text-white hover:text-red-300 transition-colors"
                 >
-                  <Youtube style={{ width: 'clamp(2rem, 4vw, 5rem)', height: 'clamp(2rem, 4vw, 5rem)' }} />
+                  <Youtube style={{ width: 'clamp(2rem, 4vw, 3.2rem)', height: 'clamp(2rem, 4vw, 2.6rem)' }} />
                 </Link>
               )}
 
@@ -62,7 +62,7 @@ export function Header({ homePageData }: HeaderProps) {
                   href={`mailto:${homePageData.email}`}
                   className="text-white hover:text-blue-300 transition-colors"
                 >
-                  <Mail style={{ width: 'clamp(2rem, 4vw, 5rem)', height: 'clamp(2rem, 4vw, 5rem)' }} />
+                  <Mail style={{ width: 'clamp(2rem, 4vw, 3.2rem)', height: 'clamp(2rem, 4vw, 2.6rem)' }} />
                 </Link>
               )}
 
@@ -70,7 +70,7 @@ export function Header({ homePageData }: HeaderProps) {
                 href="#" 
                 className="text-white hover:text-yellow-300 transition-colors"
               >
-                <ShoppingCart style={{ width: 'clamp(2rem, 4vw, 5rem)', height: 'clamp(2rem, 4vw, 5rem)' }} />
+                <ShoppingCart style={{ width: 'clamp(2rem, 4vw, 3.2rem)', height: 'clamp(2rem, 4vw, 2.6rem)' }} />
               </Link>
 
               {homePageData.hotmartUrl && (
@@ -80,7 +80,7 @@ export function Header({ homePageData }: HeaderProps) {
                   rel="noopener noreferrer"
                   className="text-white hover:text-orange-300 transition-colors"
                 >
-                  <ExternalLink style={{ width: 'clamp(2rem, 4vw, 5rem)', height: 'clamp(2rem, 4vw, 5rem)' }} />
+                  <ExternalLink style={{ width: 'clamp(2rem, 4vw, 3.2rem)', height: 'clamp(2rem, 4vw, 2.6rem)' }} />
                 </Link>
               )}
             </div>
