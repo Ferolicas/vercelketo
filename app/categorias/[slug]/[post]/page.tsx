@@ -141,7 +141,7 @@ export default async function PostPage({
     excerpt: postData.excerpt
   };
 
-  const baseUrl = process.env.SITE_URL || 'https://tudominio.com';
+  const baseUrl = process.env.SITE_URL || 'https://www.planetaketo.es';
   const currentDate = new Date().toISOString();
   const mainImageUrl = postData.mainImage ? urlFor(postData.mainImage).url() : `${baseUrl}/default-recipe-image.jpg`;
   const nutritionInfo = formatNutrition(postData);
@@ -498,7 +498,7 @@ export async function generateMetadata({
     };
   }
 
-  const baseUrl = process.env.SITE_URL || 'https://tudominio.com';
+  const baseUrl = process.env.SITE_URL || 'https://www.planetaketo.es';
   const canonicalUrl = `${baseUrl}/categorias/${slug}/${post}`;
   const mainImageUrl = postData.mainImage 
     ? urlFor(postData.mainImage).url() 
