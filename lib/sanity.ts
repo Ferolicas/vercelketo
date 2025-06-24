@@ -8,8 +8,16 @@ const config = {
   dataset: process.env.NEXT_PUBLIC_SANITY_DATASET!,
   apiVersion: process.env.NEXT_PUBLIC_SANITY_API_VERSION!,
   useCdn: process.env.NODE_ENV === 'production',
-  token: process.env.SANITY_API_TOKEN, // Para operaciones autenticadas
+  token: process.env.SANITY_API_TOKEN, // ¡Importante para escribir!
 }
+
+export const writeClient = createClient({
+  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,
+  dataset: process.env.NEXT_PUBLIC_SANITY_DATASET!,
+  token: process.env.SANITY_API_TOKEN,
+  useCdn: false, // Para escritura debe ser false
+  apiVersion: '2025-06-24'
+})
 
 // Cliente de Sanity
 export const client = createClient(config)
