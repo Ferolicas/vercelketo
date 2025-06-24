@@ -4,7 +4,6 @@
 
 import { Star, ChevronDown, ChevronUp } from 'lucide-react'
 import { Suspense, useState } from 'react'
-import { DiscussionEmbed } from 'disqus-react';
 
 // Tipos para los datos del post
 interface PostData {
@@ -16,6 +15,7 @@ interface PostData {
   ingredients: string[]
   body: string
   slug: string
+  rating?: number // Agregamos el rating como opcional
 }
 
 // Componente para el video de YouTube
@@ -47,26 +47,6 @@ function YouTubeEmbed({ videoUrl }: { videoUrl: string }) {
         allowFullScreen
         className="absolute top-0 left-0 w-full h-full"
       />
-    </div>
-  )
-}
-
-// Componente para la calificación con estrellas
-function StarRating({ rating = 5 }: { rating?: number }) {
-  return (
-    <div className="flex items-center space-x-1 mb-8">
-      {[1, 2, 3, 4, 5].map((star) => (
-        <Star
-          key={star}
-          size={20}
-          className={`${
-            star <= rating
-              ? 'text-yellow-400 fill-current'
-              : 'text-gray-300'
-          }`}
-        />
-      ))}
-      <span className="ml-2 text-sm text-gray-600">({rating}/5)</span>
     </div>
   )
 }
@@ -145,40 +125,10 @@ function ExpandableContent({
   return null
 }
 
-// Componente para comentarios de Disqus
-function DisqusComments({ postSlug, postTitle }: { postSlug: string, postTitle: string }) {
-  return (
-    <div className="bg-white rounded-lg p-6 shadow-md">
-      <h3 className="text-2xl font-bold text-gray-800 mb-6">Comentarios</h3>
-      <div 
-        id="disqus_thread" 
-        className="min-h-0 overflow-hidden"
-        style={{ 
-          minHeight: 'auto',
-          height: 'auto',
-          overflow: 'hidden'
-        }}
-      ></div>
-      <DiscussionEmbed
-        shortname='planeta-keto'
-        config={{
-          url: `https://tu-dominio.com/posts/${postSlug}`,
-          identifier: postSlug,
-          title: postTitle,
-          language: 'es_ES'
-        }}
-      />
-    </div>
-  )
-}
-
 // Componente principal del contenido interactivo
 export default function PostContent({ postData }: { postData: PostData }) {
   return (
     <>
-      {/* Calificación con estrellas */}
-      <StarRating rating={5} />
-
       {/* Video de YouTube */}
       {postData.youtubeUrl && (
         <div className="mb-8">
@@ -212,14 +162,6 @@ export default function PostContent({ postData }: { postData: PostData }) {
           />
         </div>
       )}
-
-      {/* Comentarios de Disqus */}
-      <div className="mt-12">
-        <DisqusComments 
-          postSlug={postData.slug} 
-          postTitle={postData.title}
-        />
-      </div>
     </>
   )
 }

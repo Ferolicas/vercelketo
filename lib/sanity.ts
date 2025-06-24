@@ -83,6 +83,8 @@ export const queries = {
     },
   }`,
 
+   
+
   // Query para obtener todos los posts con información básica
   allPosts: `*[_type == "post"] | order(publishedAt desc) {
     _id,
@@ -219,5 +221,15 @@ export const queries = {
     "totalCategories": count(*[_type == "category"]),
     "totalAuthors": count(*[_type == "author"]),
     "averageRating": math::avg(*[_type == "post" && defined(rating)].rating)
-  }`
+  }` ,
+
+  commentsByPost: `*[_type == "comment" && post->slug.current == $postSlug && approved == true] | order(_createdAt desc) {
+    _id,
+    _createdAt,
+    name,
+    email,
+    comment,
+    rating,
+    approved
+  }` 
 }

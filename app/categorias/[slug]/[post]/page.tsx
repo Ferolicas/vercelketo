@@ -1,15 +1,16 @@
-// app/categorias/[slug]/[post]/page.tsx
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { client, queries } from '@/lib/sanity';
 import { urlFor } from '@/lib/sanity';
 import type { Post, HomePage } from '@/types/sanity';
-import { Clock, ChefHat, Users, Star } from 'lucide-react';
+import { Clock, ChefHat, Users, Star, Share2 } from 'lucide-react';
 import { Suspense } from 'react';
 import PostContent from './PostContent';
+import Comments from '@/components/Comments';
 import { Header } from '@/components/Header';
 import { ScrollToTop } from '@/components/ScrollToTop';
 import { BackButton } from '@/components/BackButton';
+import { ShareButtons } from '@/components/ShareButtons';
 
 function portableTextToPlainText(blocks: any[]): string {
   if (!blocks || !Array.isArray(blocks)) return '';
@@ -144,40 +145,60 @@ export default async function PostPage({
   const currentDate = new Date().toISOString();
   const mainImageUrl = postData.mainImage ? urlFor(postData.mainImage).url() : `${baseUrl}/default-recipe-image.jpg`;
   const nutritionInfo = formatNutrition(postData);
+  const shareUrl = `${baseUrl}/categorias/${slug}/${post}`;
 
   return (
     <div className="min-h-screen bg-orange-50">
       <Header homePageData={homePageData} />
 
+      {/* Botones de navegación y compartir */}
       <div className="container mx-auto px-4 pt-6">
-        <BackButton text={`Volver a ${categoryData?.title || 'la categoría'}`} />
+        <div className="flex justify-between items-center">
+          <BackButton text={`Volver a ${categoryData?.title || 'la categoría'}`} />
+          <ShareButtons 
+            url={shareUrl}
+            title={processedPostData.title}
+            description={createSEODescription(postData, categoryData?.title)}
+          />
+        </div>
       </div>
 
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-800 mb-6 leading-tight">
-            {processedPostData.title}
-          </h1>
-
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
-            <div className="mb-4 md:mb-0">
-              {processedPostData.author && (
-                <p className="text-lg text-gray-600">
-                  Por: <span className="font-semibold text-gray-800">{processedPostData.author.name}</span>
-                </p>
+          {/* Título y calificación */}
+          <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-6">
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-800 mb-4 md:mb-0 leading-tight flex-1 md:pr-8">
+              {processedPostData.title}
+            </h1>
+            {processedPostData.rating && typeof processedPostData.rating === 'number' && (
+                <div className="flex items-center space-x-1 flex-shrink-0">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <Star
+                      key={star}
+                      className={`w-6 h-6 ${
+                        star <= processedPostData.rating!
+                          ? 'text-yellow-400 fill-current'
+                          : 'text-gray-300'
+                      }`}
+                    />
+                  ))}
+                  <span className="text-lg font-semibold text-gray-800 ml-2">{processedPostData.rating}</span>
+                  <span className="text-gray-600">/5</span>
+                </div>
               )}
-            </div>
-            {processedPostData.rating && (
-              <div className="flex items-center space-x-1">
-                <Star className="w-5 h-5 text-yellow-400 fill-current" />
-                <span className="text-lg font-semibold text-gray-800">{processedPostData.rating}</span>
-                <span className="text-gray-600">/5</span>
-              </div>
-            )}
           </div>
 
-          {/* Grid de información de la receta */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          {/* Autor */}
+          {processedPostData.author && (
+            <div className="mb-6">
+              <p className="text-lg text-gray-600">
+                Por: <span className="font-semibold text-gray-800">{processedPostData.author.name}</span>
+              </p>
+            </div>
+          )}
+
+          {/* Información de la receta en una sola línea */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             <div className="flex items-center space-x-2 p-4 bg-white rounded-lg shadow-sm">
               <Clock size={20} className="text-emerald-600" />
               <div>
@@ -216,6 +237,18 @@ export default async function PostPage({
             )}
           </div>
 
+          <Suspense fallback={<div>Cargando contenido de la receta...</div>}>
+            <PostContent postData={processedPostData} />
+          </Suspense>
+
+          {/* Notas del chef */}
+          {processedPostData.chefNotes && (
+            <div className="mb-8 p-6 bg-yellow-50 border-l-4 border-yellow-400 rounded-r-lg">
+              <h3 className="text-lg font-semibold text-yellow-800 mb-2">💡 Notas del Chef</h3>
+              <p className="text-yellow-700">{processedPostData.chefNotes}</p>
+            </div>
+          )}
+
           {/* Información nutricional expandida */}
           {processedPostData.macros && (
             <div className="mb-8 p-6 bg-white rounded-lg shadow-sm">
@@ -252,6 +285,7 @@ export default async function PostPage({
           {/* Tags */}
           {processedPostData.tags && processedPostData.tags.length > 0 && (
             <div className="mb-8">
+              <h3 className="text-lg font-semibold text-gray-800 mb-4">Etiquetas</h3>
               <div className="flex flex-wrap gap-2">
                 {processedPostData.tags.map((tag, index) => (
                   <span 
@@ -265,17 +299,11 @@ export default async function PostPage({
             </div>
           )}
 
-          <Suspense fallback={<div>Cargando contenido de la receta...</div>}>
-            <PostContent postData={processedPostData} />
-          </Suspense>
-
-          {/* Notas del chef */}
-          {processedPostData.chefNotes && (
-            <div className="mt-8 p-6 bg-yellow-50 border-l-4 border-yellow-400 rounded-r-lg">
-              <h3 className="text-lg font-semibold text-yellow-800 mb-2">💡 Notas del Chef</h3>
-              <p className="text-yellow-700">{processedPostData.chefNotes}</p>
-            </div>
-          )}
+          {/* Sección de Comentarios Funcional */}
+          <Comments 
+            postSlug={processedPostData.slug}
+            postTitle={processedPostData.title}
+          />
         </div>
       </main>
       <ScrollToTop />
@@ -318,25 +346,30 @@ export default async function PostPage({
               "name": `Paso ${i + 1}`,
               "position": i + 1
             })),
-            "nutrition": {
+            "nutrition": nutritionInfo ? {
+              "@type": "NutritionInformation",
+              "calories": nutritionInfo.calories,
+              "fatContent": nutritionInfo.fatContent,
+              "carbohydrateContent": nutritionInfo.carbohydrateContent,
+              "fiberContent": nutritionInfo.fiberContent,
+              "proteinContent": nutritionInfo.proteinContent,
+              "servingSize": nutritionInfo.servingSize
+            } : {
               "@type": "NutritionInformation",
               "calories": "250 kcal",
               "fatContent": "20g",
-              "saturatedFatContent": "8g",
               "carbohydrateContent": "8g",
               "fiberContent": "3g",
-              "sugarContent": "2g",
               "proteinContent": "15g",
-              "sodiumContent": "400mg",
               "servingSize": "1 porción"
             },
-            "aggregateRating": {
+            "aggregateRating": processedPostData.rating ? {
               "@type": "AggregateRating",
-              "ratingValue": "4.8",
+              "ratingValue": processedPostData.rating.toString(),
               "reviewCount": "127",
               "bestRating": "5",
               "worstRating": "1"
-            },
+            } : undefined,
             "video": processedPostData.youtubeUrl ? {
               "@type": "VideoObject",
               "name": `Cómo hacer ${processedPostData.title}`,
