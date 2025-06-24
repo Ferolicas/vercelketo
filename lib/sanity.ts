@@ -40,7 +40,7 @@ export function urlFor(source: SanityImageSource) {
   }
 }
 
-// Consultas GROQ optimizadas
+// Consultas GROQ optimizadas y corregidas
 export const queries = {
   // Query principal para obtener un post por slug
   postBySlug: `*[_type == "post" && slug.current == $slug][0] {
@@ -91,8 +91,6 @@ export const queries = {
     },
   }`,
 
-   
-
   // Query para obtener todos los posts con información básica
   allPosts: `*[_type == "post"] | order(publishedAt desc) {
     _id,
@@ -141,19 +139,19 @@ export const queries = {
 
   // Query para obtener todas las categorías
   allCategories: `*[_type == "category"] | order(title asc) {
-  _id,
-  title,
-  slug,
-  description,
-  categoryImage {
-    asset->{
-      _id,
-      url
+    _id,
+    title,
+    slug,
+    description,
+    categoryImage {
+      asset->{
+        _id,
+        url
+      },
+      alt
     },
-    alt
-  },
-  "postCount": count(*[_type == "post" && references(^._id)])
-}`,
+    "postCount": count(*[_type == "post" && references(^._id)])
+  }`,
 
   // Query para obtener una categoría específica
   categoryBySlug: `*[_type == "category" && slug.current == $slug][0] {
@@ -229,15 +227,101 @@ export const queries = {
     "totalCategories": count(*[_type == "category"]),
     "totalAuthors": count(*[_type == "author"]),
     "averageRating": math::avg(*[_type == "post" && defined(rating)].rating)
-  }` ,
+  }`,
 
-  commentsByPost: `*[_type == "comment" && post->slug.current == $postSlug && approved == true] | order(_createdAt desc) {
+  // ✅ CORREGIDO: Query para comentarios por post (usado en la API)
+  commentsByPost: `*[_type == "comment" && post->slug.current == $postSlug && approved == true && isDeleted != true && !(_id in path("drafts.**"))] | order(_createdAt desc) {
     _id,
     _createdAt,
-    name,
-    email,
-    comment,
+    _updatedAt,
+    content,
+    author {
+      name,
+      email
+    },
+    authorId,
     rating,
-    approved
-  }` 
+    approved,
+    isEdited,
+    isDeleted,
+    parentComment,
+    adminReply,
+    adminReplyPublished,
+    adminReplyDate
+  }`,
+
+  // Query para obtener estadísticas de comentarios de un post
+  postCommentsStats: `{
+    "totalComments": count(*[_type == "comment" && post->slug.current == $postSlug && approved == true && isDeleted != true]),
+    "averageRating": math::avg(*[_type == "comment" && post->slug.current == $postSlug && approved == true && isDeleted != true && defined(rating)].rating),
+    "ratingDistribution": {
+      "5": count(*[_type == "comment" && post->slug.current == $postSlug && approved == true && isDeleted != true && rating == 5]),
+      "4": count(*[_type == "comment" && post->slug.current == $postSlug && approved == true && isDeleted != true && rating == 4]),
+      "3": count(*[_type == "comment" && post->slug.current == $postSlug && approved == true && isDeleted != true && rating == 3]),
+      "2": count(*[_type == "comment" && post->slug.current == $postSlug && approved == true && isDeleted != true && rating == 2]),
+      "1": count(*[_type == "comment" && post->slug.current == $postSlug && approved == true && isDeleted != true && rating == 1])
+    }
+  }`,
+
+  // Query para comentarios recientes del sitio (para admin)
+  recentComments: `*[_type == "comment"] | order(_createdAt desc)[0..20] {
+    _id,
+    _createdAt,
+    content[0..100],
+    author {
+      name
+    },
+    approved,
+    isDeleted,
+    post->{
+      title,
+      slug
+    }
+  }`,
+
+  // Query para comentarios pendientes de moderación
+  pendingComments: `*[_type == "comment" && approved != true && isDeleted != true] | order(_createdAt desc) {
+    _id,
+    _createdAt,
+    content,
+    author {
+      name,
+      email
+    },
+    post->{
+      title,
+      slug
+    }
+  }`,
+
+  // Query para buscar comentarios por contenido
+  searchComments: `*[_type == "comment" && content match $searchTerm + "*" && approved == true && isDeleted != true] | order(_createdAt desc) {
+    _id,
+    _createdAt,
+    content,
+    author {
+      name
+    },
+    post->{
+      title,
+      slug
+    }
+  }`,
+
+  // Query para obtener comentarios de un usuario específico (por authorId)
+  commentsByAuthor: `*[_type == "comment" && authorId == $authorId && isDeleted != true] | order(_createdAt desc) {
+    _id,
+    _createdAt,
+    content,
+    author {
+      name
+    },
+    rating,
+    approved,
+    isEdited,
+    post->{
+      title,
+      slug
+    }
+  }`
 }
