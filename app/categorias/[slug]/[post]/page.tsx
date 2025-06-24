@@ -1,19 +1,16 @@
 // app/categorias/[slug]/[post]/page.tsx
 import { Metadata } from 'next';
-import Link from 'next/link'; // Todavía útil para el enlace de "Volver al inicio"
+import Link from 'next/link';
 import { client, queries } from '@/lib/sanity';
+import { urlFor } from '@/lib/sanity';
 import type { Post, HomePage } from '@/types/sanity';
-import { Clock, ChefHat } from 'lucide-react'; // ArrowLeft ya no se importa aquí directamente
+import { Clock, ChefHat } from 'lucide-react';
 import { Suspense } from 'react';
 import PostContent from './PostContent';
 import { Header } from '@/components/Header';
 import { ScrollToTop } from '@/components/ScrollToTop';
-import { BackButton } from '@/components/BackButton'; // ¡Importamos el componente general de cliente!
+import { BackButton } from '@/components/BackButton';
 
-// NOTA: 'useRouter' ya NO se importa aquí porque este es un Server Component.
-// El BackButton.tsx ahora maneja la lógica de navegación del cliente.
-
-// Función para convertir Portable Text a texto plano
 function portableTextToPlainText(blocks: any[]): string {
   if (!blocks || !Array.isArray(blocks)) return '';
 
@@ -27,11 +24,13 @@ function portableTextToPlainText(blocks: any[]): string {
     .join('\n\n');
 }
 
-export default async function PostPage({
-  params,
-}: {
-  params: Promise<{ slug: string; post: string }>;
+// Componente principal
+export default async function PostPage({ 
+  params 
+}: { 
+  params: Promise<{ slug: string; post: string }> 
 }) {
+  // Await params since it's now a Promise in Next.js 15
   const { slug, post } = await params;
 
   console.log('📄 PÁGINA DE RECETA CARGANDO:', post);
@@ -62,7 +61,6 @@ export default async function PostPage({
     );
   }
 
-  // Función mejorada para procesar el body
   const processPostBody = (body: any): string => {
     if (!body) return '';
     if (typeof body === 'string') return body;
@@ -75,7 +73,6 @@ export default async function PostPage({
     return String(body) || '';
   };
 
-  // Preparar datos para el componente cliente
   const processedPostData = {
     title: postData.title,
     author: postData.author,
@@ -91,21 +88,16 @@ export default async function PostPage({
     <div className="min-h-screen bg-orange-50">
       <Header homePageData={homePageData} />
 
-      {/* Botón de regreso */}
       <div className="container mx-auto px-4 pt-6">
-        {/* ¡Usamos el componente BackButton genérico aquí! */}
         <BackButton text={`Volver a ${categoryData?.title || 'la categoría'}`} />
       </div>
 
-      {/* Contenido principal */}
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
-          {/* Título de la receta */}
           <h1 className="text-4xl md:text-5xl font-bold text-gray-800 mb-6 leading-tight">
             {processedPostData.title}
           </h1>
 
-          {/* Información básica (Server-side) */}
           <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
             <div className="mb-4 md:mb-0">
               {processedPostData.author && (
@@ -116,7 +108,6 @@ export default async function PostPage({
             </div>
           </div>
 
-          {/* Duración y dificultad */}
           <div className="flex flex-wrap gap-6 mb-8 p-4 bg-white rounded-lg shadow-sm">
             <div className="flex items-center space-x-2">
               <Clock size={20} className="text-emerald-600" />
@@ -130,19 +121,47 @@ export default async function PostPage({
             </div>
           </div>
 
-          {/* Componente cliente con toda la interactividad */}
           <Suspense fallback={<div>Cargando contenido de la receta...</div>}>
             <PostContent postData={processedPostData} />
           </Suspense>
         </div>
       </main>
-      {/* Botón de scroll to top */}
       <ScrollToTop />
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Recipe",
+            "name": processedPostData.title,
+            "description": processedPostData.body.substring(0, 200),
+            "author": {
+              "@type": "Person",
+              "name": processedPostData.author?.name || "Equipo Planeta Keto"
+            },
+            "prepTime": `PT${parseInt(processedPostData.preparationTime) || 30}M`,
+            "recipeIngredient": processedPostData.ingredients,
+            "recipeInstructions": processedPostData.body.split('\n\n').map((step, i) => ({
+              "@type": "HowToStep",
+              "text": step,
+              "name": `Paso ${i + 1}`
+            })),
+            "recipeCategory": categoryData?.title || "Receta Keto",
+            "nutrition": {
+              "@type": "NutritionInformation",
+              "calories": "250 kcal",
+              "fatContent": "20g",
+              "carbohydrateContent": "5g netos"
+            }
+          })
+        }}
+      />
     </div>
   );
 }
 
-export async function generateStaticParams(): Promise<{ slug: string; post: string }[]> {
+export async function generateStaticParams() {
   const posts: Post[] = await client.fetch(`
     *[_type == "post"] {
       slug,
@@ -158,12 +177,13 @@ export async function generateStaticParams(): Promise<{ slug: string; post: stri
   }));
 }
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ slug: string; post: string }>;
+export async function generateMetadata({ 
+  params 
+}: { 
+  params: Promise<{ slug: string; post: string }> 
 }): Promise<Metadata> {
-  const { post } = await params;
+  // Await params since it's now a Promise in Next.js 15
+  const { slug, post } = await params;
 
   const postData: Post = await client.fetch(queries.postBySlug, {
     slug: post,
@@ -181,22 +201,34 @@ export async function generateMetadata({
       ? portableTextToPlainText(postData.body).substring(0, 160) + '...'
       : 'Deliciosa receta keto para disfrutar';
 
+  const baseUrl = process.env.SITE_URL || 'https://tudominio.com';
+  const canonicalUrl = `${baseUrl}/categorias/${slug}/${post}`;
+  
+  const mainImageUrl = postData.mainImage 
+    ? urlFor(postData.mainImage).url() 
+    : `${baseUrl}/default-og-image.jpg`;
+
   return {
-    title: `${postData.title} | Planeta Keto`,
+    title: `${postData.title} | Receta Keto Fácil | Planeta Keto`,
     description,
+    alternates: {
+      canonical: canonicalUrl,
+    },
     openGraph: {
       title: postData.title,
       description,
+      images: [mainImageUrl],
       type: 'article',
       authors: postData.author?.name ? [postData.author.name] : undefined,
+      url: canonicalUrl,
     },
     twitter: {
       card: 'summary_large_image',
       title: postData.title,
       description,
+      images: [mainImageUrl],
     },
   };
 }
 
-// Configurar revalidación para ISR
 export const revalidate = 60;

@@ -9,8 +9,11 @@ import { Header } from '@/components/Header'
 import { ScrollToTop } from '@/components/ScrollToTop'
 
 export const metadata: Metadata = {
-  title: 'Categorías - Recetas Keto',
-  description: 'Explora todas nuestras categorías de recetas keto',
+  title: 'Categorías de Recetas Keto | Planeta Keto',
+  description: 'Explora recetas keto por tipo: desayunos, almuerzos, cenas, postres y snacks bajos en carbohidratos',
+  alternates: {
+    canonical: "/categorias",
+  },
 }
 
 export default async function CategoriasPage() {
@@ -53,10 +56,10 @@ export default async function CategoriasPage() {
                       <div className="relative w-full h-full">
                         <Image
                           src={urlFor(category.categoryImage).url()}
-                          alt={category.title}
+                          alt={`Imagen de la categoría ${category.title}`}
                           fill
                           className="object-contain group-hover:scale-105 transition-transform duration-300"
-                          sizes="100vw"
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                         />
                       </div>
                     ) : (
@@ -67,9 +70,9 @@ export default async function CategoriasPage() {
                   </div>
 
                   <div className="p-6">
-                    <h3 className="font-bold text-xl text-gray-800 mb-3 line-clamp-2 group-hover:text-emerald-600 transition-colors">
+                    <h2 className="font-bold text-xl text-gray-800 mb-3 line-clamp-2 group-hover:text-emerald-600 transition-colors">
                       {category.title}
-                    </h3>
+                    </h2>
 
                     {category.description && (
                       <p className="text-sm text-gray-600 line-clamp-3 leading-relaxed">

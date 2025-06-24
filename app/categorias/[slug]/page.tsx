@@ -1,4 +1,3 @@
-// app/categorias/[slug]/page.tsx
 import { Metadata, ResolvingMetadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -10,24 +9,22 @@ import { Header } from '@/components/Header';
 import { ScrollToTop } from '@/components/ScrollToTop';
 import { BackButton } from '@/components/BackButton';
 
-// generateMetadata con el tipado ajustado para evitar el error de build
 export async function generateMetadata(
-  // Importante: Usamos 'any' para params aquí para evitar el error de tipado interno de Next.js
   { params }: { params: any },
   parent: ResolvingMetadata
 ): Promise<Metadata> {
-  // Accede a slug directamente, ya que Next.js ya resuelve los params para generateMetadata
   const { slug } = params;
-
   const category: Category = await client.fetch(queries.categoryBySlug, { slug });
-
+  
   return {
-    title: `${category?.title || 'Categoría'} - Recetas Keto`,
-    description: `Recetas de ${category?.title || 'esta categoría'} para tu estilo de vida keto`,
+    title: `${category?.title || 'Categoría'} Keto - Recetas Fáciles y Rápidas | Planeta Keto`,
+    description: `Recetas de ${category?.title || 'esta categoría'} keto para tu estilo de vida cetogénico. Bajas en carbohidratos y deliciosas`,
+    alternates: {
+      canonical: `/categorias/${slug}`,
+    },
   };
 }
 
-// Componente de página
 export default async function CategoryPage({
   params,
 }: {
@@ -161,12 +158,41 @@ export default async function CategoryPage({
           </div>
         )}
       </main>
-      <ScrollToTop />
+       <ScrollToTop />
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Inicio",
+                "item": "https://www.planetaketo.es/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Categorías",
+                "item": "https://www.planetaketo.es//categorias"
+              },
+              {
+                "@type": "ListItem",
+                "position": 3,
+                "name": category.title,
+                "item": `https://www.planetaketo.es//categorias/${slug}`
+              }
+            ]
+          })
+        }}
+      />
     </div>
   );
 }
 
-// generateStaticParams con tipo de retorno explícito
 export async function generateStaticParams(): Promise<{ slug: string }[]> {
   const categories: Category[] = await client.fetch(queries.categories);
 
@@ -175,5 +201,4 @@ export async function generateStaticParams(): Promise<{ slug: string }[]> {
   }));
 }
 
-// Configurar revalidación para ISR
 export const revalidate = 60;

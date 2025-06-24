@@ -7,19 +7,15 @@ import type { HomePage } from '@/types/sanity'
 import { Youtube, Mail, ShoppingCart, ExternalLink } from 'lucide-react'
 import { Header } from '@/components/Header'
 
-// Generar metadatos dinámicos
 export async function generateMetadata(): Promise<Metadata> {
-  const homePageData: HomePage = await client.fetch(queries.homePage)
-  
   return {
-    title: homePageData.siteTitle || 'Recetas Keto',
-    description: homePageData.heroDescription || 'Las mejores recetas keto para tu estilo de vida saludable',
+    title: "Recetas Keto Gratis | Planeta Keto Recetas Cetogénicas",
+    description: "✅ Pierde peso con nuestras recetas keto comprobadas. desayunos, almuerzos, cenas, postres y aperitivos keto fáciles. Para perder peso y cuidar tu salud",
+    keywords: "keto, dieta keto, recetas keto, perder peso, desayuno keto, comida cetogénica, quemar grasa,pan nube keto, pan keto, pan sin harina, receta keto, receta baja en carbohidratos, keto en español, dieta cetogénica, pan esponjoso keto, pan con orégano, pan con queso, keto fácil, keto para principiantes, keto sin gluten, keto sin harina, keto recetas fáciles, keto rápido, keto diet, ketogenic diet, comida keto, recetas saludables, pan keto casero"
   }
 }
 
 export default async function HomePage() {
-  // Obtener datos desde Sanity
-  console.log('🏠 PÁGINA PRINCIPAL CARGANDO')
   const homePageData: HomePage = await client.fetch(queries.homePage)
 
   return (
@@ -33,9 +29,9 @@ export default async function HomePage() {
         <div className="flex-1 flex flex-col justify-center items-center px-4 py-8">
           <div className="text-center max-w-4xl">
             {/* Título principal - Tamaño responsivo mejorado */}
-            <h2 className="text-4xl sm:text-5xl md:text-5xl lg:text-6xl font-bold text-gray-800 mb-4 md:mb-6 leading-tight">
+            <h1 className="text-4xl sm:text-5xl md:text-5xl lg:text-6xl font-bold text-gray-800 mb-4 md:mb-6 leading-tight">
               {homePageData.heroTitle}
-            </h2>
+            </h1>
             
             {/* Descripción - Tamaño y espaciado optimizado */}
             {homePageData.heroDescription && (
@@ -55,6 +51,23 @@ export default async function HomePage() {
           </Link>
         </div>
       </main>
+      {/* Schema Markup */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "name": "Planeta Keto",
+            "url": "https://planetaketo.es",
+            "potentialAction": {
+              "@type": "SearchAction",
+              "target": "https://planetaketo.es/buscar?q={search_term}",
+              "query-input": "required name=search_term"
+            }
+          })
+        }}
+      />
     </div>
   )
 }

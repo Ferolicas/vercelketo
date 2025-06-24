@@ -14,7 +14,6 @@ export function Header({ homePageData }: HeaderProps) {
     <header className="sticky top-0 z-50 bg-emerald-600 shadow-md shadow-black rounded-4xl">
       <div className="container mx-auto" style={{ padding: 'clamp(0.75rem, 2vw, 1.5rem) clamp(1rem, 3vw, 2rem)' }}>
         <div className="flex items-center" style={{ height: 'clamp(4rem, 12vh, 8rem)' }}>
-          {/* Logo */}
           <div className="flex-shrink-0" style={{ marginRight: 'clamp(1rem, 3vw, 2rem)' }}>
             {homePageData.heroImage && (
               <Link href="/">
@@ -24,7 +23,7 @@ export function Header({ homePageData }: HeaderProps) {
                 }}>
                   <Image
                     src={urlFor(homePageData.heroImage).width(150).height(150).url()}
-                    alt="Logo"
+                    alt="Logo Planeta Keto - Recetas Cetogénicas"
                     fill
                     className="object-contain"
                   />
@@ -33,18 +32,16 @@ export function Header({ homePageData }: HeaderProps) {
             )}
           </div>
 
-          {/* Contenido del sitio */}
           <div className="flex-1 flex flex-col justify-center">
             <Link href="/">
               <h1 className="font-bold text-white leading-tight cursor-pointer hover:text-emerald-100 transition-colors text-center" style={{
                 fontSize: 'clamp(1.8rem, 8vw, 3.5rem)',
                 marginBottom: 'clamp(0.5rem, 1.5vh, 1rem)'
               }}>
-                {homePageData.siteTitle || 'Mi Sitio'}
+                {homePageData.siteTitle || 'Planeta Keto'}
               </h1>
             </Link>
 
-            {/* Iconos en fila */}
             <div className="flex justify-center" style={{ gap: 'clamp(0.75rem, 2.5vw, 1.5rem)' }}>
               {homePageData.youtubeUrl && (
                 <Link 

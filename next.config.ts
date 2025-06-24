@@ -10,10 +10,12 @@ const nextConfig: NextConfig = {
         pathname: '/**',
       },
     ],
-    // Añadir configuración adicional para permitir parámetros de Sanity
     dangerouslyAllowSVG: false,
     contentDispositionType: 'attachment',
   },
+  experimental: {
+    optimizePackageImports: ['lucide-react']
+  }
 }
 
 export default nextConfig
