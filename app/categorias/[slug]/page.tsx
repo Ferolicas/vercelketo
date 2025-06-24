@@ -1,7 +1,7 @@
 import { Metadata, ResolvingMetadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
-import { client, queries, getPostsByCategory } from '@/lib/sanity';
+import { client, queries } from '@/lib/sanity';
 import { urlFor } from '@/lib/sanity';
 import type { Post, Category, HomePage } from '@/types/sanity';
 import { Clock, ChefHat } from 'lucide-react';
@@ -60,8 +60,8 @@ export default async function CategoryPage({
     );
   }
 
-  // Si la categoría se encuentra, obtenemos los posts de esa categoría
-  const posts: Post[] = await getPostsByCategory(category._id, 1, 12);
+  // Los posts ya vienen incluidos en la consulta categoryBySlug
+  const posts: Post[] = category.posts || [];
 
   return (
     <div className="min-h-screen bg-orange-50">
@@ -194,7 +194,7 @@ export default async function CategoryPage({
 }
 
 export async function generateStaticParams(): Promise<{ slug: string }[]> {
-  const categories: Category[] = await client.fetch(queries.categories);
+  const categories: Category[] = await client.fetch(queries.allCategories);
 
   return categories.map((category) => ({
     slug: category.slug.current,

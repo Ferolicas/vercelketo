@@ -51,6 +51,7 @@ export default async function HomePage() {
           </Link>
         </div>
       </main>
+      
       {/* Schema Markup */}
       <script
         type="application/ld+json"

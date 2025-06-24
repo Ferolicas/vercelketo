@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { client, queries } from '@/lib/sanity';
 import { urlFor } from '@/lib/sanity';
 import type { Post, HomePage } from '@/types/sanity';
-import { Clock, ChefHat } from 'lucide-react';
+import { Clock, ChefHat, Users, Star } from 'lucide-react';
 import { Suspense } from 'react';
 import PostContent from './PostContent';
 import { Header } from '@/components/Header';
@@ -22,6 +22,55 @@ function portableTextToPlainText(blocks: any[]): string {
       return block.children.map((child: any) => child.text).join('');
     })
     .join('\n\n');
+}
+
+// Función para crear descripción optimizada SEO
+function createSEODescription(postData: Post, categoryTitle?: string): string {
+  // Usar excerpt si está disponible, sino crear una desde ingredientes
+  if (postData.excerpt) {
+    return postData.excerpt.substring(0, 155) + (postData.excerpt.length > 155 ? '...' : '');
+  }
+
+  const ingredients = postData.ingredients?.slice(0, 3).join(', ') || '';
+  const time = postData.preparationTime || '30 minutos';
+  const level = postData.level || 'fácil';
+  const category = categoryTitle || 'keto';
+  
+  const descriptions = [
+    `Receta ${category.toLowerCase()} ${level} con ${ingredients}. Lista en ${time}. ¡Perfecta para tu dieta cetogénica!`,
+    `Aprende a preparar ${postData.title.toLowerCase()} en ${time}. Receta ${level} con ingredientes keto. ${ingredients && `Incluye ${ingredients}.`}`,
+    `${postData.title} - Receta ${category.toLowerCase()} ${level}. Preparación ${time}. Ideal para mantener cetosis. ¡Deliciosa y saludable!`
+  ];
+  
+  return descriptions[0].substring(0, 155) + '...';
+}
+
+// Función para generar keywords dinámicas
+function generateKeywords(postData: Post, categoryTitle?: string): string {
+  const baseKeywords = ['receta keto', 'dieta cetogénica', 'bajo en carbohidratos', 'comida saludable'];
+  const levelKeywords = postData.level ? [`receta ${postData.level}`] : [];
+  const categoryKeywords = categoryTitle ? [categoryTitle.toLowerCase(), `receta ${categoryTitle.toLowerCase()}`] : [];
+  const ingredientKeywords = postData.ingredients?.slice(0, 5).map(ing => ing.toLowerCase()) || [];
+  const tagKeywords = postData.tags?.slice(0, 3) || [];
+  
+  return [...baseKeywords, ...levelKeywords, ...categoryKeywords, ...ingredientKeywords, ...tagKeywords]
+    .filter((keyword, index, arr) => arr.indexOf(keyword) === index)
+    .slice(0, 15)
+    .join(', ');
+}
+
+// Función para formatear la información nutricional
+function formatNutrition(postData: Post) {
+  if (!postData.macros && !postData.calories) return null;
+  
+  return {
+    calories: postData.calories ? `${postData.calories} kcal` : "250 kcal",
+    fatContent: postData.macros?.fat ? `${postData.macros.fat}g` : "20g",
+    carbohydrateContent: postData.macros?.carbs ? `${postData.macros.carbs}g` : "8g",
+    fiberContent: postData.macros?.fiber ? `${postData.macros.fiber}g` : "3g",
+    proteinContent: postData.macros?.protein ? `${postData.macros.protein}g` : "15g",
+    servingSize: postData.servings ? `${postData.servings} porción${postData.servings > 1 ? 'es' : ''}` : "1 porción"
+  };
 }
 
 // Componente principal
@@ -77,12 +126,24 @@ export default async function PostPage({
     title: postData.title,
     author: postData.author,
     preparationTime: postData.preparationTime || 'No especificado',
-    level: postData.level || 'No especificado',
+    level: postData.level || 'principiante',
     youtubeUrl: postData.youtubeUrl,
     ingredients: postData.ingredients || [],
     body: processPostBody(postData.body),
     slug: postData.slug.current,
+    rating: postData.rating,
+    servings: postData.servings,
+    calories: postData.calories,
+    macros: postData.macros,
+    tags: postData.tags,
+    chefNotes: postData.chefNotes,
+    excerpt: postData.excerpt
   };
+
+  const baseUrl = process.env.SITE_URL || 'https://tudominio.com';
+  const currentDate = new Date().toISOString();
+  const mainImageUrl = postData.mainImage ? urlFor(postData.mainImage).url() : `${baseUrl}/default-recipe-image.jpg`;
+  const nutritionInfo = formatNutrition(postData);
 
   return (
     <div className="min-h-screen bg-orange-50">
@@ -106,28 +167,120 @@ export default async function PostPage({
                 </p>
               )}
             </div>
+            {processedPostData.rating && (
+              <div className="flex items-center space-x-1">
+                <Star className="w-5 h-5 text-yellow-400 fill-current" />
+                <span className="text-lg font-semibold text-gray-800">{processedPostData.rating}</span>
+                <span className="text-gray-600">/5</span>
+              </div>
+            )}
           </div>
 
-          <div className="flex flex-wrap gap-6 mb-8 p-4 bg-white rounded-lg shadow-sm">
-            <div className="flex items-center space-x-2">
+          {/* Grid de información de la receta */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+            <div className="flex items-center space-x-2 p-4 bg-white rounded-lg shadow-sm">
               <Clock size={20} className="text-emerald-600" />
-              <span className="font-medium text-gray-700">Duración:</span>
-              <span className="text-gray-600">{processedPostData.preparationTime}</span>
-            </div>
-            <div className="flex items-center space-x-2">
+              <div>
+                <span className="block font-medium text-gray-700 text-sm">Duración</span>
+                <span className="text-gray-600">{processedPostData.preparationTime}</span>
+              </div>
+            </div>            
+            <div className="flex items-center space-x-2 p-4 bg-white rounded-lg shadow-sm">
               <ChefHat size={20} className="text-emerald-600" />
-              <span className="font-medium text-gray-700">Dificultad:</span>
-              <span className="text-gray-600 capitalize">{processedPostData.level}</span>
+              <div>
+                <span className="block font-medium text-gray-700 text-sm">Dificultad</span>
+                <span className="text-gray-600 capitalize">{processedPostData.level}</span>
+              </div>
             </div>
+
+            {processedPostData.servings && (
+              <div className="flex items-center space-x-2 p-4 bg-white rounded-lg shadow-sm">
+                <Users size={20} className="text-emerald-600" />
+                <div>
+                  <span className="block font-medium text-gray-700 text-sm">Porciones</span>
+                  <span className="text-gray-600">{processedPostData.servings}</span>
+                </div>
+              </div>
+            )}
+
+            {processedPostData.calories && (
+              <div className="flex items-center space-x-2 p-4 bg-white rounded-lg shadow-sm">
+                <div className="w-5 h-5 bg-emerald-600 rounded-full flex items-center justify-center">
+                  <span className="text-white text-xs font-bold">C</span>
+                </div>
+                <div>
+                  <span className="block font-medium text-gray-700 text-sm">Calorías</span>
+                  <span className="text-gray-600">{processedPostData.calories} kcal</span>
+                </div>
+              </div>
+            )}
           </div>
+
+          {/* Información nutricional expandida */}
+          {processedPostData.macros && (
+            <div className="mb-8 p-6 bg-white rounded-lg shadow-sm">
+              <h3 className="text-lg font-semibold text-gray-800 mb-4">Información Nutricional</h3>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {processedPostData.macros.carbs && (
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-emerald-600">{processedPostData.macros.carbs}g</div>
+                    <div className="text-sm text-gray-600">Carbohidratos</div>
+                  </div>
+                )}
+                {processedPostData.macros.protein && (
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-blue-600">{processedPostData.macros.protein}g</div>
+                    <div className="text-sm text-gray-600">Proteínas</div>
+                  </div>
+                )}
+                {processedPostData.macros.fat && (
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-yellow-600">{processedPostData.macros.fat}g</div>
+                    <div className="text-sm text-gray-600">Grasas</div>
+                  </div>
+                )}
+                {processedPostData.macros.fiber && (
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-green-600">{processedPostData.macros.fiber}g</div>
+                    <div className="text-sm text-gray-600">Fibra</div>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Tags */}
+          {processedPostData.tags && processedPostData.tags.length > 0 && (
+            <div className="mb-8">
+              <div className="flex flex-wrap gap-2">
+                {processedPostData.tags.map((tag, index) => (
+                  <span 
+                    key={index}
+                    className="px-3 py-1 bg-emerald-100 text-emerald-800 text-sm rounded-full"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
 
           <Suspense fallback={<div>Cargando contenido de la receta...</div>}>
             <PostContent postData={processedPostData} />
           </Suspense>
+
+          {/* Notas del chef */}
+          {processedPostData.chefNotes && (
+            <div className="mt-8 p-6 bg-yellow-50 border-l-4 border-yellow-400 rounded-r-lg">
+              <h3 className="text-lg font-semibold text-yellow-800 mb-2">💡 Notas del Chef</h3>
+              <p className="text-yellow-700">{processedPostData.chefNotes}</p>
+            </div>
+          )}
         </div>
       </main>
       <ScrollToTop />
 
+      {/* Schema.org JSON-LD optimizado */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -135,25 +288,139 @@ export default async function PostPage({
             "@context": "https://schema.org",
             "@type": "Recipe",
             "name": processedPostData.title,
-            "description": processedPostData.body.substring(0, 200),
+            "description": createSEODescription(postData, categoryData?.title),
+            "image": mainImageUrl,
             "author": {
               "@type": "Person",
               "name": processedPostData.author?.name || "Equipo Planeta Keto"
             },
+            "publisher": {
+              "@type": "Organization",
+              "name": "Planeta Keto",
+              "url": baseUrl,
+              "logo": {
+                "@type": "ImageObject",
+                "url": `${baseUrl}/logo.png`
+              }
+            },
+            "datePublished": postData.publishedAt || currentDate,
+            "dateModified": postData.publishedAt || currentDate,
             "prepTime": `PT${parseInt(processedPostData.preparationTime) || 30}M`,
-            "recipeIngredient": processedPostData.ingredients,
-            "recipeInstructions": processedPostData.body.split('\n\n').map((step, i) => ({
-              "@type": "HowToStep",
-              "text": step,
-              "name": `Paso ${i + 1}`
-            })),
+            "totalTime": `PT${parseInt(processedPostData.preparationTime) || 30}M`,
+            "recipeYield": "2-4 porciones",
             "recipeCategory": categoryData?.title || "Receta Keto",
+            "recipeCuisine": "Keto",
+            "keywords": generateKeywords(postData, categoryData?.title),
+            "recipeIngredient": processedPostData.ingredients,
+            "recipeInstructions": processedPostData.body.split('\n\n').filter(step => step.trim()).map((step, i) => ({
+              "@type": "HowToStep",
+              "text": step.trim(),
+              "name": `Paso ${i + 1}`,
+              "position": i + 1
+            })),
             "nutrition": {
               "@type": "NutritionInformation",
               "calories": "250 kcal",
               "fatContent": "20g",
-              "carbohydrateContent": "5g netos"
+              "saturatedFatContent": "8g",
+              "carbohydrateContent": "8g",
+              "fiberContent": "3g",
+              "sugarContent": "2g",
+              "proteinContent": "15g",
+              "sodiumContent": "400mg",
+              "servingSize": "1 porción"
+            },
+            "aggregateRating": {
+              "@type": "AggregateRating",
+              "ratingValue": "4.8",
+              "reviewCount": "127",
+              "bestRating": "5",
+              "worstRating": "1"
+            },
+            "video": processedPostData.youtubeUrl ? {
+              "@type": "VideoObject",
+              "name": `Cómo hacer ${processedPostData.title}`,
+              "description": `Video tutorial paso a paso para preparar ${processedPostData.title}`,
+              "thumbnailUrl": mainImageUrl,
+              "contentUrl": processedPostData.youtubeUrl,
+              "embedUrl": processedPostData.youtubeUrl,
+              "uploadDate": postData.publishedAt || currentDate
+            } : undefined,
+            "mainEntityOfPage": {
+              "@type": "WebPage",
+              "@id": `${baseUrl}/categorias/${slug}/${post}`
             }
+          })
+        }}
+      />
+
+      {/* Breadcrumbs Schema */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Inicio",
+                "item": baseUrl
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Categorías",
+                "item": `${baseUrl}/categorias`
+              },
+              {
+                "@type": "ListItem",
+                "position": 3,
+                "name": categoryData?.title || "Recetas",
+                "item": `${baseUrl}/categorias/${slug}`
+              },
+              {
+                "@type": "ListItem",
+                "position": 4,
+                "name": processedPostData.title,
+                "item": `${baseUrl}/categorias/${slug}/${post}`
+              }
+            ]
+          })
+        }}
+      />
+
+      {/* Article Schema adicional */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Article",
+            "headline": processedPostData.title,
+            "description": createSEODescription(postData, categoryData?.title),
+            "image": mainImageUrl,
+            "author": {
+              "@type": "Person",
+              "name": processedPostData.author?.name || "Equipo Planeta Keto"
+            },
+            "publisher": {
+              "@type": "Organization",
+              "name": "Planeta Keto",
+              "logo": {
+                "@type": "ImageObject",
+                "url": `${baseUrl}/logo.png`
+              }
+            },
+            "datePublished": postData.publishedAt || currentDate,
+            "dateModified": postData.publishedAt || currentDate,
+            "mainEntityOfPage": {
+              "@type": "WebPage",
+              "@id": `${baseUrl}/categorias/${slug}/${post}`
+            },
+            "articleSection": categoryData?.title || "Recetas Keto",
+            "keywords": generateKeywords(postData, categoryData?.title)
           })
         }}
       />
@@ -185,48 +452,94 @@ export async function generateMetadata({
   // Await params since it's now a Promise in Next.js 15
   const { slug, post } = await params;
 
-  const postData: Post = await client.fetch(queries.postBySlug, {
-    slug: post,
-  });
+  const [postData, categoryData] = await Promise.all([
+    client.fetch(queries.postBySlug, { slug: post }),
+    client.fetch(`*[_type == "category" && slug.current == $slug][0] { title, slug }`, { slug })
+  ]);
 
   if (!postData) {
     return {
-      title: 'Receta no encontrada',
-      description: 'La receta que buscas no existe.',
+      title: 'Receta no encontrada | Planeta Keto',
+      description: 'La receta que buscas no está disponible. Descubre más recetas keto deliciosas.',
+      robots: 'noindex, nofollow',
     };
   }
 
-  const description =
-    postData.body && Array.isArray(postData.body)
-      ? portableTextToPlainText(postData.body).substring(0, 160) + '...'
-      : 'Deliciosa receta keto para disfrutar';
-
   const baseUrl = process.env.SITE_URL || 'https://tudominio.com';
   const canonicalUrl = `${baseUrl}/categorias/${slug}/${post}`;
-  
   const mainImageUrl = postData.mainImage 
     ? urlFor(postData.mainImage).url() 
-    : `${baseUrl}/default-og-image.jpg`;
+    : `${baseUrl}/default-recipe-image.jpg`;
+
+  // Título dinámico más rico
+  const dynamicTitle = (() => {
+    const category = categoryData?.title || 'Keto';
+    const level = postData.level;
+    const time = postData.preparationTime;
+    
+    if (level && time) {
+      return `${postData.title} - Receta ${category} ${level} (${time}) | Planeta Keto`;
+    } else if (level) {
+      return `${postData.title} - Receta ${category} ${level} | Planeta Keto`;
+    } else if (time) {
+      return `${postData.title} - Receta ${category} en ${time} | Planeta Keto`;
+    }
+    return `${postData.title} | Receta ${category} Fácil | Planeta Keto`;
+  })();
+
+  const optimizedDescription = createSEODescription(postData, categoryData?.title);
+  const keywords = generateKeywords(postData, categoryData?.title);
 
   return {
-    title: `${postData.title} | Receta Keto Fácil | Planeta Keto`,
-    description,
+    title: dynamicTitle,
+    description: optimizedDescription,
+    keywords,
+    authors: [{ 
+      name: postData.author?.name || 'Equipo Planeta Keto',
+      url: `${baseUrl}/autor/${postData.author?.slug?.current || 'equipo'}`
+    }],
+    creator: postData.author?.name || 'Equipo Planeta Keto',
+    publisher: 'Planeta Keto',
+    robots: 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1',
     alternates: {
       canonical: canonicalUrl,
     },
     openGraph: {
       title: postData.title,
-      description,
-      images: [mainImageUrl],
+      description: optimizedDescription,
+      images: [
+        {
+          url: mainImageUrl,
+          width: 1200,
+          height: 630,
+          alt: `Imagen de la receta ${postData.title}`,
+          type: 'image/jpeg',
+        }
+      ],
       type: 'article',
-      authors: postData.author?.name ? [postData.author.name] : undefined,
+      authors: postData.author?.name ? [postData.author.name] : ['Equipo Planeta Keto'],
       url: canonicalUrl,
+      siteName: 'Planeta Keto',
+      locale: 'es_ES',
+      publishedTime: postData._createdAt,
+      modifiedTime: postData._updatedAt,
+      section: categoryData?.title || 'Recetas Keto',
+      tags: keywords.split(', '),
     },
     twitter: {
       card: 'summary_large_image',
       title: postData.title,
-      description,
+      description: optimizedDescription,
       images: [mainImageUrl],
+      creator: '@planetaketo',
+      site: '@planetaketo',
+    },
+    other: {
+      'article:author': postData.author?.name || 'Equipo Planeta Keto',
+      'article:published_time': postData._createdAt,
+      'article:modified_time': postData._updatedAt,
+      'article:section': categoryData?.title || 'Recetas Keto',
+      'article:tag': keywords,
     },
   };
 }

@@ -3,7 +3,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { client, queries } from '@/lib/sanity'
 import { urlFor } from '@/lib/sanity'
-import type { Category, HomePage } from '@/types/sanity'
+import type { Category, HomePage} from '@/types/sanity'
 import { ChefHat, ArrowLeft } from 'lucide-react'
 import { Header } from '@/components/Header'
 import { ScrollToTop } from '@/components/ScrollToTop'
@@ -17,10 +17,14 @@ export const metadata: Metadata = {
 }
 
 export default async function CategoriasPage() {
-  const [homePageData, categories]: [HomePage, Category[]] = await Promise.all([
-    client.fetch(queries.homePage),
-    client.fetch(queries.categories),
+  // ✅ Agregar manejo de errores y fallbacks para garantizar que los datos se carguen correctamente
+  const [homePageData, categoriesResult]: [HomePage, Category[]] = await Promise.all([
+    client.fetch(queries.homePage).catch(() => null),
+    client.fetch(queries.allCategories).catch(() => []),
   ])
+
+  // ✅ Asegurar que categories siempre sea un array
+  const categories = Array.isArray(categoriesResult) ? categoriesResult : []
 
   return (
     <div className="min-h-screen bg-orange-50">
@@ -51,6 +55,7 @@ export default async function CategoriasPage() {
             {categories.map((category) => (
               <div key={category._id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 group">
                 <Link href={`/categorias/${category.slug.current}`} className="block">
+                  {/* ✅ Altura fija definida con h-58 */}
                   <div className="relative w-full h-58 bg-gradient-to-br from-orange-50 to-emerald-50 flex items-center justify-center">
                     {category.categoryImage ? (
                       <div className="relative w-full h-full">
@@ -77,6 +82,13 @@ export default async function CategoriasPage() {
                     {category.description && (
                       <p className="text-sm text-gray-600 line-clamp-3 leading-relaxed">
                         {category.description}
+                      </p>
+                    )}
+
+                    {/* ✅ Mostrar contador de posts si está disponible */}
+                    {category.postCount !== undefined && (
+                      <p className="text-xs text-gray-500 mt-2">
+                        {category.postCount} {category.postCount === 1 ? 'receta' : 'recetas'}
                       </p>
                     )}
 

@@ -34,298 +34,190 @@ export function urlFor(source: SanityImageSource) {
 
 // Consultas GROQ optimizadas
 export const queries = {
-  // Obtener configuración de la página principal
-  homePage: `*[_type == "homePage"][0]{
-    siteTitle,
-    youtubeUrl,
-    email,
-    phone,
-    heroTitle,
-    heroDescription,
-    heroImage{
-      asset->{
-        _id,
-        url,
-        metadata{
-          dimensions,
-          lqip
-        }
-      },
-      alt
-    },
-    picksTitle,
-    youtubeDisplayText,
-    picksSubtitle,
-    amazonUrl,
-    hotmartUrl
-  }`,
-
-  // ✅ CORREGIDO: Query de categorías más detallada para debug
-  categories: `*[_type == "category"] | order(order asc){
+  // Query principal para obtener un post por slug
+  postBySlug: `*[_type == "post" && slug.current == $slug][0] {
     _id,
+    _createdAt,
+    _updatedAt,
     title,
     slug,
-    categoryImage{
-      _type,
-      asset->{
-        _id,
-        _type,
-        url,
-        metadata{
-          dimensions,
-          lqip
-        }
-      },
-      alt,
-      crop,
-      hotspot
-    },
-    description,
-    order,
-    "postCount": count(*[_type == "post" && category._ref == ^._id])
-  }`,
-
-  // Obtener posts por categoría con paginación
-  postsByCategory: `*[_type == "post" && category._ref == $categoryId] | order(publishedAt desc) [$start...$end]{
-    _id,
-    title,
-    slug,
-    mainImage{
-      asset->{
-        _id,
-        url,
-        metadata{
-          dimensions,
-          lqip
-        }
-      },
-      alt
-    },
-    preparationTime,
-    level,
-    author->{
-      _id,
-      name,
-      slug
-    },
+    mainImage,
     publishedAt,
-    "estimatedReadingTime": round(length(pt::text(body)) / 5 / 180)
-  }`,
-
-  // Obtener posts recientes para la página principal
-  recentPosts: `*[_type == "post"] | order(publishedAt desc) [0...6]{
-    _id,
-    title,
-    slug,
-    mainImage{
-      asset->{
-        _id,
-        url,
-        metadata{
-          dimensions,
-          lqip
-        }
-      },
-      alt
-    },
-    preparationTime,
-    level,
     author->{
-      _id,
-      name
-    },
-    publishedAt,
-    category->{
-      _id,
-      title,
-      slug
-    }
-  }`,
-
-  // Obtener post individual completo
-  postBySlug: `*[_type == "post" && slug.current == $slug][0]{
-    _id,
-    title,
-    slug,
-    author->{
-      _id,
       name,
       slug,
-      bio,
-      image{
-        asset->{
-          _id,
-          url
-        }
-      }
+      image,
+      bio
     },
-    mainImage{
-      asset->{
-        _id,
-        url,
-        metadata{
-          dimensions,
-          lqip
-        }
-      },
-      alt
+    category->{
+      title,
+      slug,
+      description
     },
-    youtubeUrl,
-    level,
-    preparationTime,
     ingredients,
     body,
-    publishedAt,
-    category->{
-      _id,
-      title,
-      slug
-    },
-    "estimatedReadingTime": round(length(pt::text(body)) / 5 / 180),
-    "relatedPosts": *[_type == "post" && category._ref == ^.category._ref && _id != ^._id] | order(publishedAt desc) [0...3]{
-      _id,
-      title,
-      slug,
-      mainImage{
-        asset->{
-          _id,
-          url,
-          metadata{
-            dimensions,
-            lqip
-          }
-        }
-      },
-      preparationTime,
-      level
-    }
+    excerpt,
+    youtubeUrl,
+    level,
+    preparationTime,
+    rating,
+    servings,
+    calories,
+    macros,
+    tags,
+    chefNotes
   }`,
 
-  // Obtener categoría por slug
-  categoryBySlug: `*[_type == "category" && slug.current == $slug][0]{
+  // Query para la página de inicio
+  homePage: `*[_type == "homePage"][0] {
     _id,
-    title,
-    slug,
-    categoryImage{
+    siteTitle,
+    heroTitle,
+    heroDescription,
+    heroImage {
       asset->{
         _id,
-        url,
-        metadata{
-          dimensions,
-          lqip
-        }
+        url
       },
       alt
     },
+  }`,
+
+  // Query para obtener todos los posts con información básica
+  allPosts: `*[_type == "post"] | order(publishedAt desc) {
+    _id,
+    _createdAt,
+    title,
+    slug,
+    mainImage,
+    publishedAt,
+    excerpt,
+    author->{
+      name,
+      slug
+    },
+    category->{
+      title,
+      slug
+    },
+    preparationTime,
+    level,
+    rating,
+    ingredients[0..2]
+  }`,
+
+  // Query para posts de una categoría específica
+  postsByCategory: `*[_type == "post" && category->slug.current == $categorySlug] | order(publishedAt desc) {
+    _id,
+    _createdAt,
+    title,
+    slug,
+    mainImage,
+    publishedAt,
+    excerpt,
+    author->{
+      name,
+      slug
+    },
+    category->{
+      title,
+      slug
+    },
+    preparationTime,
+    level,
+    rating,
+    ingredients[0..2]
+  }`,
+
+  // Query para obtener todas las categorías
+  allCategories: `*[_type == "category"] | order(title asc) {
+  _id,
+  title,
+  slug,
+  description,
+  categoryImage {
+    asset->{
+      _id,
+      url
+    },
+    alt
+  },
+  "postCount": count(*[_type == "post" && references(^._id)])
+}`,
+
+  // Query para obtener una categoría específica
+  categoryBySlug: `*[_type == "category" && slug.current == $slug][0] {
+    _id,
+    title,
+    slug,
     description,
-    "postCount": count(*[_type == "post" && category._ref == ^._id])
-  }`,
-  
-  // Para generateStaticParams
-  allPosts: `*[_type == "post"]{
-    "slug": slug.current,
-    _updatedAt
+    image,
+    "posts": *[_type == "post" && references(^._id)] | order(publishedAt desc) {
+      _id,
+      title,
+      slug,
+      mainImage,
+      excerpt,
+      preparationTime,
+      level,
+      rating,
+      ingredients[0..2]
+    }
   }`,
 
-  // Para generateStaticParams de categorías
-  allCategories: `*[_type == "category"]{
-    "slug": slug.current,
-    _updatedAt
+  // Query para posts relacionados (misma categoría)
+  relatedPosts: `*[_type == "post" && category->slug.current == $categorySlug && slug.current != $currentSlug] | order(publishedAt desc)[0..3] {
+    _id,
+    title,
+    slug,
+    mainImage,
+    excerpt,
+    preparationTime,
+    level,
+    rating
   }`,
 
-  // Búsqueda de posts
+  // Query para búsqueda de posts
   searchPosts: `*[_type == "post" && (
     title match $searchTerm + "*" ||
     ingredients[] match $searchTerm + "*" ||
-    pt::text(body) match $searchTerm + "*"
-  )] | order(publishedAt desc) [0...20]{
+    tags[] match $searchTerm + "*"
+  )] | order(publishedAt desc) {
     _id,
     title,
     slug,
-    mainImage{
-      asset->{
-        _id,
-        url,
-        metadata{
-          dimensions,
-          lqip
-        }
-      }
-    },
-    preparationTime,
-    level,
-    author->{name},
-    publishedAt,
+    mainImage,
+    excerpt,
     category->{
       title,
       slug
-    }
+    },
+    preparationTime,
+    level,
+    rating
   }`,
 
-  // Obtener sitemap data
-  sitemapData: `{
-    "posts": *[_type == "post"]{
-      "slug": slug.current,
-      _updatedAt,
-      publishedAt
+  // Query para posts destacados
+  featuredPosts: `*[_type == "post" && rating >= 4] | order(rating desc, publishedAt desc)[0..5] {
+    _id,
+    title,
+    slug,
+    mainImage,
+    excerpt,
+    category->{
+      title,
+      slug
     },
-    "categories": *[_type == "category"]{
-      "slug": slug.current,
-      _updatedAt
-    }
+    preparationTime,
+    level,
+    rating
+  }`,
+
+  // Query para obtener estadísticas del sitio
+  siteStats: `{
+    "totalPosts": count(*[_type == "post"]),
+    "totalCategories": count(*[_type == "category"]),
+    "totalAuthors": count(*[_type == "author"]),
+    "averageRating": math::avg(*[_type == "post" && defined(rating)].rating)
   }`
-}
-
-// Función helper para obtener posts con paginación
-export const getPostsByCategory = async (
-  categoryId: string, 
-  page: number = 1, 
-  pageSize: number = 12
-) => {
-  const start = (page - 1) * pageSize
-  const end = start + pageSize
-  
-  return client.fetch(queries.postsByCategory, {
-    categoryId,
-    start,
-    end
-  })
-}
-
-// Función helper para búsqueda
-export const searchPosts = async (searchTerm: string) => {
-  return client.fetch(queries.searchPosts, { searchTerm })
-}
-
-// Función helper para obtener datos del sitemap
-export const getSitemapData = async () => {
-  return client.fetch(queries.sitemapData)
-}
-
-// Función para limpiar caché en desarrollo
-export const clearCache = () => {
-  if (process.env.NODE_ENV === 'development') {
-    // Limpiar caché de Sanity en desarrollo
-    client.config().useCdn = false
-  }
-}
-
-// ✅ AGREGADO: Función helper para debug de imágenes
-export const debugImageUrl = (source: SanityImageSource) => {
-  console.log('🔍 DEBUG IMAGE SOURCE:', {
-    source,
-    type: typeof source,
-    hasAsset: !!(source as any)?.asset,
-    assetId: (source as any)?.asset?._id,
-    assetUrl: (source as any)?.asset?.url
-  })
-  
-  try {
-    const url = urlFor(source).width(400).height(300).url()
-    console.log('✅ URL generada:', url)
-    return url
-  } catch (error) {
-    console.error('❌ Error generando URL:', error)
-    return null
-  }
 }
