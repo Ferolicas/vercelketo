@@ -132,8 +132,8 @@ export async function POST(request: NextRequest) {
     if (!email || typeof email !== 'string' || !isValidEmail(email)) {
       validationErrors.push('Email válido es requerido');
     }
-    if (!content || typeof content !== 'string' || content.trim().length < 10 || content.trim().length > 1000) {
-      validationErrors.push('Comentario debe tener entre 10 y 1000 caracteres');
+    if (!content || typeof content !== 'string' || content.trim().length < 4 || content.trim().length > 1000) {
+      validationErrors.push('Comentario debe tener entre 4 y 1000 caracteres');
     }
     if (!authorId || typeof authorId !== 'string' || authorId.trim() === '') {
       validationErrors.push('AuthorId es requerido');
@@ -312,8 +312,8 @@ export async function PUT(request: NextRequest) {
     if (!authorId || typeof authorId !== 'string') {
       validationErrors.push('AuthorId es requerido');
     }
-    if (!content || typeof content !== 'string' || content.trim().length < 10 || content.trim().length > 1000) {
-      validationErrors.push('Contenido debe tener entre 10 y 1000 caracteres');
+    if (!content || typeof content !== 'string' || content.trim().length < 4 || content.trim().length > 1000) {
+      validationErrors.push('Contenido debe tener entre 4 y 1000 caracteres');
     }
     if (name && (typeof name !== 'string' || name.trim().length < 2 || name.trim().length > 50)) {
       validationErrors.push('Nombre debe tener entre 2 y 50 caracteres');
