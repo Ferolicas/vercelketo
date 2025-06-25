@@ -247,15 +247,34 @@ export default function Comments({ postSlug, postTitle }: CommentsProps) {
     setFormData({ name: '', email: '', content: '', rating: 0, parentComment: null });
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('es-ES', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  };
+  const formatDate = (dateString: string | undefined): string => { // Añade 'undefined' al tipo
+    // Si la cadena de fecha es nula o indefinida, devuelve un mensaje
+    if (!dateString) {
+      return "Fecha no disponible";
+    }
+
+    try {
+      const date = new Date(dateString);
+
+      // Comprueba si la fecha es un objeto de fecha válido.
+      // Esto es crucial para evitar el "1 de enero de 1970"
+      if (isNaN(date.getTime())) {
+        return "Fecha inválida"; // O puedes devolver "Fecha no disponible" si prefieres
+      }
+
+      return date.toLocaleDateString('es-ES', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false // Asegura el formato de 24 horas si lo deseas
+      });
+    } catch (error) {
+      console.error("Error al procesar la fecha:", error);
+      return "Error al procesar fecha";
+    }
+  };
 
   const canModifyComment = (comment: Comment): boolean => {
     return isMounted && userAuthorId === comment.authorId;
