@@ -326,9 +326,9 @@ export default function Comments({ postSlug, postTitle }: CommentsProps) {
           {comment.adminReply && comment.adminReplyPublished && (
             <div className="mt-3 p-3 bg-blue-50 border-l-4 border-blue-500 rounded">
               <div className="flex items-center mb-1">
-                <span className="text-sm font-semibold text-blue-800">Respuesta del equipo</span>
+                <span className="text-sm font-semibold text-blue-800">PLANETA KETO</span>
                 <span className="text-xs text-blue-600 ml-2">
-                  {formatDate(comment.adminReplyDate!)}
+                  {formatDate(comment.adminReplyDate || new Date().toISOString())}
                 </span>
               </div>
               <p className="text-blue-800 text-sm">{comment.adminReply}</p>
