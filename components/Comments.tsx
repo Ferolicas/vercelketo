@@ -121,7 +121,7 @@ export default function Comments({ postSlug, postTitle }: CommentsProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Validación básica
+    // Validación básica: campos obligatorios no vacíos
     if (!formData.name.trim() || !formData.email.trim() || !formData.content.trim()) {
       setMessage({ type: 'error', text: 'Por favor completa todos los campos obligatorios' });
       return;
@@ -131,6 +131,13 @@ export default function Comments({ postSlug, postTitle }: CommentsProps) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.email)) {
       setMessage({ type: 'error', text: 'Por favor ingresa un email válido' });
+      return;
+    }
+
+    // AÑADIR ESTA VALIDACIÓN DE LONGITUD para el contenido del comentario
+    // DEBE COINCIDIR CON EL Rule.min(4) DE TU ESQUEMA EN SANITY
+    if (formData.content.trim().length < 4) {
+      setMessage({ type: 'error', text: 'El contenido del comentario debe tener al menos 4 caracteres.' });
       return;
     }
 
@@ -174,6 +181,9 @@ export default function Comments({ postSlug, postTitle }: CommentsProps) {
         setEditingComment(null);
         await fetchComments();
       } else {
+        // En caso de que Sanity (o tu API) devuelva un error específico,
+        // podrías intentar mostrarlo aquí.
+        // Por ahora, usamos el mensaje genérico o el de la API si lo trae.
         setMessage({ type: 'error', text: data.error || 'Error al procesar el comentario' });
       }
     } catch (error) {
@@ -248,33 +258,33 @@ export default function Comments({ postSlug, postTitle }: CommentsProps) {
   };
 
   const formatDate = (dateString: string | undefined): string => { // Añade 'undefined' al tipo
-    // Si la cadena de fecha es nula o indefinida, devuelve un mensaje
-    if (!dateString) {
-      return "Fecha no disponible";
-    }
+    // Si la cadena de fecha es nula o indefinida, devuelve un mensaje
+    if (!dateString) {
+      return "Fecha no disponible";
+    }
 
-    try {
-      const date = new Date(dateString);
+    try {
+      const date = new Date(dateString);
 
-      // Comprueba si la fecha es un objeto de fecha válido.
-      // Esto es crucial para evitar el "1 de enero de 1970"
-      if (isNaN(date.getTime())) {
-        return "Fecha inválida"; // O puedes devolver "Fecha no disponible" si prefieres
-      }
+      // Comprueba si la fecha es un objeto de fecha válido.
+      // Esto es crucial para evitar el "1 de enero de 1970"
+      if (isNaN(date.getTime())) {
+        return "Fecha inválida"; // O puedes devolver "Fecha no disponible" si prefieres
+      }
 
-      return date.toLocaleDateString('es-ES', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: false // Asegura el formato de 24 horas si lo deseas
-      });
-    } catch (error) {
-      console.error("Error al procesar la fecha:", error);
-      return "Error al procesar fecha";
-    }
-  };
+      return date.toLocaleDateString('es-ES', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false // Asegura el formato de 24 horas si lo deseas
+      });
+    } catch (error) {
+      console.error("Error al procesar la fecha:", error);
+      return "Error al procesar fecha";
+    }
+  };
 
   const canModifyComment = (comment: Comment): boolean => {
     return isMounted && userAuthorId === comment.authorId;
