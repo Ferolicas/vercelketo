@@ -74,23 +74,27 @@ export default function Comments({ postSlug, postTitle }: CommentsProps) {
   };
 
   const fetchComments = async () => {
-    try {
-      const response = await fetch(`/api/comments?postSlug=${postSlug}`);
-      const data = await response.json();
-      
-      if (response.ok) {
-        // Organizar comentarios en jerarquía
-        const organized = organizeComments(data.comments || []);
-        setComments(organized);
-      } else {
-        console.error('Error fetching comments:', data.error);
-      }
-    } catch (error) {
-      console.error('Error fetching comments:', error);
-    } finally {
-      setLoading(false);
+  try {
+    // Opción 1: Añadir un parámetro de caché busting (timestamp)
+    // Opción 2: Usar cache: 'no-store' (más limpia si el servidor lo soporta bien)
+    const response = await fetch(`/api/comments?postSlug=${postSlug}&_t=${Date.now()}`, { 
+      cache: 'no-store' // <--- ¡Añade esta línea!
+    });
+    const data = await response.json();
+
+    if (response.ok) {
+      const organized = organizeComments(data.comments || []);
+      setComments(organized);
+      // console.log("Comentarios actualizados:", organized); // Para depuración
+    } else {
+      console.error('Error fetching comments:', data.error);
     }
-  };
+  } catch (error) {
+    console.error('Error fetching comments:', error);
+  } finally {
+    setLoading(false);
+  }
+};
 
   const organizeComments = (commentList: Comment[]): Comment[] => {
     const commentMap = new Map<string, Comment>();
