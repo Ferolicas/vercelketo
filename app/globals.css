@@ -29,7 +29,7 @@ html {
   margin: 0;
   padding: 0;
   overflow-x: hidden;
-  /* La propiedad 'height: 100%' ha sido eliminada. */
+  overflow-y: auto;
 }
 
 body {
@@ -39,18 +39,15 @@ body {
   margin: 0;
   padding: 0;
   width: 100%;
-  overflow-x: hidden;
+  /* ✅ CORREGIDO: Removido overflow-x: hidden del body para que sticky funcione */
   position: relative;
-  /* Elimina esta línea */
-  /* min-height: 100vh; */
 }
 
 /* Next.js root container */
 #__next {
   width: 100%;
-  /* Elimina 'height: 100%' y 'min-height'.
-     El body ya se encarga de la altura mínima.
-     #__next se expandirá de forma natural dentro del body. */
+  /* ✅ CORREGIDO: Aplicamos overflow-x hidden aquí en lugar del body */
+  overflow-x: hidden;
 }
 
 /* Fix específico para WebKit browsers (Safari/Chrome) */

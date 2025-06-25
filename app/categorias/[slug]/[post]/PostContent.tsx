@@ -155,7 +155,7 @@ export default function PostContent({ postData }: { postData: PostData }) {
 
       {/* Descripción/Instrucciones */}
       {postData.body && (
-        <div className="mb-8">
+        <div className="mb-8 break-words">
           <ExpandableContent
             title="Preparación"
             content={postData.body}
