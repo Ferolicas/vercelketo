@@ -10,7 +10,6 @@ import { RecipePostView } from '@/components/RecipePostView'
 import { useState, useTransition } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import confetti from 'canvas-confetti'
-import { client, queries } from '@/lib/sanity'
 
 interface HomePageClientProps {
   homePageData: HomePage;
@@ -30,26 +29,20 @@ export default function HomePageClient({
   const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
 
+  // El estado de la categoría activa se sigue manejando en el cliente para la UI
   const [activeCategorySlug, setActiveCategorySlug] = useState<string | null>(() => searchParams.get('categoria'));
-  const [recipes, setRecipes] = useState<Post[]>(initialRecipes);
-  const [selectedRecipe, setSelectedRecipe] = useState<Post | null>(initialSelectedRecipe);
   
-  const [isLoading, setIsLoading] = useState(false);
+  // Los estados para recetas y receta seleccionada ahora se derivan directamente de las props.
+  // Esto asegura que la UI siempre refleje los datos que el servidor envía.
+  const recipes = initialRecipes;
+  const selectedRecipe = initialSelectedRecipe;
+  
   const [error, setError] = useState<string | null>(null);
 
-  const loadRecipes = async (slug: string | null) => {
-      setIsLoading(true);
-      const fetchedRecipes = slug
-        ? await client.fetch(queries.postsByCategory, { categorySlug: slug })
-        : await client.fetch(queries.allPosts);
-      setRecipes(fetchedRecipes);
-      setIsLoading(false);
-  };
-  
+  // La función loadRecipes() ha sido eliminada.
+
   const handleCategorySelect = (slug: string | null) => {
     startTransition(() => {
-        setActiveCategorySlug(slug);
-        setSelectedRecipe(null);
         const params = new URLSearchParams(window.location.search);
         if (slug) {
             params.set('categoria', slug);
@@ -58,18 +51,19 @@ export default function HomePageClient({
             params.delete('categoria');
             params.delete('receta');
         }
+        // Solo navegamos. Next.js se encarga de re-renderizar la página con nuevas props.
         router.push(`/?${params.toString()}`);
-        loadRecipes(slug);
+        setActiveCategorySlug(slug); // Actualiza la UI del botón activo inmediatamente
     });
   };
 
   const handleRecipeCardClick = (recipe: Post) => {
     startTransition(() => {
         if (recipe.category?.slug?.current && recipe.slug.current) {
-            setSelectedRecipe(recipe);
             const params = new URLSearchParams(window.location.search);
             params.set('categoria', recipe.category.slug.current);
             params.set('receta', recipe.slug.current);
+            // Al cambiar la URL, Next.js proveerá la 'initialSelectedRecipe' correcta en el próximo render.
             router.push(`?${params.toString()}`);
         } else {
             setError("Datos de receta incompletos.");
@@ -79,7 +73,6 @@ export default function HomePageClient({
 
   const handleBackToRecipes = () => {
     startTransition(() => {
-        setSelectedRecipe(null);
         const params = new URLSearchParams(window.location.search);
         params.delete('receta');
         router.push(`?${params.toString()}`);
@@ -116,7 +109,8 @@ export default function HomePageClient({
     }
   };
   
-  const isTransitioning = isLoading || isPending;
+  // El estado de carga ahora solo depende de la transición de la navegación.
+  const isTransitioning = isPending;
   
   return (
     <div className="w-full min-h-[100dvh] bg-white flex flex-col relative">
