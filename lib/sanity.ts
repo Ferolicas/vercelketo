@@ -1,3 +1,5 @@
+// lib/sanity.ts
+
 import { createClient } from '@sanity/client'
 import imageUrlBuilder from '@sanity/image-url'
 import type { SanityImageSource } from '@sanity/image-url/lib/types/types'
@@ -25,7 +27,7 @@ export const client = createClient(config)
 // Builder para URLs de imágenes
 const builder = imageUrlBuilder(client)
 
-// ✅ CORREGIDO: Función urlFor con tipo correcto para TypeScript
+// Función urlFor con tipo correcto para TypeScript
 export function urlFor(source: SanityImageSource) {
   if (!source) {
     console.error('❌ urlFor: source es null o undefined')
@@ -134,11 +136,13 @@ export const queries = {
     preparationTime,
     level,
     rating,
-    ingredients[0..2]
+    // Asegúrate de que los campos necesarios para RecipeCard estén aquí
+    // y los campos adicionales para la vista de receta individual si se van a precargar.
   }`,
 
   // Query para obtener todas las categorías
-  allCategories: `*[_type == "category"] | order(title asc) {
+  // ¡CORREGIDO: Ordenar por 'order asc' para categorías!
+  allCategories: `*[_type == "category"] | order(order asc) { //
     _id,
     title,
     slug,
@@ -229,7 +233,7 @@ export const queries = {
     "averageRating": math::avg(*[_type == "post" && defined(rating)].rating)
   }`,
 
-  // ✅ CORREGIDO: Query para comentarios por post (usado en la API)
+  // Query para comentarios por post (usado en la API)
   commentsByPost: `*[_type == "comment" && post->slug.current == $postSlug && approved == true && isDeleted != true && !(_id in path("drafts.**"))] | order(_createdAt desc) {
     _id,
     _createdAt,
