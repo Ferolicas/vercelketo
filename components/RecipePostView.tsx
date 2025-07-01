@@ -1,26 +1,46 @@
 // components/RecipePostView.tsx
 'use client'
 
-// CORREGIDO: Importa el tipo PortableTextComponents
 import { PortableText, PortableTextComponents } from '@portabletext/react'
 import type { PortableTextBlock } from '@portabletext/types'
 import Image from 'next/image'
-import { Star, Timer, Utensils, Soup, Weight, Scale, Share2, ChevronUp, ChevronDown, ArrowLeft } from 'lucide-react'
-import { useState, useEffect, Suspense } from 'react'
+import { Star, Timer, Utensils, Soup, Weight, Scale, Share2, ChevronUp, ChevronDown, ChefHat, Users } from 'lucide-react'
+import { useState, Suspense } from 'react'
 import confetti from 'canvas-confetti'
 
 import { urlFor } from '@/lib/sanity'
 import Comments from '@/components/Comments'
+import { BackButton } from './BackButton'
 
-// Asegúrate de que este tipo coincida con los datos que recibes del postBySlug query
+// Componente placeholder para los botones de compartir
+function ShareButtons({ url, title }: { url: string; title: string }) {
+  const handleShare = () => {
+    if (navigator.share) {
+      navigator.share({ title: `Receta: ${title}`, url });
+    } else {
+      alert('Usa el botón de compartir de tu navegador o copia el enlace.');
+    }
+  };
+  return (
+    <button
+      onClick={handleShare}
+      className="inline-flex items-center space-x-2 text-emerald-600 hover:text-emerald-700 font-medium transition-colors"
+    >
+      <Share2 size={20} />
+      <span>Compartir</span>
+    </button>
+  );
+}
+
+// Definición del tipo para los datos de la receta
 interface PostData {
   title: string
-  author?: { name: string }
+  author?: { name:string }
   preparationTime?: string
   level?: string
   youtubeUrl?: string
   ingredients: string[]
-  body: PortableTextBlock[] // Es PortableTextBlock[]
+  body: PortableTextBlock[]
   slug: { current: string }
   rating?: number
   servings?: number
@@ -35,10 +55,10 @@ interface PostData {
   chefNotes?: string
   excerpt?: string
   category?: { title: string; slug: { current: string } }
-  mainImage?: any; // SanityImageSource para urlFor
+  mainImage?: any;
 }
 
-// CORREGIDO: Asigna explícitamente el tipo PortableTextComponents al objeto
+// Configuración para PortableText (sin cambios)
 const portableTextComponents: PortableTextComponents = {
   block: {
     h1: ({children}) => <h2 className="text-3xl font-bold mt-6 mb-4 text-gray-800">{children}</h2>,
@@ -52,305 +72,187 @@ const portableTextComponents: PortableTextComponents = {
     number: ({children}) => <ol className="list-decimal list-inside mb-4 pl-4 text-gray-700 space-y-1">{children}</ol>,
   },
   marks: {
-    // El tipo para `value` es opcional, ya que puede no estar presente en todos los casos.
-    // El componente ahora comprueba si `value.href` existe antes de renderizar el enlace.
     link: ({ children, value }) => {
       const href = value?.href;
-      if (href) {
-        return (
-          <a href={href} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
-            {children}
-          </a>
-        );
-      }
-      // Si no hay href, renderiza solo el texto.
-      return <>{children}</>;
+      return href ? <a href={href} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">{children}</a> : <>{children}</>;
     },
     strong: ({children}) => <strong className="font-semibold text-gray-800">{children}</strong>,
     em: ({children}) => <em className="italic">{children}</em>,
   },
-  // Añade más tipos si tienes custom components en tu blockContent (ej. `image` para imágenes en el cuerpo)
 }
 
-
-// Componente para el video de YouTube
+// Componente para el video de YouTube (sin cambios)
 function YouTubeEmbed({ videoUrl }: { videoUrl: string }) {
   const getYouTubeVideoId = (url: string) => {
-    const regex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/
-    const match = url.match(regex)
-    return match ? match[1] : null
+    const regex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+    const match = url.match(regex);
+    return match ? match[1] : null;
   }
-
-  const videoId = getYouTubeVideoId(videoUrl)
-  
-  if (!videoId) {
-    return (
-      <div className="w-full h-64 bg-gray-200 rounded-lg flex items-center justify-center">
-        <p className="text-gray-500">URL de video no válida</p>
-      </div>
-    )
-  }
-
+  const videoId = getYouTubeVideoId(videoUrl);
+  if (!videoId) return <div className="w-full h-64 bg-gray-200 rounded-lg flex items-center justify-center"><p className="text-gray-500">URL de video no válida</p></div>;
   return (
-    <div className="relative w-full h-0 pb-[56.25%] rounded-lg overflow-hidden">
-      {/* CORREGIDO: Asegúrate de que la URL de embed de YouTube sea correcta.
-         El formato `https://www.youtube.com/embed/${videoId}` parece ser un error de copia.
-         Debería ser algo como `https://www.youtube.com/embed/${videoId}`
-      */}
-      <iframe
-        src={`https://www.youtube.com/embed/${videoId}`} // **CAMBIO CRÍTICO AQUÍ**
-        title="Video de la receta"
-        frameBorder="0"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        allowFullScreen
-        className="absolute top-0 left-0 w-full h-full"
-      />
+    <div className="relative w-full h-0 pb-[56.25%] rounded-lg overflow-hidden shadow-lg">
+      <iframe src={`https://www.youtube.com/embed/${videoId}`} title="Video de la receta" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen className="absolute top-0 left-0 w-full h-full" />
     </div>
   )
 }
 
-// Componente para contenido desplegable (ingredientes y preparación)
-function ExpandableContent({ 
-  title, 
-  content, 
-  isIngredients = false 
-}: { 
-  title: string
-  content: string[] | PortableTextBlock[] // Aceptar PortableTextBlock[]
-  isIngredients?: boolean 
-}) {
-  const [isExpanded, setIsExpanded] = useState(false)
-  
-  // Para ingredientes, mostrar como lista
+// Componente para contenido desplegable (sin cambios)
+function ExpandableContent({ title, content, isIngredients = false }: { title: string; content: string[] | PortableTextBlock[]; isIngredients?: boolean }) {
+  const [isExpanded, setIsExpanded] = useState(false);
   if (isIngredients && Array.isArray(content) && content.every(item => typeof item === 'string')) {
     const stringContent = content as string[];
-    const visibleItems = isExpanded ? stringContent : stringContent.slice(0, Math.ceil(stringContent.length * 0.4));
-    const hasMore = stringContent.length > Math.ceil(stringContent.length * 0.4);
-    
+    const visibleItems = isExpanded ? stringContent : stringContent.slice(0, 5);
+    const hasMore = stringContent.length > 5;
     return (
-      <div className="bg-white rounded-lg p-6 shadow-md">
+      <div className="bg-gray-50 rounded-lg p-6">
         <h3 className="text-2xl font-bold text-gray-800 mb-4">{title}</h3>
         <ul className="space-y-2">
           {visibleItems.map((item, index) => (
-            <li key={index} className="flex items-start space-x-2">
-              <span className="w-2 h-2 bg-emerald-600 rounded-full mt-2 flex-shrink-0"></span>
-              <span className="text-gray-700">{item}</span>
-            </li>
+            <li key={index} className="flex items-start space-x-3"><span className="w-2 h-2 bg-emerald-600 rounded-full mt-2 flex-shrink-0"></span><span className="text-gray-700">{item}</span></li>
           ))}
         </ul>
-        
-        {hasMore && (
-          <button
-            onClick={() => setIsExpanded(!isExpanded)}
-            className="mt-4 flex items-center space-x-2 text-emerald-600 hover:text-emerald-700 font-medium transition-colors"
-          >
-            <span>{isExpanded ? 'Ver menos' : `Ver ${stringContent.length - visibleItems.length} más`}</span>
-            {isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
-          </button>
-        )}
+        {hasMore && (<button onClick={() => setIsExpanded(!isExpanded)} className="mt-4 flex items-center space-x-2 text-emerald-600 hover:text-emerald-700 font-medium transition-colors"><span>{isExpanded ? 'Ver menos' : `Ver ${stringContent.length - visibleItems.length} más`}</span>{isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}</button>)}
       </div>
-    )
+    );
   }
-  
-  // Para PortableText (Preparación)
-  // Verificamos si es un array, no está vacío y si el primer elemento parece un PortableTextBlock
   if (Array.isArray(content) && content.length > 0 && typeof content[0] === 'object' && '_type' in content[0] && content[0]._type === 'block') {
-    const portableContent = content as PortableTextBlock[];
-
-    // No necesitamos truncar PortableText con "ver más/menos" basado en palabras
-    // porque PortableText puede contener estructuras complejas.
-    // Simplemente se muestra el contenido completo o se gestiona la visibilidad desde otro nivel
-    // si el PortableText en sí es demasiado largo.
-    // Si quieres un "ver más/menos" para PortableText, tendrías que implementar
-    // una lógica de truncado más sofisticada a nivel de PortableText o pasar solo una parte
-    // del array de PortableTextBlock.
-    // Por ahora, mostrará el PortableText completo.
-
     return (
-      <div className="bg-white rounded-lg p-6 shadow-md">
+      <div className="bg-gray-50 rounded-lg p-6">
         <h3 className="text-2xl font-bold text-gray-800 mb-4">{title}</h3>
-        <div className="text-gray-700 leading-relaxed">
-          <PortableText value={portableContent} components={portableTextComponents} />
-        </div>
+        <div className="text-gray-700 leading-relaxed prose prose-emerald max-w-none"><PortableText value={content as PortableTextBlock[]} components={portableTextComponents} /></div>
       </div>
-    )
+    );
   }
-
-  // Eliminado el bloque `if (typeof content === 'string')` con `content.split(' ')`
-  // porque tu `body` (Preparación) es `PortableTextBlock[]` y `ingredients` es `string[]`.
-  // No hay escenario en tu `PostData` donde `content` para la Preparación sea un string simple,
-  // y los ingredientes ya se manejan en el primer `if`.
-  
-  return null // Si el contenido no coincide con ninguno de los tipos esperados, no renderizar nada.
+  return null;
 }
+
 
 interface RecipePostViewProps {
   recipe: PostData;
-  onBackClick: () => void;
 }
 
-export function RecipePostView({ recipe, onBackClick }: RecipePostViewProps) {
-  const handleShare = () => {
-    if (navigator.share) {
-      navigator.share({
-        title: `Receta Keto: ${recipe.title} en Planeta Keto`,
-        text: `Descubre esta increíble receta keto: ${recipe.title}. ¡Perfecta para tu dieta cetogénica!`,
-        url: window.location.href,
-      }).then(() => {
-        console.log('Contenido compartido con éxito');
-        confetti({
-          particleCount: 100,
-          spread: 70,
-          origin: { y: 0.6 }
-        });
-      }).catch((error) => console.error('Error al compartir:', error));
-    } else {
-      alert('Tu navegador no soporta la función de compartir. Puedes copiar el enlace manualmente.');
-    }
-  };
-
-  // Determinar la URL de la imagen principal usando urlFor
-  // Asumiendo que `recipe.mainImage` contiene el objeto de imagen de Sanity
-  const mainImageUrl = recipe.mainImage ? urlFor(recipe.mainImage).url() : '/placeholder-recipe.jpg';
+export function RecipePostView({ recipe }: RecipePostViewProps) {
+  const shareUrl = typeof window !== 'undefined' ? window.location.href : '';
 
   return (
-    <div className="bg-white p-6 md:p-8 rounded-lg shadow-lg max-w-4xl mx-auto my-6">
-      {/* Botón de volver */}
-      <div className="mb-4">
-        <button
-          onClick={onBackClick}
-          className="inline-flex items-center space-x-2 text-emerald-600 hover:text-emerald-700 font-medium transition-colors"
-        >
-          <ArrowLeft size={20} />
-          <span>Volver a las recetas</span>
-        </button>
+    <div className="bg-white p-4 sm:p-6 md:p-8 rounded-lg max-w-4xl mx-auto my-6">
+      <div className="flex justify-between items-center mb-4">
+        <BackButton text="Volver a las recetas" />
+        {/* 👇 AÑADIDO: Componente de botones de compartir */}
+        <ShareButtons url={shareUrl} title={recipe.title} />
       </div>
 
-      {mainImageUrl && (
-        <div className="relative w-full h-64 md:h-80 lg:h-96 rounded-lg overflow-hidden mb-6">
-          <Image
-            src={mainImageUrl}
-            alt={recipe.title}
-            fill
-            sizes="100vw"
-            style={{ objectFit: 'cover' }}
-            priority
-          />
+      {/* 👇 AÑADIDO: Contenedor para título y calificación */}
+      <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-4">
+        <h2 className="text-3xl md:text-4xl font-bold text-gray-900 leading-tight flex-1 md:pr-8 mb-4 md:mb-0">{recipe.title}</h2>
+        {recipe.rating && (
+          <div className="flex items-center space-x-1 flex-shrink-0">
+            {[1, 2, 3, 4, 5].map((star) => (
+              <Star key={star} className={`w-6 h-6 ${star <= recipe.rating! ? 'text-yellow-400 fill-current' : 'text-gray-300'}`} />
+            ))}
+            <span className="text-lg font-semibold text-gray-800 ml-2">{recipe.rating}</span><span className="text-gray-600">/5</span>
+          </div>
+        )}
+      </div>
+
+      {/* 👇 AÑADIDO: Nombre del autor */}
+      {recipe.author && (
+        <div className="mb-6">
+          <p className="text-lg text-gray-600">Por: <span className="font-semibold text-gray-800">{recipe.author.name}</span></p>
         </div>
       )}
 
-      <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">{recipe.title}</h2>
       <p className="text-gray-600 text-lg mb-6">{recipe.excerpt}</p>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6 text-gray-700">
-        {recipe.preparationTime && (
-          <div className="flex items-center space-x-2 bg-gray-100 p-3 rounded-md">
-            <Timer className="w-5 h-5 text-emerald-600" />
-            <span>Tiempo: {recipe.preparationTime}</span>
+      {/* 👇 AÑADIDO: Tarjetas de información de la receta */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <div className="flex items-center space-x-2 p-4 bg-gray-50 rounded-lg shadow-sm">
+          <Timer size={20} className="text-emerald-600" />
+          <div>
+            <span className="block font-medium text-gray-700 text-sm break-normal">Duración</span>
+            <span className="text-gray-600">{recipe.preparationTime || 'N/A'}</span>
           </div>
-        )}
-        {recipe.level && (
-          <div className="flex items-center space-x-2 bg-gray-100 p-3 rounded-md">
-            <Utensils className="w-5 h-5 text-emerald-600" />
-            <span>Dificultad: {recipe.level}</span>
+        </div>
+        <div className="flex items-center space-x-2 p-4 bg-gray-50 rounded-lg shadow-sm">
+          <ChefHat size={20} className="text-emerald-600" />
+          <div>
+            <span className="block font-medium text-gray-700 text-sm">Dificultad</span>
+            <span className="text-gray-600 capitalize">{recipe.level || 'N/A'}</span>
           </div>
-        )}
+        </div>
         {recipe.servings && (
-          <div className="flex items-center space-x-2 bg-gray-100 p-3 rounded-md">
-            <Soup className="w-5 h-5 text-emerald-600" />
-            <span>Porciones: {recipe.servings}</span>
-          </div>
-        )}
-        {recipe.rating && (
-          <div className="flex items-center space-x-2 bg-gray-100 p-3 rounded-md">
-            <Star fill="currentColor" className="w-5 h-5 text-yellow-500" />
-            <span>Calificación: {recipe.rating}/5</span>
+          <div className="flex items-center space-x-2 p-4 bg-gray-50 rounded-lg shadow-sm">
+            <Users size={20} className="text-emerald-600" />
+            <div>
+              <span className="block font-medium text-gray-700 text-sm">Porciones</span>
+              <span className="text-gray-600">{recipe.servings}</span>
+            </div>
           </div>
         )}
         {recipe.calories && (
-          <div className="flex items-center space-x-2 bg-gray-100 p-3 rounded-md">
-            <Scale className="w-5 h-5 text-emerald-600" />
-            <span>Calorías: {recipe.calories} kcal</span>
-          </div>
-        )}
-          {recipe.macros && (
-          <div className="flex items-center space-x-2 bg-gray-100 p-3 rounded-md">
-            <Weight className="w-5 h-5 text-emerald-600" />
-            <span>Macros: C:{recipe.macros.carbs || 0}g P:{recipe.macros.protein || 0}g G:{recipe.macros.fat || 0}g</span>
+          <div className="flex items-center space-x-2 p-4 bg-gray-50 rounded-lg shadow-sm">
+            <Scale size={20} className="text-emerald-600" />
+            <div>
+              <span className="block font-medium text-gray-700 text-sm">Calorías</span>
+              <span className="text-gray-600">{recipe.calories} kcal</span>
+            </div>
           </div>
         )}
       </div>
-
-      {/* Video de YouTube */}
+      
       {recipe.youtubeUrl && (
         <div className="mb-8">
-          <Suspense fallback={
-            <div className="w-full h-64 bg-gray-200 rounded-lg flex items-center justify-center">
-              <p className="text-gray-500">Cargando video...</p>
-            </div>
-          }>
+          <Suspense fallback={<div className="w-full h-64 bg-gray-200 rounded-lg flex items-center justify-center"><p className="text-gray-500">Cargando video...</p></div>}>
             <YouTubeEmbed videoUrl={recipe.youtubeUrl} />
           </Suspense>
         </div>
       )}
 
-      {/* Lista de ingredientes */}
-      {recipe.ingredients && recipe.ingredients.length > 0 && (
-        <div className="mb-8">
-          <ExpandableContent
-            title="Ingredientes"
-            content={recipe.ingredients}
-            isIngredients={true}
-          />
-        </div>
-      )}
+      <div className="space-y-8 break-words">
+        {recipe.ingredients && recipe.ingredients.length > 0 && (
+          <ExpandableContent title="Ingredientes" content={recipe.ingredients} isIngredients={true} />
+        )}
+        {recipe.body && (
+          <ExpandableContent title="Preparación" content={recipe.body} />
+        )}
+      </div>
 
-      {/* Descripción/Instrucciones (ahora con PortableText) */}
-      {recipe.body && (
-        <div className="mb-8 break-words">
-          <ExpandableContent
-            title="Preparación"
-            content={recipe.body}
-          />
-        </div>
-      )}
-
+      {/* 👇 AÑADIDO: Sección de notas del chef */}
       {recipe.chefNotes && (
-        <div className="bg-blue-50 border-l-4 border-blue-400 text-blue-800 p-4 rounded-md mb-6 italic">
-          <h4 className="font-semibold mb-2">Notas del Chef:</h4>
-          <p>{recipe.chefNotes}</p>
+        <div className="my-8 p-6 bg-yellow-50 border-l-4 border-yellow-400 rounded-r-lg">
+          <h3 className="text-lg font-semibold text-yellow-800 mb-2">💡 Notas del Chef</h3>
+          <p className="text-yellow-700">{recipe.chefNotes}</p>
         </div>
       )}
 
+      {/* 👇 AÑADIDO: Sección de información nutricional */}
+      {recipe.macros && (
+        <div className="my-8 p-6 bg-white rounded-lg shadow-sm">
+          <h3 className="text-lg font-semibold text-gray-800 mb-4">Información Nutricional</h3>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="text-center"><div className="text-2xl font-bold text-emerald-600">{recipe.macros.carbs || 0}g</div><div className="text-sm text-gray-600">Carbs</div></div>
+            <div className="text-center"><div className="text-2xl font-bold text-blue-600">{recipe.macros.protein || 0}g</div><div className="text-sm text-gray-600">Proteínas</div></div>
+            <div className="text-center"><div className="text-2xl font-bold text-yellow-600">{recipe.macros.fat || 0}g</div><div className="text-sm text-gray-600">Grasas</div></div>
+            <div className="text-center"><div className="text-2xl font-bold text-green-600">{recipe.macros.fiber || 0}g</div><div className="text-sm text-gray-600">Fibra</div></div>
+          </div>
+        </div>
+      )}
+      
+      {/* 👇 AÑADIDO: Sección de etiquetas */}
       {recipe.tags && recipe.tags.length > 0 && (
-        <div className="mb-6">
-          <h4 className="text-lg font-semibold text-gray-700 mb-3">Etiquetas:</h4>
+        <div className="mb-8">
+          <h3 className="text-lg font-semibold text-gray-800 mb-4">Etiquetas</h3>
           <div className="flex flex-wrap gap-2">
             {recipe.tags.map((tag, index) => (
-              <span key={index} className="bg-emerald-100 text-emerald-800 text-sm font-medium px-3 py-1 rounded-full">
-                {tag}
-              </span>
+              <span key={index} className="px-3 py-1 bg-emerald-100 text-emerald-800 text-sm rounded-full">{tag}</span>
             ))}
           </div>
         </div>
       )}
 
-      <div className="flex justify-end mt-8">
-        <button
-          onClick={handleShare}
-          className="hover:text-blue-600 text-white font-bold py-3 px-6 rounded-full flex items-center space-x-2 transition-all duration-300 transform hover:scale-105"
-          aria-label="Compartir esta receta"
-        >
-          <Share2 className="w-5 h-5" />
-        </button>
-      </div>
-
-      {/* Componente de comentarios */}
       {recipe.slug?.current && recipe.title && (
-        <Comments
-          postSlug={recipe.slug.current}
-          postTitle={recipe.title}
-        />
+        <Comments postSlug={recipe.slug.current} postTitle={recipe.title} />
       )}
     </div>
   )
