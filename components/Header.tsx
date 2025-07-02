@@ -15,7 +15,7 @@ export function Header({ homePageData, onShareClick, showShareButton = false }: 
   const logoUrl = homePageData.heroImage ? urlFor(homePageData.heroImage).url() : '/default-logo.png';
   
   return (
-    <header className="sticky top-0 z-50 w-full bg-emerald-600 shadow-md shadow-black px-2">
+    <header className="sticky top-0 z-50 w-full bg-emerald-600 shadow-md shadow-black px-2 rounded-4xl">
       <div className="flex items-center justify-between" style={{ minHeight: '80px', maxHeight: '100px' }}>
         {/* Izquierda: Logo */}
         <div className="flex-shrink-0 h-full flex items-center">
