@@ -144,27 +144,37 @@ export function RecipePostView({ recipe }: RecipePostViewProps) {
       </div>
 
       {/* 👇 AÑADIDO: Contenedor para título y calificación */}
-      <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-4">
-        <h2 className="text-3xl md:text-4xl font-bold text-gray-900 leading-tight flex-1 md:pr-8 mb-4 md:mb-0">{recipe.title}</h2>
-        {recipe.rating && (
-          <div className="flex items-center space-x-1 flex-shrink-0">
-            {[1, 2, 3, 4, 5].map((star) => (
-              <Star key={star} className={`w-6 h-6 ${star <= recipe.rating! ? 'text-yellow-400 fill-current' : 'text-gray-300'}`} />
-            ))}
-            <span className="text-lg font-semibold text-gray-800 ml-2">{recipe.rating}</span><span className="text-gray-600">/5</span>
-          </div>
-        )}
-      </div>
+      <div className="mb-4">
+  <h2 className="text-3xl md:text-4xl font-bold text-gray-900 leading-tight">{recipe.title}</h2>
+</div>
 
-      {/* 👇 AÑADIDO: Nombre del autor */}
-      {recipe.author && (
-        <div className="mb-6">
-          <p className="text-lg text-gray-600">Por: <span className="font-semibold text-gray-800">{recipe.author.name}</span></p>
+<div className="flex justify-between items-center mb-6">
+  {recipe.author ? (
+    <p className="text-lg text-gray-600">
+      Por: <span className="font-semibold text-gray-800">{recipe.author.name}</span>
+    </p>
+  ) : (
+    <div />
+  )}
+
+  {recipe.rating && (
+    <div className="flex items-center space-x-2">
+      <Star className="w-6 h-6 text-yellow-400 fill-current" />
+      <span className="text-lg font-semibold text-gray-800">{recipe.rating}</span>
+      <span className="text-gray-600">/5</span>
+    </div>
+  )}
+</div>
+
+      
+      {recipe.youtubeUrl && (
+        <div className="mb-8">
+          <Suspense fallback={<div className="w-full h-64 bg-gray-200 rounded-lg flex items-center justify-center"><p className="text-gray-500">Cargando video...</p></div>}>
+            <YouTubeEmbed videoUrl={recipe.youtubeUrl} />
+          </Suspense>
         </div>
       )}
-
-      <p className="text-gray-600 text-lg mb-6">{recipe.excerpt}</p>
-
+      
       {/* 👇 AÑADIDO: Tarjetas de información de la receta */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
         <div className="flex items-center space-x-2 p-4 bg-gray-50 rounded-lg shadow-sm">
@@ -201,20 +211,14 @@ export function RecipePostView({ recipe }: RecipePostViewProps) {
         )}
       </div>
       
-      {recipe.youtubeUrl && (
-        <div className="mb-8">
-          <Suspense fallback={<div className="w-full h-64 bg-gray-200 rounded-lg flex items-center justify-center"><p className="text-gray-500">Cargando video...</p></div>}>
-            <YouTubeEmbed videoUrl={recipe.youtubeUrl} />
-          </Suspense>
-        </div>
-      )}
+      
 
       <div className="space-y-8 break-words">
         {recipe.ingredients && recipe.ingredients.length > 0 && (
           <ExpandableContent title="Ingredientes" content={recipe.ingredients} isIngredients={true} />
         )}
-        {recipe.body && (
-          <ExpandableContent title="Preparación" content={recipe.body} />
+        {recipe.body && recipe.body.length > 0 && (
+        <ExpandableContent title="Descripción" content={recipe.body} />
         )}
       </div>
 
