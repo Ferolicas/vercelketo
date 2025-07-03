@@ -39,7 +39,8 @@ interface PostData {
   preparationTime?: string
   level?: string
   youtubeUrl?: string
-  ingredients: string[]
+  // 👇 CAMBIO 1: 'ingredients' ahora es un string opcional.
+  ingredients?: string
   body: PortableTextBlock[]
   slug: { current: string }
   rating?: number
@@ -97,15 +98,17 @@ function YouTubeEmbed({ videoUrl }: { videoUrl: string }) {
   )
 }
 
-// Componente para contenido desplegable (sin cambios)
-function ExpandableContent({ title, content, isIngredients = false }: { title: string; content: string[] | PortableTextBlock[]; isIngredients?: boolean }) {
+// 👇 CAMBIO 2: Modificamos 'ExpandableContent' para que acepte un STRING para los ingredientes
+function ExpandableContent({ title, content, isIngredients = false }: { title: string; content: string | PortableTextBlock[]; isIngredients?: boolean }) {
   const [isExpanded, setIsExpanded] = useState(false);
-  if (isIngredients && Array.isArray(content) && content.every(item => typeof item === 'string')) {
-    const stringContent = content as string[];
+
+  // Lógica para los ingredientes (ahora funciona con un string)
+  if (isIngredients && typeof content === 'string') {
+    const stringContent = content.split('\n').filter(item => item.trim() !== ''); // Divide el texto en un array
     const visibleItems = isExpanded ? stringContent : stringContent.slice(0, 5);
     const hasMore = stringContent.length > 5;
     return (
-      <div className="bg-gray-50 rounded-lg p-6">
+      <div className="bg-gray-50 rounded-lg p-6 shadow-sm">
         <h3 className="text-2xl font-bold text-gray-800 mb-4">{title}</h3>
         <ul className="space-y-2">
           {visibleItems.map((item, index) => (
@@ -116,9 +119,11 @@ function ExpandableContent({ title, content, isIngredients = false }: { title: s
       </div>
     );
   }
+  
+  // Lógica para la descripción (sin cambios)
   if (Array.isArray(content) && content.length > 0 && typeof content[0] === 'object' && '_type' in content[0] && content[0]._type === 'block') {
     return (
-      <div className="bg-gray-50 rounded-lg p-6">
+      <div className="bg-gray-50 rounded-lg p-6 shadow-sm">
         <h3 className="text-2xl font-bold text-gray-800 mb-4">{title}</h3>
         <div className="text-gray-700 leading-relaxed prose prose-emerald max-w-none"><PortableText value={content as PortableTextBlock[]} components={portableTextComponents} /></div>
       </div>
@@ -139,33 +144,29 @@ export function RecipePostView({ recipe }: RecipePostViewProps) {
     <div className="bg-white p-4 sm:p-6 md:p-8 rounded-lg max-w-4xl mx-auto my-6">
       <div className="flex justify-between items-center mb-4">
         <BackButton text="Volver a las recetas" />
-        {/* 👇 AÑADIDO: Componente de botones de compartir */}
         <ShareButtons url={shareUrl} title={recipe.title} />
       </div>
 
-      {/* 👇 AÑADIDO: Contenedor para título y calificación */}
       <div className="mb-4">
-  <h2 className="text-3xl md:text-4xl font-bold text-gray-900 leading-tight">{recipe.title}</h2>
-</div>
+        <h2 className="text-3xl md:text-4xl font-bold text-gray-900 leading-tight">{recipe.title}</h2>
+      </div>
 
-<div className="flex justify-between items-center mb-6">
-  {recipe.author ? (
-    <p className="text-lg text-gray-600">
-      Por: <span className="font-semibold text-gray-800">{recipe.author.name}</span>
-    </p>
-  ) : (
-    <div />
-  )}
-
-  {recipe.rating && (
-    <div className="flex items-center space-x-2">
-      <Star className="w-6 h-6 text-yellow-400 fill-current" />
-      <span className="text-lg font-semibold text-gray-800">{recipe.rating}</span>
-      <span className="text-gray-600">/5</span>
-    </div>
-  )}
-</div>
-
+      <div className="flex justify-between items-center mb-6">
+        {recipe.author ? (
+          <p className="text-lg text-gray-600">
+            Por: <span className="font-semibold text-gray-800">{recipe.author.name}</span>
+          </p>
+        ) : (
+          <div />
+        )}
+        {recipe.rating && (
+          <div className="flex items-center space-x-2">
+            <Star className="w-6 h-6 text-yellow-400 fill-current" />
+            <span className="text-lg font-semibold text-gray-800">{recipe.rating}</span>
+            <span className="text-gray-600">/5</span>
+          </div>
+        )}
+      </div>
       
       {recipe.youtubeUrl && (
         <div className="mb-8">
@@ -175,7 +176,6 @@ export function RecipePostView({ recipe }: RecipePostViewProps) {
         </div>
       )}
       
-      {/* 👇 AÑADIDO: Tarjetas de información de la receta */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
         <div className="flex items-center space-x-2 p-4 bg-gray-50 rounded-lg shadow-sm">
           <Timer size={20} className="text-emerald-600" />
@@ -210,19 +210,18 @@ export function RecipePostView({ recipe }: RecipePostViewProps) {
           </div>
         )}
       </div>
-      
-      
 
       <div className="space-y-8 break-words">
-        {recipe.ingredients && recipe.ingredients.length > 0 && (
+        {/* La llamada a ExpandableContent para ingredientes sigue igual y ahora funciona */}
+        {recipe.ingredients && (
           <ExpandableContent title="Ingredientes" content={recipe.ingredients} isIngredients={true} />
         )}
+        {/* La llamada para la descripción también se mantiene igual */}
         {recipe.body && recipe.body.length > 0 && (
-        <ExpandableContent title="Descripción" content={recipe.body} />
+          <ExpandableContent title="Descripción" content={recipe.body} />
         )}
       </div>
 
-      {/* 👇 AÑADIDO: Sección de notas del chef */}
       {recipe.chefNotes && (
         <div className="my-8 p-6 bg-yellow-50 border-l-4 border-yellow-400 rounded-r-lg">
           <h3 className="text-lg font-semibold text-yellow-800 mb-2">💡 Notas del Chef</h3>
@@ -230,7 +229,6 @@ export function RecipePostView({ recipe }: RecipePostViewProps) {
         </div>
       )}
 
-      {/* 👇 AÑADIDO: Sección de información nutricional */}
       {recipe.macros && (
         <div className="my-8 p-6 bg-white rounded-lg shadow-sm">
           <h3 className="text-lg font-semibold text-gray-800 mb-4">Información Nutricional</h3>
@@ -243,7 +241,6 @@ export function RecipePostView({ recipe }: RecipePostViewProps) {
         </div>
       )}
       
-      {/* 👇 AÑADIDO: Sección de etiquetas */}
       {recipe.tags && recipe.tags.length > 0 && (
         <div className="mb-8">
           <h3 className="text-lg font-semibold text-gray-800 mb-4">Etiquetas</h3>
