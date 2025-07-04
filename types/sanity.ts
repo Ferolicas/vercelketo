@@ -1,4 +1,5 @@
 // types/sanity.ts - Tipos actualizados
+
 export interface Post {
   _id: string;
   _createdAt: string;
@@ -42,7 +43,8 @@ export interface Post {
     };
     description?: string;
   };
-  ingredients: string[];
+  // 👇 ESTA ES LA LÍNEA CORREGIDA
+  ingredients?: string;
   body: any; // PortableText content
   excerpt?: string;
   youtubeUrl?: string;
@@ -68,7 +70,7 @@ export interface Category {
     current: string;
   };
   description?: string;
-  categoryImage?: {  // Agregar esta línea
+  categoryImage?: {
     asset: {
       _id: string
       url: string
@@ -95,7 +97,7 @@ export interface Author {
 
 export interface HomePage {
   _id: string
-  siteTitle: string        // Cambiado de 'title' a 'siteTitle'
+  siteTitle: string
   heroTitle: string
   heroDescription: string
   heroImage: {

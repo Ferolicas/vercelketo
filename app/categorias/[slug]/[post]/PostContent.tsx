@@ -12,7 +12,7 @@ interface PostData {
   preparationTime: string
   level: string
   youtubeUrl?: string
-  ingredients: string[]
+  ingredients?: string;
   body: string
   slug: string
   rating?: number // Agregamos el rating como opcional
