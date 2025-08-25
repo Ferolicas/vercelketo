@@ -92,12 +92,19 @@ export default async function PostPage({
 
   console.log('📄 PÁGINA DE RECETA CARGANDO:', post);
 
-  const [postData, homePageData, categoryData]: [Post, HomePage, any] =
-    await Promise.all([
+  let postData: Post | null = null;
+  let homePageData: HomePage | null = null;
+  let categoryData: any = null;
+
+  try {
+    [postData, homePageData, categoryData] = await Promise.all([
       client.fetch(queries.postBySlug, { slug: post }),
       client.fetch(queries.homePage),
       client.fetch(`*[_type == "category" && slug.current == $slug][0] { title, slug }`, { slug }),
     ]);
+  } catch (error) {
+    console.error('Error fetching data:', error);
+  }
 
   if (!postData) {
     return (
@@ -420,18 +427,24 @@ export default async function PostPage({
 }
 
 export async function generateStaticParams() {
-  const posts: Post[] = await client.fetch(`
-    *[_type == "post"] {
-      slug,
-      category->{
-        slug
+  try {
+    const posts: Post[] = await client.fetch(`
+      *[_type == "post"] {
+        slug,
+        category->{
+          slug
+        }
       }
-    }
-  `);
-  return posts.map((post) => ({
-    slug: post.category?.slug?.current || 'sin-categoria',
-    post: post.slug.current,
-  }));
+    `);
+    return posts.map((post) => ({
+      slug: post.category?.slug?.current || 'sin-categoria',
+      post: post.slug.current,
+    }));
+  } catch (error) {
+    console.error('Error generating static params:', error);
+    // Return empty array to prevent build failure
+    return [];
+  }
 }
 
 // ✅ CORRECCIÓN: Ahora params es Promise<{}>
@@ -440,13 +453,14 @@ export async function generateMetadata({
 }: {
   params: Promise<{ slug: string; post: string }>
 }): Promise<Metadata> {
-  // ✅ CORRECCIÓN: Await para resolver params
-  const { slug, post } = await params;
+  try {
+    // ✅ CORRECCIÓN: Await para resolver params
+    const { slug, post } = await params;
 
-  const [postData, categoryData] = await Promise.all([
-    client.fetch(queries.postBySlug, { slug: post }),
-    client.fetch(`*[_type == "category" && slug.current == $slug][0] { title, slug }`, { slug })
-  ]);
+    const [postData, categoryData] = await Promise.all([
+      client.fetch(queries.postBySlug, { slug: post }),
+      client.fetch(`*[_type == "category" && slug.current == $slug][0] { title, slug }`, { slug })
+    ]);
 
   if (!postData) {
     return {
@@ -531,6 +545,14 @@ export async function generateMetadata({
       'article:tag': keywords,
     },
   };
+  } catch (error) {
+    console.error('Error generating metadata:', error);
+    return {
+      title: 'Planeta Keto - Recetas Cetogénicas',
+      description: 'Descubre deliciosas recetas keto para tu dieta cetogénica. Fáciles, rápidas y saludables.',
+      robots: 'index, follow',
+    };
+  }
 }
 
 export const revalidate = 60;

@@ -6,13 +6,13 @@ import type { HomePage } from '@/types/sanity'
 import { Youtube, Mail, ShoppingCart, Share2 } from 'lucide-react'
 
 interface HeaderProps {
-  homePageData: HomePage;
+  homePageData?: HomePage | null;
   onShareClick?: () => void;
   showShareButton?: boolean;
 }
 
 export function Header({ homePageData, onShareClick, showShareButton = false }: HeaderProps) {
-  const logoUrl = homePageData.heroImage ? urlFor(homePageData.heroImage).url() : '/default-logo.png';
+  const logoUrl = homePageData?.heroImage ? urlFor(homePageData.heroImage).url() : '/default-logo.png';
   
   return (
     <header className="sticky top-0 z-50 w-full bg-emerald-600 shadow-md shadow-black px-2 rounded-4xl">
@@ -40,7 +40,7 @@ export function Header({ homePageData, onShareClick, showShareButton = false }: 
           <Link href="/">
             <h1 className="font-bold text-white leading-tight cursor-pointer hover:text-emerald-100 transition-colors truncate"
                 style={{ fontSize: 'clamp(2em, 3.5vw, 1.8rem)' }}>
-              {homePageData.siteTitle || 'Planeta Keto'}
+              {homePageData?.siteTitle || 'Planeta Keto'}
             </h1>
           </Link>
         </div>

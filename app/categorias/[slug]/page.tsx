@@ -10,19 +10,28 @@ import { ScrollToTop } from '@/components/ScrollToTop';
 import { BackButton } from '@/components/BackButton';
 
 export async function generateMetadata(
-  { params }: { params: any },
+  { params }: { params: Promise<{ slug: string }> },
   parent: ResolvingMetadata
 ): Promise<Metadata> {
-  const { slug } = params;
-  const category: Category = await client.fetch(queries.categoryBySlug, { slug });
-  
-  return {
-    title: `${category?.title || 'Categoría'} Keto - Recetas Fáciles y Rápidas | Planeta Keto`,
-    description: `Recetas de ${category?.title || 'esta categoría'} keto para tu estilo de vida cetogénico. Bajas en carbohidratos y deliciosas`,
-    alternates: {
-      canonical: `/categorias/${slug}`,
-    },
-  };
+  try {
+    const { slug } = await params;
+    const category: Category = await client.fetch(queries.categoryBySlug, { slug });
+    
+    return {
+      title: `${category?.title || 'Categoría'} Keto - Recetas Fáciles y Rápidas | Planeta Keto`,
+      description: `Recetas de ${category?.title || 'esta categoría'} keto para tu estilo de vida cetogénico. Bajas en carbohidratos y deliciosas`,
+      alternates: {
+        canonical: `/categorias/${slug}`,
+      },
+    };
+  } catch (error) {
+    console.error('Error generating category metadata:', error);
+    return {
+      title: 'Categorías Keto - Planeta Keto',
+      description: 'Descubre recetas keto organizadas por categorías para tu dieta cetogénica.',
+      robots: 'index, follow',
+    };
+  }
 }
 
 export default async function CategoryPage({
@@ -36,11 +45,18 @@ export default async function CategoryPage({
 
   console.log('📂 PÁGINA DE CATEGORÍA CARGANDO:', slug);
 
-  // Intentar obtener la categoría y los datos de la página principal en paralelo
-  const [category, homePageData]: [Category, HomePage] = await Promise.all([
-    client.fetch(queries.categoryBySlug, { slug }),
-    client.fetch(queries.homePage), // Siempre intenta obtener homePageData
-  ]);
+  let category: Category | null = null;
+  let homePageData: HomePage | null = null;
+
+  try {
+    // Intentar obtener la categoría y los datos de la página principal en paralelo
+    [category, homePageData] = await Promise.all([
+      client.fetch(queries.categoryBySlug, { slug }),
+      client.fetch(queries.homePage),
+    ]);
+  } catch (error) {
+    console.error('Error fetching category data:', error);
+  }
 
   if (!category) {
     return (
@@ -194,11 +210,15 @@ export default async function CategoryPage({
 }
 
 export async function generateStaticParams(): Promise<{ slug: string }[]> {
-  const categories: Category[] = await client.fetch(queries.allCategories);
-
-  return categories.map((category) => ({
-    slug: category.slug.current,
-  }));
+  try {
+    const categories: Category[] = await client.fetch(queries.allCategories);
+    return categories.map((category) => ({
+      slug: category.slug.current,
+    }));
+  } catch (error) {
+    console.error('Error generating static params for categories:', error);
+    return [];
+  }
 }
 
 export const revalidate = 60;
