@@ -1,6 +1,7 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+// Remove unused imports that were causing hydration issues
+// import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
@@ -29,14 +30,15 @@ export default function HomePage({
   categories = [],
   stats = { totalRecipes: 500, happyUsers: 10000, avgRating: 4.8 }
 }: HomePageProps) {
-  const [mounted, setMounted] = useState(false)
+  // Remove mounted state completely to fix hydration issues
+  // const [mounted, setMounted] = useState(false)
+  // useEffect(() => {
+  //   setMounted(true)
+  // }, [])
 
-  useEffect(() => {
-    setMounted(true)
-  }, [])
-
-  if (!mounted) return null
-
+  // Add console log for debugging in production
+  console.log('HomePage rendered with:', { featuredRecipes: featuredRecipes?.length, categories: categories?.length, stats });
+  
   return (
     <>
       <AdSystem />

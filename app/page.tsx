@@ -3,7 +3,8 @@ import { client, queries } from '@/lib/sanity';
 import type { Category, Post } from '@/types/sanity';
 import HomePage from '@/components/HomePage';
 
-export const dynamic = 'force-dynamic';
+// Remove force-dynamic to allow static generation when possible
+// export const dynamic = 'force-dynamic';
 
 interface PageProps {
   params: Promise<{ [key: string]: string | string[] | undefined }>;
