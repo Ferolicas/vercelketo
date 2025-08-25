@@ -6,7 +6,10 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "sanity:deploy": "cd sanity-studio && npm run build && npx sanity deploy",
+    "sanity:dev": "cd sanity-studio && npm run dev",
+    "deploy:all": "npm run build && npm run sanity:deploy"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.7",

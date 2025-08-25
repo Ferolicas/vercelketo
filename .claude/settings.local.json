@@ -5,7 +5,9 @@
       "Bash(move:*)",
       "Bash(powershell:*)",
       "Bash(npm install:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(npx sanity:*)",
+      "Bash(git commit:*)"
     ],
     "deny": [],
     "ask": [],

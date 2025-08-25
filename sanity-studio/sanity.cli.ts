@@ -5,6 +5,9 @@ export default defineCliConfig({
     projectId: 'nfqa4osj',
     dataset: 'production'
   },
+  
+  studioHost: 'planetaketo',
+  
   /**
    * Enable auto-updates for studios.
    * Learn more at https://www.sanity.io/docs/cli#auto-updates
