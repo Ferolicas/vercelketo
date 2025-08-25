@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(/C:\\PLANETA KETO V2/**)",
+      "Bash(move:*)",
+      "Bash(powershell:*)",
+      "Bash(npm install:*)",
+      "Bash(git add:*)"
+    ],
+    "deny": [],
+    "ask": [],
+    "additionalDirectories": [
+      "C:\\PLANETA KETO V2\\SANITY"
+    ]
+  }
+}

@@ -1,55 +1,66 @@
-// RUTA: app/page.tsx (VERSIÓN FINAL CORREGIDA PARA NEXT.JS 15)
-
 import { Suspense } from 'react';
 import { client, queries } from '@/lib/sanity';
-import type { HomePage, Category, Post } from '@/types/sanity';
-import HomePageClient from '../components/HomePageClient';
+import type { Category, Post } from '@/types/sanity';
+import HomePage from '@/components/HomePage';
 
-// ESTA ES LA LÍNEA NUEVA QUE SOLUCIONA EL ERROR
 export const dynamic = 'force-dynamic';
 
-// Tipos correctos para Next.js 15
 interface PageProps {
   params: Promise<{ [key: string]: string | string[] | undefined }>;
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
 export default async function Page({ params, searchParams }: PageProps) {
-  const homePageDataPromise = client.fetch<HomePage>(queries.homePage);
-  const categoriesPromise = client.fetch<Category[]>(queries.allCategories);
+  try {
+    // Fetch datos básicos para la home
+    const [categories, featuredRecipes] = await Promise.all([
+      client.fetch<Category[]>(queries.allCategories),
+      client.fetch<Post[]>(`
+        *[_type == "post"] | order(publishedAt desc)[0...6] {
+          _id,
+          title,
+          slug,
+          mainImage,
+          excerpt,
+          publishedAt,
+          category->{
+            title,
+            slug
+          }
+        }
+      `)
+    ]);
 
-  // AWAIT searchParams ANTES de acceder a sus propiedades
-  const resolvedSearchParams = await searchParams;
-  
-  const categoryParam = typeof resolvedSearchParams?.categoria === 'string' ? resolvedSearchParams.categoria : null;
-  const postParam = typeof resolvedSearchParams?.receta === 'string' ? resolvedSearchParams.receta : null;
-
-  const [homePageData, categories] = await Promise.all([homePageDataPromise, categoriesPromise]);
-
-  let initialRecipes: Post[] = [];
-  let initialSelectedRecipe: Post | null = null;
-
-  if (postParam && categoryParam) {
-    initialSelectedRecipe = await client.fetch<Post | null>(queries.postBySlug, { slug: postParam });
-    if (initialSelectedRecipe) {
-      initialRecipes = await client.fetch<Post[]>(queries.postsByCategory, { categorySlug: categoryParam });
-    } else {
-      initialRecipes = await client.fetch<Post[]>(queries.allPosts);
+    // Calcular estadísticas
+    const totalRecipes = await client.fetch<number>('count(*[_type == "post"])')
+    const stats = {
+      totalRecipes: totalRecipes || 500,
+      happyUsers: 15000,
+      avgRating: 4.8
     }
-  } else if (categoryParam) {
-    initialRecipes = await client.fetch<Post[]>(queries.postsByCategory, { categorySlug: categoryParam });
-  } else {
-    initialRecipes = await client.fetch<Post[]>(queries.allPosts);
-  }
 
-  return (
-    <Suspense fallback={<div className="flex justify-center items-center h-screen text-xl">Cargando Planeta Keto...</div>}>
-      <HomePageClient
-        homePageData={homePageData}
-        categories={categories}
-        initialRecipes={initialRecipes}
-        initialSelectedRecipe={initialSelectedRecipe}
-      />
-    </Suspense>
-  );
+    return (
+      <Suspense fallback={
+        <div className="flex justify-center items-center h-screen">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-green-500"></div>
+        </div>
+      }>
+        <HomePage 
+          featuredRecipes={featuredRecipes}
+          categories={categories}
+          stats={stats}
+        />
+      </Suspense>
+    );
+  } catch (error) {
+    console.error('Error loading homepage:', error);
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">¡Bienvenido a Planeta Keto!</h2>
+          <p className="text-gray-600">Estamos preparando las mejores recetas para ti...</p>
+        </div>
+      </div>
+    );
+  }
 }

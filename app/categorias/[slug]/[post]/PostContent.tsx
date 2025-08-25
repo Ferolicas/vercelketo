@@ -2,10 +2,12 @@
 
 "use client"
 
+import { PortableText, PortableTextComponents } from '@portabletext/react'
+import type { PortableTextBlock } from '@portabletext/types'
 import { Star, ChevronDown, ChevronUp } from 'lucide-react'
 import { Suspense, useState } from 'react'
 
-// Tipos para los datos del post
+// 👇 TIPO CORREGIDO: 'body' ahora es un array de PortableTextBlock
 interface PostData {
   title: string
   author?: { name: string }
@@ -13,22 +15,19 @@ interface PostData {
   level: string
   youtubeUrl?: string
   ingredients?: string;
-  body: string
+  body: PortableTextBlock[]; // <--- CORREGIDO
   slug: string
-  rating?: number // Agregamos el rating como opcional
+  rating?: number
 }
 
-// Componente para el video de YouTube
+// Componente para el video de YouTube (sin cambios)
 function YouTubeEmbed({ videoUrl }: { videoUrl: string }) {
-  // Extraer el ID del video de YouTube de diferentes formatos de URL
   const getYouTubeVideoId = (url: string) => {
     const regex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/
     const match = url.match(regex)
     return match ? match[1] : null
   }
-
   const videoId = getYouTubeVideoId(videoUrl)
-  
   if (!videoId) {
     return (
       <div className="w-full h-64 bg-gray-200 rounded-lg flex items-center justify-center">
@@ -36,7 +35,6 @@ function YouTubeEmbed({ videoUrl }: { videoUrl: string }) {
       </div>
     )
   }
-
   return (
     <div className="relative w-full h-0 pb-[56.25%] rounded-lg overflow-hidden">
       <iframe
@@ -51,22 +49,23 @@ function YouTubeEmbed({ videoUrl }: { videoUrl: string }) {
   )
 }
 
-// Componente para contenido desplegable
-function ExpandableContent({ 
-  title, 
-  content, 
-  isIngredients = false 
-}: { 
+// 👇 COMPONENTE CORREGIDO: Lógica separada y correcta para ingredientes y descripción
+function ExpandableContent({
+  title,
+  content,
+  isIngredients = false
+}: {
   title: string
-  content: string | string[]
-  isIngredients?: boolean 
+  content: string | PortableTextBlock[]
+  isIngredients?: boolean
 }) {
   const [isExpanded, setIsExpanded] = useState(false)
-  
-  // Para ingredientes, mostrar como lista
-  if (isIngredients && Array.isArray(content)) {
-    const visibleItems = isExpanded ? content : content.slice(0, Math.ceil(content.length * 0.4))
-    const hasMore = content.length > Math.ceil(content.length * 0.4)
+
+  // Lógica para Ingredientes (cuando 'content' es un string)
+  if (isIngredients && typeof content === 'string') {
+    const items = content.split('\n').filter(line => line.trim() !== ''); // Divide por salto de línea
+    const visibleItems = isExpanded ? items : items.slice(0, 5);
+    const hasMore = items.length > 5;
     
     return (
       <div className="bg-white rounded-lg p-6 shadow-md">
@@ -79,49 +78,31 @@ function ExpandableContent({
             </li>
           ))}
         </ul>
-        
         {hasMore && (
           <button
             onClick={() => setIsExpanded(!isExpanded)}
             className="mt-4 flex items-center space-x-2 text-emerald-600 hover:text-emerald-700 font-medium transition-colors"
           >
-            <span>{isExpanded ? 'Ver menos' : `Ver ${content.length - visibleItems.length} más`}</span>
+            <span>{isExpanded ? 'Ver menos' : `Ver ${items.length - visibleItems.length} más`}</span>
             {isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
           </button>
         )}
       </div>
     )
   }
-  
-  // Para descripción, mostrar como texto
-  if (typeof content === 'string') {
-    const words = content.split(' ')
-    const visibleWords = isExpanded ? words : words.slice(0, Math.ceil(words.length * 0.4))
-    const hasMore = words.length > Math.ceil(words.length * 0.4)
-    
+
+  // Lógica para Descripción/Preparación (cuando 'content' es PortableTextBlock[])
+  if (!isIngredients && Array.isArray(content)) {
     return (
       <div className="bg-white rounded-lg p-6 shadow-md">
         <h3 className="text-2xl font-bold text-gray-800 mb-4">{title}</h3>
-        <div className="text-gray-700 leading-relaxed">
-          <p>
-            {visibleWords.join(' ')}
-            {!isExpanded && hasMore && '...'}
-          </p>
+        <div className="prose prose-lg max-w-none">
+            <PortableText value={content} />
         </div>
-        
-        {hasMore && (
-          <button
-            onClick={() => setIsExpanded(!isExpanded)}
-            className="mt-4 flex items-center space-x-2 text-emerald-600 hover:text-emerald-700 font-medium transition-colors"
-          >
-            <span>{isExpanded ? 'Ver menos' : 'Ver más'}</span>
-            {isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
-          </button>
-        )}
       </div>
     )
   }
-  
+
   return null
 }
 
