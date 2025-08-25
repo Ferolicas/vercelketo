@@ -6,6 +6,15 @@ const nextConfig: NextConfig = {
   compress: true,
   poweredByHeader: false,
   
+  // Excluir sanity-studio del build
+  webpack: (config: any) => {
+    config.module.rules.push({
+      test: /\.tsx?$/,
+      exclude: /sanity-studio/,
+    });
+    return config;
+  },
+  
   // Configuración de imágenes optimizada
   images: {
     remotePatterns: [
