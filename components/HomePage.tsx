@@ -5,7 +5,6 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { 
-  ChefHatIcon, 
   ClockIcon, 
   HeartIcon,
   TrophyIcon,
@@ -99,7 +98,7 @@ export default function HomePage({
             >
               <div className="text-center">
                 <div className="flex justify-center mb-2">
-                  <ChefHatIcon className="h-8 w-8 text-green-600" />
+                  <div className="h-8 w-8 text-green-600 flex items-center justify-center text-2xl">👨‍🍳</div>
                 </div>
                 <div className="text-3xl font-bold text-gray-900">{stats.totalRecipes}+</div>
                 <div className="text-gray-600">Recetas Keto</div>
@@ -275,7 +274,7 @@ export default function HomePage({
                 href="/recetas"
                 className="bg-white text-green-600 px-8 py-4 rounded-xl font-semibold text-lg hover:bg-green-50 transition-all duration-200 inline-flex items-center justify-center"
               >
-                <ChefHatIcon className="mr-2 h-5 w-5" />
+                <span className="mr-2">👨‍🍳</span>
                 Explorar Recetas
               </Link>
               <Link

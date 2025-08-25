@@ -297,14 +297,9 @@ export default function PerformanceOptimizer({
       });
     });
 
-    // Limpiar timers y intervalos huérfanos
-    const highestTimeoutId = setTimeout(() => {}, 0);
-    for (let i = 0; i < highestTimeoutId; i++) {
+    // Limpiar algunos timers conocidos (simplificado para evitar problemas de tipos)
+    for (let i = 1; i <= 1000; i++) {
       clearTimeout(i);
-    }
-
-    const highestIntervalId = setInterval(() => {}, 9999999);
-    for (let i = 0; i < highestIntervalId; i++) {
       clearInterval(i);
     }
   }, []);

@@ -3,7 +3,6 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   // Optimizaciones de rendimiento
   reactStrictMode: true,
-  swcMinify: true,
   compress: true,
   poweredByHeader: false,
   
@@ -33,16 +32,20 @@ const nextConfig: NextConfig = {
   // Configuraciones experimentales para máximo rendimiento
   experimental: {
     optimizePackageImports: ['lucide-react', '@sanity/client', '@sanity/image-url'],
-    turbo: {
-      rules: {
-        '*.svg': {
-          loaders: ['@svgr/webpack'],
-          as: '*.js',
-        },
+    optimizeCss: true,
+  },
+  
+  // External packages para server components
+  serverExternalPackages: ['canvas-confetti'],
+  
+  // Configuración de Turbopack (nueva ubicación)
+  turbopack: {
+    rules: {
+      '*.svg': {
+        loaders: ['@svgr/webpack'],
+        as: '*.js',
       },
     },
-    optimizeCss: true,
-    serverComponentsExternalPackages: ['canvas-confetti'],
   },
   
   // Headers de seguridad y rendimiento

@@ -143,8 +143,10 @@ export function generateSEOMetadata({
     },
     other: {
       'fb:app_id': process.env.FACEBOOK_APP_ID || '',
-      'article:author': type === 'article' ? author : undefined,
-      'article:publisher': type === 'article' ? 'https://www.facebook.com/planetaketo' : undefined,
+      ...(type === 'article' && {
+        'article:author': author || '',
+        'article:publisher': 'https://www.facebook.com/planetaketo'
+      })
     }
   }
 }

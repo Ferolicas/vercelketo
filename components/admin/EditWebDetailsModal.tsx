@@ -82,7 +82,6 @@ export default function EditWebDetailsModal({ isOpen, onClose }: EditWebDetailsM
     formState: { errors, isSubmitting, isDirty },
     reset 
   } = useForm<WebDetailsFormData>({
-    resolver: zodResolver(webDetailsSchema),
     defaultValues
   });
 

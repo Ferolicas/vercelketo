@@ -450,14 +450,14 @@ class PlanetaKetoAnalytics {
 }
 
 // Crear instancia global
-let analytics: PlanetaKetoAnalytics;
+let analytics: PlanetaKetoAnalytics | undefined;
 
 if (typeof window !== 'undefined') {
   analytics = new PlanetaKetoAnalytics();
   (window as any).planetaKetoAnalytics = analytics;
 }
 
-export default analytics;
+export default analytics || {} as PlanetaKetoAnalytics;
 
 // Tipos para window global
 declare global {

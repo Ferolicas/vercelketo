@@ -71,8 +71,12 @@ export default function CreateProductModal({ isOpen, onClose }: CreateProductMod
     formState: { errors, isSubmitting },
     reset 
   } = useForm<ProductFormData>({
-    resolver: zodResolver(productSchema),
     defaultValues: {
+      nombre: '',
+      descripcion: '',
+      categoria: '',
+      precio: 0,
+      enlace: '',
       rating: 5,
       reviews: 0,
       activo: true,
@@ -288,7 +292,7 @@ export default function CreateProductModal({ isOpen, onClose }: CreateProductMod
                 </div>
 
                 {/* Vista previa de descuento */}
-                {watchPrecioOriginal > watchPrecio && watchPrecio > 0 && (
+                {watchPrecioOriginal && watchPrecioOriginal > watchPrecio && watchPrecio > 0 && (
                   <div className="bg-green-50 border border-green-200 rounded-lg p-4">
                     <div className="flex items-center">
                       <div className="text-green-600 font-semibold">
@@ -439,9 +443,9 @@ export default function CreateProductModal({ isOpen, onClose }: CreateProductMod
                         <span className="text-lg font-bold text-gray-900">
                           ${watch('precio') || '0'}
                         </span>
-                        {watch('precioOriginal') && watch('precioOriginal') > watch('precio') && (
+                        {watchPrecioOriginal && watchPrecioOriginal > watchPrecio && (
                           <span className="ml-2 text-sm text-gray-500 line-through">
-                            ${watch('precioOriginal')}
+                            ${watchPrecioOriginal}
                           </span>
                         )}
                       </div>

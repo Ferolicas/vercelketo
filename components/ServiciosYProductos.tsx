@@ -11,7 +11,7 @@ import {
   AcademicCapIcon,
   ClockIcon,
   CheckCircleIcon,
-  ExternalLinkIcon,
+  ArrowTopRightOnSquareIcon as ExternalLinkIcon,
   HeartIcon,
   TrophyIcon,
   SparklesIcon

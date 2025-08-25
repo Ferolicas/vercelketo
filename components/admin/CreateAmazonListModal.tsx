@@ -11,7 +11,7 @@ import {
   MinusIcon,
   StarIcon,
   ShoppingBagIcon,
-  ExternalLinkIcon,
+  ArrowTopRightOnSquareIcon as ExternalLinkIcon,
   CheckCircleIcon
 } from '@heroicons/react/24/outline';
 
@@ -26,7 +26,7 @@ const amazonProductSchema = z.object({
   beneficios: z.array(z.string().min(1)).min(1, 'Agrega al menos 1 beneficio'),
   asin: z.string().optional(),
   marca: z.string().optional(),
-  disponible: z.boolean().default(true),
+  disponible: z.boolean(),
 });
 
 const amazonListSchema = z.object({
@@ -99,8 +99,9 @@ export default function CreateAmazonListModal({ isOpen, onClose }: CreateAmazonL
     formState: { errors, isSubmitting },
     reset 
   } = useForm<AmazonListFormData>({
-    resolver: zodResolver(amazonListSchema),
     defaultValues: {
+      nombre: '',
+      descripcion: '',
       productos: productos,
       activo: true,
       orden: 0

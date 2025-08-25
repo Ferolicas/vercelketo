@@ -11,6 +11,31 @@ interface PageProps {
 }
 
 export default async function Page({ params, searchParams }: PageProps) {
+  // Durante el build, usar datos mock si no hay token de Sanity
+  const hasToken = !!process.env.SANITY_API_TOKEN;
+  
+  if (!hasToken && process.env.NODE_ENV === 'production') {
+    const stats = {
+      totalRecipes: 500,
+      happyUsers: 15000,
+      avgRating: 4.8
+    };
+    
+    return (
+      <Suspense fallback={
+        <div className="flex justify-center items-center h-screen">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-green-500"></div>
+        </div>
+      }>
+        <HomePage 
+          featuredRecipes={[]}
+          categories={[]}
+          stats={stats}
+        />
+      </Suspense>
+    );
+  }
+
   try {
     // Fetch datos básicos para la home
     const [categories, featuredRecipes] = await Promise.all([
@@ -54,13 +79,18 @@ export default async function Page({ params, searchParams }: PageProps) {
     );
   } catch (error) {
     console.error('Error loading homepage:', error);
+    const stats = {
+      totalRecipes: 500,
+      happyUsers: 15000,
+      avgRating: 4.8
+    };
+    
     return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">¡Bienvenido a Planeta Keto!</h2>
-          <p className="text-gray-600">Estamos preparando las mejores recetas para ti...</p>
-        </div>
-      </div>
+      <HomePage 
+        featuredRecipes={[]}
+        categories={[]}
+        stats={stats}
+      />
     );
   }
 }

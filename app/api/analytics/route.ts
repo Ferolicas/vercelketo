@@ -7,7 +7,14 @@ interface AnalyticsData {
 }
 
 // Simulación de base de datos en memoria (en producción usar una DB real)
-let analyticsStore: AnalyticsData[] = [];
+interface AnalyticsRecord extends AnalyticsData {
+  id: string;
+  ip: string;
+  userAgent: string;
+  referer: string;
+}
+
+let analyticsStore: AnalyticsRecord[] = [];
 
 export async function POST(request: NextRequest) {
   try {
@@ -29,12 +36,7 @@ export async function POST(request: NextRequest) {
                 'unknown';
 
     // Crear registro completo
-    const analyticsRecord: AnalyticsData & {
-      ip: string;
-      userAgent: string;
-      referer: string;
-      id: string;
-    } = {
+    const analyticsRecord: AnalyticsRecord = {
       id: `${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       type,
       data: {

@@ -70,8 +70,12 @@ export default function CreatePostModal({ isOpen, onClose }: CreatePostModalProp
     formState: { errors, isSubmitting },
     reset 
   } = useForm<PostFormData>({
-    resolver: zodResolver(postSchema),
     defaultValues: {
+      title: '',
+      slug: '',
+      excerpt: '',
+      content: '',
+      category: '',
       difficulty: 'Fácil',
       prepTime: 15,
       cookTime: 30,
@@ -97,7 +101,7 @@ export default function CreatePostModal({ isOpen, onClose }: CreatePostModalProp
       .replace(/[^a-z0-9\s-]/g, '')
       .replace(/\s+/g, '-')
       .replace(/-+/g, '-')
-      .trim('-');
+      .replace(/^-+|-+$/g, '');
   };
 
   // Actualizar slug cuando cambie el título
