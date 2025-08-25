@@ -32,7 +32,7 @@ const nextConfig: NextConfig = {
   // Configuraciones experimentales para máximo rendimiento
   experimental: {
     optimizePackageImports: ['lucide-react', '@sanity/client', '@sanity/image-url'],
-    optimizeCss: true,
+    optimizeCss: false,
   },
   
   // External packages para server components
