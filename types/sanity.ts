@@ -23,6 +23,21 @@ export interface Post {
       right: number;
     };
   };
+  image?: {
+    asset: {
+      _ref: string;
+    };
+    hotspot?: {
+      x: number;
+      y: number;
+    };
+    crop?: {
+      top: number;
+      bottom: number;
+      left: number;
+      right: number;
+    };
+  };
   publishedAt?: string;
   author?: {
     name: string;

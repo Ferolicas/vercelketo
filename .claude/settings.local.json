@@ -16,7 +16,11 @@
       "Bash(npm run dev:*)",
       "WebFetch(domain:www.planetaketo.es)",
       "Bash(node:*)",
-      "Bash(del test-sanity.js)"
+      "Bash(del test-sanity.js)",
+      "WebFetch(domain:localhost)",
+      "Bash(curl:*)",
+      "Bash(timeout 10 curl -s http://localhost:3001/recetas)",
+      "Bash(del \"C:\\PLANETA KETO V2\\planetaketonext\\test-sanity.js\")"
     ],
     "deny": [],
     "ask": [],

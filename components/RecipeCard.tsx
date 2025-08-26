@@ -10,8 +10,10 @@ interface RecipeCardProps {
 }
 
 export function RecipeCard({ recipe, onClick }: RecipeCardProps) {
-  const imageUrl = recipe.mainImage 
-    ? urlFor(recipe.mainImage).url() 
+  // Usar la imagen principal (mainImage) o image como fallback
+  const recipeImage = recipe.mainImage || recipe.image;
+  const imageUrl = recipeImage 
+    ? urlFor(recipeImage).url() 
     : '/placeholder-recipe.jpg';
 
   const publishedDate = recipe.publishedAt ? new Date(recipe.publishedAt) : null;

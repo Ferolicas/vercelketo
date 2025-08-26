@@ -100,17 +100,14 @@ export const queries = {
     _updatedAt,
     title,
     slug,
-    mainImage,
+    "mainImage": coalesce(mainImage, image),
+    image,
     publishedAt,
     excerpt,
-    author->{
-      name,
-      slug
-    },
+    author,
     category->{
       _id,
       title,
-      name,
       slug
     },
     preparationTime,
