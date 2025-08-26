@@ -9,7 +9,7 @@ interface InternalLink {
   emoji: string;
 }
 
-const allLinks: InternalLink[] = [
+const allLinks = [
   { href: '/dieta-keto', text: 'Guía Completa de Dieta Keto', emoji: '🥑' },
   { href: '/recetas-keto', text: 'Recetas Keto Deliciosas', emoji: '👨‍🍳' },
   { href: '/bajar-de-peso', text: 'Cómo Bajar de Peso Rápido', emoji: '⚖️' },
@@ -20,7 +20,7 @@ const allLinks: InternalLink[] = [
   { href: '/tienda-keto', text: 'Productos Keto Premium', emoji: '🛒' },
   { href: '/blog', text: 'Blog Keto con Consejos', emoji: '📝' },
   { href: '/foro', text: 'Comunidad Keto', emoji: '💬' },
-];
+] as const;
 
 interface InternalLinksProps {
   maxLinks?: number;
@@ -35,7 +35,7 @@ export default function InternalLinks({
 }: InternalLinksProps) {
   const pathname = usePathname();
   
-  let filteredLinks = allLinks;
+  let filteredLinks = [...allLinks];
   
   if (excludeCurrentPage) {
     filteredLinks = allLinks.filter(link => link.href !== pathname);

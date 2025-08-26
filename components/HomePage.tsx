@@ -136,7 +136,7 @@ export default function HomePage({
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {[
+            {([
               { name: 'Recetas Keto', emoji: '🥑', count: '500+', color: 'from-green-400 to-green-600', href: '/recetas-keto' },
               { name: 'Bajar de Peso', emoji: '⚖️', count: 'Guías', color: 'from-blue-400 to-indigo-500', href: '/bajar-de-peso' },
               { name: 'Quemar Grasa', emoji: '🔥', count: 'Tips', color: 'from-red-400 to-pink-500', href: '/quemar-grasa' },
@@ -145,7 +145,7 @@ export default function HomePage({
               { name: 'Tienda Keto', emoji: '🛒', count: 'Productos', color: 'from-teal-400 to-cyan-500', href: '/tienda-keto' },
               { name: 'Foro Keto', emoji: '💬', count: 'Comunidad', color: 'from-indigo-400 to-blue-500', href: '/foro' },
               { name: 'Low Carb', emoji: '🥬', count: 'Guías', color: 'from-lime-400 to-green-500', href: '/dieta-baja-carbohidratos' },
-            ].map((category, index) => (
+            ] as const).map((category, index) => (
               <div
                 key={category.name}
               >

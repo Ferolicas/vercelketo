@@ -21,7 +21,7 @@ const navigation = [
   { name: 'Blog', href: '/blog', icon: BookOpenIcon },
   { name: 'Foro', href: '/foro', icon: HomeIcon },
   { name: 'Admin', href: '/admin', icon: ChartBarIcon, adminOnly: true },
-]
+] as const
 
 export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false)
@@ -61,7 +61,7 @@ export default function Navigation() {
           <div className="hidden md:block">
             <div className="ml-10 flex items-baseline space-x-4">
               {navigation.map((item) => {
-                if (item.adminOnly && typeof window !== 'undefined' && !localStorage.getItem('admin_access')) {
+                if ('adminOnly' in item && item.adminOnly && typeof window !== 'undefined' && !localStorage.getItem('admin_access')) {
                   return null
                 }
                 
@@ -105,7 +105,7 @@ export default function Navigation() {
         <div className="md:hidden bg-white border-t border-gray-200 shadow-lg">
             <div className="px-2 pt-2 pb-3 space-y-1">
               {navigation.map((item) => {
-                if (item.adminOnly && typeof window !== 'undefined' && !localStorage.getItem('admin_access')) {
+                if ('adminOnly' in item && item.adminOnly && typeof window !== 'undefined' && !localStorage.getItem('admin_access')) {
                   return null
                 }
                 

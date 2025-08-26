@@ -210,13 +210,13 @@ export default function PerformanceOptimizer({
     if (!enablePreloading) return;
 
     const probableRoutes = [
-      '/recetas',
-      '/servicios',
-      '/admin'
+      '/recetas-keto',
+      '/tienda-keto',
+      '/blog'
     ];
 
     probableRoutes.forEach(route => {
-      router.prefetch(route);
+      router.prefetch(route as any);
     });
   }, [enablePreloading, router]);
 

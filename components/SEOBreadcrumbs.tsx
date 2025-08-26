@@ -54,7 +54,7 @@ export default function SEOBreadcrumbs() {
               )}
               {index === 0 ? (
                 <Link
-                  href={item.href}
+                  href={item.href as any}
                   className="text-gray-600 hover:text-green-600 flex items-center"
                 >
                   <HomeIcon className="h-4 w-4 mr-1" />
@@ -66,7 +66,7 @@ export default function SEOBreadcrumbs() {
                 </span>
               ) : (
                 <Link
-                  href={item.href}
+                  href={item.href as any}
                   className="text-gray-600 hover:text-green-600"
                 >
                   {item.label}

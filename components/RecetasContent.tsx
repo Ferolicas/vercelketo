@@ -63,7 +63,7 @@ export default function RecetasContent({ homePageData, categories, allPosts }: R
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {filteredPosts.map((post) => (
             <div key={post._id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
-              <Link href={`/categorias/${post.category?.slug?.current || 'sin-categoria'}/${post.slug.current}`}>
+              <Link href={`/recetas-keto`}>
                 {/* Image */}
                 <div className="relative w-full h-48 bg-gradient-to-br from-orange-50 to-emerald-50">
                   {post.mainImage ? (
