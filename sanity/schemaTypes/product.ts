@@ -7,7 +7,7 @@ export default defineType({
   fields: [
     defineField({
       name: 'name',
-      title: 'Nombre',
+      title: 'Nombre del producto',
       type: 'string',
       validation: (Rule) => Rule.required(),
     }),
@@ -25,27 +25,42 @@ export default defineType({
       name: 'description',
       title: 'Descripción',
       type: 'text',
+      rows: 4,
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'price',
       title: 'Precio',
       type: 'number',
+      validation: (Rule) => Rule.required().min(0),
     }),
     defineField({
       name: 'currency',
       title: 'Moneda',
       type: 'string',
-      initialValue: 'EUR',
+      initialValue: 'USD',
+      options: {
+        list: [
+          {title: 'USD ($)', value: 'USD'},
+          {title: 'EUR (€)', value: 'EUR'},
+          {title: 'COP ($)', value: 'COP'},
+        ]
+      }
     }),
     defineField({
       name: 'image',
       title: 'Imagen',
       type: 'image',
+      options: {
+        hotspot: true,
+      },
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
-      name: 'amazonUrl',
-      title: 'URL de Amazon',
+      name: 'affiliateUrl',
+      title: 'URL de afiliado',
       type: 'url',
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'featured',
@@ -53,12 +68,46 @@ export default defineType({
       type: 'boolean',
       initialValue: false,
     }),
+    defineField({
+      name: 'createdAt',
+      title: 'Fecha de creación',
+      type: 'datetime',
+      initialValue: () => new Date().toISOString(),
+      readOnly: true,
+    }),
+  ],
+  orderings: [
+    {
+      title: 'Más recientes',
+      name: 'createdAtDesc',
+      by: [
+        {field: 'createdAt', direction: 'desc'}
+      ]
+    },
+    {
+      title: 'Precio menor a mayor',
+      name: 'priceAsc',
+      by: [
+        {field: 'price', direction: 'asc'}
+      ]
+    }
   ],
   preview: {
     select: {
       title: 'name',
       subtitle: 'price',
       media: 'image',
+      currency: 'currency',
+      featured: 'featured'
     },
+    prepare(selection) {
+      const {title, subtitle, media, currency, featured} = selection
+      const featuredIcon = featured ? '⭐ ' : ''
+      return {
+        title: `${featuredIcon}${title}`,
+        subtitle: `${currency} $${subtitle}`,
+        media
+      }
+    }
   },
 })

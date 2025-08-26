@@ -28,44 +28,10 @@ export default defineType({
       rows: 3,
     }),
     defineField({
-      name: 'emoji',
-      title: 'Emoji',
+      name: 'icon',
+      title: 'Icono (Emoji)',
       type: 'string',
-      initialValue: '🥑',
-    }),
-    defineField({
-      name: 'color',
-      title: 'Color',
-      type: 'string',
-      options: {
-        list: [
-          {title: 'Verde', value: 'green'},
-          {title: 'Azul', value: 'blue'},
-          {title: 'Rojo', value: 'red'},
-          {title: 'Amarillo', value: 'yellow'},
-          {title: 'Morado', value: 'purple'},
-        ],
-      },
-      initialValue: 'green',
-    }),
-    // Campos adicionales encontrados en las categorías existentes
-    defineField({
-      name: 'categoryImage',
-      title: 'Imagen de Categoría',
-      type: 'image',
-      options: {
-        hotspot: true,
-      },
-    }),
-    defineField({
-      name: 'order',
-      title: 'Orden de visualización',
-      type: 'number',
-    }),
-    defineField({
-      name: 'title',
-      title: 'Título (Legacy)',
-      type: 'string',
+      description: 'Un emoji que represente la categoría',
     }),
   ],
   preview: {
@@ -73,5 +39,12 @@ export default defineType({
       title: 'name',
       subtitle: 'description',
     },
+    prepare(selection) {
+      const {title, subtitle} = selection
+      return {
+        title,
+        subtitle: subtitle || 'Sin descripción'
+      }
+    }
   },
 })

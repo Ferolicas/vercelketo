@@ -2,7 +2,7 @@ import {defineField, defineType} from 'sanity'
 
 export default defineType({
   name: 'blogPost',
-  title: 'Artículo del Blog',
+  title: 'Artículo de Blog',
   type: 'document',
   fields: [
     defineField({
@@ -26,41 +26,79 @@ export default defineType({
       title: 'Resumen',
       type: 'text',
       rows: 3,
+      validation: (Rule) => Rule.required(),
+      description: 'Resumen que aparece en la tarjeta del blog'
     }),
     defineField({
       name: 'content',
-      title: 'Contenido',
-      type: 'text',
+      title: 'Contenido completo',
+      type: 'array',
+      of: [{type: 'block'}],
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
-      name: 'image',
-      title: 'Imagen principal',
+      name: 'featuredImage',
+      title: 'Imagen destacada',
       type: 'image',
+      options: {
+        hotspot: true,
+      },
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'author',
       title: 'Autor',
       type: 'string',
       initialValue: 'Planeta Keto',
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
-      name: 'publishedAt',
-      title: 'Fecha de publicación',
-      type: 'datetime',
-      initialValue: () => new Date().toISOString(),
+      name: 'tags',
+      title: 'Etiquetas',
+      type: 'array',
+      of: [{type: 'string'}],
+      options: {
+        layout: 'tags',
+      },
     }),
     defineField({
-      name: 'featured',
-      title: 'Destacado',
+      name: 'published',
+      title: 'Publicado',
       type: 'boolean',
       initialValue: false,
     }),
+    defineField({
+      name: 'createdAt',
+      title: 'Fecha de creación',
+      type: 'datetime',
+      initialValue: () => new Date().toISOString(),
+      readOnly: true,
+    }),
+  ],
+  orderings: [
+    {
+      title: 'Más recientes',
+      name: 'createdAtDesc',
+      by: [
+        {field: 'createdAt', direction: 'desc'}
+      ]
+    }
   ],
   preview: {
     select: {
       title: 'title',
-      author: 'author',
-      media: 'image',
+      subtitle: 'excerpt',
+      media: 'featuredImage',
+      published: 'published'
     },
+    prepare(selection) {
+      const {title, subtitle, media, published} = selection
+      const status = published ? '✅' : '📝'
+      return {
+        title: `${status} ${title}`,
+        subtitle: subtitle?.substring(0, 60) + '...',
+        media
+      }
+    }
   },
 })

@@ -1,17 +1,22 @@
-import post from './post'
 import category from './category'
-import homePage from './homePage'
+import recipe from './recipe'
+import comment from './comment'
 import product from './product'
 import service from './service'
 import blogPost from './blogPost'
 import forumPost from './forumPost'
 
 export const schemaTypes = [
-  post,
+  // Contenido principal
   category,
-  homePage,
+  recipe,
+  comment,
+  
+  // Productos y servicios
   product,
   service,
+  
+  // Blog y foro
   blogPost,
   forumPost,
 ]

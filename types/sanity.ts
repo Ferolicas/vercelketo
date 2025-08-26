@@ -1,392 +1,188 @@
-// types/sanity.ts - Tipos actualizados
-
-export interface Post {
-  _id: string;
-  _createdAt: string;
-  _updatedAt: string;
-  title: string;
-  slug: {
-    current: string;
-  };
-  mainImage?: {
-    asset: {
-      _ref: string;
-    };
-    hotspot?: {
-      x: number;
-      y: number;
-    };
-    crop?: {
-      top: number;
-      bottom: number;
-      left: number;
-      right: number;
-    };
-  };
-  image?: {
-    asset: {
-      _ref: string;
-    };
-    hotspot?: {
-      x: number;
-      y: number;
-    };
-    crop?: {
-      top: number;
-      bottom: number;
-      left: number;
-      right: number;
-    };
-  };
-  publishedAt?: string;
-  author?: {
-    name: string;
-    slug: {
-      current: string;
-    };
-    image?: {
-      asset: {
-        _ref: string;
-      };
-    };
-    bio?: string;
-  };
-  category?: {
-    title: string;
-    name?: string;
-    slug: {
-      current: string;
-    };
-    description?: string;
-  };
-  // 👇 ESTA ES LA LÍNEA CORREGIDA
-  ingredients?: string;
-  body: any; // PortableText content
-  excerpt?: string;
-  youtubeUrl?: string;
-  level?: 'principiante' | 'intermedio' | 'avanzado';
-  difficulty?: 'facil' | 'intermedio' | 'avanzado';
-  preparationTime?: string;
-  cookingTime?: number;
-  rating?: number;
-  servings?: number;
-  calories?: number;
-  macros?: {
-    carbs?: number;
-    protein?: number;
-    fat?: number;
-    fiber?: number;
-  };
-  tags?: string[];
-  chefNotes?: string;
-}
+// Tipos TypeScript para los nuevos schemas de Sanity
 
 export interface Category {
-  _id: string;
-  title: string;
-  slug: {
-    current: string;
-  };
-  description?: string;
-  categoryImage?: {
-    asset: {
-      _id: string
-      url: string
-    }
-    alt?: string
-  }
-  postCount?: number;
-  posts?: Post[];
-}
-
-export interface Author {
   _id: string;
   name: string;
   slug: {
     current: string;
   };
-  image?: {
-    asset: {
-      _ref: string;
-    };
-  };
-  bio?: string;
+  description?: string;
+  icon?: string;
 }
 
-export interface HomePage {
-  _id: string
-  siteTitle: string
-  heroTitle: string
-  heroDescription: string
-  heroImage: {
-    asset: {
-      _id: string
-      url: string
-    }
-    alt?: string
-  }
-}
-
-export interface SiteStats {
-  totalPosts: number;
-  totalCategories: number;
-  totalAuthors: number;
-  averageRating: number;
-}
-
-// New schemas for expanded site functionality
-export interface Product {
+export interface Recipe {
   _id: string;
-  _createdAt: string;
-  _updatedAt: string;
-  title: string;
+  name: string;
   slug: {
     current: string;
   };
   description: string;
-  shortDescription?: string;
-  price: number;
-  discountPrice?: number;
-  currency: string;
-  images: {
+  ingredients: string[];
+  preparation: string;
+  youtubeUrl?: string;
+  preparationTime: number;
+  servings: number;
+  thumbnail: {
     asset: {
       _ref: string;
       url?: string;
-    };
-    alt?: string;
-  }[];
-  category: {
-    title: string;
-    slug: {
-      current: string;
-    };
-  };
-  tags?: string[];
-  features?: string[];
-  specifications?: {
-    name: string;
-    value: string;
-  }[];
-  affiliateUrl?: string;
-  amazonUrl?: string;
-  isDigital: boolean;
-  downloadUrl?: string;
-  stock?: number;
-  rating?: number;
-  reviews?: {
-    author: string;
-    rating: number;
-    comment: string;
-    date: string;
-  }[];
-  seo?: {
-    title?: string;
-    description?: string;
-    keywords?: string[];
-  };
-}
-
-export interface Service {
-  _id: string;
-  _createdAt: string;
-  _updatedAt: string;
-  title: string;
-  slug: {
-    current: string;
-  };
-  description: string;
-  shortDescription?: string;
-  price: number;
-  currency: string;
-  duration?: string;
-  image?: {
-    asset: {
-      _ref: string;
-      url?: string;
-    };
-    alt?: string;
-  };
-  features: string[];
-  includes?: string[];
-  category: {
-    title: string;
-    slug: {
-      current: string;
-    };
-  };
-  testimonials?: {
-    author: string;
-    content: string;
-    rating: number;
-    date: string;
-  }[];
-  contactEmail?: string;
-  whatsappNumber?: string;
-  bookingUrl?: string;
-  seo?: {
-    title?: string;
-    description?: string;
-    keywords?: string[];
-  };
-}
-
-export interface BlogPost {
-  _id: string;
-  _createdAt: string;
-  _updatedAt: string;
-  title: string;
-  slug: {
-    current: string;
-  };
-  excerpt?: string;
-  body: any; // PortableText content
-  mainImage?: {
-    asset: {
-      _ref: string;
     };
     hotspot?: {
       x: number;
       y: number;
     };
-    crop?: {
-      top: number;
-      bottom: number;
-      left: number;
-      right: number;
-    };
-    alt?: string;
   };
-  author?: {
-    name: string;
-    slug: {
-      current: string;
-    };
-    image?: {
-      asset: {
-        _ref: string;
-      };
-    };
-    bio?: string;
+  category: Category;
+  averageRating: number;
+  totalRatings: number;
+  createdAt: string;
+}
+
+export interface Comment {
+  _id: string;
+  recipe: {
+    _ref: string;
   };
-  category?: {
-    title: string;
-    name?: string;
-    slug: {
-      current: string;
-    };
-    description?: string;
+  authorName: string;
+  authorEmail: string;
+  content: string;
+  rating: number;
+  approved: boolean;
+  createdAt: string;
+}
+
+export interface Product {
+  _id: string;
+  name: string;
+  slug: {
+    current: string;
   };
+  description: string;
+  price: number;
+  currency: string;
+  image: {
+    asset: {
+      _ref: string;
+      url?: string;
+    };
+    hotspot?: {
+      x: number;
+      y: number;
+    };
+  };
+  affiliateUrl: string;
+  featured: boolean;
+  createdAt: string;
+}
+
+export interface Service {
+  _id: string;
+  name: string;
+  slug: {
+    current: string;
+  };
+  description: string;
+  price: number;
+  currency: string;
+  duration?: string;
+  image: {
+    asset: {
+      _ref: string;
+      url?: string;
+    };
+    hotspot?: {
+      x: number;
+      y: number;
+    };
+  };
+  features?: string[];
+  contactUrl?: string;
+  whatsapp?: string;
+  featured: boolean;
+  createdAt: string;
+}
+
+export interface BlogPost {
+  _id: string;
+  title: string;
+  slug: {
+    current: string;
+  };
+  excerpt: string;
+  content: any[]; // Rich text content
+  featuredImage: {
+    asset: {
+      _ref: string;
+      url?: string;
+    };
+    hotspot?: {
+      x: number;
+      y: number;
+    };
+  };
+  author: string;
   tags?: string[];
-  publishedAt?: string;
-  readTime?: number;
-  isFeatured?: boolean;
-  seo?: {
-    title?: string;
-    description?: string;
-    keywords?: string[];
-    focusKeyword?: string;
-  };
+  published: boolean;
+  createdAt: string;
+}
+
+export interface ForumReply {
+  authorName: string;
+  authorEmail: string;
+  content: string;
+  createdAt: string;
+  approved: boolean;
 }
 
 export interface ForumPost {
   _id: string;
-  _createdAt: string;
-  _updatedAt: string;
   title: string;
   slug: {
     current: string;
   };
   content: string;
-  author: {
-    name: string;
-    email: string;
-    avatar?: {
-      asset: {
-        _ref: string;
-      };
-    };
-  };
-  category: {
-    title: string;
-    slug: {
-      current: string;
-    };
-  };
-  tags?: string[];
-  isPinned?: boolean;
-  isLocked?: boolean;
+  authorName: string;
+  authorEmail: string;
+  category: 'general' | 'recetas' | 'ejercicio' | 'progreso' | 'preguntas' | 'productos';
+  pinned: boolean;
+  locked: boolean;
+  approved: boolean;
   views: number;
-  likes: number;
-  replies?: ForumReply[];
+  replies: ForumReply[];
+  createdAt: string;
 }
 
-export interface ForumReply {
-  _id: string;
-  _createdAt: string;
+// Tipos para formularios
+export interface CreateRecipeForm {
+  name: string;
+  description: string;
+  ingredients: string[];
+  preparation: string;
+  youtubeUrl?: string;
+  preparationTime: number;
+  servings: number;
+  thumbnail: File | null;
+  categoryId: string;
+}
+
+export interface CreateCommentForm {
+  authorName: string;
+  authorEmail: string;
   content: string;
-  author: {
-    name: string;
-    email: string;
-    avatar?: {
-      asset: {
-        _ref: string;
-      };
-    };
-  };
-  parentReply?: string;
-  likes: number;
-  isAcceptedAnswer?: boolean;
+  rating: number;
 }
 
-export interface ProductCategory {
-  _id: string;
+export interface CreateForumPostForm {
   title: string;
-  slug: {
-    current: string;
-  };
-  description?: string;
-  image?: {
-    asset: {
-      _id: string;
-      url: string;
-    };
-    alt?: string;
-  };
+  content: string;
+  authorName: string;
+  authorEmail: string;
+  category: string;
 }
 
-export interface ServiceCategory {
-  _id: string;
-  title: string;
-  slug: {
-    current: string;
-  };
-  description?: string;
-  image?: {
-    asset: {
-      _id: string;
-      url: string;
-    };
-    alt?: string;
-  };
-}
-
-export interface BlogCategory {
-  _id: string;
-  title: string;
-  slug: {
-    current: string;
-  };
-  description?: string;
-  color?: string;
-}
-
-export interface ForumCategory {
-  _id: string;
-  title: string;
-  slug: {
-    current: string;
-  };
-  description?: string;
-  color?: string;
-  icon?: string;
+// Tipos de respuesta de la API
+export interface ApiResponse<T> {
+  success: boolean;
+  data?: T;
+  error?: string;
 }
