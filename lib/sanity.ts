@@ -97,6 +97,7 @@ export const queries = {
   allPosts: `*[_type == "post"] | order(publishedAt desc) {
     _id,
     _createdAt,
+    _updatedAt,
     title,
     slug,
     mainImage,
@@ -107,13 +108,23 @@ export const queries = {
       slug
     },
     category->{
+      _id,
       title,
+      name,
       slug
     },
     preparationTime,
+    cookingTime,
     level,
+    difficulty,
     rating,
-    ingredients[0..2]
+    servings,
+    calories,
+    ingredients,
+    macros,
+    tags,
+    chefNotes,
+    youtubeUrl
   }`,
 
   // Query para posts de una categoría específica

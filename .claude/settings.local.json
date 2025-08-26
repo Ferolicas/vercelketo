@@ -14,7 +14,9 @@
       "Bash(npm run start:*)",
       "Bash(npm run sanity:deploy:*)",
       "Bash(npm run dev:*)",
-      "WebFetch(domain:www.planetaketo.es)"
+      "WebFetch(domain:www.planetaketo.es)",
+      "Bash(node:*)",
+      "Bash(del test-sanity.js)"
     ],
     "deny": [],
     "ask": [],

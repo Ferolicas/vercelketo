@@ -35,6 +35,9 @@ export default async function RecetasPage({ searchParams }: RecetasPageProps) {
       client.fetch<Post[]>(queries.allPosts).catch(() => [])
     ]);
 
+    // Logging for production debugging
+    console.log(`✅ Loaded ${allPosts.length} recipes and ${categories.length} categories`);
+
     return (
       <div className="pt-16">
         {/* Header de la sección de recetas */}
