@@ -88,12 +88,13 @@ export default function RootLayout({
         </main>
         <FooterLinks />
         <Analytics />
-        <PerformanceOptimizer 
+        {/* Temporarily disabled PerformanceOptimizer to fix button navigation issues */}
+        {/* <PerformanceOptimizer 
           enablePreloading={true}
           enableServiceWorker={true}
           enableImageOptimization={true}
           enableResourceHints={true}
-        />
+        /> */}
         
         {/* Temporarily remove inline scripts that might block hydration */}
         {/* 

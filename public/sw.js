@@ -69,7 +69,9 @@ self.addEventListener('activate', event => {
   );
 });
 
-// Interceptar requests (fetch)
+// TEMPORARILY DISABLED - Interceptar requests (fetch) to fix navigation
+// This Service Worker was interfering with Next.js client-side navigation
+/*
 self.addEventListener('fetch', event => {
   const { request } = event;
   const url = new URL(request.url);
@@ -87,6 +89,7 @@ self.addEventListener('fetch', event => {
     event.respondWith(handleGetRequest(request));
   }
 });
+*/
 
 // Manejar requests GET con diferentes estrategias
 async function handleGetRequest(request) {
