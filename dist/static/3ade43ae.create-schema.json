@@ -1,0 +1,893 @@
+[
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "title",
+        "type": "string",
+        "title": "Título"
+      },
+      {
+        "options": {
+          "source": "title",
+          "maxLength": 96
+        },
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "custom"
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "slug",
+        "type": "slug"
+      },
+      {
+        "rows": 3,
+        "name": "excerpt",
+        "type": "text",
+        "title": "Resumen"
+      },
+      {
+        "name": "content",
+        "type": "text",
+        "title": "Contenido"
+      },
+      {
+        "of": [
+          {
+            "marks": {
+              "annotations": [
+                {
+                  "i18nTitleKey": "inputs.portable-text.annotation.link",
+                  "options": {
+                    "modal": {
+                      "type": "popover"
+                    }
+                  },
+                  "fields": [
+                    {
+                      "validation": [
+                        {
+                          "rules": [
+                            {
+                              "flag": "uri",
+                              "constraint": {
+                                "options": {
+                                  "scheme": [
+                                    "/^http$/",
+                                    "/^https$/",
+                                    "/^tel$/",
+                                    "/^mailto$/"
+                                  ],
+                                  "allowRelative": true,
+                                  "relativeOnly": false,
+                                  "allowCredentials": false
+                                }
+                              }
+                            }
+                          ],
+                          "level": "error"
+                        }
+                      ],
+                      "description": "A valid web, email, phone, or relative link.",
+                      "name": "href",
+                      "type": "url",
+                      "title": "Link"
+                    }
+                  ],
+                  "name": "link",
+                  "type": "object"
+                }
+              ],
+              "decorators": [
+                {
+                  "value": "strong",
+                  "title": "Strong"
+                },
+                {
+                  "value": "em",
+                  "title": "Italic"
+                },
+                {
+                  "value": "code",
+                  "title": "Code"
+                },
+                {
+                  "value": "underline",
+                  "title": "Underline"
+                },
+                {
+                  "value": "strike-through",
+                  "title": "Strike"
+                }
+              ]
+            },
+            "lists": [
+              {
+                "value": "bullet",
+                "title": "Bulleted list"
+              },
+              {
+                "value": "number",
+                "title": "Numbered list"
+              }
+            ],
+            "styles": [
+              {
+                "value": "normal",
+                "title": "Normal"
+              },
+              {
+                "value": "h1",
+                "title": "Heading 1"
+              },
+              {
+                "value": "h2",
+                "title": "Heading 2"
+              },
+              {
+                "value": "h3",
+                "title": "Heading 3"
+              },
+              {
+                "value": "h4",
+                "title": "Heading 4"
+              },
+              {
+                "value": "h5",
+                "title": "Heading 5"
+              },
+              {
+                "value": "h6",
+                "title": "Heading 6"
+              },
+              {
+                "value": "blockquote",
+                "title": "Quote"
+              }
+            ],
+            "of": [],
+            "type": "block"
+          }
+        ],
+        "name": "body",
+        "type": "array",
+        "title": "Cuerpo (Rich Text)"
+      },
+      {
+        "name": "ingredients",
+        "type": "text",
+        "title": "Ingredientes"
+      },
+      {
+        "name": "instructions",
+        "type": "text",
+        "title": "Instrucciones"
+      },
+      {
+        "to": [
+          {
+            "type": "category"
+          }
+        ],
+        "name": "category",
+        "type": "reference",
+        "title": "Categoría"
+      },
+      {
+        "options": {
+          "hotspot": true
+        },
+        "name": "image",
+        "type": "image",
+        "title": "Imagen principal"
+      },
+      {
+        "name": "cookingTime",
+        "type": "number",
+        "title": "Tiempo de preparación (minutos)"
+      },
+      {
+        "name": "servings",
+        "type": "number",
+        "title": "Porciones"
+      },
+      {
+        "options": {
+          "list": [
+            {
+              "title": "Fácil",
+              "value": "facil"
+            },
+            {
+              "title": "Intermedio",
+              "value": "intermedio"
+            },
+            {
+              "title": "Avanzado",
+              "value": "avanzado"
+            }
+          ]
+        },
+        "name": "difficulty",
+        "type": "string",
+        "title": "Dificultad"
+      },
+      {
+        "initialValue": false,
+        "name": "featured",
+        "type": "boolean",
+        "title": "Destacada"
+      },
+      {
+        "name": "publishedAt",
+        "type": "datetime",
+        "title": "Fecha de publicación"
+      },
+      {
+        "initialValue": "Planeta Keto",
+        "name": "author",
+        "type": "string",
+        "title": "Autor"
+      },
+      {
+        "name": "seoTitle",
+        "type": "string",
+        "title": "SEO Título"
+      },
+      {
+        "rows": 2,
+        "name": "seoDescription",
+        "type": "text",
+        "title": "SEO Descripción"
+      },
+      {
+        "options": {
+          "layout": "tags"
+        },
+        "of": [
+          {
+            "type": "string"
+          }
+        ],
+        "name": "tags",
+        "type": "array",
+        "title": "Etiquetas"
+      },
+      {
+        "name": "calories",
+        "type": "number",
+        "title": "Calorías"
+      },
+      {
+        "name": "chefNotes",
+        "type": "text",
+        "title": "Notas del Chef"
+      },
+      {
+        "options": {
+          "list": [
+            {
+              "title": "Fácil",
+              "value": "facil"
+            },
+            {
+              "title": "Intermedio",
+              "value": "intermedio"
+            },
+            {
+              "title": "Avanzado",
+              "value": "avanzado"
+            }
+          ]
+        },
+        "name": "level",
+        "type": "string",
+        "title": "Nivel de dificultad"
+      },
+      {
+        "fields": [
+          {
+            "name": "carbs",
+            "type": "number",
+            "title": "Carbohidratos (g)"
+          },
+          {
+            "name": "fat",
+            "type": "number",
+            "title": "Grasas (g)"
+          },
+          {
+            "name": "fiber",
+            "type": "number",
+            "title": "Fibra (g)"
+          },
+          {
+            "name": "protein",
+            "type": "number",
+            "title": "Proteína (g)"
+          }
+        ],
+        "name": "macros",
+        "type": "object",
+        "title": "Macronutrientes"
+      },
+      {
+        "options": {
+          "hotspot": true
+        },
+        "name": "mainImage",
+        "type": "image",
+        "title": "Imagen Principal (Legacy)"
+      },
+      {
+        "name": "preparationTime",
+        "type": "string",
+        "title": "Tiempo de Preparación"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "min",
+                "constraint": 1
+              },
+              {
+                "flag": "max",
+                "constraint": 5
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "rating",
+        "type": "number",
+        "title": "Valoración"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "uri",
+                "constraint": {
+                  "options": {
+                    "scheme": [
+                      "/^http$/",
+                      "/^https$/"
+                    ],
+                    "allowRelative": false,
+                    "relativeOnly": false,
+                    "allowCredentials": false
+                  }
+                }
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "youtubeUrl",
+        "type": "url",
+        "title": "URL de YouTube"
+      }
+    ],
+    "name": "post",
+    "type": "document",
+    "title": "Receta"
+  },
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "name",
+        "type": "string",
+        "title": "Nombre"
+      },
+      {
+        "options": {
+          "source": "name",
+          "maxLength": 96
+        },
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "custom"
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "slug",
+        "type": "slug"
+      },
+      {
+        "rows": 3,
+        "name": "description",
+        "type": "text",
+        "title": "Descripción"
+      },
+      {
+        "initialValue": "🥑",
+        "name": "emoji",
+        "type": "string"
+      },
+      {
+        "options": {
+          "list": [
+            {
+              "title": "Verde",
+              "value": "green"
+            },
+            {
+              "title": "Azul",
+              "value": "blue"
+            },
+            {
+              "title": "Rojo",
+              "value": "red"
+            },
+            {
+              "title": "Amarillo",
+              "value": "yellow"
+            },
+            {
+              "title": "Morado",
+              "value": "purple"
+            }
+          ]
+        },
+        "initialValue": "green",
+        "name": "color",
+        "type": "string"
+      },
+      {
+        "options": {
+          "hotspot": true
+        },
+        "name": "categoryImage",
+        "type": "image",
+        "title": "Imagen de Categoría"
+      },
+      {
+        "name": "order",
+        "type": "number",
+        "title": "Orden de visualización"
+      },
+      {
+        "name": "title",
+        "type": "string",
+        "title": "Título (Legacy)"
+      }
+    ],
+    "name": "category",
+    "type": "document",
+    "title": "Categoría"
+  },
+  {
+    "fields": [
+      {
+        "initialValue": "Página Principal",
+        "name": "title",
+        "type": "string",
+        "title": "Título"
+      },
+      {
+        "name": "heroTitle",
+        "type": "string",
+        "title": "Título del Hero"
+      },
+      {
+        "name": "heroDescription",
+        "type": "text",
+        "title": "Descripción del Hero"
+      },
+      {
+        "of": [
+          {
+            "to": [
+              {
+                "type": "post"
+              }
+            ],
+            "type": "reference",
+            "title": "Reference to receta"
+          }
+        ],
+        "name": "featuredRecipes",
+        "type": "array",
+        "title": "Recetas Destacadas"
+      },
+      {
+        "fields": [
+          {
+            "name": "totalRecipes",
+            "type": "number",
+            "title": "Total Recetas"
+          },
+          {
+            "name": "happyUsers",
+            "type": "number",
+            "title": "Usuarios Felices"
+          },
+          {
+            "name": "avgRating",
+            "type": "number",
+            "title": "Rating Promedio"
+          }
+        ],
+        "name": "stats",
+        "type": "object",
+        "title": "Estadísticas"
+      },
+      {
+        "options": {
+          "hotspot": true
+        },
+        "name": "heroImage",
+        "type": "image",
+        "title": "Imagen del Hero"
+      },
+      {
+        "name": "siteTitle",
+        "type": "string",
+        "title": "Título del Sitio"
+      }
+    ],
+    "name": "homePage",
+    "type": "document",
+    "title": "Página Principal"
+  },
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "name",
+        "type": "string",
+        "title": "Nombre"
+      },
+      {
+        "options": {
+          "source": "name",
+          "maxLength": 96
+        },
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "custom"
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "slug",
+        "type": "slug"
+      },
+      {
+        "name": "description",
+        "type": "text",
+        "title": "Descripción"
+      },
+      {
+        "name": "price",
+        "type": "number",
+        "title": "Precio"
+      },
+      {
+        "initialValue": "EUR",
+        "name": "currency",
+        "type": "string",
+        "title": "Moneda"
+      },
+      {
+        "name": "image",
+        "type": "image",
+        "title": "Imagen"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "uri",
+                "constraint": {
+                  "options": {
+                    "scheme": [
+                      "/^http$/",
+                      "/^https$/"
+                    ],
+                    "allowRelative": false,
+                    "relativeOnly": false,
+                    "allowCredentials": false
+                  }
+                }
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "amazonUrl",
+        "type": "url",
+        "title": "URL de Amazon"
+      },
+      {
+        "initialValue": false,
+        "name": "featured",
+        "type": "boolean",
+        "title": "Destacado"
+      }
+    ],
+    "name": "product",
+    "type": "document",
+    "title": "Producto"
+  },
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "name",
+        "type": "string",
+        "title": "Nombre"
+      },
+      {
+        "options": {
+          "source": "name",
+          "maxLength": 96
+        },
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "custom"
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "slug",
+        "type": "slug"
+      },
+      {
+        "name": "description",
+        "type": "text",
+        "title": "Descripción"
+      },
+      {
+        "name": "price",
+        "type": "number",
+        "title": "Precio"
+      },
+      {
+        "initialValue": "EUR",
+        "name": "currency",
+        "type": "string",
+        "title": "Moneda"
+      },
+      {
+        "name": "duration",
+        "type": "number",
+        "title": "Duración (minutos)"
+      },
+      {
+        "initialValue": false,
+        "name": "featured",
+        "type": "boolean",
+        "title": "Destacado"
+      }
+    ],
+    "name": "service",
+    "type": "document",
+    "title": "Servicio"
+  },
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "title",
+        "type": "string",
+        "title": "Título"
+      },
+      {
+        "options": {
+          "source": "title",
+          "maxLength": 96
+        },
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "custom"
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "slug",
+        "type": "slug"
+      },
+      {
+        "rows": 3,
+        "name": "excerpt",
+        "type": "text",
+        "title": "Resumen"
+      },
+      {
+        "name": "content",
+        "type": "text",
+        "title": "Contenido"
+      },
+      {
+        "name": "image",
+        "type": "image",
+        "title": "Imagen principal"
+      },
+      {
+        "initialValue": "Planeta Keto",
+        "name": "author",
+        "type": "string",
+        "title": "Autor"
+      },
+      {
+        "name": "publishedAt",
+        "type": "datetime",
+        "title": "Fecha de publicación"
+      },
+      {
+        "initialValue": false,
+        "name": "featured",
+        "type": "boolean",
+        "title": "Destacado"
+      }
+    ],
+    "name": "blogPost",
+    "type": "document",
+    "title": "Artículo del Blog"
+  },
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "title",
+        "type": "string",
+        "title": "Título"
+      },
+      {
+        "options": {
+          "source": "title",
+          "maxLength": 96
+        },
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "custom"
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "slug",
+        "type": "slug"
+      },
+      {
+        "name": "content",
+        "type": "text",
+        "title": "Contenido"
+      },
+      {
+        "name": "author",
+        "type": "string",
+        "title": "Autor"
+      },
+      {
+        "name": "email",
+        "type": "email",
+        "title": "Email del autor"
+      },
+      {
+        "name": "publishedAt",
+        "type": "datetime",
+        "title": "Fecha de publicación"
+      },
+      {
+        "initialValue": false,
+        "name": "approved",
+        "type": "boolean",
+        "title": "Aprobado"
+      }
+    ],
+    "name": "forumPost",
+    "type": "document",
+    "title": "Post del Foro"
+  }
+]

@@ -280,9 +280,6 @@ export default function ServiciosYProductos() {
                 {productosFiltrados.map((producto, index) => (
                   <div
                     key={producto.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: index * 0.1 }}
                     className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group"
                   >
                     {/* Badge */}
@@ -388,9 +385,6 @@ export default function ServiciosYProductos() {
                 {productosAmazon.map((producto, index) => (
                   <div
                     key={producto.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: index * 0.1 }}
                     className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 p-6"
                   >
                     <div className="flex space-x-4">

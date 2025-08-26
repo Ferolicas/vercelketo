@@ -42,7 +42,7 @@ export function RecipeCard({ recipe, onClick }: RecipeCardProps) {
         {recipe.category && (
           <div className="absolute top-3 left-3">
             <span className="bg-green-600 text-white px-2 py-1 rounded-full text-xs font-medium">
-              {recipe.category.name || recipe.category.title}
+              {recipe.category.title}
             </span>
           </div>
         )}

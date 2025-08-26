@@ -37,5 +37,19 @@ export default defineType({
         {name: 'avgRating', title: 'Rating Promedio', type: 'number'},
       ],
     }),
+    // Campos adicionales encontrados en la página principal existente
+    defineField({
+      name: 'heroImage',
+      title: 'Imagen del Hero',
+      type: 'image',
+      options: {
+        hotspot: true,
+      },
+    }),
+    defineField({
+      name: 'siteTitle',
+      title: 'Título del Sitio',
+      type: 'string',
+    }),
   ],
 })

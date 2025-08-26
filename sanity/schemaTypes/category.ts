@@ -48,6 +48,25 @@ export default defineType({
       },
       initialValue: 'green',
     }),
+    // Campos adicionales encontrados en las categorías existentes
+    defineField({
+      name: 'categoryImage',
+      title: 'Imagen de Categoría',
+      type: 'image',
+      options: {
+        hotspot: true,
+      },
+    }),
+    defineField({
+      name: 'order',
+      title: 'Orden de visualización',
+      type: 'number',
+    }),
+    defineField({
+      name: 'title',
+      title: 'Título (Legacy)',
+      type: 'string',
+    }),
   ],
   preview: {
     select: {

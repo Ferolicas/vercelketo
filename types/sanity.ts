@@ -38,6 +38,7 @@ export interface Post {
   };
   category?: {
     title: string;
+    name?: string;
     slug: {
       current: string;
     };
@@ -49,7 +50,9 @@ export interface Post {
   excerpt?: string;
   youtubeUrl?: string;
   level?: 'principiante' | 'intermedio' | 'avanzado';
+  difficulty?: 'facil' | 'intermedio' | 'avanzado';
   preparationTime?: string;
+  cookingTime?: number;
   rating?: number;
   servings?: number;
   calories?: number;
@@ -252,6 +255,7 @@ export interface BlogPost {
   };
   category?: {
     title: string;
+    name?: string;
     slug: {
       current: string;
     };
