@@ -4,7 +4,8 @@
 // import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { motion } from 'framer-motion'
+// Remove framer-motion for better performance in Next.js 15
+// import { motion } from 'framer-motion'
 import { 
   ClockIcon, 
   HeartIcon,
@@ -49,11 +50,7 @@ export default function HomePage({
         
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-            >
+            <div>
               <div className="flex justify-center mb-6">
                 <div className="bg-gradient-to-r from-green-600 to-green-500 text-white p-4 rounded-2xl text-4xl">
                   🥑
@@ -89,13 +86,10 @@ export default function HomePage({
                   Productos y Servicios
                 </Link>
               </div>
-            </motion.div>
+            </div>
 
             {/* Stats */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
+            <div
               className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-3xl mx-auto"
             >
               <div className="text-center">
@@ -121,7 +115,7 @@ export default function HomePage({
                 <div className="text-3xl font-bold text-gray-900">{stats.avgRating}</div>
                 <div className="text-gray-600">Rating Promedio</div>
               </div>
-            </motion.div>
+            </div>
           </div>
         </div>
       </section>
@@ -152,11 +146,8 @@ export default function HomePage({
               { name: 'Panes', emoji: '🍞', count: '45+', color: 'from-yellow-400 to-yellow-600' },
               { name: 'Dulces', emoji: '🍫', count: '70+', color: 'from-pink-400 to-purple-500' },
             ].map((category, index) => (
-              <motion.div
+              <div
                 key={category.name}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
               >
                 <Link
                   href={`/recetas?categoria=${category.name.toLowerCase()}`}
@@ -174,7 +165,7 @@ export default function HomePage({
                     </p>
                   </div>
                 </Link>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>
@@ -234,11 +225,8 @@ export default function HomePage({
                 color: 'from-orange-400 to-red-500'
               },
             ].map((benefit, index) => (
-              <motion.div
+              <div
                 key={benefit.title}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
                 className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
               >
                 <div className={`w-12 h-12 mb-4 rounded-xl bg-gradient-to-br ${benefit.color} flex items-center justify-center text-2xl`}>
@@ -250,7 +238,7 @@ export default function HomePage({
                 <p className="text-gray-600">
                   {benefit.description}
                 </p>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>
@@ -259,10 +247,7 @@ export default function HomePage({
       {/* CTA Section */}
       <section className="py-16 bg-gradient-to-r from-green-600 to-green-500">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
+          <div
           >
             <SparklesIcon className="h-12 w-12 text-white mx-auto mb-6" />
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
@@ -286,7 +271,7 @@ export default function HomePage({
                 Ver Productos Premium
               </Link>
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
 

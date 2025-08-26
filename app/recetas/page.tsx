@@ -1,10 +1,11 @@
 import { Suspense } from 'react';
 import { client, queries } from '@/lib/sanity';
 import type { Category, Post, HomePage } from '@/types/sanity';
-import HomePageClient from '@/components/HomePageClient';
+import RecetasContent from '@/components/RecetasContent';
 import { generateSEOMetadata } from '@/components/SEOHead';
 
-export const dynamic = 'force-dynamic';
+// Remove force-dynamic for Next.js 15 compatibility
+// export const dynamic = 'force-dynamic';
 
 // SEO optimizado para la página de recetas
 export async function generateMetadata() {
@@ -22,34 +23,17 @@ interface RecetasPageProps {
 }
 
 export default async function RecetasPage({ searchParams }: RecetasPageProps) {
+  let homePageData: HomePage | null = null;
+  let categories: Category[] = [];
+  let allPosts: Post[] = [];
+
   try {
-    // Obtener datos de Sanity
-    const homePageDataPromise = client.fetch<HomePage>(queries.homePage);
-    const categoriesPromise = client.fetch<Category[]>(queries.allCategories);
-
-    // Resolver searchParams
-    const resolvedSearchParams = await searchParams;
-    const categoryParam = typeof resolvedSearchParams?.categoria === 'string' ? resolvedSearchParams.categoria : null;
-    const postParam = typeof resolvedSearchParams?.receta === 'string' ? resolvedSearchParams.receta : null;
-
-    const [homePageData, categories] = await Promise.all([homePageDataPromise, categoriesPromise]);
-
-    let initialRecipes: Post[] = [];
-    let initialSelectedRecipe: Post | null = null;
-
-    // Lógica de filtrado basada en parámetros
-    if (postParam && categoryParam) {
-      initialSelectedRecipe = await client.fetch<Post | null>(queries.postBySlug, { slug: postParam });
-      if (initialSelectedRecipe) {
-        initialRecipes = await client.fetch<Post[]>(queries.postsByCategory, { categorySlug: categoryParam });
-      } else {
-        initialRecipes = await client.fetch<Post[]>(queries.allPosts);
-      }
-    } else if (categoryParam) {
-      initialRecipes = await client.fetch<Post[]>(queries.postsByCategory, { categorySlug: categoryParam });
-    } else {
-      initialRecipes = await client.fetch<Post[]>(queries.allPosts);
-    }
+    // Fetch data with error handling for Next.js 15
+    [homePageData, categories, allPosts] = await Promise.all([
+      client.fetch<HomePage>(queries.homePage).catch(() => null),
+      client.fetch<Category[]>(queries.allCategories).catch(() => []),
+      client.fetch<Post[]>(queries.allPosts).catch(() => [])
+    ]);
 
     return (
       <div className="pt-16">
@@ -71,17 +55,16 @@ export default async function RecetasPage({ searchParams }: RecetasPageProps) {
           </div>
         </div>
 
-        {/* Contenido principal usando el componente existente */}
+        {/* Contenido principal simplificado para Next.js 15 */}
         <Suspense fallback={
           <div className="flex justify-center items-center h-96">
             <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-green-500"></div>
           </div>
         }>
-          <HomePageClient
+          <RecetasContent
             homePageData={homePageData}
             categories={categories}
-            initialRecipes={initialRecipes}
-            initialSelectedRecipe={initialSelectedRecipe}
+            allPosts={allPosts}
           />
         </Suspense>
       </div>
