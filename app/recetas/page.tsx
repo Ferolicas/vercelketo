@@ -4,8 +4,9 @@ import type { Category, Post, HomePage } from '@/types/sanity';
 import RecetasContent from '@/components/RecetasContent';
 import { generateSEOMetadata } from '@/components/SEOHead';
 
-// Remove force-dynamic for Next.js 15 compatibility
-// export const dynamic = 'force-dynamic';
+// Force dynamic to ensure recipes load fresh from Sanity
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 // SEO optimizado para la página de recetas
 export async function generateMetadata() {
@@ -37,6 +38,10 @@ export default async function RecetasPage({ searchParams }: RecetasPageProps) {
 
     // Logging for production debugging
     console.log(`✅ Loaded ${allPosts.length} recipes and ${categories.length} categories`);
+    
+    // Ensure we always have arrays even if null/undefined
+    const safeAllPosts = allPosts || [];
+    const safeCategories = categories || [];
 
     return (
       <div className="pt-16">
@@ -66,8 +71,8 @@ export default async function RecetasPage({ searchParams }: RecetasPageProps) {
         }>
           <RecetasContent
             homePageData={homePageData}
-            categories={categories}
-            allPosts={allPosts}
+            categories={safeCategories}
+            allPosts={safeAllPosts}
           />
         </Suspense>
       </div>
