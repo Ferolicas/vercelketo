@@ -7,16 +7,16 @@ import ModernRecipeCard from '@/components/ModernRecipeCard';
 import { ChefHat, Filter } from 'lucide-react';
 
 export default function ModernRecipesPage() {
-  const [recipes, setRecipes] = useState<Recipe[]>([]);
+  const [allRecipes, setAllRecipes] = useState<Recipe[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch data
+  // Fetch data only once
   useEffect(() => {
     loadData();
-  }, [selectedCategory]);
+  }, []);
 
   const loadData = async () => {
     try {
@@ -24,7 +24,7 @@ export default function ModernRecipesPage() {
       setError(null);
 
       const [recipesRes, categoriesRes] = await Promise.all([
-        fetch(`/api/recipes${selectedCategory ? `?category=${selectedCategory}` : ''}`),
+        fetch('/api/recipes'), // Always load ALL recipes
         fetch('/api/categories')
       ]);
 
@@ -34,7 +34,7 @@ export default function ModernRecipesPage() {
       if (!recipesData.success) throw new Error(recipesData.error);
       if (!categoriesData.success) throw new Error(categoriesData.error);
 
-      setRecipes(recipesData.data || []);
+      setAllRecipes(recipesData.data || []);
       setCategories(categoriesData.data || []);
 
     } catch (err) {
@@ -45,7 +45,10 @@ export default function ModernRecipesPage() {
     }
   };
 
-  const filteredRecipes = recipes || [];
+  // Filter recipes on client side - INSTANT filtering!
+  const filteredRecipes = selectedCategory 
+    ? allRecipes.filter(recipe => recipe.category?._id === selectedCategory)
+    : allRecipes;
 
   if (loading) {
     return (
@@ -105,7 +108,7 @@ export default function ModernRecipesPage() {
               }`}
             >
               <span className="relative z-10">
-                🍽️ Todas las Recetas ({recipes.length})
+                🍽️ Todas las Recetas ({allRecipes.length})
               </span>
               {selectedCategory === null && (
                 <div className="absolute inset-0 bg-gradient-to-r from-green-400 to-emerald-500 rounded-2xl blur opacity-30 group-hover:opacity-50 transition-opacity"></div>
@@ -113,7 +116,7 @@ export default function ModernRecipesPage() {
             </button>
 
             {categories.map((category) => {
-              const categoryRecipes = recipes.filter(r => r.category?._id === category._id);
+              const categoryRecipes = allRecipes.filter(r => r.category?._id === category._id);
               return (
                 <button
                   key={category._id}

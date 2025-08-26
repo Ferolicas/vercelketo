@@ -26,7 +26,11 @@
       "Bash(npm run:*)",
       "WebFetch(domain:vercel.com)",
       "WebFetch(domain:planetaketo.sanity.studio)",
-      "Bash(del \"C:\\PLANETA KETO V2\\planetaketonext\\cleanup-sanity.js\")"
+      "Bash(del \"C:\\PLANETA KETO V2\\planetaketonext\\cleanup-sanity.js\")",
+      "Bash(del \"C:\\PLANETA KETO V2\\planetaketonext\\fix-recipe-categories.mjs\")",
+      "Bash(del \"C:\\PLANETA KETO V2\\planetaketonext\\recreate-recipes-with-categories.mjs\")",
+      "WebFetch(domain:planetaketo.vercel.app)",
+      "WebFetch(domain:planetaketo.es)"
     ],
     "deny": [],
     "ask": [],

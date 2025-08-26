@@ -45,75 +45,73 @@ export default function HomePage({
       <AdSystem />
       
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-green-50 via-white to-green-50 pt-20 pb-16 overflow-hidden">
-        <div className="absolute inset-0 bg-[url('/pattern.svg')] opacity-5" />
+      <section className="relative bg-gradient-to-r from-green-600 via-green-500 to-emerald-600 pt-20 pb-16 overflow-hidden">
+        {/* Decorative background */}
+        <div className="absolute inset-0 bg-black/10"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent"></div>
+        
+        {/* Floating elements */}
+        <div className="absolute top-10 left-10 w-20 h-20 bg-white/10 rounded-full animate-pulse"></div>
+        <div className="absolute bottom-10 right-20 w-16 h-16 bg-white/10 rounded-full animate-bounce"></div>
+        <div className="absolute top-1/2 right-10 w-12 h-12 bg-white/10 rounded-full animate-ping"></div>
         
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <div>
-              <div className="flex justify-center mb-6">
-                <div className="bg-gradient-to-r from-green-600 to-green-500 text-white p-4 rounded-2xl text-4xl">
-                  🥑
-                </div>
+              <div className="inline-flex items-center justify-center w-24 h-24 bg-white/20 backdrop-blur-sm rounded-3xl text-white text-4xl mb-8 shadow-2xl">
+                🥑
               </div>
               
-              <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
-                Las Mejores{' '}
-                <span className="bg-gradient-to-r from-green-600 to-green-500 bg-clip-text text-transparent">
+              <h1 className="text-5xl md:text-7xl font-black text-white mb-6 tracking-tight">
+                Las Mejores
+                <span className="block bg-gradient-to-r from-yellow-300 to-orange-300 bg-clip-text text-transparent mt-2">
                   Recetas Keto
-                </span>{' '}
-                en Español
+                </span>
+                <span className="block text-4xl md:text-5xl font-light mt-2">
+                  en Español
+                </span>
               </h1>
               
-              <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
-                Transforma tu cuerpo con +500 recetas cetogénicas deliciosas. 
-                Desayunos, comidas, cenas y postres para perder peso sin sacrificar sabor.
+              <p className="text-xl md:text-2xl text-green-50 max-w-3xl mx-auto leading-relaxed font-light mb-8">
+                Transforma tu cuerpo con recetas cetogénicas deliciosas.
+                <span className="block mt-2 font-medium">
+                  ¡Desayunos, comidas, cenas y postres sin sacrificar sabor!
+                </span>
               </p>
               
-              <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+              <div className="flex flex-col sm:flex-row gap-6 justify-center mb-12">
                 <Link
                   href="/recetas"
-                  className="bg-gradient-to-r from-green-600 to-green-500 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:from-green-700 hover:to-green-600 transition-all duration-200 flex items-center justify-center"
+                  className="bg-white text-green-600 px-8 py-4 rounded-2xl font-bold text-lg hover:bg-green-50 transition-all duration-300 flex items-center justify-center shadow-xl hover:shadow-2xl transform hover:scale-105"
                 >
+                  <span className="mr-2">🍽️</span>
                   Ver Todas las Recetas
                   <ArrowRightIcon className="ml-2 h-5 w-5" />
                 </Link>
                 
                 <Link
                   href="/productos"
-                  className="border-2 border-green-500 text-green-600 px-8 py-4 rounded-xl font-semibold text-lg hover:bg-green-50 transition-all duration-200"
+                  className="bg-white/20 backdrop-blur-sm border-2 border-white/30 text-white px-8 py-4 rounded-2xl font-semibold text-lg hover:bg-white/30 transition-all duration-300 transform hover:scale-105"
                 >
-                  Productos y Servicios
+                  <span className="mr-2">🛒</span>
+                  Productos Premium
                 </Link>
               </div>
             </div>
 
             {/* Stats */}
-            <div
-              className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-3xl mx-auto"
-            >
-              <div className="text-center">
-                <div className="flex justify-center mb-2">
-                  <div className="h-8 w-8 text-green-600 flex items-center justify-center text-2xl">👨‍🍳</div>
-                </div>
-                <div className="text-3xl font-bold text-gray-900">{stats.totalRecipes}+</div>
-                <div className="text-gray-600">Recetas Keto</div>
+            <div className="flex flex-wrap justify-center gap-8 mt-12">
+              <div className="bg-white/20 backdrop-blur-sm rounded-2xl px-6 py-4 text-white text-center">
+                <div className="text-2xl font-bold">{stats.totalRecipes}+</div>
+                <div className="text-sm opacity-90">Recetas Keto</div>
               </div>
-              
-              <div className="text-center">
-                <div className="flex justify-center mb-2">
-                  <UsersIcon className="h-8 w-8 text-green-600" />
-                </div>
-                <div className="text-3xl font-bold text-gray-900">{(stats.happyUsers / 1000).toFixed(0)}K+</div>
-                <div className="text-gray-600">Usuarios Felices</div>
+              <div className="bg-white/20 backdrop-blur-sm rounded-2xl px-6 py-4 text-white text-center">
+                <div className="text-2xl font-bold">{(stats.happyUsers / 1000).toFixed(0)}K+</div>
+                <div className="text-sm opacity-90">Usuarios Felices</div>
               </div>
-              
-              <div className="text-center">
-                <div className="flex justify-center mb-2">
-                  <TrophyIcon className="h-8 w-8 text-green-600" />
-                </div>
-                <div className="text-3xl font-bold text-gray-900">{stats.avgRating}</div>
-                <div className="text-gray-600">Rating Promedio</div>
+              <div className="bg-white/20 backdrop-blur-sm rounded-2xl px-6 py-4 text-white text-center">
+                <div className="text-2xl font-bold">⭐ {stats.avgRating}</div>
+                <div className="text-sm opacity-90">Rating Promedio</div>
               </div>
             </div>
           </div>
@@ -124,7 +122,7 @@ export default function HomePage({
       <HeaderAd />
 
       {/* Featured Categories */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-gradient-to-br from-gray-50 via-white to-green-50/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
@@ -175,7 +173,7 @@ export default function HomePage({
       <ContentAd position="middle" />
 
       {/* Why Choose Keto */}
-      <section className="py-16 bg-gradient-to-br from-green-50 to-white">
+      <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
