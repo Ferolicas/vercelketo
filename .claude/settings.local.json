@@ -21,7 +21,11 @@
       "Bash(curl:*)",
       "Bash(timeout 10 curl -s http://localhost:3001/recetas)",
       "Bash(del \"C:\\PLANETA KETO V2\\planetaketonext\\test-sanity.js\")",
-      "mcp__ide__getDiagnostics"
+      "mcp__ide__getDiagnostics",
+      "Bash(npm run deploy:*)",
+      "Bash(npm run:*)",
+      "WebFetch(domain:vercel.com)",
+      "WebFetch(domain:planetaketo.sanity.studio)"
     ],
     "deny": [],
     "ask": [],
