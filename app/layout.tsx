@@ -4,6 +4,8 @@ import "./globals.css";
 import { Analytics } from "@vercel/analytics/next"
 import Navigation from "@/components/Navigation"
 import PerformanceOptimizer from "@/components/PerformanceOptimizer"
+import SEOBreadcrumbs from "@/components/SEOBreadcrumbs"
+import { FooterLinks } from "@/components/InternalLinks"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -18,7 +20,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Planeta Keto | Las Mejores Recetas Cetogénicas en Español 2024",
   description: "🥑 +500 recetas keto GRATIS en español. Desayunos, comidas, cenas y postres cetogénicos para perder peso rápido. Menús semanales, guías paso a paso y tips de expertos. ¡Empieza tu transformación keto hoy!",
-  keywords: "recetas keto, dieta keto, dieta cetogénica, keto en español, recetas cetogénicas, comida keto, desayuno keto, almuerzo keto, cena keto, postres keto, pan keto, pizza keto, galletas keto, recetas bajas en carbohidratos, perder peso keto, quemar grasa keto, cetosis, macros keto, menu keto, plan keto, keto facil, keto para principiantes, dieta cetogénica beneficios, alimentos keto, lista keto, keto mexico, keto argentina, keto colombia, keto españa, recetas sin azucar, ayuno intermitente keto, productos keto, calculadora keto, macros cetogénicos, recetas keto dulces, recetas keto saladas, keto vegetariano, suplementos keto, libros keto, tienda keto",
+  keywords: "recetas keto, dieta keto, dieta cetogénica, bajar de peso, quemar grasa, recetas saludables, dieta baja carbohidratos, keto en español, recetas cetogénicas, comida keto, desayuno keto, almuerzo keto, cena keto, postres keto, tienda keto, dr bayter, cetosis, macros keto, menu keto, plan keto, keto facil, keto para principiantes, dieta cetogénica beneficios, alimentos keto, lista keto, productos keto, suplementos keto, libros keto, foro keto, blog keto, comunidad keto",
   metadataBase: new URL(process.env.SITE_URL || "https://planetaketo.es"),
   alternates: {
     canonical: "/",
@@ -80,9 +82,11 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-[100dvh] bg-white`}
       >
         <Navigation />
+        <SEOBreadcrumbs />
         <main className="min-h-screen">
           {children}
         </main>
+        <FooterLinks />
         <Analytics />
         <PerformanceOptimizer 
           enablePreloading={true}

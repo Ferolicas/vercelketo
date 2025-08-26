@@ -327,5 +327,255 @@ export const queries = {
       title,
       slug
     }
+  }`,
+
+  // PRODUCTS QUERIES
+  allProducts: `*[_type == "product"] | order(_createdAt desc) {
+    _id,
+    _createdAt,
+    title,
+    slug,
+    shortDescription,
+    price,
+    discountPrice,
+    currency,
+    images,
+    category->{
+      title,
+      slug
+    },
+    rating,
+    isDigital,
+    stock
+  }`,
+
+  productBySlug: `*[_type == "product" && slug.current == $slug][0] {
+    _id,
+    _createdAt,
+    _updatedAt,
+    title,
+    slug,
+    description,
+    shortDescription,
+    price,
+    discountPrice,
+    currency,
+    images,
+    category->{
+      title,
+      slug
+    },
+    tags,
+    features,
+    specifications,
+    affiliateUrl,
+    amazonUrl,
+    isDigital,
+    downloadUrl,
+    stock,
+    rating,
+    reviews,
+    seo
+  }`,
+
+  productsByCategory: `*[_type == "product" && category->slug.current == $categorySlug] | order(_createdAt desc) {
+    _id,
+    title,
+    slug,
+    shortDescription,
+    price,
+    discountPrice,
+    currency,
+    images,
+    rating,
+    isDigital
+  }`,
+
+  // SERVICES QUERIES
+  allServices: `*[_type == "service"] | order(_createdAt desc) {
+    _id,
+    _createdAt,
+    title,
+    slug,
+    shortDescription,
+    price,
+    currency,
+    duration,
+    image,
+    category->{
+      title,
+      slug
+    },
+    features[0..3]
+  }`,
+
+  serviceBySlug: `*[_type == "service" && slug.current == $slug][0] {
+    _id,
+    _createdAt,
+    _updatedAt,
+    title,
+    slug,
+    description,
+    shortDescription,
+    price,
+    currency,
+    duration,
+    image,
+    features,
+    includes,
+    category->{
+      title,
+      slug
+    },
+    testimonials,
+    contactEmail,
+    whatsappNumber,
+    bookingUrl,
+    seo
+  }`,
+
+  // BLOG QUERIES
+  allBlogPosts: `*[_type == "blogPost"] | order(publishedAt desc) {
+    _id,
+    _createdAt,
+    title,
+    slug,
+    excerpt,
+    mainImage,
+    author->{
+      name,
+      slug,
+      image
+    },
+    category->{
+      title,
+      slug
+    },
+    tags,
+    publishedAt,
+    readTime,
+    isFeatured
+  }`,
+
+  blogPostBySlug: `*[_type == "blogPost" && slug.current == $slug][0] {
+    _id,
+    _createdAt,
+    _updatedAt,
+    title,
+    slug,
+    excerpt,
+    body,
+    mainImage,
+    author->{
+      name,
+      slug,
+      image,
+      bio
+    },
+    category->{
+      title,
+      slug,
+      description
+    },
+    tags,
+    publishedAt,
+    readTime,
+    isFeatured,
+    seo
+  }`,
+
+  featuredBlogPosts: `*[_type == "blogPost" && isFeatured == true] | order(publishedAt desc)[0..5] {
+    _id,
+    title,
+    slug,
+    excerpt,
+    mainImage,
+    publishedAt,
+    readTime,
+    category->{
+      title,
+      slug
+    }
+  }`,
+
+  // FORUM QUERIES
+  allForumPosts: `*[_type == "forumPost"] | order(_createdAt desc) {
+    _id,
+    _createdAt,
+    title,
+    slug,
+    content[0..150],
+    author,
+    category->{
+      title,
+      slug,
+      color
+    },
+    tags,
+    isPinned,
+    isLocked,
+    views,
+    likes,
+    "replyCount": count(replies)
+  }`,
+
+  forumPostBySlug: `*[_type == "forumPost" && slug.current == $slug][0] {
+    _id,
+    _createdAt,
+    _updatedAt,
+    title,
+    slug,
+    content,
+    author,
+    category->{
+      title,
+      slug,
+      description,
+      color
+    },
+    tags,
+    isPinned,
+    isLocked,
+    views,
+    likes,
+    replies
+  }`,
+
+  // CATEGORY QUERIES FOR NEW CONTENT TYPES
+  allProductCategories: `*[_type == "productCategory"] | order(title asc) {
+    _id,
+    title,
+    slug,
+    description,
+    image,
+    "productCount": count(*[_type == "product" && references(^._id)])
+  }`,
+
+  allServiceCategories: `*[_type == "serviceCategory"] | order(title asc) {
+    _id,
+    title,
+    slug,
+    description,
+    image,
+    "serviceCount": count(*[_type == "service" && references(^._id)])
+  }`,
+
+  allBlogCategories: `*[_type == "blogCategory"] | order(title asc) {
+    _id,
+    title,
+    slug,
+    description,
+    color,
+    "postCount": count(*[_type == "blogPost" && references(^._id)])
+  }`,
+
+  allForumCategories: `*[_type == "forumCategory"] | order(title asc) {
+    _id,
+    title,
+    slug,
+    description,
+    color,
+    icon,
+    "postCount": count(*[_type == "forumPost" && references(^._id)])
   }`
 }

@@ -72,18 +72,18 @@ export default function HomePage({
               
               <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
                 <Link
-                  href="/recetas"
+                  href="/recetas-keto"
                   className="bg-gradient-to-r from-green-600 to-green-500 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:from-green-700 hover:to-green-600 transition-all duration-200 flex items-center justify-center"
                 >
-                  Ver Todas las Recetas
+                  Ver Recetas Keto
                   <ArrowRightIcon className="ml-2 h-5 w-5" />
                 </Link>
                 
                 <Link
-                  href="/servicios"
+                  href="/dieta-keto"
                   className="border-2 border-green-500 text-green-600 px-8 py-4 rounded-xl font-semibold text-lg hover:bg-green-50 transition-all duration-200"
                 >
-                  Productos y Servicios
+                  Guía Completa Keto
                 </Link>
               </div>
             </div>
@@ -137,20 +137,20 @@ export default function HomePage({
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {[
-              { name: 'Desayunos', emoji: '🍳', count: '120+', color: 'from-yellow-400 to-orange-500' },
-              { name: 'Comidas', emoji: '🥘', count: '200+', color: 'from-red-400 to-pink-500' },
-              { name: 'Cenas', emoji: '🍽️', count: '150+', color: 'from-blue-400 to-indigo-500' },
-              { name: 'Postres', emoji: '🧁', count: '80+', color: 'from-purple-400 to-pink-500' },
-              { name: 'Bebidas', emoji: '🥤', count: '60+', color: 'from-green-400 to-blue-500' },
-              { name: 'Snacks', emoji: '🥜', count: '90+', color: 'from-orange-400 to-red-500' },
-              { name: 'Panes', emoji: '🍞', count: '45+', color: 'from-yellow-400 to-yellow-600' },
-              { name: 'Dulces', emoji: '🍫', count: '70+', color: 'from-pink-400 to-purple-500' },
+              { name: 'Recetas Keto', emoji: '🥑', count: '500+', color: 'from-green-400 to-green-600', href: '/recetas-keto' },
+              { name: 'Bajar de Peso', emoji: '⚖️', count: 'Guías', color: 'from-blue-400 to-indigo-500', href: '/bajar-de-peso' },
+              { name: 'Quemar Grasa', emoji: '🔥', count: 'Tips', color: 'from-red-400 to-pink-500', href: '/quemar-grasa' },
+              { name: 'Dieta Keto', emoji: '🧠', count: 'Ciencia', color: 'from-purple-400 to-pink-500', href: '/dieta-keto' },
+              { name: 'Blog Keto', emoji: '📝', count: 'Artículos', color: 'from-yellow-400 to-orange-500', href: '/blog' },
+              { name: 'Tienda Keto', emoji: '🛒', count: 'Productos', color: 'from-teal-400 to-cyan-500', href: '/tienda-keto' },
+              { name: 'Foro Keto', emoji: '💬', count: 'Comunidad', color: 'from-indigo-400 to-blue-500', href: '/foro' },
+              { name: 'Low Carb', emoji: '🥬', count: 'Guías', color: 'from-lime-400 to-green-500', href: '/dieta-baja-carbohidratos' },
             ].map((category, index) => (
               <div
                 key={category.name}
               >
                 <Link
-                  href={`/recetas?categoria=${category.name.toLowerCase()}`}
+                  href={category.href}
                   className="block group"
                 >
                   <div className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 group-hover:-translate-y-1 border border-gray-100">
@@ -256,19 +256,27 @@ export default function HomePage({
             <p className="text-xl text-green-100 mb-8 max-w-2xl mx-auto">
               Únete a miles de personas que ya han transformado su vida con nuestras recetas keto probadas y deliciosas.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 justify-center max-w-4xl mx-auto">
               <Link
-                href="/recetas"
-                className="bg-white text-green-600 px-8 py-4 rounded-xl font-semibold text-lg hover:bg-green-50 transition-all duration-200 inline-flex items-center justify-center"
+                href="/recetas-keto"
+                className="bg-white text-green-600 px-6 py-4 rounded-xl font-semibold text-lg hover:bg-green-50 transition-all duration-200 inline-flex items-center justify-center"
               >
                 <span className="mr-2">👨‍🍳</span>
-                Explorar Recetas
+                Recetas Keto
               </Link>
               <Link
-                href="/servicios"
-                className="border-2 border-white text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-white hover:text-green-600 transition-all duration-200"
+                href="/bajar-de-peso"
+                className="border-2 border-white text-white px-6 py-4 rounded-xl font-semibold text-lg hover:bg-white hover:text-green-600 transition-all duration-200"
               >
-                Ver Productos Premium
+                <span className="mr-2">⚖️</span>
+                Bajar de Peso
+              </Link>
+              <Link
+                href="/tienda-keto"
+                className="bg-yellow-400 text-yellow-900 px-6 py-4 rounded-xl font-semibold text-lg hover:bg-yellow-300 transition-all duration-200"
+              >
+                <span className="mr-2">🛒</span>
+                Tienda Premium
               </Link>
             </div>
           </div>

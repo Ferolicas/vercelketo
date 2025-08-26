@@ -1,0 +1,21 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://planetaketo.es/sitemap.xml
+
+# Disallow admin routes
+Disallow: /admin/
+Disallow: /api/
+
+# Allow important SEO pages
+Allow: /recetas/
+Allow: /blog/
+Allow: /foro/
+Allow: /productos/
+Allow: /servicios/
+Allow: /categorias/
+
+# Crawl delay for better server performance
+Crawl-delay: 1
