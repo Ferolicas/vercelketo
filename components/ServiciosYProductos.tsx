@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
+// import { motion } from 'framer-motion'; // Disabled for Next.js 15 compatibility
 import { 
   StarIcon,
   ShoppingCartIcon,
@@ -278,7 +278,7 @@ export default function ServiciosYProductos() {
               {/* Grid de productos */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {productosFiltrados.map((producto, index) => (
-                  <motion.div
+                  <div
                     key={producto.id}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -365,7 +365,7 @@ export default function ServiciosYProductos() {
                         </button>
                       </div>
                     </div>
-                  </motion.div>
+                  </div>
                 ))}
               </div>
             </section>
@@ -386,7 +386,7 @@ export default function ServiciosYProductos() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {productosAmazon.map((producto, index) => (
-                  <motion.div
+                  <div
                     key={producto.id}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -448,7 +448,7 @@ export default function ServiciosYProductos() {
                         </a>
                       </div>
                     </div>
-                  </motion.div>
+                  </div>
                 ))}
               </div>
             </section>

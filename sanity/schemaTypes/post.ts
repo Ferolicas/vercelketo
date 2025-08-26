@@ -33,6 +33,12 @@ export default defineType({
       type: 'text',
     }),
     defineField({
+      name: 'body',
+      title: 'Cuerpo (Rich Text)',
+      type: 'array',
+      of: [{type: 'block'}],
+    }),
+    defineField({
       name: 'ingredients',
       title: 'Ingredientes',
       type: 'text',
@@ -115,6 +121,64 @@ export default defineType({
       options: {
         layout: 'tags',
       },
+    }),
+    // Campos adicionales encontrados en las recetas existentes
+    defineField({
+      name: 'calories',
+      title: 'Calorías',
+      type: 'number',
+    }),
+    defineField({
+      name: 'chefNotes',
+      title: 'Notas del Chef',
+      type: 'text',
+    }),
+    defineField({
+      name: 'level',
+      title: 'Nivel de dificultad',
+      type: 'string',
+      options: {
+        list: [
+          {title: 'Fácil', value: 'facil'},
+          {title: 'Intermedio', value: 'intermedio'},
+          {title: 'Avanzado', value: 'avanzado'},
+        ],
+      },
+    }),
+    defineField({
+      name: 'macros',
+      title: 'Macronutrientes',
+      type: 'object',
+      fields: [
+        {name: 'carbs', title: 'Carbohidratos (g)', type: 'number'},
+        {name: 'fat', title: 'Grasas (g)', type: 'number'},
+        {name: 'fiber', title: 'Fibra (g)', type: 'number'},
+        {name: 'protein', title: 'Proteína (g)', type: 'number'},
+      ],
+    }),
+    defineField({
+      name: 'mainImage',
+      title: 'Imagen Principal (Legacy)',
+      type: 'image',
+      options: {
+        hotspot: true,
+      },
+    }),
+    defineField({
+      name: 'preparationTime',
+      title: 'Tiempo de Preparación',
+      type: 'string',
+    }),
+    defineField({
+      name: 'rating',
+      title: 'Valoración',
+      type: 'number',
+      validation: (Rule) => Rule.min(1).max(5),
+    }),
+    defineField({
+      name: 'youtubeUrl',
+      title: 'URL de YouTube',
+      type: 'url',
     }),
   ],
   preview: {

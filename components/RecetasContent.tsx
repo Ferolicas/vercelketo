@@ -5,8 +5,9 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { urlFor } from '@/lib/sanity';
 import type { HomePage, Category, Post } from '@/types/sanity';
-import { Header } from '@/components/Header';
+// import { Header } from '@/components/Header'; // Removed duplicate header
 import { Clock, ChefHat, Users } from 'lucide-react';
+import { RecipeCard } from '@/components/RecipeCard';
 
 interface RecetasContentProps {
   homePageData: HomePage | null;
@@ -23,10 +24,7 @@ export default function RecetasContent({ homePageData, categories, allPosts }: R
     : allPosts;
 
   return (
-    <>
-      <Header homePageData={homePageData} />
-      
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Categories Filter */}
         <div className="mb-8">
           <div className="flex flex-wrap gap-4 justify-center">
@@ -59,69 +57,17 @@ export default function RecetasContent({ homePageData, categories, allPosts }: R
           </div>
         </div>
 
-        {/* Recipes Grid */}
+        {/* Recipes Grid - Clean and Perfect */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {filteredPosts.map((post) => (
-            <div key={post._id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
-              <Link href={`/recetas-keto`}>
-                {/* Image */}
-                <div className="relative w-full h-48 bg-gradient-to-br from-orange-50 to-emerald-50">
-                  {post.mainImage ? (
-                    <Image
-                      src={urlFor(post.mainImage).url()}
-                      alt={post.title}
-                      fill
-                      className="object-cover hover:scale-105 transition-transform duration-300"
-                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center">
-                      <ChefHat size={48} className="text-gray-400" />
-                    </div>
-                  )}
-                </div>
-
-                {/* Content */}
-                <div className="p-4">
-                  <h3 className="font-bold text-lg text-gray-800 mb-2 line-clamp-2 hover:text-green-600 transition-colors">
-                    {post.title}
-                  </h3>
-                  
-                  {post.excerpt && (
-                    <p className="text-gray-600 text-sm mb-3 line-clamp-2">
-                      {post.excerpt}
-                    </p>
-                  )}
-
-                  {/* Meta Info */}
-                  <div className="flex justify-between items-center text-sm text-gray-500">
-                    <div className="flex items-center space-x-1">
-                      <Clock size={16} className="text-green-600" />
-                      <span>{post.preparationTime || 'N/A'}</span>
-                    </div>
-                    <div className="flex items-center space-x-1">
-                      <ChefHat size={16} className="text-green-600" />
-                      <span className="capitalize">{post.level || 'Fácil'}</span>
-                    </div>
-                    {post.servings && (
-                      <div className="flex items-center space-x-1">
-                        <Users size={16} className="text-green-600" />
-                        <span>{post.servings}</span>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Author */}
-                  {post.author && (
-                    <div className="mt-3 pt-3 border-t border-gray-100">
-                      <p className="text-xs text-gray-500">
-                        Por: <span className="font-medium">{post.author.name}</span>
-                      </p>
-                    </div>
-                  )}
-                </div>
-              </Link>
-            </div>
+            <RecipeCard
+              key={post._id}
+              recipe={post}
+              onClick={(recipe) => {
+                // Navigate to recipe detail page when implemented
+                console.log('Recipe clicked:', recipe.title);
+              }}
+            />
           ))}
         </div>
 
@@ -144,6 +90,5 @@ export default function RecetasContent({ homePageData, categories, allPosts }: R
           </div>
         )}
       </div>
-    </>
   );
 }
