@@ -1,5 +1,7 @@
 import { Suspense } from 'react';
-import RecetasContentClient from '@/components/RecetasContentClient';
+import { client, queries } from '@/lib/sanity';
+import type { Category, Post, HomePage } from '@/types/sanity';
+import RecetasContent from '@/components/RecetasContent';
 import { generateSEOMetadata } from '@/components/SEOHead';
 
 // Force dynamic to ensure recipes load fresh from Sanity
@@ -21,7 +23,46 @@ interface RecetasPageProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
-export default function RecetasPage({ searchParams }: RecetasPageProps) {
+export default async function RecetasPage({ searchParams }: RecetasPageProps) {
+  // Fetch data server-side to avoid CORS issues
+  let categories: Category[] = [];
+  let allPosts: Post[] = [];
+  let homePageData: HomePage | null = null;
+  let error = null;
+
+  try {
+    console.log('🔄 SERVER: Fetching data from Sanity...');
+    
+    [homePageData, categories, allPosts] = await Promise.all([
+      client.fetch<HomePage>(queries.homePage).catch(() => null),
+      client.fetch<Category[]>(queries.allCategories).catch(() => []),
+      client.fetch<Post[]>(queries.allPosts).catch(() => [])
+    ]);
+
+    console.log(`✅ SERVER: Loaded ${allPosts.length} recipes and ${categories.length} categories`);
+    
+  } catch (err) {
+    console.error('❌ SERVER ERROR:', err);
+    error = err instanceof Error ? err.message : 'Error desconocido';
+  }
+
+  if (error) {
+    return (
+      <div className="pt-16 flex justify-center items-center h-screen">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-red-600 mb-4">Error del servidor</h2>
+          <p className="text-gray-600 mb-4">{error}</p>
+          <button 
+            onClick={() => window.location.reload()}
+            className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-full"
+          >
+            Reintentar
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="pt-16">
       {/* Header de la sección de recetas */}
@@ -42,8 +83,12 @@ export default function RecetasPage({ searchParams }: RecetasPageProps) {
         </div>
       </div>
 
-      {/* Contenido principal del lado del cliente para evitar hidratación */}
-      <RecetasContentClient />
+      {/* Server-rendered content - no hydration mismatch */}
+      <RecetasContent
+        homePageData={homePageData}
+        categories={categories || []}
+        allPosts={allPosts || []}
+      />
     </div>
   );
 }

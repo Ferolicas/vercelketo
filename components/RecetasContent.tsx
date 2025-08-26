@@ -43,19 +43,9 @@ export default function RecetasContent({ homePageData, categories, allPosts }: R
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* DEBUG INFO TEMPORAL - VISIBLE EN PRODUCCIÓN */}
-        {process.env.NODE_ENV === 'development' && (
-          <div className="mb-8 p-4 bg-yellow-100 border border-yellow-400 rounded-lg">
-            <h3 className="font-bold text-yellow-800 mb-2">🔍 DEBUG INFO:</h3>
-            <pre className="text-xs text-yellow-700">
-              {JSON.stringify(debugInfo, null, 2)}
-            </pre>
-          </div>
-        )}
-        
-        {/* DEBUG PERMANENTE PARA PRODUCCIÓN - SOLO CLIENTE */}
+        {/* DEBUG SIMPLIFICADO - SIN HIDRATACIÓN */}
         <div className="mb-4 p-2 bg-gray-100 text-xs text-gray-600">
-          Debug: {typeof window !== 'undefined' ? `${allPosts.length} recetas, ${categories.length} categorías, ${filteredPosts.length} filtradas` : 'Cargando...'}
+          🔍 SERVER-RENDERED: {allPosts.length} recetas, {categories.length} categorías, {filteredPosts.length} filtradas
         </div>
 
         {/* Categories Filter */}
