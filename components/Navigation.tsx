@@ -11,7 +11,8 @@ import {
   XMarkIcon,
   ChartBarIcon
 } from '@heroicons/react/24/outline'
-import { motion, AnimatePresence } from 'framer-motion'
+// Remove framer-motion for Next.js 15 compatibility
+// import { motion, AnimatePresence } from 'framer-motion'
 
 const navigation = [
   { name: 'Inicio', href: '/', icon: HomeIcon },
@@ -98,15 +99,8 @@ export default function Navigation() {
       </div>
 
       {/* Mobile Navigation */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.2 }}
-            className="md:hidden bg-white border-t border-gray-200 shadow-lg"
-          >
+      {isOpen && (
+        <div className="md:hidden bg-white border-t border-gray-200 shadow-lg">
             <div className="px-2 pt-2 pb-3 space-y-1">
               {navigation.map((item) => {
                 if (item.adminOnly && typeof window !== 'undefined' && !localStorage.getItem('admin_access')) {
@@ -133,9 +127,8 @@ export default function Navigation() {
                 )
               })}
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+        </div>
+      )}
     </nav>
   )
 }

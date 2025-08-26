@@ -91,7 +91,8 @@ export default function RootLayout({
           enableResourceHints={true}
         />
         
-        {/* Scripts de publicidad y analytics */}
+        {/* Temporarily remove inline scripts that might block hydration */}
+        {/* 
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -100,17 +101,10 @@ export default function RootLayout({
               function gtag(){dataLayer.push(arguments);}
               gtag('js', new Date());
               gtag('config', '${process.env.NEXT_PUBLIC_GA_ID}');
-              
-              // Inicializar analytics personalizado
-              if (typeof window !== 'undefined') {
-                import('/lib/analytics.js').then(module => {
-                  const analytics = module.default;
-                  analytics.trackPageView();
-                }).catch(console.error);
-              }
             `,
           }}
         />
+        */}
       </body>
     </html>
   );
