@@ -17,6 +17,13 @@ interface RecetasContentProps {
 
 export default function RecetasContent({ homePageData, categories, allPosts }: RecetasContentProps) {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  
+  // Debug: Verificar props recibidas
+  console.log('🔍 RecetasContent recibió:', {
+    posts: allPosts.length,
+    categories: categories.length,
+    firstPost: allPosts[0]?.title
+  });
 
   // Filter posts by selected category
   const filteredPosts = selectedCategory 

@@ -39,6 +39,10 @@ export default async function RecetasPage({ searchParams }: RecetasPageProps) {
     // Logging for production debugging
     console.log(`✅ Loaded ${allPosts.length} recipes and ${categories.length} categories`);
     
+    // Debug: Verificar estructura de datos
+    console.log('🔍 Primera receta:', allPosts[0]?.title, allPosts[0]?.slug);
+    console.log('🔍 Primera categoría:', categories[0]?.title, categories[0]?.slug);
+    
     // Ensure we always have arrays even if null/undefined
     const safeAllPosts = allPosts || [];
     const safeCategories = categories || [];
