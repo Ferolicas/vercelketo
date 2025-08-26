@@ -31,13 +31,13 @@ export default function BajarDePesoContent({
           {/* CTA principal hacia tus páginas */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
             <Link
-              href="/recetas-keto"
+              href="/recetas"
               className="bg-gradient-to-r from-green-600 to-green-500 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:from-green-700 hover:to-green-600 transition-all duration-200"
             >
-              🥑 Ver Recetas Keto para Bajar de Peso
+              🥑 Ver Recetas para Bajar de Peso
             </Link>
             <Link
-              href="/tienda-keto"
+              href="/productos"
               className="border-2 border-green-500 text-green-600 px-8 py-4 rounded-xl font-semibold text-lg hover:bg-green-50 transition-all duration-200"
             >
               🛒 Productos para Adelgazar
@@ -81,10 +81,10 @@ export default function BajarDePesoContent({
               Descubre nuestras recetas cetogénicas especialmente seleccionadas para maximizar la pérdida de peso:
             </p>
             <Link 
-              href="/recetas-keto"
+              href="/recetas"
               className="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition"
             >
-              Ver Todas las Recetas Keto →
+              Ver Todas las Recetas →
             </Link>
           </div>
 
@@ -109,10 +109,10 @@ export default function BajarDePesoContent({
             </p>
             <div className="grid sm:grid-cols-2 gap-4">
               <Link 
-                href="/tienda-keto"
+                href="/productos"
                 className="block bg-green-600 text-white p-4 rounded-lg font-semibold hover:bg-green-700 transition text-center"
               >
-                🛒 Productos Keto Premium
+                🛒 Productos Premium
               </Link>
               <Link 
                 href="/servicios"

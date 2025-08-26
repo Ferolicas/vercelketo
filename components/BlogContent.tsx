@@ -31,10 +31,10 @@ export default function BlogContent({
         
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Link
-            href="/recetas-keto"
+            href="/recetas"
             className="bg-green-600 text-white px-8 py-4 rounded-xl font-semibold hover:bg-green-700 transition"
           >
-            🥑 Ver Recetas Keto
+            🥑 Ver Recetas
           </Link>
           <Link
             href="/foro"

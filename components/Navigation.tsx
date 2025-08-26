@@ -16,8 +16,9 @@ import {
 
 const navigation = [
   { name: 'Inicio', href: '/', icon: HomeIcon },
-  { name: 'Recetas Keto', href: '/recetas-keto', icon: BookOpenIcon },
-  { name: 'Tienda Keto', href: '/tienda-keto', icon: ShoppingCartIcon },
+  { name: 'Recetas', href: '/recetas', icon: BookOpenIcon },
+  { name: 'Productos', href: '/productos', icon: ShoppingCartIcon },
+  { name: 'Servicios', href: '/servicios', icon: ShoppingCartIcon },
   { name: 'Blog', href: '/blog', icon: BookOpenIcon },
   { name: 'Foro', href: '/foro', icon: HomeIcon },
   { name: 'Admin', href: '/admin', icon: ChartBarIcon, adminOnly: true },
