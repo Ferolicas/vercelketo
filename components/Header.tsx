@@ -11,7 +11,7 @@ interface HeaderProps {
 }
 
 export function Header({ homePageData, onShareClick, showShareButton = false }: HeaderProps) {
-  const logoUrl = homePageData?.heroImage ? urlFor(homePageData.heroImage).url() : '/default-logo.png';
+  const logoUrl = '/logo.webp'; // Usar nuestro logo personalizado
   
   return (
     <header className="sticky top-0 z-50 w-full bg-emerald-600 shadow-md shadow-black px-2 rounded-4xl">
@@ -20,14 +20,15 @@ export function Header({ homePageData, onShareClick, showShareButton = false }: 
         <div className="flex-shrink-0 h-full flex items-center">
           {logoUrl && (
             <Link href="/">
-              <div className="relative cursor-pointer w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center rounded-full overflow-hidden">
+              <div className="relative cursor-pointer w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center bg-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
                 <Image
                   src={logoUrl}
                   alt="Logo Planeta Keto"
-                  fill
-                  sizes="(max-width: 768px) 56px, 64px"
+                  width={64}
+                  height={64}
                   style={{ objectFit: 'contain' }}
                   priority
+                  className="rounded-full"
                 />
               </div>
             </Link>

@@ -58,8 +58,12 @@ export default function HomePage({
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <div>
-              <div className="inline-flex items-center justify-center w-24 h-24 bg-white/20 backdrop-blur-sm rounded-3xl text-white text-4xl mb-8 shadow-2xl">
-                🥑
+              <div className="inline-flex items-center justify-center w-24 h-24 bg-white/20 backdrop-blur-sm rounded-3xl mb-8 shadow-2xl">
+                <img
+                  src="/logo.webp"
+                  alt="Logo Planeta Keto"
+                  className="w-16 h-16 object-contain rounded-2xl"
+                />
               </div>
               
               <h1 className="text-5xl md:text-7xl font-black text-white mb-6 tracking-tight">
@@ -135,7 +139,7 @@ export default function HomePage({
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {([
-              { name: 'Recetas Keto', emoji: '🥑', count: '500+', color: 'from-green-400 to-green-600', href: '/recetas' },
+              { name: 'Recetas Keto', emoji: '🍽️', count: '500+', color: 'from-green-400 to-green-600', href: '/recetas' },
               { name: 'Productos', emoji: '🛒', count: 'Premium', color: 'from-blue-400 to-indigo-500', href: '/productos' },
               { name: 'Servicios', emoji: '⚕️', count: 'Consultas', color: 'from-purple-400 to-pink-500', href: '/servicios' },
               { name: 'Blog Keto', emoji: '📝', count: 'Artículos', color: 'from-yellow-400 to-orange-500', href: '/blog' },

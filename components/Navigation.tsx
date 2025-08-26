@@ -46,8 +46,12 @@ export default function Navigation() {
           {/* Logo */}
           <div className="flex-shrink-0">
             <Link href="/" className="flex items-center">
-              <div className="bg-gradient-to-r from-green-600 to-green-500 text-white p-2 rounded-lg mr-3">
-                <span className="text-xl font-bold">🥑</span>
+              <div className="relative w-12 h-12 bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105 mr-3">
+                <img
+                  src="/logo.webp"
+                  alt="Logo Planeta Keto"
+                  className="w-full h-full object-contain rounded-lg"
+                />
               </div>
               <div className="hidden sm:block">
                 <h1 className="text-xl font-bold bg-gradient-to-r from-green-600 to-green-500 bg-clip-text text-transparent">

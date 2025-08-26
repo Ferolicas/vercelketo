@@ -37,7 +37,7 @@ interface PostData {
   name: string
   preparationTime?: number
   youtubeUrl?: string
-  ingredients?: string[]
+  ingredients?: string
   preparation?: string
   slug: { current: string }
   averageRating?: number

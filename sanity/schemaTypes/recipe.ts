@@ -31,9 +31,10 @@ export default defineType({
     defineField({
       name: 'ingredients',
       title: 'Ingredientes',
-      type: 'array',
-      of: [{type: 'string'}],
-      validation: (Rule) => Rule.required().min(1),
+      type: 'text',
+      rows: 8,
+      description: 'Lista de ingredientes en formato libre. Puedes usar saltos de línea para separar cada ingrediente.',
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'preparation',

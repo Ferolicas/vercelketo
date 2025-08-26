@@ -30,12 +30,14 @@
       "Bash(del \"C:\\PLANETA KETO V2\\planetaketonext\\fix-recipe-categories.mjs\")",
       "Bash(del \"C:\\PLANETA KETO V2\\planetaketonext\\recreate-recipes-with-categories.mjs\")",
       "WebFetch(domain:planetaketo.vercel.app)",
-      "WebFetch(domain:planetaketo.es)"
+      "WebFetch(domain:planetaketo.es)",
+      "Bash(copy \"C:/Users/ferne/Downloads/4efaef0886ffeb0bf34726a51cfbb955cfcd05ff-600x600.webp\" \"C:\\PLANETA KETO V2\\planetaketonext\\public\\logo.webp\")"
     ],
     "deny": [],
     "ask": [],
     "additionalDirectories": [
-      "C:\\PLANETA KETO V2\\SANITY"
+      "C:\\PLANETA KETO V2\\SANITY",
+      "C:\\Users\\ferne\\Downloads"
     ]
   }
 }

@@ -17,7 +17,7 @@ export interface Recipe {
     current: string;
   };
   description: string;
-  ingredients: string[];
+  ingredients: string;
   preparation: string;
   youtubeUrl?: string;
   preparationTime: number;
@@ -156,7 +156,7 @@ export interface ForumPost {
 export interface CreateRecipeForm {
   name: string;
   description: string;
-  ingredients: string[];
+  ingredients: string;
   preparation: string;
   youtubeUrl?: string;
   preparationTime: number;
