@@ -74,7 +74,7 @@ export async function POST(request: NextRequest) {
     
     const name = formData.get('name') as string;
     const description = formData.get('description') as string;
-    const ingredients = JSON.parse(formData.get('ingredients') as string);
+    const ingredients = formData.get('ingredients') as string;
     const preparation = formData.get('preparation') as string;
     const youtubeUrl = formData.get('youtubeUrl') as string || undefined;
     const preparationTime = parseInt(formData.get('preparationTime') as string);

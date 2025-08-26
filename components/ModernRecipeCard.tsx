@@ -23,7 +23,10 @@ export default function ModernRecipeCard({ recipe }: ModernRecipeCardProps) {
   const totalRatings = recipe.totalRatings || 0;
 
   return (
-    <div className="group relative bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:scale-[1.02] overflow-hidden border border-gray-100">
+    <Link
+      href={`/recetas/${recipe.slug.current}` as any}
+      className="block group relative bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:scale-[1.02] overflow-hidden border border-gray-100 cursor-pointer"
+    >
       {/* Image Container */}
       <div className="relative h-48 overflow-hidden">
         <Image
@@ -121,16 +124,13 @@ export default function ModernRecipeCard({ recipe }: ModernRecipeCardProps) {
         </div>
 
         {/* Action Button */}
-        <Link
-          href={`/recetas/${recipe.slug.current}` as any}
-          className="block w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-semibold py-3 px-6 rounded-2xl text-center transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
-        >
+        <div className="w-full bg-gradient-to-r from-green-500 to-emerald-600 group-hover:from-green-600 group-hover:to-emerald-700 text-white font-semibold py-3 px-6 rounded-2xl text-center transition-all duration-300 transform group-hover:scale-105 shadow-lg group-hover:shadow-xl">
           Ver Receta Completa
-        </Link>
+        </div>
       </div>
 
       {/* Hover Glow Effect */}
       <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-green-400 to-emerald-500 opacity-0 group-hover:opacity-5 transition-opacity duration-500 pointer-events-none"></div>
-    </div>
+    </Link>
   );
 }

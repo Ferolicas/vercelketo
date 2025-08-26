@@ -13,10 +13,10 @@ interface CreateRecipeModalProps {
 
 export default function CreateRecipeModal({ isOpen, onClose, categories, onSuccess }: CreateRecipeModalProps) {
   const [loading, setLoading] = useState(false);
-  const [ingredients, setIngredients] = useState<string[]>(['']);
   const [form, setForm] = useState({
     name: '',
     description: '',
+    ingredients: '',
     preparation: '',
     youtubeUrl: '',
     preparationTime: '',
@@ -45,9 +45,8 @@ export default function CreateRecipeModal({ isOpen, onClose, categories, onSucce
         formData.append('youtubeUrl', form.youtubeUrl);
       }
       
-      // Ingredients (filter out empty ones)
-      const validIngredients = ingredients.filter(ing => ing.trim() !== '');
-      formData.append('ingredients', JSON.stringify(validIngredients));
+      // Ingredients as free text
+      formData.append('ingredients', form.ingredients);
       
       // Thumbnail
       if (form.thumbnail) {
@@ -83,6 +82,7 @@ export default function CreateRecipeModal({ isOpen, onClose, categories, onSucce
     setForm({
       name: '',
       description: '',
+      ingredients: '',
       preparation: '',
       youtubeUrl: '',
       preparationTime: '',
@@ -90,21 +90,6 @@ export default function CreateRecipeModal({ isOpen, onClose, categories, onSucce
       categoryId: '',
       thumbnail: null
     });
-    setIngredients(['']);
-  };
-
-  const addIngredient = () => {
-    setIngredients([...ingredients, '']);
-  };
-
-  const removeIngredient = (index: number) => {
-    setIngredients(ingredients.filter((_, i) => i !== index));
-  };
-
-  const updateIngredient = (index: number, value: string) => {
-    const updated = [...ingredients];
-    updated[index] = value;
-    setIngredients(updated);
   };
 
   if (!isOpen) return null;
@@ -261,41 +246,26 @@ export default function CreateRecipeModal({ isOpen, onClose, categories, onSucce
 
                 {/* Ingredients */}
                 <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <label className="block text-sm font-semibold text-gray-700">
-                      Ingredientes *
-                    </label>
-                    <button
-                      type="button"
-                      onClick={addIngredient}
-                      className="text-green-600 hover:text-green-700 font-semibold text-sm flex items-center gap-1"
-                    >
-                      <Plus size={16} />
-                      Agregar
-                    </button>
-                  </div>
-                  <div className="space-y-2 max-h-40 overflow-y-auto">
-                    {ingredients.map((ingredient, index) => (
-                      <div key={index} className="flex gap-2">
-                        <input
-                          type="text"
-                          value={ingredient}
-                          onChange={(e) => updateIngredient(index, e.target.value)}
-                          className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm"
-                          placeholder={`Ingrediente ${index + 1}`}
-                        />
-                        {ingredients.length > 1 && (
-                          <button
-                            type="button"
-                            onClick={() => removeIngredient(index)}
-                            className="text-red-500 hover:text-red-700 p-2"
-                          >
-                            <Trash2 size={16} />
-                          </button>
-                        )}
-                      </div>
-                    ))}
-                  </div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Ingredientes *
+                  </label>
+                  <textarea
+                    required
+                    rows={8}
+                    value={form.ingredients}
+                    onChange={(e) => setForm({ ...form, ingredients: e.target.value })}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm"
+                    placeholder="200g queso parmesano rallado
+1 cucharadita de orégano seco
+1/2 cucharadita de ajo en polvo
+Pimienta negra molida
+Paprika opcional
+
+💡 Usa saltos de línea para separar ingredientes"
+                  />
+                  <p className="text-gray-500 text-xs mt-2">
+                    💡 <strong>Formato libre:</strong> Escribe cada ingrediente en una línea nueva. Puedes usar cualquier formato que desees.
+                  </p>
                 </div>
 
                 {/* Preparation */}

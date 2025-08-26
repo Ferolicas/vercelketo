@@ -5,6 +5,7 @@ import { Metadata } from 'next'
 import Image from 'next/image'
 import { Clock, Users, Star, ChefHat, Play } from 'lucide-react'
 import Link from 'next/link'
+import Comments from '@/components/Comments'
 
 interface PageProps {
   params: Promise<{ slug: string }>
@@ -201,6 +202,11 @@ export default async function RecipePage({ params }: PageProps) {
                 </div>
               </div>
             </div>
+          </div>
+
+          {/* Comments and Ratings */}
+          <div className="mt-16">
+            <Comments postSlug={recipe.slug.current} postTitle={recipe.name} />
           </div>
 
           {/* Back to Recipes CTA */}

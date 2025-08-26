@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Plus, ChefHat, BarChart3, Users, MessageCircle } from 'lucide-react';
 import CreateRecipeModal from '@/components/admin/CreateRecipeModal';
+import StatsModal from '@/components/admin/StatsModal';
+import ModerationModal from '@/components/admin/ModerationModal';
 import type { Category, Recipe } from '@/types/sanity';
 
 export default function AdminPage() {
@@ -11,6 +13,8 @@ export default function AdminPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showStatsModal, setShowStatsModal] = useState(false);
+  const [showModerationModal, setShowModerationModal] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [loading, setLoading] = useState(false);
@@ -221,26 +225,32 @@ export default function AdminPage() {
                     </div>
                   </button>
 
-                  <button className="group relative bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-semibold py-6 px-6 rounded-2xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl opacity-50 cursor-not-allowed">
+                  <button 
+                    onClick={() => setShowStatsModal(true)}
+                    className="group relative bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-semibold py-6 px-6 rounded-2xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                  >
                     <div className="flex flex-col items-center">
                       <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mb-4">
                         <BarChart3 className="w-8 h-8" />
                       </div>
                       <h3 className="text-lg font-bold mb-2">Ver Estadísticas</h3>
                       <p className="text-blue-100 text-sm text-center">
-                        Próximamente disponible
+                        Análisis completo del sitio
                       </p>
                     </div>
                   </button>
 
-                  <button className="group relative bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white font-semibold py-6 px-6 rounded-2xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl opacity-50 cursor-not-allowed">
+                  <button 
+                    onClick={() => setShowModerationModal(true)}
+                    className="group relative bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white font-semibold py-6 px-6 rounded-2xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                  >
                     <div className="flex flex-col items-center">
                       <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mb-4">
                         <MessageCircle className="w-8 h-8" />
                       </div>
                       <h3 className="text-lg font-bold mb-2">Moderar</h3>
                       <p className="text-purple-100 text-sm text-center">
-                        Próximamente disponible
+                        Gestionar comentarios pendientes
                       </p>
                     </div>
                   </button>
@@ -302,6 +312,16 @@ export default function AdminPage() {
         onClose={() => setShowCreateModal(false)}
         categories={categories}
         onSuccess={handleRecipeCreated}
+      />
+      
+      <StatsModal
+        isOpen={showStatsModal}
+        onClose={() => setShowStatsModal(false)}
+      />
+      
+      <ModerationModal
+        isOpen={showModerationModal}
+        onClose={() => setShowModerationModal(false)}
       />
     </div>
   );
