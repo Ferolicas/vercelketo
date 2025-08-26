@@ -53,9 +53,9 @@ export default function RecetasContent({ homePageData, categories, allPosts }: R
           </div>
         )}
         
-        {/* DEBUG PERMANENTE PARA PRODUCCIÓN */}
+        {/* DEBUG PERMANENTE PARA PRODUCCIÓN - SOLO CLIENTE */}
         <div className="mb-4 p-2 bg-gray-100 text-xs text-gray-600">
-          Debug: {allPosts.length} recetas, {categories.length} categorías, {filteredPosts.length} filtradas
+          Debug: {typeof window !== 'undefined' ? `${allPosts.length} recetas, ${categories.length} categorías, ${filteredPosts.length} filtradas` : 'Cargando...'}
         </div>
 
         {/* Categories Filter */}
