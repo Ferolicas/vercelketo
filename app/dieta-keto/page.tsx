@@ -61,7 +61,7 @@ export default async function DietaKetoPage() {
       client.fetch<Category[]>(queries.allCategories),
       client.fetch(`{
         "totalRecipes": count(*[_type == "recipe"]),
-        "ketoRecipes": count(*[_type == "recipe" && (name match "*keto*" || name match "*cetogén*")])
+        "ketoRecipes": count(*[_type == "recipe" && (name match "*keto*" || name match "*cetogén*")]),
         "categories": count(*[_type == "category"])
       }`)
     ]);

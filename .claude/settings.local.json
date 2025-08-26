@@ -25,7 +25,8 @@
       "Bash(npm run deploy:*)",
       "Bash(npm run:*)",
       "WebFetch(domain:vercel.com)",
-      "WebFetch(domain:planetaketo.sanity.studio)"
+      "WebFetch(domain:planetaketo.sanity.studio)",
+      "Bash(del \"C:\\PLANETA KETO V2\\planetaketonext\\cleanup-sanity.js\")"
     ],
     "deny": [],
     "ask": [],

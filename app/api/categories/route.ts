@@ -6,7 +6,7 @@ import type { ApiResponse, Category } from '@/types/sanity';
 export async function GET(request: NextRequest) {
   try {
     const categories = await client.fetch<Category[]>(`
-      *[_type == "category" && defined(slug.current)] | order(name asc) {
+      *[_type == "category"] | order(name asc) {
         _id,
         name,
         slug,
