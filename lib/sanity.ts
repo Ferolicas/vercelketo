@@ -149,8 +149,7 @@ export const queries = {
   }`,
 
   // Query para obtener todas las categorías
-  // ¡CORREGIDO: Ordenar por 'order asc' para categorías!
-  allCategories: `*[_type == "category"] | order(order asc) { //
+  allCategories: `*[_type == "category"] | order(title asc) {
     _id,
     title,
     slug,
