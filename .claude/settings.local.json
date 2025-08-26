@@ -12,7 +12,8 @@
       "Bash(npm run build:*)",
       "Bash(find:*)",
       "Bash(npm run start:*)",
-      "Bash(npm run sanity:deploy:*)"
+      "Bash(npm run sanity:deploy:*)",
+      "Bash(npm run dev:*)"
     ],
     "deny": [],
     "ask": [],

@@ -89,8 +89,8 @@ export function AdsterraBanner({
           atOptions = {
             'key': '${adId}',
             'format': 'iframe',
-            'height': ${size.split('x')[1] || '250'},
-            'width': ${size.split('x')[0] || '300'},
+            'height': ${size && size.includes('x') ? size.split('x')[1] : '250'},
+            'width': ${size && size.includes('x') ? size.split('x')[0] : '300'},
             'params': {}
           };
         `
@@ -126,8 +126,8 @@ export function AdsterraBanner({
       <div id={`adsterra-${adId}`} className="adsterra-ad" />
       <style jsx>{`
         .adsterra-container {
-          min-height: ${size.split('x')[1] || '250'}px;
-          min-width: ${size.split('x')[0] || '300'}px;
+          min-height: ${size && size.includes('x') ? size.split('x')[1] : '250'}px;
+          min-width: ${size && size.includes('x') ? size.split('x')[0] : '300'}px;
         }
       `}</style>
     </div>
