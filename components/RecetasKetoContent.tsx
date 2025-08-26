@@ -1,14 +1,14 @@
 'use client'
 
 import Link from 'next/link';
-import { Post, Category } from '@/types/sanity';
+import { Recipe, Category } from '@/types/sanity';
 import { ContentAd, RecipeAd } from './AdSystem';
 
 interface RecetasKetoContentProps {
-  recipes: Post[];
+  recipes: Recipe[];
   categories: Category[];
-  featuredRecipes: Post[];
-  popularRecipes: Post[];
+  featuredRecipes: Recipe[];
+  popularRecipes: Recipe[];
   currentPage: number;
   totalPages: number;
   selectedCategory?: string;

@@ -1,6 +1,6 @@
 import { Suspense } from 'react';
 import { client, queries } from '@/lib/sanity';
-import type { ForumPost, ForumCategory } from '@/types/sanity';
+import type { ForumPost } from '@/types/sanity';
 import { Metadata } from 'next';
 import ForoContent from '@/components/ForoContent';
 
@@ -102,7 +102,7 @@ export default async function ForoPage({ searchParams }: PageProps) {
           limit: offset + postsPerPage - 1
         }
       ),
-      client.fetch<ForumCategory[]>(queries.allForumCategories),
+      client.fetch<any[]>(`*[_type == "forumCategory"]`),
       client.fetch<ForumPost[]>(
         `*[_type == "forumPost" && isPinned == true] | order(_createdAt desc)[0..5] {
           _id,

@@ -1,13 +1,13 @@
 'use client'
 
 import Link from 'next/link';
-import { Post } from '@/types/sanity';
+import { Recipe } from '@/types/sanity';
 import { ContentAd } from './AdSystem';
 
 interface DietaBajaCarbohidratosContentProps {
-  lowCarbRecipes: Post[];
-  moderateRecipes: Post[];
-  ultraLowRecipes: Post[];
+  lowCarbRecipes: Recipe[];
+  moderateRecipes: Recipe[];
+  ultraLowRecipes: Recipe[];
 }
 
 export default function DietaBajaCarbohidratosContent(props: DietaBajaCarbohidratosContentProps) {

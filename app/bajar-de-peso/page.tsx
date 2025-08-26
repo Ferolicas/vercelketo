@@ -1,6 +1,6 @@
 import { Suspense } from 'react';
 import { client } from '@/lib/sanity';
-import type { Post } from '@/types/sanity';
+import type { Recipe } from '@/types/sanity';
 import { Metadata } from 'next';
 import BajarDePesoContent from '@/components/BajarDePesoContent';
 
@@ -34,55 +34,53 @@ export const metadata: Metadata = {
 export default async function BajarDePesoPage() {
   try {
     const [weightLossRecipes, lowCalorieRecipes, fastRecipes] = await Promise.all([
-      client.fetch<Post[]>(`
-        *[_type == "post" && (
-          title match "*peso*" ||
-          title match "*adelga*" ||
-          tags[] match "*weight*" ||
-          tags[] match "*loss*" ||
-          calories <= 400
-        )] | order(rating desc)[0..12] {
+      client.fetch<Recipe[]>(`
+        *[_type == "recipe" && (
+          name match "*peso*" ||
+          name match "*adelga*" ||
+          description match "*weight*" ||
+          description match "*loss*"
+        )] | order(averageRating desc)[0..12] {
           _id,
-          title,
+          name,
           slug,
-          mainImage,
-          excerpt,
+          thumbnail,
+          description,
           preparationTime,
-          level,
-          rating,
+          averageRating,
           servings,
-          calories,
-          macros,
           category->{
-            title,
-            slug
+            name,
+            slug,
+            icon
           }
         }
       `),
-      client.fetch<Post[]>(`
-        *[_type == "post" && calories <= 300] | order(calories asc)[0..8] {
+      client.fetch<Recipe[]>(`
+        *[_type == "recipe" && preparationTime <= 30] | order(preparationTime asc)[0..8] {
           _id,
-          title,
+          name,
           slug,
-          mainImage,
-          calories,
-          macros,
-          rating,
-          category->{
-            title,
-            slug
-          }
-        }
-      `),
-      client.fetch<Post[]>(`
-        *[_type == "post" && preparationTime match "*15*" || preparationTime match "*10*"] | order(rating desc)[0..6] {
-          _id,
-          title,
-          slug,
-          mainImage,
+          thumbnail,
           preparationTime,
-          calories,
-          rating
+          averageRating,
+          servings,
+          category->{
+            name,
+            slug,
+            icon
+          }
+        }
+      `),
+      client.fetch<Recipe[]>(`
+        *[_type == "recipe" && preparationTime <= 15] | order(averageRating desc)[0..6] {
+          _id,
+          name,
+          slug,
+          thumbnail,
+          preparationTime,
+          averageRating,
+          servings
         }
       `)
     ]);

@@ -1,12 +1,12 @@
 'use client'
 
 import Link from 'next/link';
-import { ForumPost, ForumCategory } from '@/types/sanity';
+import { ForumPost } from '@/types/sanity';
 import { ContentAd } from './AdSystem';
 
 interface ForoContentProps {
   forumPosts: ForumPost[];
-  categories: ForumCategory[];
+  categories: any[];
   pinnedPosts: ForumPost[];
   currentPage: number;
   totalPages: number;

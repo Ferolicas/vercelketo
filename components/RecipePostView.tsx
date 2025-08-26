@@ -34,28 +34,20 @@ function ShareButtons({ url, title }: { url: string; title: string }) {
 
 // Definición del tipo para los datos de la receta
 interface PostData {
-  title: string
-  author?: { name:string }
-  preparationTime?: string
-  level?: string
+  name: string
+  preparationTime?: number
   youtubeUrl?: string
-  // 👇 CAMBIO 1: 'ingredients' ahora es un string opcional.
-  ingredients?: string
-  body: PortableTextBlock[]
+  ingredients?: string[]
+  preparation?: string
   slug: { current: string }
-  rating?: number
+  averageRating?: number
   servings?: number
-  calories?: number
-  macros?: {
-    carbs?: number
-    protein?: number
-    fat?: number
-    fiber?: number
-  }
+  thumbnail?: any
+  description?: string
+  category?: { name?: string; title?: string; slug?: { current: string } }
   tags?: string[]
   chefNotes?: string
   excerpt?: string
-  category?: { title: string; slug: { current: string } }
   mainImage?: any;
 }
 
@@ -99,12 +91,12 @@ function YouTubeEmbed({ videoUrl }: { videoUrl: string }) {
 }
 
 // 👇 CAMBIO 2: Modificamos 'ExpandableContent' para que acepte un STRING para los ingredientes
-function ExpandableContent({ title, content, isIngredients = false }: { title: string; content: string | PortableTextBlock[]; isIngredients?: boolean }) {
+function ExpandableContent({ title, content, isIngredients = false }: { title: string; content: string | string[] | PortableTextBlock[]; isIngredients?: boolean }) {
   const [isExpanded, setIsExpanded] = useState(false);
 
-  // Lógica para los ingredientes (ahora funciona con un string)
-  if (isIngredients && typeof content === 'string') {
-    const stringContent = content.split('\n').filter(item => item.trim() !== ''); // Divide el texto en un array
+  // Lógica para los ingredientes (ahora funciona con un string o array)
+  if (isIngredients && (typeof content === 'string' || Array.isArray(content))) {
+    const stringContent = Array.isArray(content) ? content : content.split('\n').filter(item => item.trim() !== ''); // Handle array or string
     const visibleItems = isExpanded ? stringContent : stringContent.slice(0, 5);
     const hasMore = stringContent.length > 5;
     return (
@@ -112,7 +104,7 @@ function ExpandableContent({ title, content, isIngredients = false }: { title: s
         <h3 className="text-2xl font-bold text-gray-800 mb-4">{title}</h3>
         <ul className="space-y-2">
           {visibleItems.map((item, index) => (
-            <li key={index} className="flex items-start space-x-3"><span className="w-2 h-2 bg-emerald-600 rounded-full mt-2 flex-shrink-0"></span><span className="text-gray-700">{item}</span></li>
+            <li key={index} className="flex items-start space-x-3"><span className="w-2 h-2 bg-emerald-600 rounded-full mt-2 flex-shrink-0"></span><span className="text-gray-700">{String(item)}</span></li>
           ))}
         </ul>
         {hasMore && (<button onClick={() => setIsExpanded(!isExpanded)} className="mt-4 flex items-center space-x-2 text-emerald-600 hover:text-emerald-700 font-medium transition-colors"><span>{isExpanded ? 'Ver menos' : `Ver ${stringContent.length - visibleItems.length} más`}</span>{isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}</button>)}
@@ -144,25 +136,19 @@ export function RecipePostView({ recipe }: RecipePostViewProps) {
     <div className="bg-white p-4 sm:p-6 md:p-8 rounded-lg max-w-4xl mx-auto my-6">
       <div className="flex justify-between items-center mb-4">
         <BackButton text="Volver a las recetas" />
-        <ShareButtons url={shareUrl} title={recipe.title} />
+        <ShareButtons url={shareUrl} title={recipe.name} />
       </div>
 
       <div className="mb-4">
-        <h2 className="text-3xl md:text-4xl font-bold text-gray-900 leading-tight">{recipe.title}</h2>
+        <h2 className="text-3xl md:text-4xl font-bold text-gray-900 leading-tight">{recipe.name}</h2>
       </div>
 
       <div className="flex justify-between items-center mb-6">
-        {recipe.author ? (
-          <p className="text-lg text-gray-600">
-            Por: <span className="font-semibold text-gray-800">{recipe.author.name}</span>
-          </p>
-        ) : (
-          <div />
-        )}
-        {recipe.rating && (
+        <div />
+        {recipe.averageRating && (
           <div className="flex items-center space-x-2">
             <Star className="w-6 h-6 text-yellow-400 fill-current" />
-            <span className="text-lg font-semibold text-gray-800">{recipe.rating}</span>
+            <span className="text-lg font-semibold text-gray-800">{recipe.averageRating}</span>
             <span className="text-gray-600">/5</span>
           </div>
         )}
@@ -188,7 +174,7 @@ export function RecipePostView({ recipe }: RecipePostViewProps) {
           <ChefHat size={20} className="text-emerald-600" />
           <div>
             <span className="block font-medium text-gray-700 text-sm">Dificultad</span>
-            <span className="text-gray-600 capitalize">{recipe.level || 'N/A'}</span>
+            <span className="text-gray-600 capitalize">Intermedio</span>
           </div>
         </div>
         {recipe.servings && (
@@ -200,15 +186,6 @@ export function RecipePostView({ recipe }: RecipePostViewProps) {
             </div>
           </div>
         )}
-        {recipe.calories && (
-          <div className="flex items-center space-x-2 p-4 bg-gray-50 rounded-lg shadow-sm">
-            <Scale size={20} className="text-emerald-600" />
-            <div>
-              <span className="block font-medium text-gray-700 text-sm">Calorías</span>
-              <span className="text-gray-600">{recipe.calories} kcal</span>
-            </div>
-          </div>
-        )}
       </div>
 
       <div className="space-y-8 break-words">
@@ -217,8 +194,8 @@ export function RecipePostView({ recipe }: RecipePostViewProps) {
           <ExpandableContent title="Ingredientes" content={recipe.ingredients} isIngredients={true} />
         )}
         {/* La llamada para la descripción también se mantiene igual */}
-        {recipe.body && recipe.body.length > 0 && (
-          <ExpandableContent title="Descripción" content={recipe.body} />
+        {recipe.preparation && (
+          <ExpandableContent title="Preparación" content={recipe.preparation} />
         )}
       </div>
 
@@ -229,17 +206,6 @@ export function RecipePostView({ recipe }: RecipePostViewProps) {
         </div>
       )}
 
-      {recipe.macros && (
-        <div className="my-8 p-6 bg-white rounded-lg shadow-sm">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">Información Nutricional</h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="text-center"><div className="text-2xl font-bold text-emerald-600">{recipe.macros.carbs || 0}g</div><div className="text-sm text-gray-600">Carbs</div></div>
-            <div className="text-center"><div className="text-2xl font-bold text-blue-600">{recipe.macros.protein || 0}g</div><div className="text-sm text-gray-600">Proteínas</div></div>
-            <div className="text-center"><div className="text-2xl font-bold text-yellow-600">{recipe.macros.fat || 0}g</div><div className="text-sm text-gray-600">Grasas</div></div>
-            <div className="text-center"><div className="text-2xl font-bold text-green-600">{recipe.macros.fiber || 0}g</div><div className="text-sm text-gray-600">Fibra</div></div>
-          </div>
-        </div>
-      )}
       
       {recipe.tags && recipe.tags.length > 0 && (
         <div className="mb-8">
@@ -252,8 +218,8 @@ export function RecipePostView({ recipe }: RecipePostViewProps) {
         </div>
       )}
 
-      {recipe.slug?.current && recipe.title && (
-        <Comments postSlug={recipe.slug.current} postTitle={recipe.title} />
+      {recipe.slug?.current && recipe.name && (
+        <Comments postSlug={recipe.slug.current} postTitle={recipe.name} />
       )}
     </div>
   )

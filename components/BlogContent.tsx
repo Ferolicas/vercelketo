@@ -1,12 +1,12 @@
 'use client'
 
 import Link from 'next/link';
-import { BlogPost, BlogCategory } from '@/types/sanity';
+import { BlogPost } from '@/types/sanity';
 import { ContentAd } from './AdSystem';
 
 interface BlogContentProps {
   blogPosts: BlogPost[];
-  categories: BlogCategory[];
+  categories: any[];
   featuredPosts: BlogPost[];
   currentPage: number;
   totalPages: number;

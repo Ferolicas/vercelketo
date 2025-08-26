@@ -1,6 +1,6 @@
 import { Suspense } from 'react';
 import { client, queries } from '@/lib/sanity';
-import type { Category, Post } from '@/types/sanity';
+import type { Category, Recipe } from '@/types/sanity';
 import HomePage from '@/components/HomePage';
 
 // Remove force-dynamic to allow static generation when possible
@@ -41,16 +41,16 @@ export default async function Page({ params, searchParams }: PageProps) {
     // Fetch datos básicos para la home
     const [categories, featuredRecipes] = await Promise.all([
       client.fetch<Category[]>(queries.allCategories),
-      client.fetch<Post[]>(`
-        *[_type == "post"] | order(publishedAt desc)[0...6] {
+      client.fetch<Recipe[]>(`
+        *[_type == "recipe"] | order(createdAt desc)[0...6] {
           _id,
-          title,
+          name,
           slug,
-          mainImage,
-          excerpt,
-          publishedAt,
+          thumbnail,
+          description,
+          createdAt,
           category->{
-            title,
+            name,
             slug
           }
         }
@@ -58,7 +58,7 @@ export default async function Page({ params, searchParams }: PageProps) {
     ]);
 
     // Calcular estadísticas
-    const totalRecipes = await client.fetch<number>('count(*[_type == "post"])')
+    const totalRecipes = await client.fetch<number>('count(*[_type == "recipe"])')
     const stats = {
       totalRecipes: totalRecipes || 500,
       happyUsers: 15000,

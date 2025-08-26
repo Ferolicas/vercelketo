@@ -1,11 +1,11 @@
 'use client'
 
 import Link from 'next/link';
-import { Post, Category } from '@/types/sanity';
+import { Recipe, Category } from '@/types/sanity';
 import { ContentAd } from './AdSystem';
 
 interface DietaKetoContentProps {
-  ketoRecipes: Post[];
+  ketoRecipes: Recipe[];
   categories: Category[];
   stats: any;
 }

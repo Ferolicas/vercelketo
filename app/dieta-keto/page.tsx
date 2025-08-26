@@ -1,6 +1,6 @@
 import { Suspense } from 'react';
 import { client, queries } from '@/lib/sanity';
-import type { Post, Category } from '@/types/sanity';
+import type { Recipe, Category } from '@/types/sanity';
 import { Metadata } from 'next';
 import DietaKetoContent from '@/components/DietaKetoContent';
 
@@ -38,32 +38,30 @@ export const metadata: Metadata = {
 export default async function DietaKetoPage() {
   try {
     const [ketoRecipes, categories, stats] = await Promise.all([
-      client.fetch<Post[]>(`
-        *[_type == "post" && (
-          title match "*keto*" ||
-          title match "*cetogén*" ||
-          tags[]._ref in *[_type == "tag" && title match "*keto*"]._id
-        )] | order(rating desc)[0..12] {
+      client.fetch<Recipe[]>(`
+        *[_type == "recipe" && (
+          name match "*keto*" ||
+          name match "*cetogén*" ||
+          description match "*keto*"
+        )] | order(averageRating desc)[0..12] {
           _id,
-          title,
+          name,
           slug,
-          mainImage,
-          excerpt,
+          thumbnail,
+          description,
           preparationTime,
-          level,
-          rating,
+          averageRating,
           servings,
-          calories,
           category->{
-            title,
+            name,
             slug
           }
         }
       `),
       client.fetch<Category[]>(queries.allCategories),
       client.fetch(`{
-        "totalRecipes": count(*[_type == "post"]),
-        "ketoRecipes": count(*[_type == "post" && (title match "*keto*" || title match "*cetogén*")]),
+        "totalRecipes": count(*[_type == "recipe"]),
+        "ketoRecipes": count(*[_type == "recipe" && (name match "*keto*" || name match "*cetogén*")])
         "categories": count(*[_type == "category"])
       }`)
     ]);

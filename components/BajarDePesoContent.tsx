@@ -1,14 +1,14 @@
 'use client'
 
 import Link from 'next/link';
-import { Post } from '@/types/sanity';
+import { Recipe } from '@/types/sanity';
 import { ContentAd, StickyAd, RecipeAd } from './AdSystem';
 import InternalLinks from './InternalLinks';
 
 interface BajarDePesoContentProps {
-  weightLossRecipes: Post[];
-  lowCalorieRecipes: Post[];
-  fastRecipes: Post[];
+  weightLossRecipes: Recipe[];
+  lowCalorieRecipes: Recipe[];
+  fastRecipes: Recipe[];
 }
 
 export default function BajarDePesoContent({

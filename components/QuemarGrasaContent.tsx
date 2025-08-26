@@ -1,13 +1,13 @@
 'use client'
 
 import Link from 'next/link';
-import { Post } from '@/types/sanity';
+import { Recipe } from '@/types/sanity';
 import { ContentAd, StickyAd } from './AdSystem';
 
 interface QuemarGrasaContentProps {
-  fatBurningRecipes: Post[];
-  thermogenicRecipes: Post[];
-  fastingRecipes: Post[];
+  fatBurningRecipes: Recipe[];
+  thermogenicRecipes: Recipe[];
+  fastingRecipes: Recipe[];
 }
 
 export default function QuemarGrasaContent(props: QuemarGrasaContentProps) {

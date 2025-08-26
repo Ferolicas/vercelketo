@@ -1,14 +1,14 @@
 'use client'
 
 import Link from 'next/link';
-import { Post, Category } from '@/types/sanity';
+import { Recipe, Category } from '@/types/sanity';
 import { ContentAd } from './AdSystem';
 
 interface RecetasSaludablesContentProps {
-  healthyRecipes: Post[];
+  healthyRecipes: Recipe[];
   categories: Category[];
-  lowCarbRecipes: Post[];
-  highProteinRecipes: Post[];
+  lowCarbRecipes: Recipe[];
+  highProteinRecipes: Recipe[];
   currentPage: number;
   totalPages: number;
   tipo?: string;

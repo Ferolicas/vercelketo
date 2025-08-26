@@ -1,14 +1,14 @@
 'use client'
 
 import Link from 'next/link';
-import { Post, Category } from '@/types/sanity';
+import { Recipe, Category } from '@/types/sanity';
 import { ContentAd } from './AdSystem';
 
 interface DietaCetogenicaContentProps {
-  scientificRecipes: Post[];
+  scientificRecipes: Recipe[];
   categories: Category[];
-  advancedRecipes: Post[];
-  therapeuticRecipes: Post[];
+  advancedRecipes: Recipe[];
+  therapeuticRecipes: Recipe[];
 }
 
 export default function DietaCetogenicaContent(props: DietaCetogenicaContentProps) {

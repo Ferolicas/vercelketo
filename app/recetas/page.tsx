@@ -1,94 +1,88 @@
 import { Suspense } from 'react';
-import { client, queries } from '@/lib/sanity';
-import type { Category, Post, HomePage } from '@/types/sanity';
-import RecetasContent from '@/components/RecetasContent';
 import { generateSEOMetadata } from '@/components/SEOHead';
+import ModernRecipesPage from '@/components/ModernRecipesPage';
 
-// Force dynamic to ensure recipes load fresh from Sanity
+// Force dynamic rendering
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-// SEO optimizado para la página de recetas
+// SEO metadata
 export async function generateMetadata() {
   return generateSEOMetadata({
-    title: 'Recetas Keto | +500 Recetas Cetogénicas Gratis en Español',
-    description: 'Descubre la colección más completa de recetas keto en español. Desayunos, comidas, cenas, postres y snacks cetogénicos para perder peso deliciosamente.',
-    keywords: 'recetas keto, recetas cetogénicas, desayuno keto, comida keto, cena keto, postres keto, recetas bajas en carbohidratos, dieta keto recetas, keto en español, recetas sin azúcar, recetas keto fáciles, recetas keto rápidas',
+    title: 'Recetas Keto | Deliciosas Recetas Cetogénicas',
+    description: 'Descubre recetas keto organizadas por categorías: desayunos, almuerzos, cenas, aperitivos y postres. Cada receta incluye video, ingredientes y valoraciones.',
+    keywords: 'recetas keto, recetas cetogénicas, desayuno keto, almuerzo keto, cena keto, aperitivos keto, postres keto',
     url: '/recetas',
     type: 'website'
   });
 }
 
-interface RecetasPageProps {
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
-}
-
-export default async function RecetasPage({ searchParams }: RecetasPageProps) {
-  // Fetch data server-side to avoid CORS issues
-  let categories: Category[] = [];
-  let allPosts: Post[] = [];
-  let homePageData: HomePage | null = null;
-  let error = null;
-
-  try {
-    console.log('🔄 SERVER: Fetching data from Sanity...');
-    
-    [homePageData, categories, allPosts] = await Promise.all([
-      client.fetch<HomePage>(queries.homePage).catch(() => null),
-      client.fetch<Category[]>(queries.allCategories).catch(() => []),
-      client.fetch<Post[]>(queries.allPosts).catch(() => [])
-    ]);
-
-    console.log(`✅ SERVER: Loaded ${allPosts.length} recipes and ${categories.length} categories`);
-    
-  } catch (err) {
-    console.error('❌ SERVER ERROR:', err);
-    error = err instanceof Error ? err.message : 'Error desconocido';
-  }
-
-  if (error) {
-    return (
-      <div className="pt-16 flex justify-center items-center h-screen">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold text-red-600 mb-4">Error del servidor</h2>
-          <p className="text-gray-600 mb-4">{error}</p>
-          <button 
-            onClick={() => window.location.reload()}
-            className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-full"
-          >
-            Reintentar
-          </button>
-        </div>
-      </div>
-    );
-  }
-
+export default function RecetasPage() {
   return (
-    <div className="pt-16">
-      {/* Header de la sección de recetas */}
-      <div className="bg-gradient-to-br from-green-50 via-white to-green-50 py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="mb-6">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-green-600 to-green-500 rounded-2xl text-white text-3xl mb-4">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-green-50/30">
+      <div className="pt-16">
+        {/* Header moderno */}
+        <div className="relative bg-gradient-to-r from-green-600 via-green-500 to-emerald-600 py-20 overflow-hidden">
+          {/* Decorative background */}
+          <div className="absolute inset-0 bg-black/10"></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent"></div>
+          
+          {/* Floating elements */}
+          <div className="absolute top-10 left-10 w-20 h-20 bg-white/10 rounded-full animate-pulse"></div>
+          <div className="absolute bottom-10 right-20 w-16 h-16 bg-white/10 rounded-full animate-bounce"></div>
+          <div className="absolute top-1/2 right-10 w-12 h-12 bg-white/10 rounded-full animate-ping"></div>
+          
+          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div className="inline-flex items-center justify-center w-24 h-24 bg-white/20 backdrop-blur-sm rounded-3xl text-white text-4xl mb-8 shadow-2xl">
               🍽️
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-              Recetas <span className="bg-gradient-to-r from-green-600 to-green-500 bg-clip-text text-transparent">Keto</span>
+            
+            <h1 className="text-5xl md:text-7xl font-black text-white mb-6 tracking-tight">
+              Recetas
+              <span className="block bg-gradient-to-r from-yellow-300 to-orange-300 bg-clip-text text-transparent mt-2">
+                Keto
+              </span>
             </h1>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Explora nuestra colección completa de recetas cetogénicas organizadas por categorías. 
-              ¡Encuentra tu próxima comida favorita!
+            
+            <p className="text-xl md:text-2xl text-green-50 max-w-3xl mx-auto leading-relaxed font-light">
+              Explora nuestra colección de recetas cetogénicas organizadas por categorías.
+              <span className="block mt-2 font-medium">
+                ¡Con videos, ingredientes y valoraciones reales!
+              </span>
             </p>
+            
+            {/* Stats */}
+            <div className="flex flex-wrap justify-center gap-8 mt-12">
+              <div className="bg-white/20 backdrop-blur-sm rounded-2xl px-6 py-4 text-white">
+                <div className="text-2xl font-bold">5</div>
+                <div className="text-sm opacity-90">Categorías</div>
+              </div>
+              <div className="bg-white/20 backdrop-blur-sm rounded-2xl px-6 py-4 text-white">
+                <div className="text-2xl font-bold">∞</div>
+                <div className="text-sm opacity-90">Recetas</div>
+              </div>
+              <div className="bg-white/20 backdrop-blur-sm rounded-2xl px-6 py-4 text-white">
+                <div className="text-2xl font-bold">⭐</div>
+                <div className="text-sm opacity-90">Con Videos</div>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Server-rendered content - no hydration mismatch */}
-      <RecetasContent
-        homePageData={homePageData}
-        categories={categories || []}
-        allPosts={allPosts || []}
-      />
+        {/* Main content */}
+        <Suspense 
+          fallback={
+            <div className="min-h-screen flex items-center justify-center">
+              <div className="text-center">
+                <div className="animate-spin w-16 h-16 border-4 border-green-500 border-t-transparent rounded-full mb-4 mx-auto"></div>
+                <p className="text-gray-600 text-lg">Cargando deliciosas recetas...</p>
+              </div>
+            </div>
+          }
+        >
+          <ModernRecipesPage />
+        </Suspense>
+      </div>
     </div>
   );
 }

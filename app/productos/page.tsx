@@ -1,6 +1,6 @@
 import { Suspense } from 'react';
 import { client, queries } from '@/lib/sanity';
-import type { Product, ProductCategory } from '@/types/sanity';
+import type { Product } from '@/types/sanity';
 import { Metadata } from 'next';
 import ProductsContent from '@/components/ProductsContent';
 
@@ -99,7 +99,7 @@ export default async function ProductosPage({ searchParams }: PageProps) {
           limit: offset + productsPerPage - 1
         }
       ),
-      client.fetch<ProductCategory[]>(queries.allProductCategories),
+      client.fetch<any[]>(`*[_type == "productCategory"]`),
       client.fetch<Product[]>(
         `*[_type == "product" && rating >= 4.5] | order(rating desc)[0..6] {
           _id,

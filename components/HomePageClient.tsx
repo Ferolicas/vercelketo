@@ -2,7 +2,7 @@
 
 'use client'
 
-import type { HomePage, Category, Post } from '@/types/sanity'
+import type { Category, Recipe } from '@/types/sanity'
 import { Header } from '@/components/Header'
 import { CategoryButtons } from '@/components/CategoryButtons'
 import { RecipeCard } from '@/components/RecipeCard'
@@ -13,10 +13,10 @@ import confetti from 'canvas-confetti'
 import { ScrollToTop } from '@/components/ScrollToTop' // 👈 Componente importado
 
 interface HomePageClientProps {
-  homePageData: HomePage;
+  homePageData: any;
   categories: Category[];
-  initialRecipes: Post[];
-  initialSelectedRecipe: Post | null;
+  initialRecipes: Recipe[];
+  initialSelectedRecipe: Recipe | null;
 }
 
 export default function HomePageClient({ 
@@ -52,7 +52,7 @@ export default function HomePageClient({
     });
   };
 
-  const handleRecipeCardClick = (recipe: Post) => {
+  const handleRecipeCardClick = (recipe: Recipe) => {
     startTransition(() => {
         if (recipe.category?.slug?.current && recipe.slug.current) {
             const params = new URLSearchParams(window.location.search);
@@ -77,8 +77,8 @@ export default function HomePageClient({
     if (selectedRecipe) {
       if (navigator.share) {
         navigator.share({
-          title: `Receta Keto: ${selectedRecipe.title} en Planeta Keto`,
-          text: `Descubre esta increíble receta keto: ${selectedRecipe.title}. ¡Perfecta para tu dieta cetogénica!`,
+          title: `Receta Keto: ${selectedRecipe.name} en Planeta Keto`,
+          text: `Descubre esta increíble receta keto: ${selectedRecipe.name}. ¡Perfecta para tu dieta cetogénica!`,
           url: window.location.href,
         }).then(() => {
           console.log('Receta compartida con éxito');
@@ -137,7 +137,7 @@ export default function HomePageClient({
                           ))
                       ) : (
                           <p className="col-span-full text-center text-gray-600 text-lg py-10">
-                              No hay recetas disponibles {activeCategorySlug ? `en la categoría "${categories.find(cat => cat.slug.current === activeCategorySlug)?.title}"` : 'todavía'}.
+                              No hay recetas disponibles {activeCategorySlug ? `en la categoría "${categories.find(cat => cat.slug.current === activeCategorySlug)?.name}"` : 'todavía'}.
                           </p>
                       )}
                   </div>

@@ -1,22 +1,22 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import type { Post } from '@/types/sanity'
+import type { Recipe } from '@/types/sanity'
 import { urlFor } from '@/lib/sanity'
 import { Clock, ChefHat, Users, Star } from 'lucide-react'
 
 interface RecipeCardProps {
-  recipe: Post
-  onClick?: (recipe: Post) => void
+  recipe: Recipe
+  onClick?: (recipe: Recipe) => void
 }
 
 export function RecipeCard({ recipe, onClick }: RecipeCardProps) {
-  // Usar la imagen principal (mainImage) o image como fallback
-  const recipeImage = recipe.mainImage || recipe.image;
+  // Usar la imagen principal (thumbnail)
+  const recipeImage = recipe.thumbnail;
   const imageUrl = recipeImage 
     ? urlFor(recipeImage).url() 
     : '/placeholder-recipe.jpg';
 
-  const publishedDate = recipe.publishedAt ? new Date(recipe.publishedAt) : null;
+  const publishedDate = recipe.createdAt ? new Date(recipe.createdAt) : null;
   const formattedDate = publishedDate 
     ? publishedDate.toLocaleDateString('es-ES', { year: 'numeric', month: 'short', day: 'numeric' }) 
     : 'Fecha desconocida';
@@ -33,7 +33,7 @@ export function RecipeCard({ recipe, onClick }: RecipeCardProps) {
       <div className="relative w-full h-48 bg-gray-100 overflow-hidden group">
         <Image
           src={imageUrl}
-          alt={recipe.title || 'Imagen de receta'}
+          alt={recipe.name || 'Imagen de receta'}
           fill
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           style={{ objectFit: 'cover' }}
@@ -44,7 +44,7 @@ export function RecipeCard({ recipe, onClick }: RecipeCardProps) {
         {recipe.category && (
           <div className="absolute top-3 left-3">
             <span className="bg-green-600 text-white px-2 py-1 rounded-full text-xs font-medium">
-              {recipe.category.title}
+              {recipe.category.name}
             </span>
           </div>
         )}
@@ -61,22 +61,22 @@ export function RecipeCard({ recipe, onClick }: RecipeCardProps) {
       {/* Contenido de la Tarjeta */}
       <div className="p-4 flex-grow">
         <h3 className="text-lg font-bold text-gray-800 mb-2 line-clamp-2 hover:text-green-600 transition-colors">
-          {recipe.title}
+          {recipe.name}
         </h3>
         
-        {recipe.excerpt && (
+        {recipe.description && (
           <p className="text-gray-600 text-sm line-clamp-2 mb-3">
-            {recipe.excerpt}
+            {recipe.description}
           </p>
         )}
 
         {/* Recipe metadata */}
         <div className="flex items-center justify-between text-sm text-gray-500 mt-auto pt-3 border-t border-gray-100">
           <div className="flex items-center space-x-4">
-            {recipe.cookingTime && (
+            {recipe.preparationTime && (
               <div className="flex items-center">
                 <Clock size={14} className="mr-1" />
-                <span>{recipe.cookingTime}min</span>
+                <span>{recipe.preparationTime}min</span>
               </div>
             )}
             {recipe.servings && (
@@ -85,12 +85,10 @@ export function RecipeCard({ recipe, onClick }: RecipeCardProps) {
                 <span>{recipe.servings}</span>
               </div>
             )}
-            {recipe.difficulty && (
-              <div className="flex items-center">
-                <ChefHat size={14} className="mr-1" />
-                <span className="capitalize">{recipe.difficulty}</span>
-              </div>
-            )}
+            <div className="flex items-center">
+              <ChefHat size={14} className="mr-1" />
+              <span>Keto</span>
+            </div>
           </div>
         </div>
       </div>

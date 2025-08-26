@@ -1,6 +1,6 @@
 import { Suspense } from 'react';
 import { client, queries } from '@/lib/sanity';
-import type { Post, Category } from '@/types/sanity';
+import type { Recipe, Category } from '@/types/sanity';
 import { Metadata } from 'next';
 import RecetasKetoContent from '@/components/RecetasKetoContent';
 
@@ -46,7 +46,7 @@ export default async function RecetasKetoPage({ searchParams }: PageProps) {
     const recipesPerPage = 12;
     const offset = (currentPage - 1) * recipesPerPage;
     
-    let whereClause = `_type == "post"`;
+    let whereClause = `_type == "recipe"`;
     const queryParams: any = { offset, limit: offset + recipesPerPage - 1 };
     
     if (selectedCategory) {
@@ -54,10 +54,8 @@ export default async function RecetasKetoPage({ searchParams }: PageProps) {
       queryParams.category = selectedCategory;
     }
     
-    if (difficulty) {
-      whereClause += ` && level == $difficulty`;
-      queryParams.difficulty = difficulty;
-    }
+    // Note: difficulty filtering removed as it's not part of Recipe schema
+    // All recipes are keto by default
     
     if (timeFilter) {
       if (timeFilter === 'rapido') {
@@ -68,52 +66,51 @@ export default async function RecetasKetoPage({ searchParams }: PageProps) {
     }
 
     const [recipes, categories, featuredRecipes, popularRecipes, totalRecipes] = await Promise.all([
-      client.fetch<Post[]>(`
-        *[${whereClause}] | order(publishedAt desc)[$offset...$limit] {
+      client.fetch<Recipe[]>(`
+        *[${whereClause}] | order(createdAt desc)[$offset...$limit] {
           _id,
           _createdAt,
-          title,
+          name,
           slug,
-          mainImage,
-          excerpt,
-          publishedAt,
+          thumbnail,
+          description,
+          createdAt,
           category->{
-            title,
+            name,
             slug
           },
           preparationTime,
-          level,
-          rating,
+          averageRating,
           servings,
-          calories,
-          macros,
-          tags
+          ingredients,
+          preparation,
+          youtubeUrl
         }
       `, queryParams),
       client.fetch<Category[]>(queries.allCategories),
-      client.fetch<Post[]>(`
-        *[_type == "post" && rating >= 4.5] | order(rating desc)[0..6] {
+      client.fetch<Recipe[]>(`
+        *[_type == "recipe" && averageRating >= 4.5] | order(averageRating desc)[0..6] {
           _id,
-          title,
+          name,
           slug,
-          mainImage,
-          rating,
+          thumbnail,
+          averageRating,
           preparationTime,
           category->{
-            title,
+            name,
             slug
           }
         }
       `),
-      client.fetch<Post[]>(`
-        *[_type == "post"] | order(views desc)[0..8] {
+      client.fetch<Recipe[]>(`
+        *[_type == "recipe"] | order(createdAt desc)[0..8] {
           _id,
-          title,
+          name,
           slug,
-          mainImage,
-          excerpt,
+          thumbnail,
+          description,
           preparationTime,
-          rating
+          averageRating
         }
       `),
       client.fetch<number>(`count(*[${whereClause}])`, queryParams),

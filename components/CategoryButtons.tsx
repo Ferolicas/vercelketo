@@ -49,7 +49,7 @@ export function CategoryButtons({ categories, onSelectCategory, activeCategorySl
                 : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
             }`}
           >
-            {category.title}
+            {category.name}
           </button>
         ))}
         {/* Spacer invisible para padding final */}

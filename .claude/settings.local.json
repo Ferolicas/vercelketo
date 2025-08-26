@@ -20,7 +20,8 @@
       "WebFetch(domain:localhost)",
       "Bash(curl:*)",
       "Bash(timeout 10 curl -s http://localhost:3001/recetas)",
-      "Bash(del \"C:\\PLANETA KETO V2\\planetaketonext\\test-sanity.js\")"
+      "Bash(del \"C:\\PLANETA KETO V2\\planetaketonext\\test-sanity.js\")",
+      "mcp__ide__getDiagnostics"
     ],
     "deny": [],
     "ask": [],

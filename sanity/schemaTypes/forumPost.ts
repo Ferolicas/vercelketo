@@ -135,14 +135,15 @@ export default defineType({
       const pinnedIcon = pinned ? '📌 ' : ''
       const status = approved ? '✅' : '⏳'
       const replyCount = replies?.length || 0
-      const categoryEmoji = {
+      const categoryEmojis: { [key: string]: string } = {
         general: '💬',
         recetas: '🍽️',
         ejercicio: '💪',
         progreso: '📈',
         preguntas: '❓',
         productos: '🛒'
-      }[category] || '💬'
+      };
+      const categoryEmoji = categoryEmojis[category] || '💬'
       
       return {
         title: `${pinnedIcon}${status} ${title}`,

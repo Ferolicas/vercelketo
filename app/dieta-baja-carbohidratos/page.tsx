@@ -1,6 +1,6 @@
 import { Suspense } from 'react';
 import { client } from '@/lib/sanity';
-import type { Post } from '@/types/sanity';
+import type { Recipe } from '@/types/sanity';
 import { Metadata } from 'next';
 import DietaBajaCarbohidratosContent from '@/components/DietaBajaCarbohidratosContent';
 
@@ -34,46 +34,41 @@ export const metadata: Metadata = {
 export default async function DietaBajaCarbohidratosPage() {
   try {
     const [lowCarbRecipes, moderateRecipes, ultraLowRecipes] = await Promise.all([
-      client.fetch<Post[]>(`
-        *[_type == "post" && macros.carbs <= 15] | order(rating desc)[0..12] {
+      client.fetch<Recipe[]>(`
+        *[_type == "recipe"] | order(averageRating desc)[0..12] {
           _id,
-          title,
+          name,
           slug,
-          mainImage,
-          excerpt,
+          thumbnail,
+          description,
           preparationTime,
-          level,
-          rating,
-          calories,
-          macros,
+          averageRating,
           category->{
-            title,
+            name,
             slug
           }
         }
       `),
-      client.fetch<Post[]>(`
-        *[_type == "post" && macros.carbs > 15 && macros.carbs <= 30] | order(rating desc)[0..8] {
+      client.fetch<Recipe[]>(`
+        *[_type == "recipe"] | order(averageRating desc)[0..8] {
           _id,
-          title,
+          name,
           slug,
-          mainImage,
-          macros,
-          rating,
+          thumbnail,
+          averageRating,
           category->{
-            title,
+            name,
             slug
           }
         }
       `),
-      client.fetch<Post[]>(`
-        *[_type == "post" && macros.carbs <= 5] | order(rating desc)[0..6] {
+      client.fetch<Recipe[]>(`
+        *[_type == "recipe"] | order(averageRating desc)[0..6] {
           _id,
-          title,
+          name,
           slug,
-          mainImage,
-          macros,
-          rating
+          thumbnail,
+          averageRating
         }
       `)
     ]);

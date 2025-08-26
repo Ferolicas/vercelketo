@@ -1,12 +1,12 @@
 'use client'
 
 import Link from 'next/link';
-import { Product, ProductCategory } from '@/types/sanity';
+import { Product } from '@/types/sanity';
 import { ContentAd } from './AdSystem';
 
 interface ProductsContentProps {
   products: Product[];
-  categories: ProductCategory[];
+  categories: any[];
   featuredProducts: Product[];
   currentPage: number;
   totalPages: number;

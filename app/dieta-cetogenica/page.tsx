@@ -1,6 +1,6 @@
 import { Suspense } from 'react';
 import { client } from '@/lib/sanity';
-import type { Post, Category } from '@/types/sanity';
+import type { Recipe, Category } from '@/types/sanity';
 import { Metadata } from 'next';
 import DietaCetogenicaContent from '@/components/DietaCetogenicaContent';
 
@@ -34,23 +34,17 @@ export const metadata: Metadata = {
 export default async function DietaCetogenicaPage() {
   try {
     const [scientificRecipes, categories, advancedRecipes, therapeuticRecipes] = await Promise.all([
-      client.fetch<Post[]>(`
-        *[_type == "post" && (
-          macros.carbs <= 5 &&
-          rating >= 4.0
-        )] | order(rating desc)[0..12] {
+      client.fetch<Recipe[]>(`
+        *[_type == "recipe" && averageRating >= 4.0] | order(averageRating desc)[0..12] {
           _id,
-          title,
+          name,
           slug,
-          mainImage,
-          excerpt,
+          thumbnail,
+          description,
           preparationTime,
-          level,
-          rating,
-          calories,
-          macros,
+          averageRating,
           category->{
-            title,
+            name,
             slug
           }
         }
@@ -61,39 +55,29 @@ export default async function DietaCetogenicaPage() {
           title,
           slug,
           description,
-          "postCount": count(*[_type == "post" && references(^._id)])
+          "postCount": count(*[_type == "recipe" && references(^._id)])
         }
       `),
-      client.fetch<Post[]>(`
-        *[_type == "post" && (
-          level == "avanzado" ||
-          macros.fat >= 25
-        )] | order(rating desc)[0..8] {
+      client.fetch<Recipe[]>(`
+        *[_type == "recipe"] | order(averageRating desc)[0..8] {
           _id,
-          title,
+          name,
           slug,
-          mainImage,
-          macros,
-          rating,
+          thumbnail,
+          averageRating,
           category->{
-            title,
+            name,
             slug
           }
         }
       `),
-      client.fetch<Post[]>(`
-        *[_type == "post" && (
-          tags[] match "*therapeutic*" ||
-          tags[] match "*medical*" ||
-          calories <= 800
-        )] | order(rating desc)[0..6] {
+      client.fetch<Recipe[]>(`
+        *[_type == "recipe"] | order(averageRating desc)[0..6] {
           _id,
-          title,
+          name,
           slug,
-          mainImage,
-          calories,
-          macros,
-          rating
+          thumbnail,
+          averageRating
         }
       `)
     ]);

@@ -1,6 +1,6 @@
 import { Suspense } from 'react';
 import { client, queries } from '@/lib/sanity';
-import type { BlogPost, BlogCategory } from '@/types/sanity';
+import type { BlogPost } from '@/types/sanity';
 import { Metadata } from 'next';
 import BlogContent from '@/components/BlogContent';
 
@@ -69,15 +69,15 @@ export default async function BlogPage({ searchParams }: PageProps) {
               readTime,
               isFeatured
             }`
-          : queries.allBlogPosts + `[$offset...$limit]`,
+          : `*[_type == "blogPost"] | order(publishedAt desc)[$offset...$limit]`,
         { 
           category: selectedCategory,
           offset,
           limit: offset + postsPerPage - 1
         }
       ),
-      client.fetch<BlogCategory[]>(queries.allBlogCategories),
-      client.fetch<BlogPost[]>(queries.featuredBlogPosts),
+      client.fetch<any[]>(`*[_type == "blogCategory"]`),
+      client.fetch<BlogPost[]>(`*[_type == "blogPost" && featured == true]`),
       client.fetch<number>(
         selectedCategory
           ? `count(*[_type == "blogPost" && category->slug.current == $category])`
@@ -132,7 +132,7 @@ export default async function BlogPage({ searchParams }: PageProps) {
 // Función para generar paths estáticos de categorías populares
 export async function generateStaticParams() {
   try {
-    const categories = await client.fetch<BlogCategory[]>(
+    const categories = await client.fetch<any[]>(
       `*[_type == "blogCategory"] { slug }`
     );
     

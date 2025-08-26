@@ -1,27 +1,48 @@
-'use client'
+'use client';
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import AdminLayout from '@/components/admin/AdminLayout';
-import Dashboard from '@/components/admin/Dashboard';
-import CreatePostModal from '@/components/admin/CreatePostModal';
-import EditWebDetailsModal from '@/components/admin/EditWebDetailsModal';
-import CreateProductModal from '@/components/admin/CreateProductModal';
-import CreateAmazonListModal from '@/components/admin/CreateAmazonListModal';
+import { Plus, ChefHat, BarChart3, Users, MessageCircle } from 'lucide-react';
+import CreateRecipeModal from '@/components/admin/CreateRecipeModal';
+import type { Category, Recipe } from '@/types/sanity';
 
 export default function AdminPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [activeModal, setActiveModal] = useState<string | null>(null);
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [recipes, setRecipes] = useState<Recipe[]>([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     // Verificar si ya está autenticado
     const adminAccess = localStorage.getItem('admin_access');
     if (adminAccess === 'granted') {
       setIsAuthenticated(true);
+      loadData();
     }
   }, []);
+
+  const loadData = async () => {
+    try {
+      setLoading(true);
+      const [categoriesRes, recipesRes] = await Promise.all([
+        fetch('/api/categories'),
+        fetch('/api/recipes')
+      ]);
+
+      const categoriesData = await categoriesRes.json();
+      const recipesData = await recipesRes.json();
+
+      if (categoriesData.success) setCategories(categoriesData.data);
+      if (recipesData.success) setRecipes(recipesData.data);
+    } catch (error) {
+      console.error('Error loading admin data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,6 +51,7 @@ export default function AdminPage() {
       localStorage.setItem('admin_access', 'granted');
       setIsAuthenticated(true);
       setError('');
+      loadData();
     } else {
       setError('Contraseña incorrecta');
     }
@@ -38,6 +60,10 @@ export default function AdminPage() {
   const handleLogout = () => {
     localStorage.removeItem('admin_access');
     setIsAuthenticated(false);
+  };
+
+  const handleRecipeCreated = () => {
+    loadData(); // Reload data after creating recipe
   };
 
   if (!isAuthenticated) {
@@ -92,29 +118,191 @@ export default function AdminPage() {
   }
 
   return (
-    <AdminLayout onLogout={handleLogout}>
-      <Dashboard onOpenModal={setActiveModal} />
-      
-      {/* Modales */}
-      <CreatePostModal 
-        isOpen={activeModal === 'create-post'} 
-        onClose={() => setActiveModal(null)} 
+    <div className="min-h-screen bg-gray-50">
+      <div className="pt-16">
+        {/* Header */}
+        <div className="bg-gradient-to-r from-green-600 to-emerald-600 py-12">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex items-center justify-between">
+              <div className="text-center flex-1">
+                <h1 className="text-4xl font-bold text-white mb-4">
+                  Panel de Administración
+                </h1>
+                <p className="text-green-100 text-lg">
+                  Gestiona el contenido de Planeta Keto
+                </p>
+              </div>
+              <button
+                onClick={handleLogout}
+                className="bg-white/20 hover:bg-white/30 text-white font-semibold py-2 px-4 rounded-xl transition-colors"
+              >
+                Cerrar Sesión
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Main Content */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          {loading ? (
+            <div className="flex items-center justify-center py-20">
+              <div className="animate-spin w-16 h-16 border-4 border-green-500 border-t-transparent rounded-full"></div>
+            </div>
+          ) : (
+            <>
+              {/* Stats Cards */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
+                <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-gray-600 text-sm font-medium">Total Recetas</p>
+                      <p className="text-3xl font-bold text-gray-900">{recipes.length}</p>
+                    </div>
+                    <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+                      <ChefHat className="w-6 h-6 text-green-600" />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-gray-600 text-sm font-medium">Categorías</p>
+                      <p className="text-3xl font-bold text-gray-900">{categories.length}</p>
+                    </div>
+                    <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+                      <BarChart3 className="w-6 h-6 text-blue-600" />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-gray-600 text-sm font-medium">Usuarios</p>
+                      <p className="text-3xl font-bold text-gray-900">---</p>
+                    </div>
+                    <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
+                      <Users className="w-6 h-6 text-purple-600" />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-gray-600 text-sm font-medium">Comentarios</p>
+                      <p className="text-3xl font-bold text-gray-900">---</p>
+                    </div>
+                    <div className="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center">
+                      <MessageCircle className="w-6 h-6 text-yellow-600" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100 mb-12">
+                <h2 className="text-2xl font-bold text-gray-900 mb-6">Acciones Rápidas</h2>
+                
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <button
+                    onClick={() => setShowCreateModal(true)}
+                    className="group relative bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-semibold py-6 px-6 rounded-2xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                  >
+                    <div className="flex flex-col items-center">
+                      <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <Plus className="w-8 h-8" />
+                      </div>
+                      <h3 className="text-lg font-bold mb-2">Crear Receta</h3>
+                      <p className="text-green-100 text-sm text-center">
+                        Agrega una nueva receta keto con video e ingredientes
+                      </p>
+                    </div>
+                  </button>
+
+                  <button className="group relative bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-semibold py-6 px-6 rounded-2xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl opacity-50 cursor-not-allowed">
+                    <div className="flex flex-col items-center">
+                      <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mb-4">
+                        <BarChart3 className="w-8 h-8" />
+                      </div>
+                      <h3 className="text-lg font-bold mb-2">Ver Estadísticas</h3>
+                      <p className="text-blue-100 text-sm text-center">
+                        Próximamente disponible
+                      </p>
+                    </div>
+                  </button>
+
+                  <button className="group relative bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white font-semibold py-6 px-6 rounded-2xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl opacity-50 cursor-not-allowed">
+                    <div className="flex flex-col items-center">
+                      <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mb-4">
+                        <MessageCircle className="w-8 h-8" />
+                      </div>
+                      <h3 className="text-lg font-bold mb-2">Moderar</h3>
+                      <p className="text-purple-100 text-sm text-center">
+                        Próximamente disponible
+                      </p>
+                    </div>
+                  </button>
+                </div>
+              </div>
+
+              {/* Recent Recipes */}
+              <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100">
+                <h2 className="text-2xl font-bold text-gray-900 mb-6">Recetas Recientes</h2>
+                
+                {recipes.length > 0 ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {recipes.slice(0, 6).map((recipe) => (
+                      <div key={recipe._id} className="border border-gray-200 rounded-xl p-4 hover:shadow-lg transition-shadow">
+                        <div className="flex items-center gap-3 mb-3">
+                          <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                            {recipe.category?.icon || '🍽️'}
+                          </div>
+                          <div className="flex-1">
+                            <h3 className="font-semibold text-gray-900 line-clamp-1">{recipe.name}</h3>
+                            <p className="text-gray-500 text-sm">{recipe.category?.name}</p>
+                          </div>
+                        </div>
+                        <p className="text-gray-600 text-sm line-clamp-2 mb-3">{recipe.description}</p>
+                        <div className="flex items-center justify-between text-xs text-gray-500">
+                          <span>{recipe.preparationTime}min</span>
+                          <span>{recipe.servings} porciones</span>
+                          <span>⭐ {recipe.averageRating?.toFixed(1) || '0.0'}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-12">
+                    <ChefHat size={64} className="mx-auto text-gray-300 mb-4" />
+                    <h3 className="text-lg font-semibold text-gray-600 mb-2">
+                      No hay recetas aún
+                    </h3>
+                    <p className="text-gray-500 mb-6">
+                      ¡Crea tu primera receta para comenzar!
+                    </p>
+                    <button
+                      onClick={() => setShowCreateModal(true)}
+                      className="bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-xl transition-colors"
+                    >
+                      Crear Primera Receta
+                    </button>
+                  </div>
+                )}
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+
+      {/* Create Recipe Modal */}
+      <CreateRecipeModal
+        isOpen={showCreateModal}
+        onClose={() => setShowCreateModal(false)}
+        categories={categories}
+        onSuccess={handleRecipeCreated}
       />
-      
-      <EditWebDetailsModal 
-        isOpen={activeModal === 'edit-web'} 
-        onClose={() => setActiveModal(null)} 
-      />
-      
-      <CreateProductModal 
-        isOpen={activeModal === 'create-product'} 
-        onClose={() => setActiveModal(null)} 
-      />
-      
-      <CreateAmazonListModal 
-        isOpen={activeModal === 'create-amazon'} 
-        onClose={() => setActiveModal(null)} 
-      />
-    </AdminLayout>
+    </div>
   );
 }

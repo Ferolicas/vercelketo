@@ -2,11 +2,10 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { urlFor } from '@/lib/sanity'
-import type { HomePage } from '@/types/sanity'
 import { Youtube, Mail, ShoppingCart, Share2 } from 'lucide-react'
 
 interface HeaderProps {
-  homePageData?: HomePage | null;
+  homePageData?: any | null;
   onShareClick?: () => void;
   showShareButton?: boolean;
 }

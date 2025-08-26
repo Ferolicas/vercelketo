@@ -1,6 +1,6 @@
 import { Suspense } from 'react';
 import { client } from '@/lib/sanity';
-import type { Post } from '@/types/sanity';
+import type { Recipe } from '@/types/sanity';
 import { Metadata } from 'next';
 import QuemarGrasaContent from '@/components/QuemarGrasaContent';
 
@@ -34,62 +34,54 @@ export const metadata: Metadata = {
 export default async function QuemarGrasaPage() {
   try {
     const [fatBurningRecipes, thermogenicRecipes, fastingRecipes] = await Promise.all([
-      client.fetch<Post[]>(`
-        *[_type == "post" && (
-          tags[] match "*fat*" ||
-          tags[] match "*burn*" ||
-          tags[] match "*grasa*" ||
-          macros.fat >= 20
-        )] | order(rating desc)[0..12] {
+      client.fetch<Recipe[]>(`
+        *[_type == "recipe" && (
+          name match "*grasa*" ||
+          description match "*quemar*"
+        )] | order(averageRating desc)[0..12] {
           _id,
-          title,
+          name,
           slug,
-          mainImage,
-          excerpt,
+          thumbnail,
+          description,
           preparationTime,
-          level,
-          rating,
-          calories,
-          macros,
+          averageRating,
           category->{
-            title,
+            name,
             slug
           }
         }
       `),
-      client.fetch<Post[]>(`
-        *[_type == "post" && (
+      client.fetch<Recipe[]>(`
+        *[_type == "recipe" && (
           ingredients match "*cayena*" ||
           ingredients match "*jengibre*" ||
           ingredients match "*canela*" ||
           ingredients match "*coco*"
-        )] | order(rating desc)[0..8] {
+        )] | order(averageRating desc)[0..8] {
           _id,
-          title,
+          name,
           slug,
-          mainImage,
+          thumbnail,
           ingredients,
-          macros,
-          rating,
+          averageRating,
           category->{
-            title,
+            name,
             slug
           }
         }
       `),
-      client.fetch<Post[]>(`
-        *[_type == "post" && (
-          title match "*ayuno*" ||
-          tags[] match "*fasting*" ||
-          calories <= 200
-        )] | order(rating desc)[0..6] {
+      client.fetch<Recipe[]>(`
+        *[_type == "recipe" && (
+          name match "*ayuno*" ||
+          description match "*ayuno*"
+        )] | order(averageRating desc)[0..6] {
           _id,
-          title,
+          name,
           slug,
-          mainImage,
-          calories,
+          thumbnail,
           preparationTime,
-          rating
+          averageRating
         }
       `)
     ]);

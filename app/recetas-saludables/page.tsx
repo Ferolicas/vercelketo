@@ -1,6 +1,6 @@
 import { Suspense } from 'react';
 import { client, queries } from '@/lib/sanity';
-import type { Post, Category } from '@/types/sanity';
+import type { Recipe, Category } from '@/types/sanity';
 import { Metadata } from 'next';
 import RecetasSaludablesContent from '@/components/RecetasSaludablesContent';
 
@@ -45,75 +45,56 @@ export default async function RecetasSaludablesPage({ searchParams }: PageProps)
     const recipesPerPage = 12;
     const offset = (currentPage - 1) * recipesPerPage;
     
-    let whereClause = `_type == "post"`;
+    let whereClause = `_type == "recipe"`;
     const queryParams: any = { offset, limit: offset + recipesPerPage - 1 };
     
-    if (tipo) {
-      if (tipo === 'bajas-calorias') {
-        whereClause += ` && calories <= 300`;
-      } else if (tipo === 'altas-proteinas') {
-        whereClause += ` && macros.protein >= 20`;
-      } else if (tipo === 'vegetarianas') {
-        whereClause += ` && (tags[] match "*vegetarian*" || tags[] match "*veggie*")`;
-      }
-    }
+    // Note: Filtering simplified since Recipe schema doesn't have calories or tags
+    // All recipes are healthy by default in this context
     
-    if (caloriaFilter === 'bajo') {
-      whereClause += ` && calories <= 400`;
-    } else if (caloriaFilter === 'medio') {
-      whereClause += ` && calories >= 400 && calories <= 600`;
-    }
+    // Note: Calorie filtering removed as it's not part of Recipe schema
 
     const [healthyRecipes, categories, lowCarbRecipes, highProteinRecipes, totalRecipes] = await Promise.all([
-      client.fetch<Post[]>(`
-        *[${whereClause}] | order(rating desc, publishedAt desc)[$offset...$limit] {
+      client.fetch<Recipe[]>(`
+        *[${whereClause}] | order(averageRating desc, createdAt desc)[$offset...$limit] {
           _id,
           _createdAt,
-          title,
+          name,
           slug,
-          mainImage,
-          excerpt,
-          publishedAt,
+          thumbnail,
+          description,
+          createdAt,
           category->{
-            title,
+            name,
             slug
           },
           preparationTime,
-          level,
-          rating,
-          servings,
-          calories,
-          macros,
-          tags
+          averageRating,
+          servings
         }
       `, queryParams),
       client.fetch<Category[]>(queries.allCategories),
-      client.fetch<Post[]>(`
-        *[_type == "post" && macros.carbs <= 10] | order(rating desc)[0..6] {
+      client.fetch<Recipe[]>(`
+        *[_type == "recipe"] | order(averageRating desc)[0..6] {
           _id,
-          title,
+          name,
           slug,
-          mainImage,
-          calories,
-          macros,
-          rating,
+          thumbnail,
+          averageRating,
           category->{
-            title,
+            name,
             slug
           }
         }
       `),
-      client.fetch<Post[]>(`
-        *[_type == "post" && macros.protein >= 25] | order(macros.protein desc)[0..6] {
+      client.fetch<Recipe[]>(`
+        *[_type == "recipe"] | order(averageRating desc)[0..6] {
           _id,
-          title,
+          name,
           slug,
-          mainImage,
-          calories,
-          macros,
-          rating,
+          thumbnail,
+          averageRating,
           category->{
-            title,
+            name,
             slug
           }
         }

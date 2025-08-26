@@ -4,15 +4,15 @@ import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { urlFor } from '@/lib/sanity';
-import type { HomePage, Category, Post } from '@/types/sanity';
+import type { Category, Recipe } from '@/types/sanity';
 // import { Header } from '@/components/Header'; // Removed duplicate header
 import { Clock, ChefHat, Users } from 'lucide-react';
 import { RecipeCard } from '@/components/RecipeCard';
 
 interface RecetasContentProps {
-  homePageData: HomePage | null;
+  homePageData: any | null;
   categories: Category[];
-  allPosts: Post[];
+  allPosts: Recipe[];
 }
 
 export default function RecetasContent({ homePageData, categories, allPosts }: RecetasContentProps) {
@@ -22,12 +22,12 @@ export default function RecetasContent({ homePageData, categories, allPosts }: R
   console.log('🔍 RecetasContent recibió:', {
     posts: allPosts.length,
     categories: categories.length,
-    firstPost: allPosts[0]?.title
+    firstPost: allPosts[0]?.name
   });
 
   // Filter posts by selected category
   const filteredPosts = selectedCategory 
-    ? allPosts.filter(post => post.category?.slug?.current === selectedCategory)
+    ? allPosts.filter(recipe => recipe.category?.slug?.current === selectedCategory)
     : allPosts;
 
   // DEBUG TEMPORAL VISIBLE - Solo para diagnosticar el problema en producción
@@ -36,9 +36,9 @@ export default function RecetasContent({ homePageData, categories, allPosts }: R
     totalCategories: categories.length,
     filteredPosts: filteredPosts.length,
     selectedCategory,
-    firstPostTitle: allPosts[0]?.title,
+    firstPostTitle: allPosts[0]?.name,
     firstPostSlug: allPosts[0]?.slug?.current,
-    firstPostImage: !!allPosts[0]?.mainImage || !!allPosts[0]?.image
+    firstPostImage: !!allPosts[0]?.thumbnail
   };
 
   return (
@@ -62,7 +62,7 @@ export default function RecetasContent({ homePageData, categories, allPosts }: R
               Todas las Recetas ({allPosts.length})
             </button>
             {categories.map((category) => {
-              const categoryPosts = allPosts.filter(post => post.category?.slug?.current === category.slug.current);
+              const categoryPosts = allPosts.filter(recipe => recipe.category?.slug?.current === category.slug.current);
               return (
                 <button
                   key={category._id}
@@ -73,7 +73,7 @@ export default function RecetasContent({ homePageData, categories, allPosts }: R
                       : 'bg-white text-gray-600 border border-gray-200 hover:border-green-300'
                   }`}
                 >
-                  {category.title} ({categoryPosts.length})
+                  {category.name} ({categoryPosts.length})
                 </button>
               );
             })}
@@ -82,13 +82,13 @@ export default function RecetasContent({ homePageData, categories, allPosts }: R
 
         {/* Recipes Grid - Clean and Perfect */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {filteredPosts.map((post) => (
+          {filteredPosts.map((recipe) => (
             <RecipeCard
-              key={post._id}
-              recipe={post}
+              key={recipe._id}
+              recipe={recipe}
               onClick={(recipe) => {
                 // Navigate to recipe detail page when implemented
-                console.log('Recipe clicked:', recipe.title);
+                console.log('Recipe clicked:', recipe.name);
               }}
             />
           ))}
