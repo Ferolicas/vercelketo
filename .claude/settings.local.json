@@ -31,7 +31,8 @@
       "Bash(del \"C:\\PLANETA KETO V2\\planetaketonext\\recreate-recipes-with-categories.mjs\")",
       "WebFetch(domain:planetaketo.vercel.app)",
       "WebFetch(domain:planetaketo.es)",
-      "Bash(copy \"C:/Users/ferne/Downloads/4efaef0886ffeb0bf34726a51cfbb955cfcd05ff-600x600.webp\" \"C:\\PLANETA KETO V2\\planetaketonext\\public\\logo.webp\")"
+      "Bash(copy \"C:/Users/ferne/Downloads/4efaef0886ffeb0bf34726a51cfbb955cfcd05ff-600x600.webp\" \"C:\\PLANETA KETO V2\\planetaketonext\\public\\logo.webp\")",
+      "Bash(del \"C:\\PLANETA KETO V2\\planetaketonext\\recreate-all-recipes.mjs\")"
     ],
     "deny": [],
     "ask": [],
