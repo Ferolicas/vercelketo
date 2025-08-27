@@ -4,5 +4,6 @@ export default defineCliConfig({
   api: {
     projectId: 'nfqa4osj',
     dataset: 'production'
-  }
+  },
+  studioHost: 'planetaketo'
 })
