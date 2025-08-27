@@ -31,8 +31,11 @@ export async function GET() {
 
 // POST - Crear nuevo producto
 export async function POST(request: NextRequest) {
+  console.log('🚀 Product POST API called');
+  
   try {
     const formData = await request.formData()
+    console.log('📝 FormData received with keys:', Array.from(formData.keys()));
     
     const name = formData.get('name') as string
     const description = formData.get('description') as string
@@ -105,7 +108,11 @@ export async function POST(request: NextRequest) {
       createdAt: new Date().toISOString()
     }
 
+    console.log('📄 Creating product document:', JSON.stringify({...productDoc, image: '[File]'}, null, 2));
+
     const result = await writeClient.create(productDoc)
+    
+    console.log('✅ Product created successfully:', result._id);
 
     return NextResponse.json({
       message: '¡Producto creado exitosamente!',
@@ -113,9 +120,14 @@ export async function POST(request: NextRequest) {
     })
 
   } catch (error) {
-    console.error('Error creating product:', error)
+    console.error('❌ Error creating product:', error);
+    console.error('Error details:', {
+      message: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined
+    });
+    
     return NextResponse.json(
-      { error: 'Error al crear producto' },
+      { error: `Error al crear producto: ${error instanceof Error ? error.message : 'Error desconocido'}` },
       { status: 500 }
     )
   }
