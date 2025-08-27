@@ -48,39 +48,15 @@ export default function StatsModal({ isOpen, onClose }: StatsModalProps) {
     try {
       setLoading(true);
       
-      // Simulated stats - En producción, deberías crear una API /api/stats
-      await new Promise(resolve => setTimeout(resolve, 1000)); // Simular delay
+      // Fetch real stats from API
+      const response = await fetch('/api/stats');
+      if (!response.ok) {
+        throw new Error('Failed to fetch stats');
+      }
       
-      const mockStats: StatsData = {
-        totalRecipes: 5,
-        totalCategories: 5,
-        totalComments: 12,
-        totalProducts: 8,
-        totalServices: 3,
-        totalBlogPosts: 15,
-        avgRating: 4.7,
-        totalRatings: 89,
-        recentActivity: {
-          newRecipes: 2,
-          newComments: 5,
-          newRatings: 8
-        },
-        topCategories: [
-          { name: 'Cena', count: 2, icon: '🍽️' },
-          { name: 'Desayuno', count: 1, icon: '🍳' },
-          { name: 'Postre', count: 1, icon: '🍰' },
-          { name: 'Aperitivo', count: 1, icon: '🧀' },
-          { name: 'Almuerzo', count: 1, icon: '🥗' }
-        ],
-        topRatedRecipes: [
-          { name: 'Salmón a la Plancha con Espárragos', rating: 4.9, totalRatings: 32 },
-          { name: 'Mousse de Chocolate Keto', rating: 4.8, totalRatings: 35 },
-          { name: 'Huevos Revueltos Keto con Aguacate', rating: 4.8, totalRatings: 24 },
-          { name: 'Chips de Queso Parmesano', rating: 4.7, totalRatings: 28 }
-        ]
-      };
+      const statsData = await response.json();
       
-      setStats(mockStats);
+      setStats(statsData);
     } catch (error) {
       console.error('Error loading stats:', error);
     } finally {

@@ -18,10 +18,12 @@ interface ForoContentProps {
 }
 
 export default function ForoContent({
-  forumPosts,
+  forumPosts: initialForumPosts,
   categories,
-  pinnedPosts
+  pinnedPosts: initialPinnedPosts
 }: ForoContentProps) {
+  const [forumPosts, setForumPosts] = useState(initialForumPosts);
+  const [pinnedPosts, setPinnedPosts] = useState(initialPinnedPosts);
   const [showCreatePost, setShowCreatePost] = useState(false);
   const [newPost, setNewPost] = useState({
     title: '',
@@ -32,65 +34,14 @@ export default function ForoContent({
   });
   const [submitting, setSubmitting] = useState(false);
   
-  // Mock data de posts para el foro
-  const mockPosts = [
-    {
-      _id: '1',
-      title: '¿Cómo empezar con la dieta keto siendo principiante?',
-      content: 'Hola a todos, soy nueva en esto de la dieta keto y no sé por dónde empezar. ¿Alguien me puede dar consejos básicos?',
-      author: { name: 'María García', email: 'maria@email.com' },
-      category: { title: 'Principiantes', color: 'bg-green-100 text-green-800', icon: '🌱' },
-      _createdAt: '2024-01-15T10:30:00Z',
-      views: 142,
-      likes: 23,
-      replyCount: 12,
-      isPinned: false
-    },
-    {
-      _id: '2',
-      title: '¡Perdí 10kg en 3 meses con keto! Mi experiencia',
-      content: 'Quiero compartir mi experiencia con la dieta keto. He perdido 10 kilos en 3 meses y me siento increíble...',
-      author: { name: 'Carlos Mendoza', email: 'carlos@email.com' },
-      category: { title: 'Testimonios', color: 'bg-blue-100 text-blue-800', icon: '🎉' },
-      _createdAt: '2024-01-14T15:45:00Z',
-      views: 89,
-      likes: 45,
-      replyCount: 8,
-      isPinned: true
-    },
-    {
-      _id: '3',
-      title: 'Receta de pan keto que no falla',
-      content: 'Después de muchos intentos, encontré la receta perfecta de pan keto. ¡Es súper fácil y queda delicioso!',
-      author: { name: 'Ana López', email: 'ana@email.com' },
-      category: { title: 'Recetas', color: 'bg-orange-100 text-orange-800', icon: '👩‍🍳' },
-      _createdAt: '2024-01-13T09:20:00Z',
-      views: 234,
-      likes: 67,
-      replyCount: 15,
-      isPinned: false
-    },
-    {
-      _id: '4',
-      title: '¿Es normal tener fatiga los primeros días?',
-      content: 'Llevo 4 días con keto y me siento muy cansada. ¿Es normal? ¿Cuándo mejora?',
-      author: { name: 'Laura Ruiz', email: 'laura@email.com' },
-      category: { title: 'Dudas', color: 'bg-yellow-100 text-yellow-800', icon: '❓' },
-      _createdAt: '2024-01-12T18:10:00Z',
-      views: 78,
-      likes: 12,
-      replyCount: 9,
-      isPinned: false
-    }
-  ];
-  
-  const mockCategories = [
-    { _id: '1', title: 'Principiantes', color: 'bg-green-100 text-green-800', icon: '🌱' },
-    { _id: '2', title: 'Testimonios', color: 'bg-blue-100 text-blue-800', icon: '🎉' },
-    { _id: '3', title: 'Recetas', color: 'bg-orange-100 text-orange-800', icon: '👩‍🍳' },
-    { _id: '4', title: 'Dudas', color: 'bg-yellow-100 text-yellow-800', icon: '❓' },
-    { _id: '5', title: 'Ejercicio', color: 'bg-red-100 text-red-800', icon: '💪' },
-    { _id: '6', title: 'Productos', color: 'bg-purple-100 text-purple-800', icon: '🛒' }
+  // Forum categories for the form
+  const forumCategories = [
+    { id: 'principiantes', title: 'Principiantes', color: 'bg-green-100 text-green-800', icon: '🌱' },
+    { id: 'testimonios', title: 'Testimonios', color: 'bg-blue-100 text-blue-800', icon: '🎉' },
+    { id: 'recetas', title: 'Recetas', color: 'bg-orange-100 text-orange-800', icon: '👩‍🍳' },
+    { id: 'dudas', title: 'Dudas', color: 'bg-yellow-100 text-yellow-800', icon: '❓' },
+    { id: 'ejercicio', title: 'Ejercicio', color: 'bg-red-100 text-red-800', icon: '💪' },
+    { id: 'productos', title: 'Productos', color: 'bg-purple-100 text-purple-800', icon: '🛒' }
   ];
   
   const handleSubmitPost = async (e: React.FormEvent) => {
@@ -126,11 +77,20 @@ export default function ForoContent({
       
       if (response.ok) {
         alert('¡Publicación creada exitosamente!');
+        
+        // Add the new post to the list without reloading
+        const newPostData = {
+          ...result.post,
+          author: { name: newPost.authorName, email: newPost.authorEmail },
+          replyCount: 0,
+          views: 0,
+          likes: 0,
+          isPinned: false
+        };
+        
+        setForumPosts(prevPosts => [newPostData, ...prevPosts]);
         setNewPost({ title: '', category: '', content: '', authorName: '', authorEmail: '' });
         setShowCreatePost(false);
-        
-        // Optionally refresh the page or add the new post to the list
-        window.location.reload();
       } else {
         throw new Error(result.error || 'Error al crear publicación');
       }
@@ -179,8 +139,8 @@ export default function ForoContent({
           Categorías del Foro
         </h3>
         <div className="flex flex-wrap gap-3">
-          {mockCategories.map((category) => (
-            <div key={category._id} className={`${category.color} px-4 py-2 rounded-xl text-sm font-semibold flex items-center cursor-pointer hover:scale-105 transition-transform`}>
+          {forumCategories.map((category) => (
+            <div key={category.id} className={`${category.color} px-4 py-2 rounded-xl text-sm font-semibold flex items-center cursor-pointer hover:scale-105 transition-transform`}>
               <span className="mr-2">{category.icon}</span>
               {category.title}
             </div>
@@ -190,10 +150,22 @@ export default function ForoContent({
       
       {/* Posts List */}
       <div className="space-y-4">
-        {mockPosts.map((post) => (
-          <div key={post._id} className={`bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden ${
-            post.isPinned ? 'border-2 border-yellow-400' : ''
-          }`}>
+        {forumPosts.length === 0 ? (
+          <div className="bg-white rounded-2xl shadow-lg p-8 text-center">
+            <div className="text-gray-400 mb-4">📭</div>
+            <h3 className="text-lg font-semibold text-gray-700 mb-2">No hay publicaciones aún</h3>
+            <p className="text-gray-500">¡Sé el primero en crear una publicación!</p>
+          </div>
+        ) : (
+          forumPosts.map((post) => {
+            // Buscar la categoría en forumCategories
+            const categoryData = forumCategories.find(cat => cat.id === post.category) || 
+                                forumCategories[0]; // fallback a la primera categoría
+            
+            return (
+              <div key={post._id} className={`bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden ${
+                post.isPinned ? 'border-2 border-yellow-400' : ''
+              }`}>
             <div className="p-6">
               <div className="flex items-start justify-between">
                 <div className="flex-1">
@@ -204,15 +176,17 @@ export default function ForoContent({
                         Fijado
                       </div>
                     )}
-                    <div className={`${post.category.color} px-3 py-1 rounded-full text-xs font-semibold flex items-center`}>
-                      <span className="mr-1">{post.category.icon}</span>
-                      {post.category.title}
+                    <div className={`${categoryData.color} px-3 py-1 rounded-full text-xs font-semibold flex items-center`}>
+                      <span className="mr-1">{categoryData.icon}</span>
+                      {categoryData.title}
                     </div>
                   </div>
                   
-                  <h3 className="text-xl font-bold text-gray-900 mb-3 hover:text-green-600 transition-colors cursor-pointer">
-                    {post.title}
-                  </h3>
+                  <Link href={`/foro/${post.slug?.current || post._id}`}>
+                    <h3 className="text-xl font-bold text-gray-900 mb-3 hover:text-green-600 transition-colors cursor-pointer">
+                      {post.title}
+                    </h3>
+                  </Link>
                   
                   <p className="text-gray-600 mb-4 line-clamp-2">
                     {post.content}
@@ -222,37 +196,39 @@ export default function ForoContent({
                     <div className="flex items-center space-x-4 text-sm text-gray-500">
                       <div className="flex items-center">
                         <div className="w-8 h-8 bg-gradient-to-r from-green-500 to-emerald-600 rounded-full flex items-center justify-center text-white font-bold text-sm mr-2">
-                          {post.author.name.charAt(0).toUpperCase()}
+                          {post.author?.name?.charAt(0).toUpperCase() || post.authorName?.charAt(0).toUpperCase() || '?'}
                         </div>
-                        <span className="font-medium">{post.author.name}</span>
+                        <span className="font-medium">{post.author?.name || post.authorName || 'Usuario'}</span>
                       </div>
                       
                       <div className="flex items-center">
                         <Clock size={14} className="mr-1" />
-                        {formatDate(post._createdAt)}
+                        {formatDate(post.createdAt || post._createdAt)}
                       </div>
                     </div>
                     
                     <div className="flex items-center space-x-4 text-sm text-gray-500">
                       <div className="flex items-center">
                         <Eye size={14} className="mr-1" />
-                        {post.views}
+                        {post.views || 0}
                       </div>
                       <div className="flex items-center">
                         <ThumbsUp size={14} className="mr-1" />
-                        {post.likes}
+                        {post.likes || 0}
                       </div>
                       <div className="flex items-center">
                         <MessageCircle size={14} className="mr-1" />
-                        {post.replyCount}
+                        {post.replyCount || 0}
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
+                </div>
+              </div>
             </div>
-          </div>
-        ))}
+          )}
+        )}
       </div>
       
       {/* Create Post Modal */}
@@ -313,8 +289,8 @@ export default function ForoContent({
                       className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent"
                     >
                       <option value="">Selecciona una categoría</option>
-                      {mockCategories.map((category) => (
-                        <option key={category._id} value={category._id}>
+                      {forumCategories.map((category) => (
+                        <option key={category.id} value={category.id}>
                           {category.icon} {category.title}
                         </option>
                       ))}

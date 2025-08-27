@@ -8,43 +8,82 @@ interface ModerationModalProps {
   onClose: () => void;
 }
 
-interface PendingComment {
+interface PendingContent {
   _id: string;
   authorName: string;
   authorEmail: string;
   content: string;
-  rating?: number;
-  recipe: {
-    name: string;
+  title?: string;
+  category?: string;
+  forumPost?: {
+    title: string;
     slug: string;
   };
-  createdAt: string;
-  isReply: boolean;
-  parentComment?: {
-    content: string;
-    authorName: string;
-  };
+  _createdAt: string;
+  type: 'post' | 'reply';
 }
 
 export default function ModerationModal({ isOpen, onClose }: ModerationModalProps) {
-  const [pendingComments, setPendingComments] = useState<PendingComment[]>([]);
+  const [pendingContent, setPendingContent] = useState<PendingContent[]>([]);
   const [loading, setLoading] = useState(true);
   const [processing, setProcessing] = useState<string | null>(null);
 
   useEffect(() => {
     if (isOpen) {
-      loadPendingComments();
+      loadPendingContent();
     }
   }, [isOpen]);
 
-  const loadPendingComments = async () => {
+  const loadPendingContent = async () => {
     try {
       setLoading(true);
       
-      // Simulando comentarios pendientes - En producción usar API real
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Fetch real pending content from API
+      const response = await fetch('/api/moderation');
+      if (!response.ok) {
+        throw new Error('Failed to fetch pending content');
+      }
       
-      const mockComments: PendingComment[] = [
+      const data = await response.json();
+      setPendingContent(data.pending || []);
+    } catch (error) {
+      console.error('Error loading pending content:', error);
+      setPendingContent([]); // Set empty array on error
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleModerationAction = async (itemId: string, action: 'approve' | 'reject', type: 'post' | 'reply') => {
+    try {
+      setProcessing(itemId);
+      
+      const response = await fetch('/api/moderation', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ action, itemId, type })
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to process moderation action');
+      }
+      
+      // Remove the item from the list
+      setPendingContent(prev => prev.filter(item => item._id !== itemId));
+      
+      const result = await response.json();
+      alert(result.message);
+    } catch (error) {
+      console.error('Error processing moderation:', error);
+      alert('Error al procesar la moderación');
+    } finally {
+      setProcessing(null);
+    }
+  };
+
+  // Remove the old mock data - I'll replace it with the actual render logic
         {
           _id: 'comment1',
           authorName: 'María González',
@@ -160,8 +199,8 @@ export default function ModerationModal({ isOpen, onClose }: ModerationModalProp
           <div className="bg-gradient-to-r from-purple-500 to-pink-600 px-8 py-6 text-white">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-2xl font-bold">Moderación de Comentarios</h2>
-                <p className="text-purple-100 mt-1">Revisa y gestiona comentarios pendientes</p>
+                <h2 className="text-2xl font-bold">Moderación del Foro</h2>
+                <p className="text-purple-100 mt-1">Revisa y gestiona publicaciones y respuestas pendientes</p>
               </div>
               <button
                 onClick={onClose}
@@ -178,11 +217,11 @@ export default function ModerationModal({ isOpen, onClose }: ModerationModalProp
               <div className="flex items-center justify-center py-20">
                 <div className="animate-spin w-16 h-16 border-4 border-purple-500 border-t-transparent rounded-full"></div>
               </div>
-            ) : pendingComments.length === 0 ? (
+            ) : pendingContent.length === 0 ? (
               <div className="text-center py-20 text-gray-500">
                 <MessageCircle size={48} className="mx-auto mb-4 opacity-50" />
                 <h3 className="text-xl font-semibold mb-2">¡Todo al día!</h3>
-                <p>No hay comentarios pendientes de moderación</p>
+                <p>No hay publicaciones o respuestas pendientes de moderación</p>
               </div>
             ) : (
               <div className="space-y-6">
@@ -191,104 +230,128 @@ export default function ModerationModal({ isOpen, onClose }: ModerationModalProp
                   <h3 className="text-lg font-semibold text-purple-800 mb-2">Resumen de Moderación</h3>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="text-center">
-                      <p className="text-2xl font-bold text-purple-600">{pendingComments.length}</p>
-                      <p className="text-purple-700 text-sm">Comentarios Pendientes</p>
+                      <p className="text-2xl font-bold text-purple-600">{pendingContent.length}</p>
+                      <p className="text-purple-700 text-sm">Elementos Pendientes</p>
                     </div>
                     <div className="text-center">
-                      <p className="text-2xl font-bold text-pink-600">{pendingComments.filter(c => c.rating).length}</p>
-                      <p className="text-pink-700 text-sm">Con Valoración</p>
+                      <p className="text-2xl font-bold text-pink-600">{pendingContent.filter(c => c.type === 'post').length}</p>
+                      <p className="text-pink-700 text-sm">Publicaciones</p>
                     </div>
                     <div className="text-center">
-                      <p className="text-2xl font-bold text-indigo-600">{pendingComments.filter(c => c.isReply).length}</p>
+                      <p className="text-2xl font-bold text-indigo-600">{pendingContent.filter(c => c.type === 'reply').length}</p>
                       <p className="text-indigo-700 text-sm">Respuestas</p>
                     </div>
                   </div>
                 </div>
 
-                {/* Comments List */}
+                {/* Content List */}
                 <div className="space-y-4">
-                  {pendingComments.map((comment) => (
-                    <div key={comment._id} className="bg-white border border-gray-200 rounded-2xl p-6 hover:shadow-lg transition-shadow">
-                      {/* Comment Header */}
+                  {pendingContent.map((item) => (
+                    <div key={item._id} className="bg-white border border-gray-200 rounded-2xl p-6 hover:shadow-lg transition-shadow">
+                      {/* Content Header */}
                       <div className="flex items-start justify-between mb-4">
                         <div className="flex-1">
                           <div className="flex items-center space-x-3 mb-2">
                             <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white font-bold">
-                              {comment.authorName.charAt(0).toUpperCase()}
+                              {item.authorName.charAt(0).toUpperCase()}
                             </div>
                             <div>
-                              <h4 className="font-semibold text-gray-900">{comment.authorName}</h4>
-                              <p className="text-gray-500 text-sm">{comment.authorEmail}</p>
+                              <h4 className="font-semibold text-gray-900">{item.authorName}</h4>
+                              <p className="text-gray-500 text-sm">{item.authorEmail}</p>
                             </div>
-                            {comment.isReply && (
-                              <div className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs font-medium flex items-center">
-                                <Reply size={12} className="mr-1" />
-                                Respuesta
-                              </div>
-                            )}
+                            <div className={`px-3 py-1 rounded-full text-xs font-medium flex items-center ${
+                              item.type === 'post' 
+                                ? 'bg-green-100 text-green-800' 
+                                : 'bg-blue-100 text-blue-800'
+                            }`}>
+                              {item.type === 'post' ? (
+                                <>
+                                  <MessageCircle size={12} className="mr-1" />
+                                  Publicación
+                                </>
+                              ) : (
+                                <>
+                                  <Reply size={12} className="mr-1" />
+                                  Respuesta
+                                </>
+                              )}
+                            </div>
                           </div>
                           
                           <div className="flex items-center space-x-4 text-sm text-gray-500">
                             <div className="flex items-center">
                               <Calendar size={14} className="mr-1" />
-                              {formatDate(comment.createdAt)}
+                              {formatDate(item._createdAt)}
                             </div>
-                            <div className="flex items-center">
-                              <Eye size={14} className="mr-1" />
-                              {comment.recipe.name}
-                            </div>
-                            {comment.rating && (
+                            {item.type === 'post' && item.category && (
                               <div className="flex items-center">
-                                <Star size={14} className="mr-1 text-yellow-500 fill-current" />
-                                {comment.rating}/5
+                                <Eye size={14} className="mr-1" />
+                                Categoría: {item.category}
+                              </div>
+                            )}
+                            {item.type === 'reply' && item.forumPost && (
+                              <div className="flex items-center">
+                                <MessageCircle size={14} className="mr-1" />
+                                En: {item.forumPost.title}
                               </div>
                             )}
                           </div>
                         </div>
                       </div>
 
-                      {/* Parent Comment (if reply) */}
-                      {comment.isReply && comment.parentComment && (
-                        <div className="bg-gray-50 rounded-xl p-4 mb-4 border-l-4 border-gray-300">
-                          <p className="text-sm text-gray-600 mb-1">Respondiendo a <strong>{comment.parentComment.authorName}</strong>:</p>
-                          <p className="text-sm text-gray-700 italic">"{comment.parentComment.content}"</p>
+                      {/* Post Title (if it's a post) */}
+                      {item.type === 'post' && item.title && (
+                        <div className="mb-4">
+                          <h3 className="text-lg font-semibold text-gray-900">{item.title}</h3>
                         </div>
                       )}
 
-                      {/* Comment Content */}
+                      {/* Content */}
                       <div className="bg-gray-50 rounded-xl p-4 mb-6">
-                        <p className="text-gray-800 leading-relaxed">{comment.content}</p>
+                        <p className="text-gray-800 leading-relaxed">{item.content}</p>
                       </div>
 
                       {/* Actions */}
                       <div className="flex items-center space-x-4">
                         <button
-                          onClick={() => handleApprove(comment._id)}
-                          disabled={processing === comment._id}
+                          onClick={() => handleModerationAction(item._id, 'approve', item.type)}
+                          disabled={processing === item._id}
                           className="flex items-center bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-xl font-medium transition-colors disabled:opacity-50"
                         >
                           <CheckCircle size={16} className="mr-2" />
-                          {processing === comment._id ? 'Procesando...' : 'Aprobar'}
+                          {processing === item._id ? 'Procesando...' : 'Aprobar'}
                         </button>
                         
                         <button
-                          onClick={() => handleReject(comment._id)}
-                          disabled={processing === comment._id}
+                          onClick={() => handleModerationAction(item._id, 'reject', item.type)}
+                          disabled={processing === item._id}
                           className="flex items-center bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl font-medium transition-colors disabled:opacity-50"
                         >
                           <XCircle size={16} className="mr-2" />
-                          {processing === comment._id ? 'Procesando...' : 'Rechazar'}
+                          {processing === item._id ? 'Procesando...' : 'Rechazar'}
                         </button>
 
-                        <a
-                          href={`/recetas/${comment.recipe.slug}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center text-gray-600 hover:text-gray-800 px-4 py-2 border border-gray-300 rounded-xl font-medium transition-colors"
-                        >
-                          <Eye size={16} className="mr-2" />
-                          Ver Receta
-                        </a>
+                        {item.type === 'post' ? (
+                          <a
+                            href={`/foro`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center text-gray-600 hover:text-gray-800 px-4 py-2 border border-gray-300 rounded-xl font-medium transition-colors"
+                          >
+                            <Eye size={16} className="mr-2" />
+                            Ver Foro
+                          </a>
+                        ) : item.forumPost?.slug ? (
+                          <a
+                            href={`/foro/${item.forumPost.slug}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center text-gray-600 hover:text-gray-800 px-4 py-2 border border-gray-300 rounded-xl font-medium transition-colors"
+                          >
+                            <Eye size={16} className="mr-2" />
+                            Ver Publicación
+                          </a>
+                        ) : null}
                       </div>
                     </div>
                   ))}

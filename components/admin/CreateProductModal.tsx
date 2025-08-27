@@ -139,35 +139,39 @@ export default function CreateProductModal({ isOpen, onClose }: CreateProductMod
         ctx.fillText(data.nombre, 200, 150);
       }
       
-      canvas.toBlob((blob) => {
-        if (blob) {
-          formData.append('image', blob, `${data.nombre.replace(/\s+/g, '-').toLowerCase()}.png`);
+      canvas.toBlob(async (blob) => {
+        try {
+          if (blob) {
+            formData.append('image', blob, `${data.nombre.replace(/\s+/g, '-').toLowerCase()}.png`);
+            
+            // Create product in Sanity
+            const response = await fetch('/api/products', {
+              method: 'POST',
+              body: formData
+            });
+        
+            const result = await response.json();
+            
+            if (response.ok) {
+              alert('¡Producto creado exitosamente!');
+              reset();
+              setCaracteristicas(['']);
+              onClose();
+            } else {
+              throw new Error(result.error || 'Error al crear producto');
+            }
+          } else {
+            throw new Error('Error al crear la imagen del producto');
+          }
+        } catch (error) {
+          console.error('Error creating product:', error);
+          alert(`Error al crear el producto: ${error instanceof Error ? error.message : 'Error desconocido'}`);
         }
       }, 'image/png');
-      
-      // Wait a bit for the blob to be created
-      await new Promise(resolve => setTimeout(resolve, 100));
-
-      // Create product in Sanity
-      const response = await fetch('/api/products', {
-        method: 'POST',
-        body: formData
-      });
-      
-      const result = await response.json();
-      
-      if (response.ok) {
-        alert('¡Producto creado exitosamente!');
-        reset();
-        setCaracteristicas(['']);
-        onClose();
-      } else {
-        throw new Error(result.error || 'Error al crear producto');
-      }
 
     } catch (error) {
-      console.error('Error creating product:', error);
-      alert(`Error al crear el producto: ${error instanceof Error ? error.message : 'Error desconocido'}`);
+      console.error('Error in product creation setup:', error);
+      alert(`Error al preparar el producto: ${error instanceof Error ? error.message : 'Error desconocido'}`);
     }
   };
 

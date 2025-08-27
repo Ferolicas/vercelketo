@@ -195,17 +195,73 @@ const productosAmazon: ProductoAmazon[] = [
 
 export default function ServiciosYProductos() {
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState<string>('Todos');
-  const [productosFiltrados, setProductosFiltrados] = useState<Producto[]>(productosEjemplo);
+  const [productos, setProductos] = useState<any[]>([]);
+  const [servicios, setServicios] = useState<any[]>([]);
+  const [productosFiltrados, setProductosFiltrados] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const categorias = ['Todos', 'Ebooks', 'Servicios', 'Herramientas', 'Cursos'];
+  const categorias = ['Todos', 'Servicios', 'Productos'];
+
+  // Cargar datos de Sanity
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [productosResponse, serviciosResponse] = await Promise.all([
+          fetch('/api/products'),
+          fetch('/api/services')
+        ]);
+
+        const productosData = productosResponse.ok ? await productosResponse.json() : { products: [] };
+        const serviciosData = serviciosResponse.ok ? await serviciosResponse.json() : { services: [] };
+
+        setProductos(productosData.products || []);
+        setServicios(serviciosData.services || []);
+        
+        // Combinar productos y servicios para mostrarlos juntos
+        const allItems = [
+          ...(serviciosData.services || []).map((service: any) => ({
+            ...service,
+            tipo: 'servicio',
+            categoria: 'Servicios'
+          })),
+          ...(productosData.products || []).map((product: any) => ({
+            ...product,
+            tipo: 'producto',
+            categoria: 'Productos'
+          }))
+        ];
+        
+        setProductosFiltrados(allItems);
+      } catch (error) {
+        console.error('Error loading data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   useEffect(() => {
+    const allItems = [
+      ...servicios.map((service: any) => ({
+        ...service,
+        tipo: 'servicio',
+        categoria: 'Servicios'
+      })),
+      ...productos.map((product: any) => ({
+        ...product,
+        tipo: 'producto',
+        categoria: 'Productos'
+      }))
+    ];
+
     if (categoriaSeleccionada === 'Todos') {
-      setProductosFiltrados(productosEjemplo);
+      setProductosFiltrados(allItems);
     } else {
-      setProductosFiltrados(productosEjemplo.filter(p => p.categoria === categoriaSeleccionada));
+      setProductosFiltrados(allItems.filter(item => item.categoria === categoriaSeleccionada));
     }
-  }, [categoriaSeleccionada]);
+  }, [categoriaSeleccionada, productos, servicios]);
 
   const renderStars = (rating: number) => {
     return [...Array(5)].map((_, i) => (
@@ -276,94 +332,138 @@ export default function ServiciosYProductos() {
               </div>
 
               {/* Grid de productos */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {productosFiltrados.map((producto, index) => (
-                  <div
-                    key={producto.id}
-                    className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group"
-                  >
-                    {/* Badge */}
-                    {producto.badge && (
-                      <div className="absolute top-4 right-4 z-10">
-                        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                          producto.badge === 'Bestseller' 
-                            ? 'bg-yellow-400 text-yellow-900'
-                            : producto.badge === 'Premium'
-                            ? 'bg-purple-500 text-white'
-                            : 'bg-green-500 text-white'
-                        }`}>
-                          {producto.badge}
-                        </span>
-                      </div>
-                    )}
-
-                    {/* Imagen */}
-                    <div className="relative h-48 bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center">
-                      <div className="text-6xl">📚</div>
-                      <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-10 transition-opacity duration-300" />
+              {loading ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  {[...Array(4)].map((_, i) => (
+                    <div key={i} className="bg-white rounded-2xl shadow-lg p-6 animate-pulse">
+                      <div className="h-48 bg-gray-300 rounded-lg mb-4"></div>
+                      <div className="h-4 bg-gray-300 rounded mb-2"></div>
+                      <div className="h-4 bg-gray-300 rounded mb-4 w-3/4"></div>
+                      <div className="h-8 bg-gray-300 rounded"></div>
                     </div>
-
-                    <div className="p-6">
-                      {/* Header del producto */}
-                      <div className="mb-4">
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="text-sm text-green-600 font-medium">
-                            {producto.categoria}
+                  ))}
+                </div>
+              ) : productosFiltrados.length === 0 ? (
+                <div className="col-span-full text-center py-12">
+                  <div className="text-gray-400 mb-4 text-6xl">🛒</div>
+                  <h3 className="text-xl font-semibold text-gray-700 mb-2">
+                    No hay {categoriaSeleccionada === 'Todos' ? 'productos o servicios' : categoriaSeleccionada.toLowerCase()} disponibles
+                  </h3>
+                  <p className="text-gray-500">Pronto añadiremos más contenido para ti.</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  {productosFiltrados.map((item, index) => (
+                    <div
+                      key={item._id || item.id}
+                      className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group"
+                    >
+                      {/* Badge para destacados */}
+                      {item.featured && (
+                        <div className="absolute top-4 right-4 z-10">
+                          <span className="bg-yellow-400 text-yellow-900 px-3 py-1 rounded-full text-xs font-semibold">
+                            ⭐ Destacado
                           </span>
-                          <div className="flex items-center">
-                            {renderStars(producto.rating)}
-                            <span className="ml-1 text-sm text-gray-500">
-                              ({producto.reviews})
-                            </span>
-                          </div>
                         </div>
-                        <h3 className="text-xl font-bold text-gray-900 mb-2">
-                          {producto.nombre}
-                        </h3>
-                        <p className="text-gray-600 text-sm">
-                          {producto.descripcion}
-                        </p>
+                      )}
+
+                      {/* Imagen */}
+                      <div className="relative h-48 bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center overflow-hidden">
+                        {item.image?.asset ? (
+                          <img 
+                            src={`https://cdn.sanity.io/images/${process.env.NEXT_PUBLIC_SANITY_PROJECT_ID}/${process.env.NEXT_PUBLIC_SANITY_DATASET}/${item.image.asset._ref.replace('image-', '').replace('-jpg', '.jpg').replace('-png', '.png').replace('-webp', '.webp')}`}
+                            alt={item.name}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          />
+                        ) : (
+                          <div className="text-6xl">
+                            {item.tipo === 'servicio' ? '🎯' : '📦'}
+                          </div>
+                        )}
+                        <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-10 transition-opacity duration-300" />
                       </div>
 
-                      {/* Características */}
-                      <div className="mb-6">
-                        <ul className="space-y-2">
-                          {producto.caracteristicas.slice(0, 3).map((caracteristica, i) => (
-                            <li key={i} className="flex items-center text-sm text-gray-600">
-                              <CheckCircleIcon className="h-4 w-4 text-green-500 mr-2" />
-                              {caracteristica}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-
-                      {/* Precio y CTA */}
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <div className="flex items-center">
-                            <span className="text-2xl font-bold text-gray-900">
-                              ${producto.precio}
+                      <div className="p-6">
+                        {/* Header del item */}
+                        <div className="mb-4">
+                          <div className="flex items-center justify-between mb-2">
+                            <span className="text-sm text-green-600 font-medium">
+                              {item.categoria}
                             </span>
-                            {producto.precioOriginal && (
-                              <span className="ml-2 text-lg text-gray-500 line-through">
-                                ${producto.precioOriginal}
+                            <div className="flex items-center">
+                              {renderStars(4.5)} {/* Default rating for now */}
+                              <span className="ml-1 text-sm text-gray-500">
+                                (0)
                               </span>
+                            </div>
+                          </div>
+                          <h3 className="text-xl font-bold text-gray-900 mb-2">
+                            {item.name}
+                          </h3>
+                          <p className="text-gray-600 text-sm">
+                            {item.description}
+                          </p>
+                        </div>
+
+                        {/* Características */}
+                        {item.features && (
+                          <div className="mb-6">
+                            <ul className="space-y-2">
+                              {item.features.slice(0, 3).map((feature: string, i: number) => (
+                                <li key={i} className="flex items-center text-sm text-gray-600">
+                                  <CheckCircleIcon className="h-4 w-4 text-green-500 mr-2" />
+                                  {feature}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+
+                        {/* Precio y CTA */}
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <div className="flex items-center">
+                              <span className="text-2xl font-bold text-gray-900">
+                                {item.price ? `${item.currency || '$'}${item.price}` : 'Consultar'}
+                              </span>
+                            </div>
+                            {item.duration && (
+                              <div className="text-sm text-green-600 font-medium">
+                                {item.duration}
+                              </div>
                             )}
                           </div>
-                          {producto.precioOriginal && (
-                            <div className="text-sm text-green-600 font-medium">
-                              Ahorra ${(producto.precioOriginal - producto.precio).toFixed(2)}
-                            </div>
+                          {item.tipo === 'servicio' && item.contactUrl ? (
+                            <a 
+                              href={item.contactUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-lg font-semibold transition-colors duration-200 flex items-center"
+                            >
+                              <ExternalLinkIcon className="h-4 w-4 mr-2" />
+                              Contratar
+                            </a>
+                          ) : item.tipo === 'producto' && item.affiliateUrl ? (
+                            <a 
+                              href={item.affiliateUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-lg font-semibold transition-colors duration-200 flex items-center"
+                            >
+                              <ShoppingCartIcon className="h-4 w-4 mr-2" />
+                              Comprar
+                            </a>
+                          ) : (
+                            <button className="bg-gray-300 text-gray-500 px-6 py-2 rounded-lg font-semibold cursor-not-allowed">
+                              No disponible
+                            </button>
                           )}
                         </div>
-                        <button className="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-lg font-semibold transition-colors duration-200 flex items-center">
-                          <ShoppingCartIcon className="h-4 w-4 mr-2" />
-                          Comprar
-                        </button>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
+              )}
               </div>
             </section>
 
