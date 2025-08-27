@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation'
 import { client, queries, urlFor } from '@/lib/sanity'
 import type { Recipe } from '@/types/sanity'
 import { Metadata } from 'next'
-import RecipePage from '@/components/RecipePage'
+import RecipePageClient from '@/components/RecipePage'
 
 interface PageProps {
   params: Promise<{ slug: string }>
@@ -80,5 +80,5 @@ export default async function RecipePage({ params }: PageProps) {
 
   const youtubeId = recipe.youtubeUrl ? getYouTubeVideoId(recipe.youtubeUrl) : null
 
-  return <RecipePage recipe={recipe} thumbnailUrl={thumbnailUrl} youtubeId={youtubeId} />
+  return <RecipePageClient recipe={recipe} thumbnailUrl={thumbnailUrl} youtubeId={youtubeId} />
 }

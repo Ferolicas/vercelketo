@@ -429,155 +429,154 @@ export default function Comments({ postSlug, postTitle }: CommentsProps) {
         </p>
       </div>
 
-        {/* Comment Form */}
-        <div className="bg-gray-50 rounded-xl p-4 mb-6">
-          {(replyingTo || editingComment) && (
-            <div className="mb-4 p-3 bg-orange-50 border-l-4 border-orange-500 rounded">
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-orange-700">
-                  {editingComment ? 'Editando comentario' : 'Respondiendo comentario'}
-                </span>
-                <button
-                  type="button"
-                  onClick={cancelReply}
-                  className="text-orange-500 hover:text-orange-600 text-sm font-medium"
-                >
-                  Cancelar
-                </button>
+      {/* Comment Form */}
+      <div className="bg-gray-50 rounded-xl p-4 mb-6">
+        {(replyingTo || editingComment) && (
+          <div className="mb-4 p-3 bg-orange-50 border-l-4 border-orange-500 rounded">
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-medium text-orange-700">
+                {editingComment ? 'Editando comentario' : 'Respondiendo comentario'}
+              </span>
+              <button
+                type="button"
+                onClick={cancelReply}
+                className="text-orange-500 hover:text-orange-600 text-sm font-medium"
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                Nombre *
+              </label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                value={formData.name}
+                onChange={handleInputChange}
+                required
+                className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-gray-900 text-sm"
+                placeholder="Tu nombre"
+              />
+            </div>
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                Email *
+              </label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value={formData.email}
+                onChange={handleInputChange}
+                required
+                className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-gray-900 text-sm"
+                placeholder="tu@email.com"
+              />
+            </div>
+          </div>
+
+          {/* Rating */}
+          {!formData.parentComment && (
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Calificación (opcional)
+              </label>
+              <div className="flex items-center space-x-2">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <button
+                    key={star}
+                    type="button"
+                    onClick={() => handleRatingClick(star)}
+                    className={`w-8 h-8 transition-colors ${
+                      star <= formData.rating
+                        ? 'text-yellow-400 hover:text-yellow-500'
+                        : 'text-gray-300 hover:text-yellow-300'
+                    }`}
+                  >
+                    <Star className="w-full h-full fill-current" />
+                  </button>
+                ))}
+                {formData.rating > 0 && (
+                  <span className="ml-2 text-sm text-gray-600">
+                    {formData.rating === 5 ? 'Excelente' : formData.rating === 4 ? 'Muy buena' : formData.rating === 3 ? 'Buena' : formData.rating === 2 ? 'Regular' : 'Mejorable'}
+                  </span>
+                )}
               </div>
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-                  Nombre *
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleInputChange}
-                  required
-                  className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-gray-900 text-sm"
-                  placeholder="Tu nombre"
-                />
-              </div>
-              <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                  Email *
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  required
-                  className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-gray-900 text-sm"
-                  placeholder="tu@email.com"
-                />
-              </div>
-            </div>
-
-            {/* Rating */}
-            {!formData.parentComment && (
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Calificación (opcional)
-                </label>
-                <div className="flex items-center space-x-2">
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <button
-                      key={star}
-                      type="button"
-                      onClick={() => handleRatingClick(star)}
-                      className={`w-8 h-8 transition-colors ${
-                        star <= formData.rating
-                          ? 'text-yellow-400 hover:text-yellow-500'
-                          : 'text-gray-300 hover:text-yellow-300'
-                      }`}
-                    >
-                      <Star className="w-full h-full fill-current" />
-                    </button>
-                  ))}
-                  {formData.rating > 0 && (
-                    <span className="ml-2 text-sm text-gray-600">
-                      {formData.rating === 5 ? 'Excelente' : formData.rating === 4 ? 'Muy buena' : formData.rating === 3 ? 'Buena' : formData.rating === 2 ? 'Regular' : 'Mejorable'}
-                    </span>
-                  )}
-                </div>
-              </div>
-            )}
-
-            <div>
-              <label htmlFor="content" className="block text-sm font-medium text-gray-700 mb-1">
-                {formData.parentComment ? 'Tu respuesta *' : 'Tu comentario *'}
-              </label>
-              <textarea
-                id="content"
-                name="content"
-                value={formData.content}
-                onChange={handleInputChange}
-                required
-                rows={4}
-                className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 resize-vertical text-gray-900 text-sm"
-                placeholder={formData.parentComment ? "Escribe tu respuesta..." : "Comparte tu experiencia con esta receta..."}
-              />
-            </div>
-
-            {message && (
-              <div className={`p-3 rounded-lg text-sm ${
-                message.type === 'success' 
-                  ? 'bg-green-50 text-green-700 border border-green-200' 
-                  : 'bg-red-50 text-red-700 border border-red-200'
-              }`}>
-                {message.text}
-              </div>
-            )}
-
-            <div className="text-right">
-              <button
-                type="submit"
-                disabled={submitting}
-                className="px-6 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm font-medium inline-flex items-center"
-              >
-                {submitting ? (
-                  <>
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    Enviando...
-                  </>
-                ) : (
-                  <>
-                    <Send className="w-4 h-4 mr-2" />
-                    {editingComment ? 'Actualizar' : (formData.parentComment ? 'Responder' : 'Comentar')}
-                  </>
-                )}
-              </button>
-            </div>
-          </form>
-        </div>
-
-        {/* Lista de comentarios */}
-        {loading ? (
-          <div className="text-center py-8">
-            <Loader2 className="w-8 h-8 animate-spin text-orange-500 mx-auto mb-2" />
-            <p className="text-gray-600 text-sm">Cargando comentarios...</p>
+          <div>
+            <label htmlFor="content" className="block text-sm font-medium text-gray-700 mb-1">
+              {formData.parentComment ? 'Tu respuesta *' : 'Tu comentario *'}
+            </label>
+            <textarea
+              id="content"
+              name="content"
+              value={formData.content}
+              onChange={handleInputChange}
+              required
+              rows={4}
+              className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 resize-vertical text-gray-900 text-sm"
+              placeholder={formData.parentComment ? "Escribe tu respuesta..." : "Comparte tu experiencia con esta receta..."}
+            />
           </div>
-        ) : comments.length === 0 ? (
-          <div className="text-center py-8">
-            <MessageCircle className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-            <h4 className="text-lg font-medium text-gray-900 mb-2">Sé el primero en comentar</h4>
-            <p className="text-gray-600 text-sm">Comparte tu experiencia con esta receta</p>
+
+          {message && (
+            <div className={`p-3 rounded-lg text-sm ${
+              message.type === 'success' 
+                ? 'bg-green-50 text-green-700 border border-green-200' 
+                : 'bg-red-50 text-red-700 border border-red-200'
+            }`}>
+              {message.text}
+            </div>
+          )}
+
+          <div className="text-right">
+            <button
+              type="submit"
+              disabled={submitting}
+              className="px-6 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm font-medium inline-flex items-center"
+            >
+              {submitting ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Enviando...
+                </>
+              ) : (
+                <>
+                  <Send className="w-4 h-4 mr-2" />
+                  {editingComment ? 'Actualizar' : (formData.parentComment ? 'Responder' : 'Comentar')}
+                </>
+              )}
+            </button>
           </div>
-        ) : (
-          <div className="space-y-4">
-            {comments.map((comment) => renderComment(comment))}
-          </div>
-        )}
+        </form>
       </div>
+
+      {/* Lista de comentarios */}
+      {loading ? (
+        <div className="text-center py-8">
+          <Loader2 className="w-8 h-8 animate-spin text-orange-500 mx-auto mb-2" />
+          <p className="text-gray-600 text-sm">Cargando comentarios...</p>
+        </div>
+      ) : comments.length === 0 ? (
+        <div className="text-center py-8">
+          <MessageCircle className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+          <h4 className="text-lg font-medium text-gray-900 mb-2">Sé el primero en comentar</h4>
+          <p className="text-gray-600 text-sm">Comparte tu experiencia con esta receta</p>
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {comments.map((comment) => renderComment(comment))}
+        </div>
+      )}
     </div>
   );
 }

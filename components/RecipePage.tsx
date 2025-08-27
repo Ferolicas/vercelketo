@@ -13,7 +13,7 @@ interface RecipePageProps {
   youtubeId: string | null
 }
 
-export default function RecipePage({ recipe, thumbnailUrl, youtubeId }: RecipePageProps) {
+export default function RecipePageClient({ recipe, thumbnailUrl, youtubeId }: RecipePageProps) {
   const [showFullDescription, setShowFullDescription] = useState(false)
   const [showAllIngredients, setShowAllIngredients] = useState(false)
 
