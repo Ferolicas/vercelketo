@@ -64,8 +64,12 @@ export async function GET(request: NextRequest) {
 
 // POST - Crear nuevo post del foro
 export async function POST(request: NextRequest) {
+  console.log('🚀 Forum POST API called');
+  
   try {
     const body = await request.json()
+    console.log('📝 Request body received:', JSON.stringify(body, null, 2));
+    
     const {
       title,
       content,
@@ -78,11 +82,14 @@ export async function POST(request: NextRequest) {
 
     // Validaciones
     if (!title || !content || !category || !authorName || !authorEmail || !authorId) {
+      console.log('❌ Validation failed - missing required fields');
       return NextResponse.json(
         { error: 'Faltan campos requeridos' },
         { status: 400 }
       )
     }
+
+    console.log('✅ Validation passed');
 
     if (title.length < 5 || title.length > 200) {
       return NextResponse.json(
@@ -155,7 +162,11 @@ export async function POST(request: NextRequest) {
       createdAt: new Date().toISOString()
     }
 
+    console.log('📄 Creating document:', JSON.stringify(postDoc, null, 2));
+
     const result = await writeClient.create(postDoc)
+    
+    console.log('✅ Document created successfully:', result._id);
 
     return NextResponse.json({
       message: '¡Publicación creada exitosamente!',
@@ -163,9 +174,14 @@ export async function POST(request: NextRequest) {
     })
 
   } catch (error) {
-    console.error('Error creating forum post:', error)
+    console.error('❌ Error creating forum post:', error);
+    console.error('Error details:', {
+      message: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined
+    });
+    
     return NextResponse.json(
-      { error: 'Error al crear publicación' },
+      { error: `Error al crear publicación: ${error instanceof Error ? error.message : 'Error desconocido'}` },
       { status: 500 }
     )
   }

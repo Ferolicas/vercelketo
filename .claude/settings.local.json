@@ -32,7 +32,8 @@
       "WebFetch(domain:planetaketo.vercel.app)",
       "WebFetch(domain:planetaketo.es)",
       "Bash(copy \"C:/Users/ferne/Downloads/4efaef0886ffeb0bf34726a51cfbb955cfcd05ff-600x600.webp\" \"C:\\PLANETA KETO V2\\planetaketonext\\public\\logo.webp\")",
-      "Bash(del \"C:\\PLANETA KETO V2\\planetaketonext\\recreate-all-recipes.mjs\")"
+      "Bash(del \"C:\\PLANETA KETO V2\\planetaketonext\\recreate-all-recipes.mjs\")",
+      "Bash(timeout 10 curl -s http://localhost:3001/api/forum)"
     ],
     "deny": [],
     "ask": [],

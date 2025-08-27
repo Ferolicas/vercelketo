@@ -69,8 +69,11 @@ export async function GET(request: NextRequest) {
 
 // POST - Crear nueva receta
 export async function POST(request: NextRequest) {
+  console.log('🚀 Recipe POST API called');
+  
   try {
     const formData = await request.formData();
+    console.log('📝 FormData received with keys:', Array.from(formData.keys()));
     
     const name = formData.get('name') as string;
     const description = formData.get('description') as string;
@@ -151,7 +154,11 @@ export async function POST(request: NextRequest) {
       createdAt: new Date().toISOString()
     };
 
+    console.log('📄 Creating recipe document:', JSON.stringify({...recipeDoc, thumbnail: '[File]'}, null, 2));
+
     const result = await writeClient.create(recipeDoc);
+    
+    console.log('✅ Recipe created successfully:', result._id);
 
     return NextResponse.json<ApiResponse<any>>({
       success: true,
@@ -159,11 +166,16 @@ export async function POST(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('Error creating recipe:', error);
+    console.error('❌ Error creating recipe:', error);
+    console.error('Error details:', {
+      message: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined
+    });
+    
     return NextResponse.json<ApiResponse<any>>(
       {
         success: false,
-        error: 'Error al crear la receta'
+        error: `Error al crear la receta: ${error instanceof Error ? error.message : 'Error desconocido'}`
       },
       { status: 500 }
     );

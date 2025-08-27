@@ -8,18 +8,31 @@ const config = {
   dataset: process.env.NEXT_PUBLIC_SANITY_DATASET!,
   apiVersion: process.env.NEXT_PUBLIC_SANITY_API_VERSION!,
   useCdn: process.env.NODE_ENV === 'production',
-  token: process.env.SANITY_API_TOKEN,
+  // Use read token for regular client
+  token: process.env.SANITY_READ_TOKEN || process.env.SANITY_API_TOKEN,
 }
 
-// Cliente de Sanity
+// Cliente de lectura
 export const client = createClient(config)
 
 // Cliente de escritura para operaciones admin
 export const writeClient = createClient({
   ...config,
   useCdn: false,
-  token: process.env.SANITY_API_TOKEN,
+  // Use write token specifically for admin operations
+  token: process.env.SANITY_WRITE_TOKEN || process.env.SANITY_API_TOKEN,
 })
+
+// Debug logging for token configuration
+if (process.env.NODE_ENV === 'development') {
+  console.log('🔐 Sanity Configuration:');
+  console.log('- Project ID:', process.env.NEXT_PUBLIC_SANITY_PROJECT_ID);
+  console.log('- Dataset:', process.env.NEXT_PUBLIC_SANITY_DATASET);
+  console.log('- API Version:', process.env.NEXT_PUBLIC_SANITY_API_VERSION);
+  console.log('- Read Token Available:', !!process.env.SANITY_READ_TOKEN);
+  console.log('- Write Token Available:', !!process.env.SANITY_WRITE_TOKEN);
+  console.log('- Fallback Token Available:', !!process.env.SANITY_API_TOKEN);
+}
 
 // Builder para URLs de imágenes
 const builder = imageUrlBuilder(client)
