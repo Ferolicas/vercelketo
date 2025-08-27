@@ -302,47 +302,45 @@ export default function Comments({ postSlug, postTitle }: CommentsProps) {
   const renderComment = (comment: Comment, isReply = false) => {
     if (comment.isDeleted) {
       return (
-        <div key={comment._id} className={`${isReply ? 'ml-12' : ''} p-6 bg-gray-800/50 rounded-xl border border-gray-700/50`}>
-          <p className="text-gray-500 italic">Comentario eliminado</p>
+        <div key={comment._id} className={`${isReply ? 'ml-6' : ''} p-4 bg-gray-50 rounded-lg border border-gray-200`}>
+          <p className="text-gray-500 italic text-sm">Comentario eliminado</p>
         </div>
       );
     }
 
     return (
-      <div key={comment._id} className={`${isReply ? 'ml-12 border-l-2 border-green-500/30 pl-8' : ''} mb-10`}>
-        <div className="bg-gradient-to-br from-gray-800/90 to-gray-900/90 backdrop-blur-xl rounded-2xl p-8 shadow-xl border border-green-500/20 hover:border-green-500/40 transition-all duration-300 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-green-500/5 to-transparent rounded-full blur-xl"></div>
-          
-          <div className="relative flex items-start justify-between mb-6">
-            <div className="flex items-start space-x-6 flex-1">
-              <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center flex-shrink-0 shadow-xl">
-                <User className="w-8 h-8 text-white" />
+      <div key={comment._id} className={`${isReply ? 'ml-6 border-l-2 border-gray-200 pl-4' : ''} mb-4`}>
+        <div className="bg-white rounded-lg p-4 border border-gray-100 hover:border-gray-200 transition-colors">
+          <div className="flex items-start justify-between mb-3">
+            <div className="flex items-start space-x-3 flex-1">
+              <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center flex-shrink-0">
+                <User className="w-4 h-4 text-orange-500" />
               </div>
               <div className="flex-1">
-                <div className="flex items-center space-x-3 mb-2">
-                  <h4 className="font-black text-white text-lg">{comment.author.name}</h4>
+                <div className="flex items-center space-x-2 mb-1">
+                  <h4 className="font-medium text-gray-900 text-sm">{comment.author.name}</h4>
                   {comment.isEdited && (
-                    <span className="text-xs text-green-400 font-semibold bg-green-500/10 px-3 py-1 rounded-full border border-green-500/20">EDITADO</span>
+                    <span className="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded">Editado</span>
                   )}
                 </div>
-                <p className="text-sm text-gray-400 font-medium">{formatDate(comment._createdAt)}</p>
+                <p className="text-xs text-gray-500">{formatDate(comment._createdAt)}</p>
               </div>
             </div>
             
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2">
               {comment.rating && !isReply && (
-                <div className="flex items-center space-x-2 bg-yellow-500/10 px-4 py-2 rounded-full border border-yellow-500/20">
+                <div className="flex items-center space-x-1">
                   {[1, 2, 3, 4, 5].map((star) => (
                     <Star
                       key={star}
-                      className={`w-5 h-5 ${
+                      className={`w-3 h-3 ${
                         star <= comment.rating!
                           ? 'text-yellow-400 fill-current'
-                          : 'text-gray-600'
+                          : 'text-gray-300'
                       }`}
                     />
                   ))}
-                  <span className="text-yellow-400 font-bold text-sm ml-2">{comment.rating}.0</span>
+                  <span className="text-yellow-600 font-medium text-xs ml-1">{comment.rating}.0</span>
                 </div>
               )}
               
@@ -350,53 +348,53 @@ export default function Comments({ postSlug, postTitle }: CommentsProps) {
                 <div className="flex items-center space-x-1">
                   <button
                     onClick={() => handleEdit(comment)}
-                    className="p-3 text-gray-400 hover:text-green-400 hover:bg-green-500/10 rounded-full transition-all duration-200"
+                    className="p-1 text-gray-400 hover:text-gray-600 transition-colors"
                     title="Editar"
                   >
-                    <Edit2 className="w-5 h-5" />
+                    <Edit2 className="w-3 h-3" />
                   </button>
                   <button
                     onClick={() => handleDelete(comment._id)}
-                    className="p-3 text-gray-400 hover:text-red-400 hover:bg-red-500/10 rounded-full transition-all duration-200"
+                    className="p-1 text-gray-400 hover:text-red-500 transition-colors"
                     title="Eliminar"
                   >
-                    <Trash2 className="w-5 h-5" />
+                    <Trash2 className="w-3 h-3" />
                   </button>
                 </div>
               )}
             </div>
           </div>
           
-          <div className="ml-22 relative">
-            <p className="text-gray-300 leading-relaxed mb-6 font-medium text-lg">{comment.content}</p>
+          <div className="ml-11">
+            <p className="text-gray-700 leading-relaxed mb-3 text-sm">{comment.content}</p>
             
             {comment.adminReply && comment.adminReplyPublished && (
-              <div className="mt-6 p-6 bg-gradient-to-r from-green-500/10 to-emerald-500/10 border-l-4 border-green-500 rounded-lg backdrop-blur-sm">
-                <div className="flex items-center mb-3">
-                  <Award className="w-6 h-6 text-green-400 mr-3" />
-                  <span className="text-sm font-black text-green-400 uppercase tracking-wide">PLANETA KETO CHEF</span>
-                  <span className="text-xs text-green-400 ml-4">
+              <div className="mt-3 p-3 bg-orange-50 border-l-4 border-orange-500 rounded">
+                <div className="flex items-center mb-2">
+                  <Award className="w-4 h-4 text-orange-500 mr-2" />
+                  <span className="text-xs font-medium text-orange-700">Chef Planeta Keto</span>
+                  <span className="text-xs text-orange-600 ml-2">
                     {formatDate(comment.adminReplyDate!)}
                   </span>
                 </div>
-                <p className="text-green-300 font-medium text-lg">{comment.adminReply}</p>
+                <p className="text-orange-700 text-sm">{comment.adminReply}</p>
               </div>
             )}
             
-            <div className="flex items-center space-x-8 mt-6">
+            <div className="flex items-center mt-3">
               <button
                 onClick={() => handleReply(comment._id)}
-                className="flex items-center text-sm text-gray-400 hover:text-green-400 transition-all duration-300 font-semibold group hover:scale-105"
+                className="flex items-center text-xs text-gray-500 hover:text-orange-500 transition-colors font-medium"
               >
-                <Reply className="w-5 h-5 mr-3 group-hover:scale-110 transition-transform" />
-                RESPONDER
+                <Reply className="w-3 h-3 mr-1" />
+                Responder
               </button>
             </div>
           </div>
           
           {/* Respuestas */}
           {comment.replies && comment.replies.length > 0 && (
-            <div className="mt-8 space-y-6">
+            <div className="mt-4 space-y-3">
               {comment.replies.map(reply => renderComment(reply, true))}
             </div>
           )}
@@ -408,61 +406,53 @@ export default function Comments({ postSlug, postTitle }: CommentsProps) {
   // No renderizar nada hasta que esté montado para evitar hidratación diferente
   if (!isMounted) {
     return (
-      <div className="bg-gradient-to-br from-gray-900/95 to-gray-800/95 backdrop-blur-xl rounded-3xl p-12 shadow-2xl border border-green-500/20">
-        <div className="text-center py-16">
-          <div className="w-20 h-20 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl">
-            <Loader2 className="w-10 h-10 animate-spin text-white" />
-          </div>
-          <p className="text-gray-300 text-lg font-medium">Inicializando plataforma premium...</p>
+      <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+        <div className="text-center py-8">
+          <Loader2 className="w-8 h-8 animate-spin text-orange-500 mx-auto mb-2" />
+          <p className="text-gray-600 text-sm">Cargando...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="bg-gradient-to-br from-gray-900/95 to-gray-800/95 backdrop-blur-xl rounded-3xl p-12 shadow-2xl border border-green-500/20 relative overflow-hidden">
-      <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-green-500/10 to-transparent rounded-full blur-3xl"></div>
-      
-      <div className="relative">
-        <div className="text-center mb-12">
-          <div className="w-20 h-20 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl">
-            <MessageCircle className="w-10 h-10 text-white" />
-          </div>
-          <h3 className="text-4xl font-black text-white mb-4 bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">
-            COMUNIDAD PREMIUM
+    <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+      <div className="text-center mb-6">
+        <div className="flex items-center justify-center mb-4">
+          <MessageCircle className="w-6 h-6 text-orange-500 mr-2" />
+          <h3 className="text-xl font-bold text-gray-900">
+            Comentarios
           </h3>
-          <p className="text-gray-300 text-lg font-medium">
-            {comments.reduce((count, comment) => count + 1 + (comment.replies?.length || 0), 0)} miembros han compartido su experiencia
-          </p>
         </div>
+        <p className="text-gray-600 text-sm">
+          {comments.reduce((count, comment) => count + 1 + (comment.replies?.length || 0), 0)} comentarios
+        </p>
+      </div>
 
-        {/* Premium Comment Form */}
-        <div className="bg-gradient-to-br from-gray-800/90 to-gray-900/90 rounded-2xl p-10 mb-16 border border-green-500/20 relative overflow-hidden">
-          <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-green-500/10 to-transparent rounded-full blur-2xl"></div>
-          
+        {/* Comment Form */}
+        <div className="bg-gray-50 rounded-xl p-4 mb-6">
           {(replyingTo || editingComment) && (
-            <div className="relative mb-8 p-6 bg-green-500/10 border-l-4 border-green-500 rounded-lg">
+            <div className="mb-4 p-3 bg-orange-50 border-l-4 border-orange-500 rounded">
               <div className="flex items-center justify-between">
-                <span className="text-sm font-semibold text-green-400 flex items-center">
-                  <Sparkles className="w-5 h-5 mr-3" />
-                  {editingComment ? 'EDITANDO COMENTARIO' : 'RESPONDIENDO A MIEMBRO'}
+                <span className="text-sm font-medium text-orange-700">
+                  {editingComment ? 'Editando comentario' : 'Respondiendo comentario'}
                 </span>
                 <button
                   type="button"
                   onClick={cancelReply}
-                  className="text-green-400 hover:text-green-300 text-sm font-semibold transition-colors"
+                  className="text-orange-500 hover:text-orange-600 text-sm font-medium"
                 >
-                  CANCELAR
+                  Cancelar
                 </button>
               </div>
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-8">
-            <div className="relative grid grid-cols-1 md:grid-cols-2 gap-8">
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
               <div>
-                <label htmlFor="name" className="block text-sm font-bold text-green-400 mb-4 uppercase tracking-wide">
-                  Nombre de usuario *
+                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                  Nombre *
                 </label>
                 <input
                   type="text"
@@ -471,13 +461,13 @@ export default function Comments({ postSlug, postTitle }: CommentsProps) {
                   value={formData.name}
                   onChange={handleInputChange}
                   required
-                  className="w-full px-6 py-4 bg-gray-900/80 border border-green-500/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-300 text-white font-medium placeholder-gray-400"
-                  placeholder="Tu nombre de usuario"
+                  className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-gray-900 text-sm"
+                  placeholder="Tu nombre"
                 />
               </div>
               <div>
-                <label htmlFor="email" className="block text-sm font-bold text-green-400 mb-4 uppercase tracking-wide">
-                  Email premium *
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                  Email *
                 </label>
                 <input
                   type="email"
@@ -486,48 +476,45 @@ export default function Comments({ postSlug, postTitle }: CommentsProps) {
                   value={formData.email}
                   onChange={handleInputChange}
                   required
-                  className="w-full px-6 py-4 bg-gray-900/80 border border-green-500/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-300 text-white font-medium placeholder-gray-400"
-                  placeholder="usuario@email.com"
+                  className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 text-gray-900 text-sm"
+                  placeholder="tu@email.com"
                 />
               </div>
             </div>
 
-            {/* Premium Rating */}
+            {/* Rating */}
             {!formData.parentComment && (
               <div>
-                <label className="block text-sm font-bold text-green-400 mb-6 uppercase tracking-wide">
-                  CALIFICACIÓN PREMIUM (opcional)
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Calificación (opcional)
                 </label>
-                <div className="flex items-center justify-center space-x-4 bg-gray-900/60 rounded-2xl p-8 border border-green-500/20">
+                <div className="flex items-center space-x-2">
                   {[1, 2, 3, 4, 5].map((star) => (
                     <button
                       key={star}
                       type="button"
                       onClick={() => handleRatingClick(star)}
-                      className={`w-14 h-14 transition-all duration-300 hover:scale-125 rounded-full border-2 flex items-center justify-center ${
+                      className={`w-8 h-8 transition-colors ${
                         star <= formData.rating
-                          ? 'text-yellow-400 border-yellow-400 bg-yellow-400/10 hover:text-yellow-300'
-                          : 'text-gray-500 border-gray-600 hover:text-yellow-300 hover:border-yellow-400'
+                          ? 'text-yellow-400 hover:text-yellow-500'
+                          : 'text-gray-300 hover:text-yellow-300'
                       }`}
                     >
-                      <Star className="w-8 h-8 fill-current" />
+                      <Star className="w-full h-full fill-current" />
                     </button>
                   ))}
                   {formData.rating > 0 && (
-                    <div className="ml-6 text-center">
-                      <div className="text-2xl font-black text-yellow-400 mb-1">{formData.rating}.0</div>
-                      <div className="text-sm text-yellow-400 font-semibold">
-                        {formData.rating === 5 ? 'OBRA MAESTRA' : formData.rating === 4 ? 'EXCELENTE' : formData.rating === 3 ? 'BUENA' : formData.rating === 2 ? 'REGULAR' : 'MEJORABLE'}
-                      </div>
-                    </div>
+                    <span className="ml-2 text-sm text-gray-600">
+                      {formData.rating === 5 ? 'Excelente' : formData.rating === 4 ? 'Muy buena' : formData.rating === 3 ? 'Buena' : formData.rating === 2 ? 'Regular' : 'Mejorable'}
+                    </span>
                   )}
                 </div>
               </div>
             )}
 
             <div>
-              <label htmlFor="content" className="block text-sm font-bold text-green-400 mb-6 uppercase tracking-wide">
-                {formData.parentComment ? 'TU RESPUESTA PROFESIONAL *' : 'COMPARTE TU MASTERPIECE *'}
+              <label htmlFor="content" className="block text-sm font-medium text-gray-700 mb-1">
+                {formData.parentComment ? 'Tu respuesta *' : 'Tu comentario *'}
               </label>
               <textarea
                 id="content"
@@ -535,44 +522,37 @@ export default function Comments({ postSlug, postTitle }: CommentsProps) {
                 value={formData.content}
                 onChange={handleInputChange}
                 required
-                rows={6}
-                className="w-full px-6 py-4 bg-gray-900/80 border border-green-500/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 resize-vertical transition-all duration-300 text-white font-medium leading-relaxed placeholder-gray-400"
-                placeholder={formData.parentComment ? "Comparte tu experiencia profesional..." : "Describe tu creación, tips secretos, modificaciones que hiciste..."}
+                rows={4}
+                className="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 resize-vertical text-gray-900 text-sm"
+                placeholder={formData.parentComment ? "Escribe tu respuesta..." : "Comparte tu experiencia con esta receta..."}
               />
             </div>
 
             {message && (
-              <div className={`p-4 rounded-xl border ${
+              <div className={`p-3 rounded-lg text-sm ${
                 message.type === 'success' 
-                  ? 'bg-green-500/10 text-green-400 border-green-500/30' 
-                  : 'bg-red-500/10 text-red-400 border-red-500/30'
+                  ? 'bg-green-50 text-green-700 border border-green-200' 
+                  : 'bg-red-50 text-red-700 border border-red-200'
               }`}>
-                <div className="flex items-center">
-                  {message.type === 'success' ? (
-                    <Award className="w-5 h-5 mr-2 text-green-400" />
-                  ) : (
-                    <span className="w-5 h-5 mr-2">⚠️</span>
-                  )}
-                  {message.text}
-                </div>
+                {message.text}
               </div>
             )}
 
-            <div className="text-center relative">
+            <div className="text-right">
               <button
                 type="submit"
                 disabled={submitting}
-                className="px-12 py-6 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-2xl hover:from-green-400 hover:to-emerald-400 focus:outline-none focus:ring-4 focus:ring-green-500/50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 font-black text-lg shadow-2xl hover:shadow-green-500/25 hover:scale-105 inline-flex items-center uppercase tracking-wide"
+                className="px-6 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm font-medium inline-flex items-center"
               >
                 {submitting ? (
                   <>
-                    <Loader2 className="w-6 h-6 mr-4 animate-spin" />
-                    PROCESANDO...
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Enviando...
                   </>
                 ) : (
                   <>
-                    <Send className="w-6 h-6 mr-4" />
-                    {editingComment ? 'ACTUALIZAR' : (formData.parentComment ? 'ENVIAR RESPUESTA' : 'PUBLICAR EXPERIENCIA')}
+                    <Send className="w-4 h-4 mr-2" />
+                    {editingComment ? 'Actualizar' : (formData.parentComment ? 'Responder' : 'Comentar')}
                   </>
                 )}
               </button>
@@ -580,31 +560,21 @@ export default function Comments({ postSlug, postTitle }: CommentsProps) {
           </form>
         </div>
 
-        {/* Lista de comentarios premium */}
+        {/* Lista de comentarios */}
         {loading ? (
-          <div className="text-center py-16">
-            <div className="w-20 h-20 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl">
-              <Loader2 className="w-10 h-10 animate-spin text-white" />
-            </div>
-            <p className="text-gray-300 text-lg font-medium">Cargando experiencias premium...</p>
+          <div className="text-center py-8">
+            <Loader2 className="w-8 h-8 animate-spin text-orange-500 mx-auto mb-2" />
+            <p className="text-gray-600 text-sm">Cargando comentarios...</p>
           </div>
         ) : comments.length === 0 ? (
-          <div className="text-center py-16">
-            <div className="w-24 h-24 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-8 shadow-2xl">
-              <Star className="w-12 h-12 text-white" />
-            </div>
-            <h4 className="text-3xl font-black text-white mb-4">SÉ EL PRIMERO EN COMPARTIR</h4>
-            <p className="text-gray-300 text-lg font-medium">Comparte tu masterpiece con la comunidad premium</p>
+          <div className="text-center py-8">
+            <MessageCircle className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+            <h4 className="text-lg font-medium text-gray-900 mb-2">Sé el primero en comentar</h4>
+            <p className="text-gray-600 text-sm">Comparte tu experiencia con esta receta</p>
           </div>
         ) : (
-          <div>
-            <div className="mb-12 text-center">
-              <h4 className="text-3xl font-black text-white mb-4 bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">COMUNIDAD DE CHEFS</h4>
-              <div className="w-32 h-1 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full mx-auto shadow-lg"></div>
-            </div>
-            <div className="space-y-8">
-              {comments.map((comment) => renderComment(comment))}
-            </div>
+          <div className="space-y-4">
+            {comments.map((comment) => renderComment(comment))}
           </div>
         )}
       </div>
