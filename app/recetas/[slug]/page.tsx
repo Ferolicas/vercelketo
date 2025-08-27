@@ -83,74 +83,65 @@ export default async function RecipePage({ params }: PageProps) {
   const youtubeId = recipe.youtubeUrl ? getYouTubeVideoId(recipe.youtubeUrl) : null
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-rose-50 via-pink-50 to-purple-50">
-      {/* Elegant Header */}
-      <div className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-pink-500/10 via-rose-500/10 to-purple-500/10"></div>
-        <div className="relative pt-24 pb-12">
-          <div className="max-w-4xl mx-auto px-6">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-green-50/30">
+      {/* Ultra-Modern Header with Green Theme */}
+      <div className="relative overflow-hidden bg-gradient-to-r from-green-600 via-green-500 to-emerald-600">
+        {/* Decorative background patterns */}
+        <div className="absolute inset-0 bg-black/5"></div>
+        <div className="absolute inset-0">
+          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white/10 via-transparent to-black/5"></div>
+          <div className="absolute -top-40 -right-40 w-80 h-80 rounded-full bg-white/5 blur-3xl"></div>
+          <div className="absolute -bottom-32 -left-32 w-64 h-64 rounded-full bg-emerald-400/10 blur-3xl"></div>
+        </div>
+        
+        <div className="relative pt-20 pb-24">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6">
             <Link 
               href="/recetas" 
-              className="inline-flex items-center text-rose-600 hover:text-rose-700 mb-8 font-medium transition-all duration-300 hover:translate-x-1"
+              className="inline-flex items-center text-white/90 hover:text-white mb-8 font-medium transition-all duration-300 hover:translate-x-1 group"
             >
-              ← Volver a mi cocina
+              <span className="mr-2 transition-transform duration-300 group-hover:-translate-x-1">←</span>
+              Volver a recetas
             </Link>
             
             <div className="text-center">
-              <h1 className="text-5xl md:text-7xl font-light text-gray-800 mb-6 tracking-wide">
+              <h1 className="text-5xl sm:text-6xl md:text-8xl font-black text-white mb-8 tracking-tight leading-tight">
                 {recipe.name}
               </h1>
               
               {recipe.description && (
-                <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-12 leading-relaxed font-light">
+                <p className="text-xl sm:text-2xl text-green-50/90 max-w-4xl mx-auto mb-16 leading-relaxed font-light">
                   {recipe.description}
                 </p>
               )}
 
-              {/* Elegant Stats */}
-              <div className="flex flex-wrap justify-center gap-8 mb-12">
-                <div className="group">
-                  <div className="bg-white/80 backdrop-blur-sm rounded-3xl px-8 py-4 shadow-sm border border-white/50 group-hover:shadow-lg transition-all duration-300">
-                    <div className="flex items-center justify-center">
-                      <Timer className="w-6 h-6 text-rose-500 mr-3" />
-                      <span className="text-lg font-medium text-gray-700">{recipe.preparationTime} min</span>
-                    </div>
-                    <p className="text-sm text-gray-500 mt-1">tiempo de preparación</p>
-                  </div>
+              {/* Ultra-Modern Stats Grid */}
+              <div className="flex flex-wrap justify-center gap-6 mb-16">
+                <div className="bg-white/20 backdrop-blur-lg rounded-3xl px-8 py-6 text-white text-center border border-white/20 shadow-2xl hover:bg-white/25 transition-all duration-300">
+                  <Timer className="w-8 h-8 text-yellow-300 mx-auto mb-3" />
+                  <div className="text-3xl font-black mb-1">{recipe.preparationTime}</div>
+                  <p className="text-sm opacity-80 font-medium">minutos</p>
                 </div>
                 
-                <div className="group">
-                  <div className="bg-white/80 backdrop-blur-sm rounded-3xl px-8 py-4 shadow-sm border border-white/50 group-hover:shadow-lg transition-all duration-300">
-                    <div className="flex items-center justify-center">
-                      <Users className="w-6 h-6 text-purple-500 mr-3" />
-                      <span className="text-lg font-medium text-gray-700">{recipe.servings} porciones</span>
-                    </div>
-                    <p className="text-sm text-gray-500 mt-1">para compartir</p>
-                  </div>
+                <div className="bg-white/20 backdrop-blur-lg rounded-3xl px-8 py-6 text-white text-center border border-white/20 shadow-2xl hover:bg-white/25 transition-all duration-300">
+                  <Users className="w-8 h-8 text-blue-300 mx-auto mb-3" />
+                  <div className="text-3xl font-black mb-1">{recipe.servings}</div>
+                  <p className="text-sm opacity-80 font-medium">porciones</p>
                 </div>
                 
                 {recipe.averageRating > 0 && (
-                  <div className="group">
-                    <div className="bg-white/80 backdrop-blur-sm rounded-3xl px-8 py-4 shadow-sm border border-white/50 group-hover:shadow-lg transition-all duration-300">
-                      <div className="flex items-center justify-center">
-                        <Star className="w-6 h-6 text-amber-400 mr-3 fill-current" />
-                        <span className="text-lg font-medium text-gray-700">{recipe.averageRating.toFixed(1)}</span>
-                        <span className="text-gray-400 ml-2 text-sm">({recipe.totalRatings})</span>
-                      </div>
-                      <p className="text-sm text-gray-500 mt-1">valoración</p>
-                    </div>
+                  <div className="bg-white/20 backdrop-blur-lg rounded-3xl px-8 py-6 text-white text-center border border-white/20 shadow-2xl hover:bg-white/25 transition-all duration-300">
+                    <Star className="w-8 h-8 text-yellow-300 mx-auto mb-3 fill-current" />
+                    <div className="text-3xl font-black mb-1">{recipe.averageRating.toFixed(1)}</div>
+                    <p className="text-sm opacity-80 font-medium">valoración</p>
                   </div>
                 )}
                 
                 {recipe.category && (
-                  <div className="group">
-                    <div className="bg-gradient-to-r from-rose-500 to-pink-500 rounded-3xl px-8 py-4 text-white shadow-lg group-hover:shadow-xl transition-all duration-300">
-                      <div className="flex items-center justify-center">
-                        <span className="mr-3 text-xl">{recipe.category.icon}</span>
-                        <span className="text-lg font-medium">{recipe.category.name}</span>
-                      </div>
-                      <p className="text-rose-100 text-sm mt-1">categoría</p>
-                    </div>
+                  <div className="bg-white/25 backdrop-blur-lg rounded-3xl px-8 py-6 text-white text-center border border-white/30 shadow-2xl hover:bg-white/30 transition-all duration-300">
+                    <div className="text-3xl mb-3">{recipe.category.icon}</div>
+                    <div className="text-lg font-bold mb-1">{recipe.category.name}</div>
+                    <p className="text-sm opacity-80 font-medium">categoría</p>
                   </div>
                 )}
               </div>
@@ -159,105 +150,151 @@ export default async function RecipePage({ params }: PageProps) {
         </div>
       </div>
 
-      {/* Main Content */}
-      <div className="max-w-5xl mx-auto px-6 pb-20">
+      {/* Main Content with Ultra-Modern Layout */}
+      <div className="max-w-7xl mx-auto px-6 -mt-8 relative z-10">
 
-        {/* Video Section - Full Width */}
-        <div className="mb-16">
-          <div className="bg-white/60 backdrop-blur-sm rounded-[2rem] p-8 shadow-xl border border-white/50">
-            <div className="text-center mb-6">
-              <h2 className="text-3xl font-light text-gray-800 mb-2">Tutorial paso a paso</h2>
-              <p className="text-gray-600 font-light">Aprende a preparar esta deliciosa receta</p>
-            </div>
+        {/* Hero Video Section - Ultra Modern Design */}
+        <div className="mb-20">
+          <div className="bg-white/80 backdrop-blur-xl rounded-[3rem] p-12 shadow-[0_32px_64px_rgba(0,0,0,0.12)] border border-white/60 relative overflow-hidden">
+            {/* Background gradient */}
+            <div className="absolute inset-0 bg-gradient-to-br from-green-50/50 via-transparent to-emerald-50/30 rounded-[3rem]"></div>
             
-            {/* YouTube Video - Clean Embed */}
-            {youtubeId && (
-              <div className="relative aspect-video rounded-2xl overflow-hidden shadow-2xl bg-black">
-                <iframe
-                  src={`https://www.youtube.com/embed/${youtubeId}?modestbranding=1&showinfo=0&rel=0`}
-                  title="Tutorial de cocina"
-                  allowFullScreen
-                  className="w-full h-full"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                />
+            <div className="relative z-10">
+              <div className="text-center mb-10">
+                <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-green-500 to-emerald-500 rounded-3xl mb-6 shadow-xl">
+                  <span className="text-3xl">▶️</span>
+                </div>
+                <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-4 tracking-tight">
+                  Tutorial Exclusivo
+                </h2>
+                <p className="text-xl text-gray-600 font-light max-w-2xl mx-auto">
+                  Aprende paso a paso con nuestro video tutorial profesional
+                </p>
               </div>
-            )}
+              
+              {/* YouTube Video - Ultra Modern Embed */}
+              {youtubeId && (
+                <div className="relative">
+                  <div className="aspect-video rounded-3xl overflow-hidden shadow-[0_24px_48px_rgba(0,0,0,0.2)] bg-black relative group cursor-pointer">
+                    <iframe
+                      src={`https://www.youtube.com/embed/${youtubeId}?modestbranding=1&showinfo=0&rel=0&fs=1`}
+                      title={`Tutorial: ${recipe.name}`}
+                      allowFullScreen
+                      className="w-full h-full rounded-3xl"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    />
+                    {/* Decorative corner elements */}
+                    <div className="absolute top-6 left-6 w-4 h-4 border-l-4 border-t-4 border-white/30 rounded-tl-lg"></div>
+                    <div className="absolute top-6 right-6 w-4 h-4 border-r-4 border-t-4 border-white/30 rounded-tr-lg"></div>
+                    <div className="absolute bottom-6 left-6 w-4 h-4 border-l-4 border-b-4 border-white/30 rounded-bl-lg"></div>
+                    <div className="absolute bottom-6 right-6 w-4 h-4 border-r-4 border-b-4 border-white/30 rounded-br-lg"></div>
+                  </div>
+                </div>
+              )}
 
-            {recipe.youtubeUrl && !youtubeId && (
-              <div className="bg-gradient-to-r from-rose-500 to-pink-500 text-white p-8 rounded-2xl shadow-xl text-center">
-                <Heart className="w-12 h-12 mx-auto mb-4" />
-                <h3 className="text-xl font-medium mb-4">Video Tutorial Disponible</h3>
-                <a 
-                  href={recipe.youtubeUrl} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="bg-white text-rose-600 px-8 py-3 rounded-xl font-medium hover:bg-rose-50 transition-colors inline-block shadow-lg"
-                >
-                  Ver Tutorial
-                </a>
-              </div>
-            )}
+              {/* Fallback for invalid YouTube URLs */}
+              {recipe.youtubeUrl && !youtubeId && (
+                <div className="bg-gradient-to-r from-green-500 to-emerald-500 text-white p-12 rounded-3xl shadow-2xl text-center relative overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-black/10"></div>
+                  <div className="relative z-10">
+                    <div className="w-20 h-20 bg-white/20 rounded-3xl flex items-center justify-center mx-auto mb-6">
+                      <span className="text-4xl">🎥</span>
+                    </div>
+                    <h3 className="text-3xl font-bold mb-6">Video Tutorial Disponible</h3>
+                    <p className="text-green-100 text-lg mb-8 max-w-md mx-auto">
+                      Mira el tutorial completo en YouTube
+                    </p>
+                    <a 
+                      href={recipe.youtubeUrl} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="bg-white text-green-600 px-10 py-4 rounded-2xl font-bold text-lg hover:bg-green-50 transition-all duration-300 inline-flex items-center shadow-xl hover:shadow-2xl transform hover:scale-105"
+                    >
+                      <span className="mr-3">▶️</span>
+                      Ver Tutorial
+                    </a>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
-        {/* Recipe Content - Grid Layout */}
-        <div className="grid md:grid-cols-2 gap-8">
-          {/* Ingredients */}
-          <div className="bg-white/60 backdrop-blur-sm rounded-[2rem] p-8 shadow-xl border border-white/50 h-fit">
-            <div className="flex items-center mb-8">
-              <div className="w-12 h-12 bg-gradient-to-r from-rose-400 to-pink-400 rounded-2xl flex items-center justify-center mr-4">
-                <BookOpen className="w-6 h-6 text-white" />
+        {/* Recipe Content - Ultra-Modern Grid */}
+        <div className="grid lg:grid-cols-2 gap-12 mb-20">
+          {/* Ingredients - Green Theme */}
+          <div className="bg-white/80 backdrop-blur-xl rounded-[2.5rem] p-10 shadow-[0_24px_48px_rgba(0,0,0,0.1)] border border-white/60 relative overflow-hidden h-fit">
+            <div className="absolute inset-0 bg-gradient-to-br from-green-50/80 via-transparent to-emerald-50/40 rounded-[2.5rem]"></div>
+            
+            <div className="relative z-10">
+              <div className="flex items-center mb-10">
+                <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-500 rounded-3xl flex items-center justify-center mr-6 shadow-xl">
+                  <BookOpen className="w-8 h-8 text-white" />
+                </div>
+                <div>
+                  <h2 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight">Ingredientes</h2>
+                  <p className="text-gray-600 text-lg font-light">Todo lo que necesitas</p>
+                </div>
               </div>
-              <div>
-                <h2 className="text-2xl font-light text-gray-800">Ingredientes</h2>
-                <p className="text-gray-500 text-sm font-light">Todo lo que necesitas</p>
-              </div>
-            </div>
-            <div className="prose prose-gray max-w-none">
-              <div className="text-gray-700 whitespace-pre-line leading-loose font-light text-lg">
-                {recipe.ingredients}
+              <div className="prose prose-gray max-w-none">
+                <div className="text-gray-700 whitespace-pre-line leading-loose font-light text-lg">
+                  {recipe.ingredients}
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Preparation */}
-          <div className="bg-white/60 backdrop-blur-sm rounded-[2rem] p-8 shadow-xl border border-white/50">
-            <div className="flex items-center mb-8">
-              <div className="w-12 h-12 bg-gradient-to-r from-purple-400 to-pink-400 rounded-2xl flex items-center justify-center mr-4">
-                <ChefHat className="w-6 h-6 text-white" />
+          {/* Preparation - Green Theme */}
+          <div className="bg-white/80 backdrop-blur-xl rounded-[2.5rem] p-10 shadow-[0_24px_48px_rgba(0,0,0,0.1)] border border-white/60 relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/80 via-transparent to-green-50/40 rounded-[2.5rem]"></div>
+            
+            <div className="relative z-10">
+              <div className="flex items-center mb-10">
+                <div className="w-16 h-16 bg-gradient-to-r from-emerald-500 to-green-500 rounded-3xl flex items-center justify-center mr-6 shadow-xl">
+                  <ChefHat className="w-8 h-8 text-white" />
+                </div>
+                <div>
+                  <h2 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight">Preparación</h2>
+                  <p className="text-gray-600 text-lg font-light">Paso a paso</p>
+                </div>
               </div>
-              <div>
-                <h2 className="text-2xl font-light text-gray-800">Preparación</h2>
-                <p className="text-gray-500 text-sm font-light">Paso a paso</p>
-              </div>
-            </div>
-            <div className="prose prose-gray max-w-none">
-              <div className="text-gray-700 whitespace-pre-line leading-loose font-light text-lg">
-                {recipe.preparation}
+              <div className="prose prose-gray max-w-none">
+                <div className="text-gray-700 whitespace-pre-line leading-loose font-light text-lg">
+                  {recipe.preparation}
+                </div>
               </div>
             </div>
           </div>
         </div>
 
         {/* Comments and Ratings */}
-        <div className="mt-20">
+        <div className="mb-20">
           <Comments postSlug={recipe.slug.current} postTitle={recipe.name} />
         </div>
 
-        {/* Back to Recipes CTA */}
-        <div className="mt-20 text-center">
-          <div className="bg-gradient-to-r from-rose-400 via-pink-400 to-purple-400 rounded-[2rem] p-12 text-white shadow-2xl">
-            <div className="max-w-2xl mx-auto">
-              <Heart className="w-16 h-16 mx-auto mb-6 text-white/90" />
-              <h3 className="text-4xl font-light mb-6">¿Te encantó esta receta?</h3>
-              <p className="text-white/90 text-xl mb-10 leading-relaxed font-light">
-                Descubre más delicias keto en nuestra colección especialmente curada para ti.
+        {/* Back to Recipes CTA - Green Theme */}
+        <div className="text-center">
+          <div className="bg-gradient-to-r from-green-600 via-green-500 to-emerald-600 rounded-[3rem] p-16 text-white shadow-[0_32px_64px_rgba(0,0,0,0.15)] relative overflow-hidden">
+            {/* Background decorations */}
+            <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-black/5"></div>
+            <div className="absolute -top-20 -right-20 w-40 h-40 rounded-full bg-white/5 blur-3xl"></div>
+            <div className="absolute -bottom-16 -left-16 w-32 h-32 rounded-full bg-emerald-300/10 blur-3xl"></div>
+            
+            <div className="relative z-10 max-w-3xl mx-auto">
+              <div className="w-24 h-24 bg-white/20 backdrop-blur-lg rounded-3xl flex items-center justify-center mx-auto mb-8 border border-white/30">
+                <Heart className="w-12 h-12 text-white" />
+              </div>
+              <h3 className="text-4xl md:text-5xl font-black mb-8 tracking-tight">
+                ¿Te encantó esta receta?
+              </h3>
+              <p className="text-green-50 text-xl md:text-2xl mb-12 leading-relaxed font-light max-w-2xl mx-auto">
+                Descubre más delicias keto en nuestra colección especialmente curada para transformar tu estilo de vida.
               </p>
               <Link
                 href="/recetas"
-                className="bg-white/20 backdrop-blur-sm text-white font-medium py-4 px-10 rounded-2xl hover:bg-white/30 transition-all duration-300 inline-flex items-center border border-white/30 hover:shadow-xl"
+                className="bg-white/20 backdrop-blur-lg text-white font-bold py-6 px-12 rounded-3xl hover:bg-white/30 transition-all duration-300 inline-flex items-center border border-white/30 hover:shadow-2xl transform hover:scale-105 text-xl"
               >
-                <ChefHat className="w-6 h-6 mr-3" />
+                <ChefHat className="w-8 h-8 mr-4" />
                 Explorar más recetas
               </Link>
             </div>
