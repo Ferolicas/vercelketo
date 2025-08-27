@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Star, MessageCircle, Send, Loader2, Reply, Edit2, Trash2 } from 'lucide-react';
+import { Star, MessageCircle, Send, Loader2, Reply, Edit2, Trash2, Heart, Sparkles, User } from 'lucide-react';
 
 interface Comment {
   _id: string;
@@ -74,27 +74,31 @@ export default function Comments({ postSlug, postTitle }: CommentsProps) {
   };
 
   const fetchComments = async () => {
-  try {
-    // Opción 1: Añadir un parámetro de caché busting (timestamp)
-    // Opción 2: Usar cache: 'no-store' (más limpia si el servidor lo soporta bien)
-    const response = await fetch(`/api/comments?postSlug=${postSlug}&_t=${Date.now()}`, { 
-      cache: 'no-store' // <--- ¡Añade esta línea!
-    });
-    const data = await response.json();
+    try {
+      // Force fresh data from server without cache
+      const response = await fetch(`/api/comments?postSlug=${postSlug}&_t=${Date.now()}`, { 
+        cache: 'no-store',
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0'
+        }
+      });
+      const data = await response.json();
 
-    if (response.ok) {
-      const organized = organizeComments(data.comments || []);
-      setComments(organized);
-      // console.log("Comentarios actualizados:", organized); // Para depuración
-    } else {
-      console.error('Error fetching comments:', data.error);
+      if (response.ok) {
+        const organized = organizeComments(data.comments || []);
+        setComments(organized);
+        console.log('Comments updated successfully:', organized.length, 'comments loaded');
+      } else {
+        console.error('Error fetching comments:', data.error);
+      }
+    } catch (error) {
+      console.error('Error fetching comments:', error);
+    } finally {
+      setLoading(false);
     }
-  } catch (error) {
-    console.error('Error fetching comments:', error);
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   const organizeComments = (commentList: Comment[]): Comment[] => {
     const commentMap = new Map<string, Comment>();
@@ -165,11 +169,15 @@ export default function Comments({ postSlug, postTitle }: CommentsProps) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          ...formData,
+          name: formData.name,
+          email: formData.email,
+          content: formData.content,
+          rating: formData.parentComment ? null : (formData.rating || null),
+          parentComment: formData.parentComment,
           postSlug,
+          postTitle,
           authorId: currentAuthorId,
-          commentId: editingComment,
-          rating: formData.parentComment ? null : (formData.rating || null)
+          commentId: editingComment
         }),
       });
 
@@ -180,14 +188,15 @@ export default function Comments({ postSlug, postTitle }: CommentsProps) {
           type: 'success', 
           text: editingComment ? 'Comentario actualizado' : data.message 
         });
+        
+        // Reset form
         setFormData({ name: '', email: '', content: '', rating: 0, parentComment: null });
         setReplyingTo(null);
         setEditingComment(null);
+        
+        // Refresh comments immediately without page reload
         await fetchComments();
       } else {
-        // En caso de que Sanity (o tu API) devuelva un error específico,
-        // podrías intentar mostrarlo aquí.
-        // Por ahora, usamos el mensaje genérico o el de la API si lo trae.
         setMessage({ type: 'error', text: data.error || 'Error al procesar el comentario' });
       }
     } catch (error) {
@@ -228,6 +237,7 @@ export default function Comments({ postSlug, postTitle }: CommentsProps) {
 
       if (response.ok) {
         setMessage({ type: 'success', text: 'Comentario eliminado' });
+        // Immediately update comments without page reload
         await fetchComments();
       } else {
         const data = await response.json();
@@ -304,28 +314,33 @@ export default function Comments({ postSlug, postTitle }: CommentsProps) {
     }
 
     return (
-      <div key={comment._id} className={`${isReply ? 'ml-8 border-l-2 border-gray-200 pl-4' : ''}`}>
-        <div className="border-b border-gray-200 pb-6 last:border-b-0">
-          <div className="flex items-start justify-between mb-2">
-            <div className="flex-1">
-              <div className="flex items-center space-x-2">
-                <h4 className="font-semibold text-gray-800">{comment.author.name}</h4>
-                {comment.isEdited && (
-                  <span className="text-xs text-gray-500 italic">(editado)</span>
-                )}
+      <div key={comment._id} className={`${isReply ? 'ml-8 border-l-2 border-rose-200 pl-6' : ''} mb-8`}>
+        <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-sm border border-white/50 hover:shadow-md transition-all duration-300">
+          <div className="flex items-start justify-between mb-4">
+            <div className="flex items-start space-x-4 flex-1">
+              <div className="w-12 h-12 bg-gradient-to-r from-rose-400 to-pink-400 rounded-full flex items-center justify-center flex-shrink-0">
+                <User className="w-6 h-6 text-white" />
               </div>
-              <p className="text-sm text-gray-500">{formatDate(comment._createdAt)}</p>
+              <div className="flex-1">
+                <div className="flex items-center space-x-2 mb-1">
+                  <h4 className="font-medium text-gray-800">{comment.author.name}</h4>
+                  {comment.isEdited && (
+                    <span className="text-xs text-gray-500 italic bg-gray-100 px-2 py-1 rounded-full">(editado)</span>
+                  )}
+                </div>
+                <p className="text-sm text-gray-500 font-light">{formatDate(comment._createdAt)}</p>
+              </div>
             </div>
             
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-3">
               {comment.rating && !isReply && (
-                <div className="flex items-center space-x-1">
+                <div className="flex items-center space-x-1 bg-amber-50 px-3 py-1 rounded-full">
                   {[1, 2, 3, 4, 5].map((star) => (
                     <Star
                       key={star}
                       className={`w-4 h-4 ${
                         star <= comment.rating!
-                          ? 'text-yellow-400 fill-current'
+                          ? 'text-amber-400 fill-current'
                           : 'text-gray-300'
                       }`}
                     />
@@ -337,14 +352,14 @@ export default function Comments({ postSlug, postTitle }: CommentsProps) {
                 <div className="flex items-center space-x-1">
                   <button
                     onClick={() => handleEdit(comment)}
-                    className="p-1 text-gray-400 hover:text-blue-600 transition-colors"
+                    className="p-2 text-gray-400 hover:text-rose-500 hover:bg-rose-50 rounded-full transition-all duration-200"
                     title="Editar"
                   >
                     <Edit2 className="w-4 h-4" />
                   </button>
                   <button
                     onClick={() => handleDelete(comment._id)}
-                    className="p-1 text-gray-400 hover:text-red-600 transition-colors"
+                    className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-all duration-200"
                     title="Eliminar"
                   >
                     <Trash2 className="w-4 h-4" />
@@ -354,33 +369,36 @@ export default function Comments({ postSlug, postTitle }: CommentsProps) {
             </div>
           </div>
           
-          <p className="text-gray-700 leading-relaxed mb-3">{comment.content}</p>
-          
-          {comment.adminReply && comment.adminReplyPublished && (
-            <div className="mt-3 p-3 bg-blue-50 border-l-4 border-blue-500 rounded">
-              <div className="flex items-center mb-1">
-                <span className="text-sm font-semibold text-blue-800">PLANETA KETO</span>
-                <span className="text-xs text-blue-600 ml-2">
-                  {formatDate(comment.adminReplyDate!)}
-                </span>
+          <div className="ml-16">
+            <p className="text-gray-700 leading-relaxed mb-4 font-light text-lg">{comment.content}</p>
+            
+            {comment.adminReply && comment.adminReplyPublished && (
+              <div className="mt-4 p-4 bg-gradient-to-r from-rose-50 to-pink-50 border-l-4 border-rose-400 rounded-lg">
+                <div className="flex items-center mb-2">
+                  <Sparkles className="w-4 h-4 text-rose-500 mr-2" />
+                  <span className="text-sm font-semibold text-rose-800">PLANETA KETO</span>
+                  <span className="text-xs text-rose-600 ml-3">
+                    {formatDate(comment.adminReplyDate!)}
+                  </span>
+                </div>
+                <p className="text-rose-800 font-light">{comment.adminReply}</p>
               </div>
-              <p className="text-blue-800 text-sm">{comment.adminReply}</p>
+            )}
+            
+            <div className="flex items-center space-x-6 mt-4">
+              <button
+                onClick={() => handleReply(comment._id)}
+                className="flex items-center text-sm text-gray-600 hover:text-rose-500 transition-colors font-medium group"
+              >
+                <Reply className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" />
+                Responder
+              </button>
             </div>
-          )}
-          
-          <div className="flex items-center space-x-4 mt-3">
-            <button
-              onClick={() => handleReply(comment._id)}
-              className="flex items-center text-sm text-gray-600 hover:text-emerald-600 transition-colors"
-            >
-              <Reply className="w-4 h-4 mr-1" />
-              Responder
-            </button>
           </div>
           
           {/* Respuestas */}
           {comment.replies && comment.replies.length > 0 && (
-            <div className="mt-6 space-y-4">
+            <div className="mt-6 space-y-4 ml-8">
               {comment.replies.map(reply => renderComment(reply, true))}
             </div>
           )}
@@ -392,36 +410,44 @@ export default function Comments({ postSlug, postTitle }: CommentsProps) {
   // No renderizar nada hasta que esté montado para evitar hidratación diferente
   if (!isMounted) {
     return (
-      <div className="mt-12 p-6 bg-white rounded-lg shadow-sm">
-        <div className="text-center py-8">
-          <Loader2 className="w-8 h-8 animate-spin mx-auto text-emerald-600" />
-          <p className="mt-2 text-gray-600">Cargando comentarios...</p>
+      <div className="bg-white/60 backdrop-blur-sm rounded-[2rem] p-10 shadow-xl border border-white/50">
+        <div className="text-center py-12">
+          <div className="w-16 h-16 bg-gradient-to-r from-rose-400 to-pink-400 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Loader2 className="w-8 h-8 animate-spin text-white" />
+          </div>
+          <p className="text-gray-600 font-light">Preparando el espacio para tu experiencia...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="mt-12 p-6 bg-white rounded-lg shadow-sm">
-      <div className="flex items-center mb-6">
-        <MessageCircle className="w-6 h-6 text-emerald-600 mr-2" />
-        <h3 className="text-2xl font-bold text-gray-800">
-          Comentarios ({comments.reduce((count, comment) => count + 1 + (comment.replies?.length || 0), 0)})
+    <div className="bg-white/60 backdrop-blur-sm rounded-[2rem] p-10 shadow-xl border border-white/50">
+      <div className="text-center mb-10">
+        <div className="w-16 h-16 bg-gradient-to-r from-rose-400 to-pink-400 rounded-full flex items-center justify-center mx-auto mb-4">
+          <Heart className="w-8 h-8 text-white" />
+        </div>
+        <h3 className="text-3xl font-light text-gray-800 mb-2">
+          Comparte tu experiencia
         </h3>
+        <p className="text-gray-600 font-light">
+          {comments.reduce((count, comment) => count + 1 + (comment.replies?.length || 0), 0)} personas ya han compartido su experiencia
+        </p>
       </div>
 
-      {/* Formulario de comentarios */}
-      <form onSubmit={handleSubmit} className="mb-8">
+      {/* Elegant Comment Form */}
+      <div className="bg-gradient-to-br from-rose-50 to-pink-50 rounded-2xl p-8 mb-12 border border-rose-100">
         {(replyingTo || editingComment) && (
-          <div className="mb-4 p-3 bg-blue-50 border-l-4 border-blue-500 rounded">
+          <div className="mb-6 p-4 bg-rose-100 border-l-4 border-rose-400 rounded-lg">
             <div className="flex items-center justify-between">
-              <span className="text-sm font-medium text-blue-800">
-                {editingComment ? 'Editando comentario' : 'Respondiendo comentario'}
+              <span className="text-sm font-medium text-rose-800 flex items-center">
+                <Sparkles className="w-4 h-4 mr-2" />
+                {editingComment ? 'Editando tu comentario' : 'Respondiendo a otro miembro'}
               </span>
               <button
                 type="button"
                 onClick={cancelReply}
-                className="text-blue-600 hover:text-blue-800 text-sm"
+                className="text-rose-600 hover:text-rose-800 text-sm font-medium transition-colors"
               >
                 Cancelar
               </button>
@@ -429,123 +455,150 @@ export default function Comments({ postSlug, postTitle }: CommentsProps) {
           </div>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-          <div>
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-              Nombre *
-            </label>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              value={formData.name}
-              onChange={handleInputChange}
-              required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-              placeholder="Tu nombre"
-            />
-          </div>
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-              Email *
-            </label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email}
-              onChange={handleInputChange}
-              required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-              placeholder="tu@email.com"
-            />
-          </div>
-        </div>
-
-        {/* Rating solo para comentarios principales */}
-        {!formData.parentComment && (
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Calificación (opcional)
-            </label>
-            <div className="flex items-center space-x-1">
-              {[1, 2, 3, 4, 5].map((star) => (
-                <button
-                  key={star}
-                  type="button"
-                  onClick={() => handleRatingClick(star)}
-                  className={`w-8 h-8 transition-colors ${
-                    star <= formData.rating
-                      ? 'text-yellow-400 hover:text-yellow-500'
-                      : 'text-gray-300 hover:text-yellow-300'
-                  }`}
-                >
-                  <Star className="w-full h-full fill-current" />
-                </button>
-              ))}
-              {formData.rating > 0 && (
-                <span className="ml-2 text-sm text-gray-600">
-                  {formData.rating} de 5 estrellas
-                </span>
-              )}
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-3">
+                Tu nombre *
+              </label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                value={formData.name}
+                onChange={handleInputChange}
+                required
+                className="w-full px-4 py-3 bg-white border border-rose-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-400 focus:border-transparent transition-all duration-300 font-light"
+                placeholder="¿Cómo te llamas?"
+              />
+            </div>
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-3">
+                Tu email *
+              </label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value={formData.email}
+                onChange={handleInputChange}
+                required
+                className="w-full px-4 py-3 bg-white border border-rose-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-400 focus:border-transparent transition-all duration-300 font-light"
+                placeholder="tu@email.com"
+              />
             </div>
           </div>
-        )}
 
-        <div className="mb-4">
-          <label htmlFor="content" className="block text-sm font-medium text-gray-700 mb-1">
-            {formData.parentComment ? 'Respuesta' : 'Comentario'} *
-          </label>
-          <textarea
-            id="content"
-            name="content"
-            value={formData.content}
-            onChange={handleInputChange}
-            required
-            rows={4}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent resize-vertical"
-            placeholder={formData.parentComment ? "Escribe tu respuesta..." : "Comparte tu experiencia con esta receta..."}
-          />
-        </div>
-
-        {message && (
-          <div className={`mb-4 p-3 rounded-md ${
-            message.type === 'success' 
-              ? 'bg-green-50 text-green-800 border border-green-200' 
-              : 'bg-red-50 text-red-800 border border-red-200'
-          }`}>
-            {message.text}
-          </div>
-        )}
-
-        <button
-          type="submit"
-          disabled={submitting}
-          className="flex items-center px-6 py-2 bg-emerald-600 text-white rounded-md hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {submitting ? (
-            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-          ) : (
-            <Send className="w-4 h-4 mr-2" />
+          {/* Elegant Rating */}
+          {!formData.parentComment && (
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-4">
+                ¿Qué te pareció la receta? (opcional)
+              </label>
+              <div className="flex items-center justify-center space-x-2 bg-white rounded-xl p-4 border border-rose-200">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <button
+                    key={star}
+                    type="button"
+                    onClick={() => handleRatingClick(star)}
+                    className={`w-10 h-10 transition-all duration-300 hover:scale-110 ${
+                      star <= formData.rating
+                        ? 'text-amber-400 hover:text-amber-500'
+                        : 'text-gray-300 hover:text-amber-300'
+                    }`}
+                  >
+                    <Star className="w-full h-full fill-current" />
+                  </button>
+                ))}
+                {formData.rating > 0 && (
+                  <span className="ml-4 text-sm text-gray-600 font-light">
+                    {formData.rating === 5 ? '¡Perfecta!' : formData.rating === 4 ? '¡Muy buena!' : formData.rating === 3 ? 'Buena' : formData.rating === 2 ? 'Regular' : 'Mejorable'}
+                  </span>
+                )}
+              </div>
+            </div>
           )}
-          {submitting ? 'Enviando...' : (editingComment ? 'Actualizar' : (formData.parentComment ? 'Responder' : 'Enviar comentario'))}
-        </button>
-      </form>
+
+          <div>
+            <label htmlFor="content" className="block text-sm font-medium text-gray-700 mb-3">
+              {formData.parentComment ? 'Tu respuesta *' : 'Comparte tu experiencia *'}
+            </label>
+            <textarea
+              id="content"
+              name="content"
+              value={formData.content}
+              onChange={handleInputChange}
+              required
+              rows={5}
+              className="w-full px-4 py-3 bg-white border border-rose-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-400 focus:border-transparent resize-vertical transition-all duration-300 font-light leading-relaxed"
+              placeholder={formData.parentComment ? "Escribe tu respuesta..." : "¿Cómo te quedó la receta? ¿Algún tip especial que quieras compartir?"}
+            />
+          </div>
+
+          {message && (
+            <div className={`p-4 rounded-xl border ${
+              message.type === 'success' 
+                ? 'bg-green-50 text-green-800 border-green-200' 
+                : 'bg-red-50 text-red-800 border-red-200'
+            }`}>
+              <div className="flex items-center">
+                {message.type === 'success' ? (
+                  <Heart className="w-5 h-5 mr-2 text-green-600" />
+                ) : (
+                  <span className="w-5 h-5 mr-2">⚠️</span>
+                )}
+                {message.text}
+              </div>
+            </div>
+          )}
+
+          <div className="text-center">
+            <button
+              type="submit"
+              disabled={submitting}
+              className="px-8 py-4 bg-gradient-to-r from-rose-400 to-pink-400 text-white rounded-xl hover:from-rose-500 hover:to-pink-500 focus:outline-none focus:ring-2 focus:ring-rose-400 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 font-medium shadow-lg hover:shadow-xl inline-flex items-center"
+            >
+              {submitting ? (
+                <>
+                  <Loader2 className="w-5 h-5 mr-3 animate-spin" />
+                  Enviando...
+                </>
+              ) : (
+                <>
+                  <Heart className="w-5 h-5 mr-3" />
+                  {editingComment ? 'Actualizar comentario' : (formData.parentComment ? 'Enviar respuesta' : 'Compartir experiencia')}
+                </>
+              )}
+            </button>
+          </div>
+        </form>
+      </div>
 
       {/* Lista de comentarios */}
       {loading ? (
-        <div className="text-center py-8">
-          <Loader2 className="w-8 h-8 animate-spin mx-auto text-emerald-600" />
-          <p className="mt-2 text-gray-600">Cargando comentarios...</p>
+        <div className="text-center py-12">
+          <div className="w-16 h-16 bg-gradient-to-r from-rose-400 to-pink-400 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Loader2 className="w-8 h-8 animate-spin text-white" />
+          </div>
+          <p className="text-gray-600 font-light">Cargando experiencias de nuestra comunidad...</p>
         </div>
       ) : comments.length === 0 ? (
-        <div className="text-center py-8 text-gray-500">
-          <MessageCircle className="w-12 h-12 mx-auto mb-4 opacity-50" />
-          <p>Sé el primero en comentar esta receta</p>
+        <div className="text-center py-12">
+          <div className="w-16 h-16 bg-gradient-to-r from-rose-400 to-pink-400 rounded-full flex items-center justify-center mx-auto mb-6">
+            <Heart className="w-8 h-8 text-white" />
+          </div>
+          <h4 className="text-xl font-light text-gray-700 mb-2">¡Sé la primera en compartir!</h4>
+          <p className="text-gray-500 font-light">Ayuda a otras personas contando tu experiencia con esta receta</p>
         </div>
       ) : (
-        <div className="space-y-6">
-          {comments.map((comment) => renderComment(comment))}
+        <div>
+          <div className="mb-8">
+            <h4 className="text-2xl font-light text-gray-800 text-center mb-2">Experiencias de nuestra comunidad</h4>
+            <div className="w-24 h-1 bg-gradient-to-r from-rose-400 to-pink-400 rounded-full mx-auto"></div>
+          </div>
+          <div className="space-y-6">
+            {comments.map((comment) => renderComment(comment))}
+          </div>
         </div>
       )}
     </div>

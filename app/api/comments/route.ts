@@ -1,140 +1,234 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { writeClient, client } from '@/lib/sanity';
-import type { ApiResponse } from '@/types/sanity';
+import { NextRequest, NextResponse } from 'next/server'
+import { writeClient, client } from '@/lib/sanity'
+import { v4 as uuidv4 } from 'uuid'
 
-// GET - Obtener comentarios por receta
+// GET - Obtener comentarios
 export async function GET(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url);
-    const recipeId = searchParams.get('recipeId');
-
-    if (!recipeId) {
-      return NextResponse.json<ApiResponse<any>>(
-        {
-          success: false,
-          error: 'ID de receta es requerido'
-        },
+    const { searchParams } = new URL(request.url)
+    const postSlug = searchParams.get('postSlug')
+    
+    if (!postSlug) {
+      return NextResponse.json(
+        { error: 'postSlug es requerido' },
         { status: 400 }
-      );
+      )
     }
 
-    const comments = await client.fetch(`
-      *[_type == "comment" && recipe._ref == $recipeId && approved == true] | order(createdAt desc) {
+    // Obtener comentarios del post
+    const comments = await client.fetch(
+      `*[_type == "comment" && postSlug == $postSlug && approved == true && isDeleted != true] | order(createdAt asc) {
         _id,
-        authorName,
+        _createdAt,
         content,
+        "author": {
+          "name": authorName,
+          "email": authorEmail
+        },
+        authorId,
         rating,
-        createdAt
-      }
-    `, { recipeId });
+        approved,
+        isEdited,
+        isDeleted,
+        parentComment,
+        adminReply,
+        adminReplyPublished,
+        adminReplyDate,
+        createdAt,
+        updatedAt
+      }`,
+      { postSlug }
+    )
 
-    return NextResponse.json<ApiResponse<any>>({
-      success: true,
-      data: comments
-    });
-
+    return NextResponse.json({ comments })
   } catch (error) {
-    console.error('Error fetching comments:', error);
-    return NextResponse.json<ApiResponse<any>>(
-      {
-        success: false,
-        error: 'Error al obtener los comentarios'
-      },
+    console.error('Error fetching comments:', error)
+    return NextResponse.json(
+      { error: 'Error al obtener comentarios' },
       { status: 500 }
-    );
+    )
   }
 }
 
 // POST - Crear nuevo comentario
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
-    const { recipeId, authorName, authorEmail, content, rating } = body;
-
-    // Validaciones
-    if (!recipeId || !authorName || !authorEmail || !content || !rating) {
-      return NextResponse.json<ApiResponse<any>>(
-        {
-          success: false,
-          error: 'Todos los campos son requeridos'
-        },
-        { status: 400 }
-      );
-    }
-
-    if (rating < 1 || rating > 5) {
-      return NextResponse.json<ApiResponse<any>>(
-        {
-          success: false,
-          error: 'La calificación debe estar entre 1 y 5'
-        },
-        { status: 400 }
-      );
-    }
-
-    // Crear comentario
-    const commentDoc = {
-      _type: 'comment',
-      recipe: {
-        _ref: recipeId,
-        _type: 'reference'
-      },
-      authorName,
-      authorEmail,
+    const body = await request.json()
+    const {
+      postSlug,
+      postTitle,
+      name,
+      email,
       content,
       rating,
-      approved: true, // Auto-aprobar por ahora, se puede cambiar luego
+      parentComment,
+      authorId
+    } = body
+
+    // Validaciones
+    if (!postSlug || !postTitle || !name || !email || !content || !authorId) {
+      return NextResponse.json(
+        { error: 'Faltan campos requeridos' },
+        { status: 400 }
+      )
+    }
+
+    if (content.length < 4) {
+      return NextResponse.json(
+        { error: 'El comentario debe tener al menos 4 caracteres' },
+        { status: 400 }
+      )
+    }
+
+    // Validar email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(email)) {
+      return NextResponse.json(
+        { error: 'Email inválido' },
+        { status: 400 }
+      )
+    }
+
+    // Crear documento del comentario
+    const commentDoc = {
+      _type: 'comment',
+      _id: `comment_${uuidv4()}`,
+      postSlug,
+      postTitle,
+      authorName: name,
+      authorEmail: email,
+      authorId,
+      content,
+      rating: rating && !parentComment ? rating : null,
+      parentComment: parentComment ? { _type: 'reference', _ref: parentComment } : null,
+      approved: true,
+      isEdited: false,
+      isDeleted: false,
       createdAt: new Date().toISOString()
-    };
+    }
 
-    const result = await writeClient.create(commentDoc);
+    const result = await writeClient.create(commentDoc)
 
-    // Actualizar promedio de calificación de la receta
-    await updateRecipeRating(recipeId);
-
-    return NextResponse.json<ApiResponse<any>>({
-      success: true,
-      data: result
-    });
+    return NextResponse.json({
+      message: '¡Comentario publicado exitosamente!',
+      comment: result
+    })
 
   } catch (error) {
-    console.error('Error creating comment:', error);
-    return NextResponse.json<ApiResponse<any>>(
-      {
-        success: false,
-        error: 'Error al crear el comentario'
-      },
+    console.error('Error creating comment:', error)
+    return NextResponse.json(
+      { error: 'Error al crear comentario' },
       { status: 500 }
-    );
+    )
   }
 }
 
-// Función auxiliar para actualizar el rating promedio de una receta
-async function updateRecipeRating(recipeId: string) {
+// PUT - Actualizar comentario
+export async function PUT(request: NextRequest) {
   try {
-    // Obtener todos los comentarios aprobados de la receta
-    const comments = await client.fetch(`
-      *[_type == "comment" && recipe._ref == $recipeId && approved == true] {
-        rating
-      }
-    `, { recipeId });
+    const body = await request.json()
+    const {
+      commentId,
+      authorId,
+      name,
+      email,
+      content,
+      rating
+    } = body
 
-    if (comments.length === 0) return;
+    // Validaciones
+    if (!commentId || !authorId || !name || !email || !content) {
+      return NextResponse.json(
+        { error: 'Faltan campos requeridos' },
+        { status: 400 }
+      )
+    }
 
-    // Calcular promedio
-    const totalRating = comments.reduce((sum: number, comment: any) => sum + comment.rating, 0);
-    const averageRating = totalRating / comments.length;
+    // Verificar que el usuario puede editar este comentario
+    const existingComment = await client.fetch(
+      `*[_type == "comment" && _id == $commentId && authorId == $authorId][0]`,
+      { commentId, authorId }
+    )
 
-    // Actualizar la receta
-    await writeClient
-      .patch(recipeId)
+    if (!existingComment) {
+      return NextResponse.json(
+        { error: 'No tienes permisos para editar este comentario' },
+        { status: 403 }
+      )
+    }
+
+    // Actualizar el comentario
+    const updatedComment = await writeClient
+      .patch(commentId)
       .set({
-        averageRating: Math.round(averageRating * 10) / 10, // Redondear a 1 decimal
-        totalRatings: comments.length
+        authorName: name,
+        authorEmail: email,
+        content,
+        rating: rating || null,
+        isEdited: true,
+        updatedAt: new Date().toISOString()
       })
-      .commit();
+      .commit()
+
+    return NextResponse.json({
+      message: 'Comentario actualizado exitosamente',
+      comment: updatedComment
+    })
 
   } catch (error) {
-    console.error('Error updating recipe rating:', error);
+    console.error('Error updating comment:', error)
+    return NextResponse.json(
+      { error: 'Error al actualizar comentario' },
+      { status: 500 }
+    )
+  }
+}
+
+// DELETE - Eliminar comentario (soft delete)
+export async function DELETE(request: NextRequest) {
+  try {
+    const body = await request.json()
+    const { commentId, authorId } = body
+
+    if (!commentId || !authorId) {
+      return NextResponse.json(
+        { error: 'Faltan campos requeridos' },
+        { status: 400 }
+      )
+    }
+
+    // Verificar que el usuario puede eliminar este comentario
+    const existingComment = await client.fetch(
+      `*[_type == "comment" && _id == $commentId && authorId == $authorId][0]`,
+      { commentId, authorId }
+    )
+
+    if (!existingComment) {
+      return NextResponse.json(
+        { error: 'No tienes permisos para eliminar este comentario' },
+        { status: 403 }
+      )
+    }
+
+    // Soft delete - marcar como eliminado
+    await writeClient
+      .patch(commentId)
+      .set({
+        isDeleted: true,
+        content: '[Comentario eliminado por el usuario]',
+        updatedAt: new Date().toISOString()
+      })
+      .commit()
+
+    return NextResponse.json({
+      message: 'Comentario eliminado exitosamente'
+    })
+
+  } catch (error) {
+    console.error('Error deleting comment:', error)
+    return NextResponse.json(
+      { error: 'Error al eliminar comentario' },
+      { status: 500 }
+    )
   }
 }

@@ -109,30 +109,65 @@ export default function CreateProductModal({ isOpen, onClose }: CreateProductMod
 
   const onSubmit = async (data: ProductFormData) => {
     try {
-      const productData = {
-        ...data,
-        id: Date.now().toString(), // Simple ID generation
-        caracteristicas: caracteristicas.filter(c => c.trim()),
-        fechaCreacion: new Date().toISOString(),
-        descuento: data.precioOriginal ? Math.round(((data.precioOriginal - data.precio) / data.precioOriginal) * 100) : 0
-      };
-
-      // Guardar en localStorage (en producción sería una API call)
-      const existingProducts = JSON.parse(localStorage.getItem('productos') || '[]');
-      existingProducts.push(productData);
-      localStorage.setItem('productos', JSON.stringify(existingProducts));
-
-      console.log('Producto creado:', productData);
+      const formData = new FormData();
       
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Basic fields matching Sanity schema
+      formData.append('name', data.nombre);
+      formData.append('description', data.descripcion);
+      formData.append('price', data.precio.toString());
+      formData.append('currency', 'EUR');
+      formData.append('affiliateUrl', data.enlace);
+      formData.append('featured', 'false');
       
-      alert('¡Producto creado exitosamente!');
-      reset();
-      setCaracteristicas(['']);
-      onClose();
+      // Create a simple placeholder image if no image URL provided
+      if (data.imagen) {
+        // For now, we'll just store the URL in description
+        formData.append('description', `${data.descripcion}\n\nImagen: ${data.imagen}`);
+      }
+      
+      // Create a simple image file for Sanity (placeholder)
+      const canvas = document.createElement('canvas');
+      canvas.width = 400;
+      canvas.height = 300;
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.fillStyle = '#8B5CF6';
+        ctx.fillRect(0, 0, 400, 300);
+        ctx.fillStyle = 'white';
+        ctx.font = '24px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText(data.nombre, 200, 150);
+      }
+      
+      canvas.toBlob((blob) => {
+        if (blob) {
+          formData.append('image', blob, `${data.nombre.replace(/\s+/g, '-').toLowerCase()}.png`);
+        }
+      }, 'image/png');
+      
+      // Wait a bit for the blob to be created
+      await new Promise(resolve => setTimeout(resolve, 100));
+
+      // Create product in Sanity
+      const response = await fetch('/api/products', {
+        method: 'POST',
+        body: formData
+      });
+      
+      const result = await response.json();
+      
+      if (response.ok) {
+        alert('¡Producto creado exitosamente!');
+        reset();
+        setCaracteristicas(['']);
+        onClose();
+      } else {
+        throw new Error(result.error || 'Error al crear producto');
+      }
+
     } catch (error) {
       console.error('Error creating product:', error);
-      alert('Error al crear el producto');
+      alert(`Error al crear el producto: ${error instanceof Error ? error.message : 'Error desconocido'}`);
     }
   };
 

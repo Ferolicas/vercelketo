@@ -98,15 +98,45 @@ export default function ForoContent({
     setSubmitting(true);
     
     try {
-      // Simular envío (en producción, enviar a API)
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Generate unique author ID if not exists
+      let authorId = localStorage.getItem('forumAuthorId');
+      if (!authorId) {
+        authorId = `author_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        localStorage.setItem('forumAuthorId', authorId);
+      }
       
-      alert('¡Post publicado exitosamente! (Simulado)');
-      setNewPost({ title: '', category: '', content: '', authorName: '', authorEmail: '' });
-      setShowCreatePost(false);
+      // Create forum post in Sanity
+      const response = await fetch('/api/forum', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          title: newPost.title,
+          content: newPost.content,
+          category: newPost.category,
+          authorName: newPost.authorName,
+          authorEmail: newPost.authorEmail,
+          authorId: authorId,
+          tags: []
+        })
+      });
+      
+      const result = await response.json();
+      
+      if (response.ok) {
+        alert('¡Publicación creada exitosamente!');
+        setNewPost({ title: '', category: '', content: '', authorName: '', authorEmail: '' });
+        setShowCreatePost(false);
+        
+        // Optionally refresh the page or add the new post to the list
+        window.location.reload();
+      } else {
+        throw new Error(result.error || 'Error al crear publicación');
+      }
     } catch (error) {
-      console.error('Error creating post:', error);
-      alert('Error al crear el post');
+      console.error('Error creating forum post:', error);
+      alert(`Error al crear la publicación: ${error instanceof Error ? error.message : 'Error desconocido'}`);
     } finally {
       setSubmitting(false);
     }

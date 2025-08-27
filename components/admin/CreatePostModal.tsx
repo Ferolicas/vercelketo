@@ -156,26 +156,66 @@ export default function CreatePostModal({ isOpen, onClose }: CreatePostModalProp
 
   const onSubmit = async (data: PostFormData) => {
     try {
-      // Aquí enviarías los datos a tu API o Sanity
-      console.log('Datos del post:', {
-        ...data,
-        ingredients: ingredients.filter(i => i.trim()),
-        instructions: instructions.filter(i => i.trim()),
-        tags: tags.filter(t => t.trim())
-      });
+      const formData = new FormData();
       
-      // Simular envío
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Basic fields
+      formData.append('title', data.title);
+      formData.append('excerpt', data.excerpt);
+      formData.append('content', data.content);
+      formData.append('author', 'Planeta Keto');
+      formData.append('published', 'true');
       
-      alert('¡Post creado exitosamente!');
-      reset();
-      setIngredients(['']);
-      setInstructions(['']);
-      setTags(['']);
-      onClose();
+      // Tags (combine ingredients, instructions, and tags)
+      const allTags = [
+        ...tags.filter(t => t.trim()),
+        'keto',
+        'cetogenica',
+        data.category?.toLowerCase() || ''
+      ];
+      formData.append('tags', JSON.stringify(allTags));
+      
+      // Create a simple image for the blog post
+      const canvas = document.createElement('canvas');
+      canvas.width = 600;
+      canvas.height = 400;
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.fillStyle = '#10B981';
+        ctx.fillRect(0, 0, 600, 400);
+        ctx.fillStyle = 'white';
+        ctx.font = 'bold 32px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText(data.title, 300, 200);
+      }
+      
+      canvas.toBlob(async (blob) => {
+        if (blob) {
+          formData.append('featuredImage', blob, `${data.slug || 'blog-post'}.png`);
+          
+          // Create blog post in Sanity
+          const response = await fetch('/api/blog', {
+            method: 'POST',
+            body: formData
+          });
+          
+          const result = await response.json();
+          
+          if (response.ok) {
+            alert('¡Artículo creado exitosamente!');
+            reset();
+            setIngredients(['']);
+            setInstructions(['']);
+            setTags(['']);
+            onClose();
+          } else {
+            throw new Error(result.error || 'Error al crear artículo');
+          }
+        }
+      }, 'image/png');
+      
     } catch (error) {
-      console.error('Error creating post:', error);
-      alert('Error al crear el post');
+      console.error('Error creating blog post:', error);
+      alert(`Error al crear el artículo: ${error instanceof Error ? error.message : 'Error desconocido'}`);
     }
   };
 

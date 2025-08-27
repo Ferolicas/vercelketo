@@ -47,13 +47,22 @@ export default function CreateServiceModal({ isOpen, onClose, onSuccess }: Creat
         formData.append('image', form.image);
       }
 
-      // En producción, implementar API /api/services
-      await new Promise(resolve => setTimeout(resolve, 2000)); // Simular
+      // Create service in Sanity
+      const response = await fetch('/api/services', {
+        method: 'POST',
+        body: formData
+      });
       
-      alert('¡Servicio creado exitosamente!');
-      onSuccess();
-      onClose();
-      resetForm();
+      const data = await response.json();
+      
+      if (response.ok) {
+        alert('¡Servicio creado exitosamente!');
+        onSuccess();
+        onClose();
+        resetForm();
+      } else {
+        throw new Error(data.error || 'Error al crear servicio');
+      }
 
     } catch (error) {
       console.error('Error creating service:', error);
