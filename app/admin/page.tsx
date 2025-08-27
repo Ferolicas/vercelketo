@@ -6,6 +6,9 @@ import { Plus, ChefHat, BarChart3, Users, MessageCircle } from 'lucide-react';
 import CreateRecipeModal from '@/components/admin/CreateRecipeModal';
 import StatsModal from '@/components/admin/StatsModal';
 import ModerationModal from '@/components/admin/ModerationModal';
+import CreateProductModal from '@/components/admin/CreateProductModal';
+import CreatePostModal from '@/components/admin/CreatePostModal';
+import CreateServiceModal from '@/components/admin/CreateServiceModal';
 import type { Category, Recipe } from '@/types/sanity';
 
 export default function AdminPage() {
@@ -15,6 +18,9 @@ export default function AdminPage() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showStatsModal, setShowStatsModal] = useState(false);
   const [showModerationModal, setShowModerationModal] = useState(false);
+  const [showCreateProductModal, setShowCreateProductModal] = useState(false);
+  const [showCreatePostModal, setShowCreatePostModal] = useState(false);
+  const [showCreateServiceModal, setShowCreateServiceModal] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [loading, setLoading] = useState(false);
@@ -209,7 +215,7 @@ export default function AdminPage() {
               <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100 mb-12">
                 <h2 className="text-2xl font-bold text-gray-900 mb-6">Acciones Rápidas</h2>
                 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   <button
                     onClick={() => setShowCreateModal(true)}
                     className="group relative bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-semibold py-6 px-6 rounded-2xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
@@ -251,6 +257,51 @@ export default function AdminPage() {
                       <h3 className="text-lg font-bold mb-2">Moderar</h3>
                       <p className="text-purple-100 text-sm text-center">
                         Gestionar comentarios pendientes
+                      </p>
+                    </div>
+                  </button>
+
+                  <button
+                    onClick={() => setShowCreateProductModal(true)}
+                    className="group relative bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white font-semibold py-6 px-6 rounded-2xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                  >
+                    <div className="flex flex-col items-center">
+                      <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <Plus className="w-8 h-8" />
+                      </div>
+                      <h3 className="text-lg font-bold mb-2">Crear Producto</h3>
+                      <p className="text-orange-100 text-sm text-center">
+                        Agregar producto a la tienda
+                      </p>
+                    </div>
+                  </button>
+
+                  <button
+                    onClick={() => setShowCreateServiceModal(true)}
+                    className="group relative bg-gradient-to-r from-teal-500 to-cyan-600 hover:from-teal-600 hover:to-cyan-700 text-white font-semibold py-6 px-6 rounded-2xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                  >
+                    <div className="flex flex-col items-center">
+                      <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <Users className="w-8 h-8" />
+                      </div>
+                      <h3 className="text-lg font-bold mb-2">Crear Servicio</h3>
+                      <p className="text-teal-100 text-sm text-center">
+                        Agregar servicio profesional
+                      </p>
+                    </div>
+                  </button>
+
+                  <button
+                    onClick={() => setShowCreatePostModal(true)}
+                    className="group relative bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 text-white font-semibold py-6 px-6 rounded-2xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                  >
+                    <div className="flex flex-col items-center">
+                      <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <Plus className="w-8 h-8" />
+                      </div>
+                      <h3 className="text-lg font-bold mb-2">Crear Blog Post</h3>
+                      <p className="text-pink-100 text-sm text-center">
+                        Publicar artículo en el blog
                       </p>
                     </div>
                   </button>
@@ -322,6 +373,22 @@ export default function AdminPage() {
       <ModerationModal
         isOpen={showModerationModal}
         onClose={() => setShowModerationModal(false)}
+      />
+      
+      <CreateProductModal
+        isOpen={showCreateProductModal}
+        onClose={() => setShowCreateProductModal(false)}
+      />
+      
+      <CreatePostModal
+        isOpen={showCreatePostModal}
+        onClose={() => setShowCreatePostModal(false)}
+      />
+      
+      <CreateServiceModal
+        isOpen={showCreateServiceModal}
+        onClose={() => setShowCreateServiceModal(false)}
+        onSuccess={loadData}
       />
     </div>
   );
