@@ -15,6 +15,7 @@ import {
   ArrowRightIcon
 } from '@heroicons/react/24/outline'
 import AdSystem, { HeaderAd, ContentAd } from './AdSystem'
+import ProductRecommendations from './ProductRecommendations'
 
 interface HomePageProps {
   featuredRecipes?: any[]
@@ -282,6 +283,18 @@ export default function HomePage({
               </Link>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Product Recommendations */}
+      <section className="py-16 bg-gradient-to-br from-gray-50 via-white to-green-50/30">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <ProductRecommendations 
+            title="🛒 Productos Keto Recomendados"
+            description="Los productos más populares y efectivos para tu transformación cetogénica"
+            featured={true}
+            limit={6}
+          />
         </div>
       </section>
 

@@ -53,18 +53,15 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    if (!imageFile || imageFile.size === 0) {
-      return NextResponse.json(
-        { error: 'La imagen es requerida' },
-        { status: 400 }
-      )
+    // Allow creation without image, but warn
+    let imageAsset = null;
+    if (imageFile && imageFile.size > 0) {
+      // Subir imagen a Sanity
+      const imageBuffer = await imageFile.arrayBuffer()
+      imageAsset = await writeClient.assets.upload('image', Buffer.from(imageBuffer), {
+        filename: imageFile.name
+      })
     }
-
-    // Subir imagen a Sanity
-    const imageBuffer = await imageFile.arrayBuffer()
-    const imageAsset = await writeClient.assets.upload('image', Buffer.from(imageBuffer), {
-      filename: imageFile.name
-    })
 
     // Crear slug único
     const baseSlug = name.toLowerCase()
@@ -86,7 +83,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Crear documento del producto
-    const productDoc = {
+    const productDoc: any = {
       _type: 'product',
       name,
       slug: {
@@ -96,16 +93,20 @@ export async function POST(request: NextRequest) {
       description,
       price,
       currency,
-      image: {
+      affiliateUrl,
+      featured,
+      createdAt: new Date().toISOString()
+    }
+
+    // Add image only if we have one
+    if (imageAsset) {
+      productDoc.image = {
         _type: 'image',
         asset: {
           _ref: imageAsset._id,
           _type: 'reference'
         }
-      },
-      affiliateUrl,
-      featured,
-      createdAt: new Date().toISOString()
+      }
     }
 
     console.log('📄 Creating product document:', JSON.stringify({...productDoc, image: '[File]'}, null, 2));

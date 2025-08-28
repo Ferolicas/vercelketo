@@ -1,0 +1,5 @@
+{
+  "anthropicBaseUrl": "https://api.moonshot.cn/anthropic",
+  "anthropicAuthToken": "sk-Z9XmlTIE7bspWMK2i5GwBAE356rJqBlMVjndFBMxMNURsYuW",
+  "model": "kimi-k2-turbo-preview"
+}

@@ -2,13 +2,14 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Plus, ChefHat, BarChart3, Users, MessageCircle } from 'lucide-react';
+import { Plus, ChefHat, BarChart3, Users, MessageCircle, DollarSign } from 'lucide-react';
 import CreateRecipeModal from '@/components/admin/CreateRecipeModal';
 import StatsModal from '@/components/admin/StatsModal';
 import ModerationModal from '@/components/admin/ModerationModal';
 import CreateProductModal from '@/components/admin/CreateProductModal';
 import CreatePostModal from '@/components/admin/CreatePostModal';
 import CreateServiceModal from '@/components/admin/CreateServiceModal';
+import CreateAffiliateListModal from '@/components/admin/CreateAffiliateListModal';
 import type { Category, Recipe } from '@/types/sanity';
 
 export default function AdminPage() {
@@ -21,6 +22,7 @@ export default function AdminPage() {
   const [showCreateProductModal, setShowCreateProductModal] = useState(false);
   const [showCreatePostModal, setShowCreatePostModal] = useState(false);
   const [showCreateServiceModal, setShowCreateServiceModal] = useState(false);
+  const [showCreateAffiliateListModal, setShowCreateAffiliateListModal] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [loading, setLoading] = useState(false);
@@ -305,6 +307,21 @@ export default function AdminPage() {
                       </p>
                     </div>
                   </button>
+
+                  <button
+                    onClick={() => setShowCreateAffiliateListModal(true)}
+                    className="group relative bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white font-semibold py-6 px-6 rounded-2xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                  >
+                    <div className="flex flex-col items-center">
+                      <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                        <DollarSign className="w-8 h-8" />
+                      </div>
+                      <h3 className="text-lg font-bold mb-2">Crear Lista Afiliados</h3>
+                      <p className="text-amber-100 text-sm text-center">
+                        Crear lista de productos afiliados
+                      </p>
+                    </div>
+                  </button>
                 </div>
               </div>
 
@@ -389,6 +406,14 @@ export default function AdminPage() {
         isOpen={showCreateServiceModal}
         onClose={() => setShowCreateServiceModal(false)}
         onSuccess={loadData}
+      />
+
+      <CreateAffiliateListModal
+        isOpen={showCreateAffiliateListModal}
+        onClose={() => setShowCreateAffiliateListModal(false)}
+        onSuccess={() => {
+          console.log('Lista de afiliados creada exitosamente');
+        }}
       />
     </div>
   );

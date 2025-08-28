@@ -174,44 +174,96 @@ export default function CreatePostModal({ isOpen, onClose }: CreatePostModalProp
       ];
       formData.append('tags', JSON.stringify(allTags));
       
-      // Create a simple image for the blog post
-      const canvas = document.createElement('canvas');
-      canvas.width = 600;
-      canvas.height = 400;
-      const ctx = canvas.getContext('2d');
-      if (ctx) {
-        ctx.fillStyle = '#10B981';
-        ctx.fillRect(0, 0, 600, 400);
-        ctx.fillStyle = 'white';
-        ctx.font = 'bold 32px Arial';
-        ctx.textAlign = 'center';
-        ctx.fillText(data.title, 300, 200);
-      }
-      
-      canvas.toBlob(async (blob) => {
-        if (blob) {
-          formData.append('featuredImage', blob, `${data.slug || 'blog-post'}.png`);
+      // Create a simple image for the blog post - FIXED APPROACH
+      try {
+        const canvas = document.createElement('canvas');
+        canvas.width = 600;
+        canvas.height = 400;
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          ctx.fillStyle = '#10B981';
+          ctx.fillRect(0, 0, 600, 400);
+          ctx.fillStyle = 'white';
+          ctx.font = 'bold 24px Arial';
+          ctx.textAlign = 'center';
           
-          // Create blog post in Sanity
-          const response = await fetch('/api/blog', {
-            method: 'POST',
-            body: formData
-          });
-          
-          const result = await response.json();
-          
-          if (response.ok) {
-            alert('¡Artículo creado exitosamente!');
-            reset();
-            setIngredients(['']);
-            setInstructions(['']);
-            setTags(['']);
-            onClose();
-          } else {
-            throw new Error(result.error || 'Error al crear artículo');
+          // Handle text wrapping for longer titles
+          const maxWidth = 580;
+          const words = data.title.split(' ');
+          let line = '';
+          let y = 180;
+          for(let n = 0; n < words.length; n++) {
+            const testLine = line + words[n] + ' ';
+            const metrics = ctx.measureText(testLine);
+            const testWidth = metrics.width;
+            if (testWidth > maxWidth && n > 0) {
+              ctx.fillText(line, 300, y);
+              line = words[n] + ' ';
+              y += 30;
+            } else {
+              line = testLine;
+            }
           }
+          ctx.fillText(line, 300, y);
         }
-      }, 'image/png');
+        
+        // Convert canvas to blob with error handling
+        canvas.toBlob(async (blob) => {
+          if (blob) {
+            formData.append('featuredImage', blob, `${data.slug || 'blog-post'}.png`);
+            
+            try {
+              const response = await fetch('/api/blog', {
+                method: 'POST',
+                body: formData
+              });
+              
+              const result = await response.json();
+              
+              if (response.ok) {
+                alert('¡Artículo creado exitosamente!');
+                reset();
+                setIngredients(['']);
+                setInstructions(['']);
+                setTags(['']);
+                onClose();
+              } else {
+                throw new Error(result.error || 'Error al crear artículo');
+              }
+            } catch (fetchError) {
+              console.error('Error creating blog post:', fetchError);
+              alert(`Error al crear el artículo: ${fetchError instanceof Error ? fetchError.message : 'Error desconocido'}`);
+            }
+          } else {
+            throw new Error('Error al crear la imagen: blob is null');
+          }
+        }, 'image/png', 0.8);
+        
+      } catch (canvasError) {
+        console.error('Canvas error:', canvasError);
+        // Fallback: create a simple text-based image
+        const fallbackBlob = new Blob([data.title], { type: 'text/plain' });
+        formData.append('featuredImage', fallbackBlob, `${data.slug || 'blog-post'}.txt`);
+        
+        // Try to submit anyway
+        const response = await fetch('/api/blog', {
+          method: 'POST',
+          body: formData
+        });
+        
+        const result = await response.json();
+        
+        if (response.ok) {
+          alert('¡Artículo creado exitosamente!');
+          reset();
+          setIngredients(['']);
+          setInstructions(['']);
+          setTags(['']);
+          onClose();
+        } else {
+          throw new Error(result.error || 'Error al crear artículo');
+        }
+      }
       
     } catch (error) {
       console.error('Error creating blog post:', error);

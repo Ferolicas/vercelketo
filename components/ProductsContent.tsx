@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { Product } from '@/types/sanity';
 import { ContentAd } from './AdSystem';
+import ProductRecommendations from './ProductRecommendations';
 
 interface ProductsContentProps {
   products: Product[];
@@ -66,6 +67,16 @@ export default function ProductsContent({
             Explorar Tienda Premium
           </Link>
         </div>
+      </div>
+
+      {/* Product Recommendations from Affiliate Lists */}
+      <div className="mt-16">
+        <ProductRecommendations 
+          title="📦 Productos Recomendados por Expertos"
+          description="Nuestra selección curada de productos keto probados y recomendados"
+          featured={true}
+          limit={4}
+        />
       </div>
     </div>
   );

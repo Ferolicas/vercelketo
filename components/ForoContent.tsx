@@ -1,10 +1,10 @@
 'use client'
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ForumPost } from '@/types/sanity';
 import { ContentAd } from './AdSystem';
-import { Plus, MessageCircle, Eye, ThumbsUp, Clock, Pin, Users, Send } from 'lucide-react';
+import { Plus, MessageCircle, Eye, ThumbsUp, Clock, Pin, Users, Send, Search } from 'lucide-react';
 
 interface ForoContentProps {
   forumPosts: ForumPost[];
@@ -33,6 +33,10 @@ export default function ForoContent({
     authorEmail: ''
   });
   const [submitting, setSubmitting] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<string>('Todos');
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [filteredPosts, setFilteredPosts] = useState<ForumPost[]>(initialForumPosts);
+  const [isSearching, setIsSearching] = useState<boolean>(false);
 
   // Forum categories for the form
   const forumCategories = [
@@ -43,6 +47,41 @@ export default function ForoContent({
     { id: 'ejercicio', title: 'Ejercicio', color: 'bg-red-100 text-red-800', icon: '💪' },
     { id: 'productos', title: 'Productos', color: 'bg-purple-100 text-purple-800', icon: '🛒' }
   ];
+
+  // Filter posts based on category and search query
+  useEffect(() => {
+    const fetchFilteredPosts = async () => {
+      setIsSearching(true);
+      
+      if (searchQuery.trim()) {
+        // Use search API when there's a search query
+        try {
+          const response = await fetch(`/api/forum/search?q=${encodeURIComponent(searchQuery)}&category=${selectedCategory === 'Todos' ? 'all' : selectedCategory}`);
+          const data = await response.json();
+          setFilteredPosts(data.posts || []);
+        } catch (error) {
+          console.error('Error searching posts:', error);
+          setFilteredPosts([]);
+        }
+      } else {
+        // Use local filtering for category selection
+        let filtered = [...forumPosts];
+        if (selectedCategory !== 'Todos') {
+          filtered = filtered.filter(post => post.category === selectedCategory);
+        }
+        setFilteredPosts(filtered);
+      }
+      
+      setIsSearching(false);
+    };
+
+    // Add debouncing for search
+    const timeoutId = setTimeout(() => {
+      fetchFilteredPosts();
+    }, 300);
+
+    return () => clearTimeout(timeoutId);
+  }, [forumPosts, selectedCategory, searchQuery]);
 
   const handleSubmitPost = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -132,6 +171,20 @@ export default function ForoContent({
         </button>
       </div>
 
+      {/* Search Bar */}
+      <div className="bg-white rounded-2xl shadow-lg p-6 mb-6">
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+          <input
+            type="text"
+            placeholder="Buscar en títulos, descripciones y autores..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500"
+          />
+        </div>
+      </div>
+
       {/* Categories Filter */}
       <div className="bg-white rounded-2xl shadow-lg p-6 mb-8">
         <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center">
@@ -139,26 +192,84 @@ export default function ForoContent({
           Categorías del Foro
         </h3>
         <div className="flex flex-wrap gap-3">
+          <button
+            onClick={() => setSelectedCategory('Todos')}
+            className={`px-4 py-2 rounded-xl text-sm font-semibold flex items-center cursor-pointer hover:scale-105 transition-transform ${
+              selectedCategory === 'Todos' 
+                ? 'bg-green-500 text-white' 
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+            }`}
+          >
+            Todos
+          </button>
           {forumCategories.map((category) => (
-            <div key={category.id} className={`${category.color} px-4 py-2 rounded-xl text-sm font-semibold flex items-center cursor-pointer hover:scale-105 transition-transform`}>
+            <button
+              key={category.id}
+              onClick={() => setSelectedCategory(category.id)}
+              className={`${category.color} px-4 py-2 rounded-xl text-sm font-semibold flex items-center cursor-pointer hover:scale-105 transition-transform ${
+                selectedCategory === category.id 
+                  ? 'ring-2 ring-offset-2 ring-green-500' 
+                  : ''
+              }`}
+            >
               <span className="mr-2">{category.icon}</span>
               {category.title}
-            </div>
+            </button>
           ))}
         </div>
       </div>
 
+      {/* Posts Count */}
+      {(filteredPosts.length > 0 || searchQuery) && (
+        <div className="text-center mb-6">
+          <div className="text-sm text-gray-600">
+            {isSearching ? (
+              <span className="inline-flex items-center">
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-600 mr-2"></div>
+                Buscando...
+              </span>
+            ) : (
+              <span>
+                Mostrando {filteredPosts.length} {filteredPosts.length === 1 ? 'publicación' : 'publicaciones'}
+                {selectedCategory !== 'Todos' && ` en ${forumCategories.find(c => c.id === selectedCategory)?.title}`}
+                {searchQuery && ` para "${searchQuery}"`}
+              </span>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* Posts List */}
       <div className="space-y-4">
-        {forumPosts.length === 0 ? (
+        {isSearching ? (
+          <div className="grid grid-cols-1 gap-4">
+            {[...Array(3)].map((_, i) => (
+              <div key={i} className="bg-white rounded-2xl shadow-lg p-6 animate-pulse">
+                <div className="h-4 bg-gray-300 rounded mb-4 w-1/4"></div>
+                <div className="h-6 bg-gray-300 rounded mb-2"></div>
+                <div className="h-4 bg-gray-300 rounded mb-4 w-3/4"></div>
+                <div className="flex items-center space-x-4">
+                  <div className="h-8 w-8 bg-gray-300 rounded-full"></div>
+                  <div className="h-4 bg-gray-300 rounded w-1/3"></div>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : filteredPosts.length === 0 ? (
           <div className="bg-white rounded-2xl shadow-lg p-8 text-center">
             <div className="text-gray-400 mb-4">📭</div>
-            <h3 className="text-lg font-semibold text-gray-700 mb-2">No hay publicaciones aún</h3>
-            <p className="text-gray-500">¡Sé el primero en crear una publicación!</p>
+            <h3 className="text-lg font-semibold text-gray-700 mb-2">
+              {searchQuery ? 'No se encontraron resultados' : 'No hay publicaciones aún'}
+            </h3>
+            <p className="text-gray-500">
+              {searchQuery 
+                ? 'Intenta con otras palabras clave o ajusta los filtros' 
+                : '¡Sé el primero en crear una publicación!'}
+            </p>
           </div>
         ) : (
           <div className="space-y-4">
-            {forumPosts.map((post) => {
+            {filteredPosts.map((post) => {
               // Buscar la categoría en forumCategories
               const categoryData = forumCategories.find(cat => cat.id === post.category) || 
                                   forumCategories[0]; // fallback a la primera categoría

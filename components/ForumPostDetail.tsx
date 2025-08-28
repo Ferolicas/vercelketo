@@ -93,6 +93,13 @@ export default function ForumPostDetail({ post }: ForumPostDetailProps) {
     });
   };
 
+  const scrollToComments = () => {
+    const repliesSection = document.getElementById('replies-section');
+    if (repliesSection) {
+      repliesSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   const handleReplySubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
@@ -307,14 +314,20 @@ export default function ForumPostDetail({ post }: ForumPostDetailProps) {
         </div>
       </div>
 
-      {/* Reply Button */}
-      <div className="mb-6">
+      {/* Action Buttons */}
+      <div className="flex gap-4 mb-6">
         <button
           onClick={() => setShowReplyForm(!showReplyForm)}
           className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-6 py-3 rounded-xl font-semibold hover:from-green-600 hover:to-emerald-700 transition-all duration-300 inline-flex items-center"
         >
           <MessageCircle className="mr-2" size={18} />
           💬 Responder
+        </button>
+        <button
+          onClick={scrollToComments}
+          className="bg-gray-100 text-gray-700 px-6 py-3 rounded-xl font-semibold hover:bg-gray-200 transition-all duration-300 inline-flex items-center">
+          <MessageCircle className="mr-2" size={18} />
+          Ver {replies.length} comentario{replies.length !== 1 ? 's' : ''}
         </button>
       </div>
 
@@ -392,7 +405,7 @@ export default function ForumPostDetail({ post }: ForumPostDetailProps) {
       )}
 
       {/* Replies Section */}
-      <div className="bg-white rounded-2xl shadow-lg">
+      <div id="replies-section" className="bg-white rounded-2xl shadow-lg">
         <div className="p-6 border-b border-gray-200">
           <h2 className="text-2xl font-bold text-gray-900 flex items-center">
             <MessageCircle className="mr-2" size={24} />

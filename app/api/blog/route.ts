@@ -49,11 +49,14 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    if (!imageFile || imageFile.size === 0) {
-      return NextResponse.json(
-        { error: 'La imagen destacada es requerida' },
-        { status: 400 }
-      )
+    // Allow creation without image, but warn
+    let imageAsset = null;
+    if (imageFile && imageFile.size > 0) {
+      // Subir imagen a Sanity
+      const imageBuffer = await imageFile.arrayBuffer()
+      imageAsset = await writeClient.assets.upload('image', Buffer.from(imageBuffer), {
+        filename: imageFile.name
+      })
     }
 
     // Parsear tags
@@ -108,8 +111,8 @@ export async function POST(request: NextRequest) {
       }]
     }))
 
-    // Crear documento del post
-    const postDoc = {
+// Crear documento del post
+    const postDoc: any = {
       _type: 'blogPost',
       title,
       slug: {
@@ -118,17 +121,21 @@ export async function POST(request: NextRequest) {
       },
       excerpt,
       content: contentBlocks,
-      featuredImage: {
+      author,
+      tags,
+      published,
+      createdAt: new Date().toISOString()
+    }
+
+    // Add image only if we have one
+    if (imageAsset) {
+      postDoc.featuredImage = {
         _type: 'image',
         asset: {
           _ref: imageAsset._id,
           _type: 'reference'
         }
-      },
-      author,
-      tags,
-      published,
-      createdAt: new Date().toISOString()
+      }
     }
 
     const result = await writeClient.create(postDoc)

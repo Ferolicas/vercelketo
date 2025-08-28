@@ -125,49 +125,91 @@ export default function CreateProductModal({ isOpen, onClose }: CreateProductMod
         formData.append('description', `${data.descripcion}\n\nImagen: ${data.imagen}`);
       }
       
-      // Create a simple image file for Sanity (placeholder)
-      const canvas = document.createElement('canvas');
-      canvas.width = 400;
-      canvas.height = 300;
-      const ctx = canvas.getContext('2d');
-      if (ctx) {
-        ctx.fillStyle = '#8B5CF6';
-        ctx.fillRect(0, 0, 400, 300);
-        ctx.fillStyle = 'white';
-        ctx.font = '24px Arial';
-        ctx.textAlign = 'center';
-        ctx.fillText(data.nombre, 200, 150);
-      }
-      
-      canvas.toBlob(async (blob) => {
-        try {
+      // Create a simple image file for Sanity (placeholder) - FIXED APPROACH
+      try {
+        const canvas = document.createElement('canvas');
+        canvas.width = 400;
+        canvas.height = 300;
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          ctx.fillStyle = '#8B5CF6';
+          ctx.fillRect(0, 0, 400, 300);
+          ctx.fillStyle = 'white';
+          ctx.font = 'bold 20px Arial';
+          ctx.textAlign = 'center';
+          // Handle text wrapping for longer names
+          const maxWidth = 380;
+          const words = data.nombre.split(' ');
+          let line = '';
+          let y = 150;
+          for(let n = 0; n < words.length; n++) {
+            const testLine = line + words[n] + ' ';
+            const metrics = ctx.measureText(testLine);
+            const testWidth = metrics.width;
+            if (testWidth > maxWidth && n > 0) {
+              ctx.fillText(line, 200, y);
+              line = words[n] + ' ';
+              y += 25;
+            } else {
+              line = testLine;
+            }
+          }
+          ctx.fillText(line, 200, y);
+        }
+        
+        // Convert canvas to blob with error handling
+        canvas.toBlob(async (blob) => {
           if (blob) {
             formData.append('image', blob, `${data.nombre.replace(/\s+/g, '-').toLowerCase()}.png`);
             
-            // Create product in Sanity
-            const response = await fetch('/api/products', {
-              method: 'POST',
-              body: formData
-            });
-        
-            const result = await response.json();
-            
-            if (response.ok) {
-              alert('¡Producto creado exitosamente!');
-              reset();
-              setCaracteristicas(['']);
-              onClose();
-            } else {
-              throw new Error(result.error || 'Error al crear producto');
+            try {
+              const response = await fetch('/api/products', {
+                method: 'POST',
+                body: formData
+              });
+          
+              const result = await response.json();
+              
+              if (response.ok) {
+                alert('¡Producto creado exitosamente!');
+                reset();
+                setCaracteristicas(['']);
+                onClose();
+              } else {
+                throw new Error(result.error || 'Error al crear producto');
+              }
+            } catch (fetchError) {
+              console.error('Error creating product:', fetchError);
+              alert(`Error al crear el producto: ${fetchError instanceof Error ? fetchError.message : 'Error desconocido'}`);
             }
           } else {
-            throw new Error('Error al crear la imagen del producto');
+            throw new Error('Error al crear la imagen del producto: blob is null');
           }
-        } catch (error) {
-          console.error('Error creating product:', error);
-          alert(`Error al crear el producto: ${error instanceof Error ? error.message : 'Error desconocido'}`);
+        }, 'image/png', 0.8);
+        
+      } catch (canvasError) {
+        console.error('Canvas error:', canvasError);
+        // Fallback: create a simple text-based image
+        const errorBlob = new Blob([data.nombre], { type: 'text/plain' });
+        formData.append('image', errorBlob, `${data.nombre.replace(/\s+/g, '-').toLowerCase()}.txt`);
+        
+        // Try to submit anyway
+        const response = await fetch('/api/products', {
+          method: 'POST',
+          body: formData
+        });
+        
+        const result = await response.json();
+        
+        if (response.ok) {
+          alert('¡Producto creado exitosamente!');
+          reset();
+          setCaracteristicas(['']);
+          onClose();
+        } else {
+          throw new Error(result.error || 'Error al crear producto');
         }
-      }, 'image/png');
+      }
 
     } catch (error) {
       console.error('Error in product creation setup:', error);
