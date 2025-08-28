@@ -5,10 +5,10 @@ import { v4 as uuidv4 } from 'uuid'
 // GET - Obtener comentarios de un post
 export async function GET(
   request: NextRequest,
-  { params }: { params: { postId: string } }
+  { params }: { params: Promise<{ postId: string }> }
 ) {
   try {
-    const { postId } = params
+    const { postId } = await params
 
     if (!postId) {
       return NextResponse.json(
@@ -63,10 +63,10 @@ export async function GET(
 // POST - Crear nuevo comentario
 export async function POST(
   request: NextRequest,
-  { params }: { params: { postId: string } }
+  { params }: { params: Promise<{ postId: string }> }
 ) {
   try {
-    const { postId } = params
+    const { postId } = await params
     const body = await request.json()
     const { content, authorName, authorEmail, authorId, parentId } = body
 

@@ -4,10 +4,10 @@ import { writeClient } from '@/lib/sanity'
 // PUT - Actualizar comentario
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { commentId: string } }
+  { params }: { params: Promise<{ commentId: string }> }
 ) {
   try {
-    const { commentId } = params
+    const { commentId } = await params
     const body = await request.json()
     const { content, authorId } = body
 
@@ -93,10 +93,10 @@ export async function PUT(
 // DELETE - Eliminar comentario (soft delete)
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { commentId: string } }
+  { params }: { params: Promise<{ commentId: string }> }
 ) {
   try {
-    const { commentId } = params
+    const { commentId } = await params
     const body = await request.json()
     const { authorId } = body
 

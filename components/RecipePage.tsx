@@ -49,7 +49,7 @@ export default function RecipePageClient({ recipe, thumbnailUrl, youtubeId }: Re
     window.open('https://api.whatsapp.com/send/?phone=34624973740&text&type=phone_number&app_absent=0', '_blank')
   }
 
-  const ingredientsList = recipe.ingredients.split('\n').filter(ingredient => ingredient.trim())
+  const ingredientsList = recipe.ingredients?.split('\n').filter(ingredient => ingredient.trim()) || []
   const displayedIngredients = showAllIngredients ? ingredientsList : ingredientsList.slice(0, 3)
 
   return (
@@ -132,7 +132,7 @@ export default function RecipePageClient({ recipe, thumbnailUrl, youtubeId }: Re
           <div className="flex items-center">
             <Star className="w-4 h-4 text-yellow-400 fill-current mr-1" />
             <span className="text-sm font-medium text-gray-700">
-              {recipe.averageRating > 0 ? recipe.averageRating.toFixed(1) : '4.9'}
+              {(recipe.averageRating || 0) > 0 ? (recipe.averageRating || 0).toFixed(1) : '4.9'}
             </span>
           </div>
         </div>
@@ -231,7 +231,7 @@ export default function RecipePageClient({ recipe, thumbnailUrl, youtubeId }: Re
               <h3 className="font-semibold text-gray-900">Ingredientes</h3>
             </div>
             <span className="text-gray-600 text-sm">
-              {recipe.servings} Porción{recipe.servings > 1 ? 'es' : ''}
+              {recipe.servings || 1} Porción{(recipe.servings || 1) > 1 ? 'es' : ''}
             </span>
           </div>
           

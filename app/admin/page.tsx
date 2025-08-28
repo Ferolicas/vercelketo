@@ -10,7 +10,6 @@ import CreateProductModal from '@/components/admin/CreateProductModal';
 import CreatePostModal from '@/components/admin/CreatePostModal';
 import CreateServiceModal from '@/components/admin/CreateServiceModal';
 import CreateAffiliateListModal from '@/components/admin/CreateAffiliateListModal';
-import type { Category, Recipe } from '@/types/sanity';
 
 export default function AdminPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -23,8 +22,8 @@ export default function AdminPage() {
   const [showCreatePostModal, setShowCreatePostModal] = useState(false);
   const [showCreateServiceModal, setShowCreateServiceModal] = useState(false);
   const [showCreateAffiliateListModal, setShowCreateAffiliateListModal] = useState(false);
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [recipes, setRecipes] = useState<Recipe[]>([]);
+  const [categories, setCategories] = useState<any[]>([]);
+  const [recipes, setRecipes] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {

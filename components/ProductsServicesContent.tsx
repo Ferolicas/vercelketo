@@ -16,7 +16,7 @@ import {
   TrophyIcon,
   SparklesIcon,
   TagIcon,
-  FilterIcon
+  AdjustmentsHorizontalIcon
 } from '@heroicons/react/24/outline';
 import { StarIcon as StarSolid } from '@heroicons/react/24/solid';
 import { urlFor } from '@/lib/sanity';
@@ -191,7 +191,7 @@ export default function ProductsServicesContent({
                 onClick={() => setShowFilters(!showFilters)}
                 className="flex items-center px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
               >
-                <FilterIcon className="h-4 w-4 mr-2" />
+                <AdjustmentsHorizontalIcon className="h-4 w-4 mr-2" />
                 Filtros
               </button>
 

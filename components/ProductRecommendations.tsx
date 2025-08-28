@@ -7,11 +7,11 @@ import { urlFor } from '@/lib/sanity';
 import { AffiliateList } from '@/types/sanity';
 import { 
   ShoppingCartIcon, 
-  StarIcon, 
-  ExternalLinkIcon,
+  StarIcon,
   SparklesIcon,
   ArrowRightIcon
 } from '@heroicons/react/24/outline';
+import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline';
 import { StarIcon as StarSolid } from '@heroicons/react/24/solid';
 
 interface ProductRecommendationsProps {
@@ -244,7 +244,7 @@ export default function ProductRecommendations({
                 >
                   <ShoppingCartIcon className="h-4 w-4 mr-2" />
                   Comprar en Amazon
-                  <ExternalLinkIcon className="h-4 w-4 ml-2 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <ArrowTopRightOnSquareIcon className="h-4 w-4 ml-2 opacity-0 group-hover:opacity-100 transition-opacity" />
                 </a>
                 
                 {/* Trust indicators */}

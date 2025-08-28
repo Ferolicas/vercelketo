@@ -67,7 +67,7 @@ export default function ForoContent({
         // Use local filtering for category selection
         let filtered = [...forumPosts];
         if (selectedCategory !== 'Todos') {
-          filtered = filtered.filter(post => post.category === selectedCategory);
+          filtered = filtered.filter(post => post.category?.slug?.current === selectedCategory);
         }
         setFilteredPosts(filtered);
       }
@@ -271,7 +271,7 @@ export default function ForoContent({
           <div className="space-y-4">
             {filteredPosts.map((post) => {
               // Buscar la categoría en forumCategories
-              const categoryData = forumCategories.find(cat => cat.id === post.category) || 
+              const categoryData = forumCategories.find(cat => cat.id === post.category?.slug?.current) || 
                                   forumCategories[0]; // fallback a la primera categoría
               
               return (

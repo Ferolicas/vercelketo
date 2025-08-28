@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { writeClient, client } from '@/lib/sanity';
-import type { ApiResponse } from '@/types/sanity';
 
 // GET - Obtener todas las recetas
 export async function GET(request: NextRequest) {
@@ -50,14 +49,14 @@ export async function GET(request: NextRequest) {
 
     const recipes = await client.fetch(query);
 
-    return NextResponse.json<ApiResponse<any>>({
+    return NextResponse.json({
       success: true,
       data: recipes
     });
 
   } catch (error) {
     console.error('Error fetching recipes:', error);
-    return NextResponse.json<ApiResponse<any>>(
+    return NextResponse.json(
       {
         success: false,
         error: 'Error al obtener las recetas'
@@ -87,7 +86,7 @@ export async function POST(request: NextRequest) {
 
     // Validaciones básicas
     if (!name || !description || !ingredients || !preparation || !preparationTime || !servings || !categoryId || !thumbnailFile) {
-      return NextResponse.json<ApiResponse<any>>(
+      return NextResponse.json(
         {
           success: false,
           error: 'Todos los campos son requeridos'
@@ -160,7 +159,7 @@ export async function POST(request: NextRequest) {
     
     console.log('✅ Recipe created successfully:', result._id);
 
-    return NextResponse.json<ApiResponse<any>>({
+    return NextResponse.json({
       success: true,
       data: result
     });
@@ -172,7 +171,7 @@ export async function POST(request: NextRequest) {
       stack: error instanceof Error ? error.stack : undefined
     });
     
-    return NextResponse.json<ApiResponse<any>>(
+    return NextResponse.json(
       {
         success: false,
         error: `Error al crear la receta: ${error instanceof Error ? error.message : 'Error desconocido'}`

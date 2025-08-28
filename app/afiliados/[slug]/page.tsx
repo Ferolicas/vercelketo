@@ -6,11 +6,11 @@ import ProductRecommendations from '@/components/ProductRecommendations';
 import Link from 'next/link';
 
 interface Props {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = params;
+  const { slug } = await params;
   
   try {
     const affiliateList = await client.fetch(
@@ -89,7 +89,7 @@ async function getAffiliateList(slug: string) {
 }
 
 export default async function AffiliateListPage({ params }: Props) {
-  const { slug } = params;
+  const { slug } = await params;
   const affiliateList = await getAffiliateList(slug);
 
   if (!affiliateList) {

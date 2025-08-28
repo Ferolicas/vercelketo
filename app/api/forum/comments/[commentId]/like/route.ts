@@ -4,10 +4,10 @@ import { writeClient } from '@/lib/sanity'
 // POST - Like/unlike comment
 export async function POST(
   request: NextRequest,
-  { params }: { params: { commentId: string } }
+  { params }: { params: Promise<{ commentId: string }> }
 ) {
   try {
-    const { commentId } = params
+    const { commentId } = await params
 
     if (!commentId) {
       return NextResponse.json(
@@ -81,10 +81,10 @@ export async function POST(
 // DELETE - Unlike comment
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { commentId: string } }
+  { params }: { params: Promise<{ commentId: string }> }
 ) {
   try {
-    const { commentId } = params
+    const { commentId } = await params
 
     if (!commentId) {
       return NextResponse.json(

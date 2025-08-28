@@ -189,13 +189,13 @@ export default function CommentSystem({ postId, onCommentCountChange }: CommentS
         <div className="bg-white rounded-lg p-4 mb-4 shadow-sm border">
           {/* Header */}
           <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center space-x-2"
+            <div className="flex items-center space-x-2">
               <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm font-bold">
                 {comment.authorName.charAt(0).toUpperCase()}
               </div>
               <div>
                 <span className="font-medium text-gray-900">{comment.authorName}</span>
-                <div className="text-xs text-gray-500 flex items-center space-x-2"
+                <div className="text-xs text-gray-500 flex items-center space-x-2">
                   <Clock className="h-3 w-3" />
                   <span>{new Date(comment.createdAt).toLocaleDateString('es-ES', {
                     day: 'numeric',
@@ -248,7 +248,7 @@ export default function CommentSystem({ postId, onCommentCountChange }: CommentS
                 className="w-full p-2 border rounded-lg text-sm"
                 rows={3}
               />
-              <div className="mt-2 flex space-x-2"
+              <div className="mt-2 flex space-x-2">
                 <button
                   onClick={() => handleEditComment(comment._id)}
                   className="px-3 py-1 bg-blue-500 text-white rounded text-sm"
@@ -281,8 +281,7 @@ export default function CommentSystem({ postId, onCommentCountChange }: CommentS
 
           {/* Reply Form */}
           {replyingTo === comment._id && (
-            <form onSubmit={handleSubmitComment} className="mt-4 ml-8"
-            >
+            <form onSubmit={handleSubmitComment} className="mt-4 ml-8">
               <textarea
                 value={newReply}
                 onChange={(e) => setNewReply(e.target.value)}
@@ -290,7 +289,7 @@ export default function CommentSystem({ postId, onCommentCountChange }: CommentS
                 className="w-full p-2 border rounded-lg text-sm"
                 rows={2}
               />
-              <div className="mt-2 flex space-x-2"
+              <div className="mt-2 flex space-x-2">
                 <button
                   type="submit"
                   disabled={submitting || !newReply.trim()}
@@ -315,8 +314,7 @@ export default function CommentSystem({ postId, onCommentCountChange }: CommentS
 
           {/* Replies */}
           {comment.replies && comment.replies.length > 0 && (
-            <div className="mt-4 space-y-2"
-            >
+            <div className="mt-4 space-y-2">
               {comment.replies.map(reply => renderComment(reply, depth + 1))}
             </div>
           )}
@@ -326,19 +324,15 @@ export default function CommentSystem({ postId, onCommentCountChange }: CommentS
   };
 
   return (
-    <div className="mt-8"
-    >
-      <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center"
-      >
+    <div className="mt-8">
+      <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
         <MessageCircle className="mr-2" />
         Comentarios ({comments.length})
       </h3>
 
       {/* Comment Form */}
-      <form onSubmit={handleSubmitComment} className="mb-6 bg-white rounded-lg p-4 shadow-sm border"
-      >
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4"
-        >
+      <form onSubmit={handleSubmitComment} className="mb-6 bg-white rounded-lg p-4 shadow-sm border">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <input
             type="text"
             placeholder="Tu nombre"
@@ -364,8 +358,7 @@ export default function CommentSystem({ postId, onCommentCountChange }: CommentS
           rows={4}
           required
         />
-        <div className="mt-3 flex justify-end"
-        >
+        <div className="mt-3 flex justify-end">
           <button
             type="submit"
             disabled={submitting || !newComment.trim() || !authorName.trim() || !authorEmail.trim()}
@@ -378,11 +371,9 @@ export default function CommentSystem({ postId, onCommentCountChange }: CommentS
       </form>
 
       {/* Comments List */}
-      <div className="space-y-4"
-      >
+      <div className="space-y-4">
         {loading ? (
-          <div className="text-center py-8"
-          >
+          <div className="text-center py-8">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
             <p className="text-gray-600">Cargando comentarios...</p>
           </div>
@@ -392,8 +383,7 @@ export default function CommentSystem({ postId, onCommentCountChange }: CommentS
       </div>
 
       {comments.length === 0 && !loading && (
-        <div className="text-center py-8 text-gray-500"
-        >
+        <div className="text-center py-8 text-gray-500">
           <MessageCircle className="h-12 w-12 mx-auto mb-4 opacity-50" />
           <p>Sé el primero en comentar</p>
         </div>

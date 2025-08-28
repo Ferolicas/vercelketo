@@ -8,7 +8,7 @@ import {
   ClockIcon,
   CheckCircleIcon,
   StarIcon,
-  ExternalLinkIcon,
+  ArrowTopRightOnSquareIcon,
   ArrowLeftIcon,
   CalendarIcon,
   CurrencyDollarIcon,
@@ -275,7 +275,7 @@ export default async function ItemDetailPage({ params }: PageProps) {
                     rel="noopener noreferrer"
                     className="w-full bg-green-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-600 transition-colors flex items-center justify-center"
                   >
-                    <ExternalLinkIcon className="h-5 w-5 mr-2" />
+                    <ArrowTopRightOnSquareIcon className="h-5 w-5 mr-2" />
                     Comprar ahora
                   </a>
                 ) : (

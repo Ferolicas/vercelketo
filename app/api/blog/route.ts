@@ -72,11 +72,6 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Subir imagen a Sanity
-    const imageBuffer = await imageFile.arrayBuffer()
-    const imageAsset = await writeClient.assets.upload('image', Buffer.from(imageBuffer), {
-      filename: imageFile.name
-    })
 
     // Crear slug único
     const baseSlug = title.toLowerCase()

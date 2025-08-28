@@ -37,7 +37,10 @@
       "Bash(timeout 10 curl -s http://localhost:3000/api/test-sanity)",
       "Bash(timeout 10 curl -s http://localhost:3000/api/forum)",
       "Bash(timeout 15 curl -s \"http://localhost:3000/api/forum\")",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(vercel --version)",
+      "Bash(npx tsc:*)",
+      "WebFetch(domain:github.com)"
     ],
     "deny": [],
     "ask": [],

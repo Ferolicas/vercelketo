@@ -46,7 +46,7 @@ export async function GET(request: NextRequest) {
       updatedAt
     }`
 
-    const posts = await client.fetch(postsQuery)
+    const posts = await client.fetch<any[]>(postsQuery)
 
     // También buscar en las respuestas de los posts
     const repliesQuery = `*[_type == "forumReply" && content match "*${query}*" && approved == true && isDeleted != true] {
@@ -72,18 +72,18 @@ export async function GET(request: NextRequest) {
       }
     }`
 
-    const replyPosts = await client.fetch(repliesQuery)
+    const replyPosts = await client.fetch<any[]>(repliesQuery)
     const uniqueReplyPosts = replyPosts
-      .filter(reply => reply.post && reply.post._id)
-      .map(reply => reply.post)
-      .filter((post, index, self) => 
-        index === self.findIndex(p => p._id === post._id)
+      .filter((reply: any) => reply.post && reply.post._id)
+      .map((reply: any) => reply.post)
+      .filter((post: any, index: number, self: any[]) => 
+        index === self.findIndex((p: any) => p._id === post._id)
       )
 
     // Combinar posts y eliminar duplicados
     const allPosts = [...posts, ...uniqueReplyPosts]
-    const uniquePosts = allPosts.filter((post, index, self) => 
-      index === self.findIndex(p => p._id === post._id)
+    const uniquePosts = allPosts.filter((post: any, index: number, self: any[]) => 
+      index === self.findIndex((p: any) => p._id === post._id)
     )
 
     return NextResponse.json({ 

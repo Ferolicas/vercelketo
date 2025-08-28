@@ -147,7 +147,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Create the affiliate list document
-    const affiliateListDoc = {
+    const affiliateListDoc: any = {
       _type: 'affiliateList',
       title: title.trim(),
       description: description.trim(),
