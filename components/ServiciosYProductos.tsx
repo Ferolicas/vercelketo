@@ -29,242 +29,228 @@ interface Producto {
   categoria: string;
   rating: number;
   reviews: number;
-  enlace: string;
-  caracteristicas: string[];
-  badge?: string;
-}
-
-interface ProductoAmazon {
-  id: string;
-  titulo: string;
-  descripcion: string;
-  precio: string;
-  imagen: string;
-  enlaceAfiliado: string;
-  rating: number;
-  categoria: string;
+  destacado?: boolean;
+  urlCompra: string;
   beneficios: string[];
 }
 
-// Datos de ejemplo - estos vendrán de la administración
-const productosEjemplo: Producto[] = [
+interface Servicio {
+  id: string;
+  nombre: string;
+  descripcion: string;
+  precio: number;
+  duracion: string;
+  imagen: string;
+  categoria: string;
+  rating: number;
+  reviews: number;
+  urlContacto: string;
+  incluye: string[];
+}
+
+const productosDestacados: Producto[] = [
   {
-    id: '1',
-    nombre: 'Guía Completa Keto 2024',
-    descripcion: 'La guía más completa para dominar la dieta cetogénica. +200 páginas con recetas, menús y tips de expertos.',
-    precio: 29.99,
-    precioOriginal: 49.99,
-    imagen: '/productos/guia-keto.jpg',
-    categoria: 'Ebooks',
-    rating: 4.9,
-    reviews: 1247,
-    enlace: '#',
-    caracteristicas: [
-      '+200 recetas exclusivas',
-      'Menús semanales completos',
-      'Calculadora de macros incluida',
-      'Videos tutoriales',
-      'Soporte por email'
-    ],
-    badge: 'Bestseller'
-  },
-  {
-    id: '2',
-    nombre: 'Plan Keto Personalizado',
-    descripcion: 'Plan de alimentación keto 100% personalizado según tus objetivos, gustos y estilo de vida.',
-    precio: 79.99,
-    imagen: '/productos/plan-personalizado.jpg',
-    categoria: 'Servicios',
-    rating: 5.0,
-    reviews: 329,
-    enlace: '#',
-    caracteristicas: [
-      'Análisis nutricional completo',
-      'Plan de 30 días personalizado',
-      'Lista de compras semanal',
-      'Seguimiento mensual',
-      'Consultas ilimitadas'
-    ],
-    badge: 'Premium'
-  },
-  {
-    id: '3',
-    nombre: 'Calculadora Keto Pro',
-    descripcion: 'La herramienta definitiva para calcular tus macros keto perfectos y hacer seguimiento de tu progreso.',
-    precio: 19.99,
-    imagen: '/productos/calculadora-keto.jpg',
-    categoria: 'Herramientas',
+    id: 'guia-completa-keto',
+    nombre: 'Guía Completa Dieta Keto 2024',
+    descripcion: 'Todo lo que necesitas saber para empezar y mantener la dieta cetogénica con éxito',
+    precio: 27,
+    precioOriginal: 47,
+    imagen: '/images/guia-keto.jpg',
+    categoria: 'Guías Digitales',
     rating: 4.8,
-    reviews: 892,
-    enlace: '#',
-    caracteristicas: [
-      'Cálculo preciso de macros',
-      'Tracking de peso y medidas',
-      'Gráficos de progreso',
-      'Base de datos de alimentos',
-      'Sincronización multiplataforma'
+    reviews: 2341,
+    destacado: true,
+    urlCompra: '#',
+    beneficios: [
+      '150+ páginas de contenido premium',
+      '50+ recetas exclusivas',
+      'Plan de 30 días paso a paso',
+      'Tablas de alimentos permitidos',
+      'Acceso a grupo VIP privado'
     ]
   },
   {
-    id: '4',
-    nombre: 'Curso Keto Avanzado',
-    descripcion: 'Curso completo para convertirte en un experto en la dieta cetogénica. Certificado incluido.',
-    precio: 129.99,
-    imagen: '/productos/curso-keto.jpg',
-    categoria: 'Cursos',
+    id: 'recetario-keto',
+    nombre: 'Recetario Keto Premium',
+    descripcion: '100+ recetas deliciosas y fáciles para mantener la cetosis sin esfuerzo',
+    precio: 19,
+    precioOriginal: 35,
+    imagen: '/images/recetario.jpg',
+    categoria: 'Recetas',
     rating: 4.9,
-    reviews: 567,
-    enlace: '#',
-    caracteristicas: [
-      '12 módulos de contenido',
-      '50+ videos HD',
-      'Certificado oficial',
-      'Comunidad exclusiva',
-      'Actualizaciones de por vida'
-    ],
-    badge: 'Nuevo'
+    reviews: 1856,
+    urlCompra: '#',
+    beneficios: [
+      'Recetas testeadas y aprobadas',
+      'Macros calculados por receta',
+      'Opciones para toda la familia',
+      'Snacks y postres incluidos',
+      'Videos paso a paso'
+    ]
+  },
+  {
+    id: 'calculadora-macros',
+    nombre: 'Calculadora de Macros PRO',
+    descripcion: 'Herramienta digital para calcular tus macros personalizados y seguimiento',
+    precio: 15,
+    precioOriginal: 25,
+    imagen: '/images/calculadora.jpg',
+    categoria: 'Herramientas',
+    rating: 4.7,
+    reviews: 943,
+    urlCompra: '#',
+    beneficios: [
+      'Cálculo personalizado de macros',
+      'Seguimiento de progreso',
+      'Base de datos de alimentos',
+      'App móvil incluida',
+      'Soporte técnico 24/7'
+    ]
+  },
+  {
+    id: 'coaching-keto',
+    nombre: 'Coaching 1:1 Keto Expert',
+    descripcion: 'Guía personalizada con nutricionista experto en dieta cetogénica',
+    precio: 197,
+    precioOriginal: 297,
+    imagen: '/images/coaching.jpg',
+    categoria: 'Servicios',
+    rating: 5.0,
+    reviews: 312,
+    destacado: true,
+    urlCompra: '#',
+    beneficios: [
+      '4 sesiones privadas',
+      'Plan personalizado',
+      'Seguimiento semanal',
+      'Chat directo 24/7',
+      'Garantía de resultados'
+    ]
   }
 ];
 
-const productosAmazon: ProductoAmazon[] = [
+const serviciosExpertos: Servicio[] = [
   {
-    id: 'amz1',
-    titulo: 'MCT Oil Premium - Aceite de Coco Fraccionado',
-    descripcion: 'Aceite MCT de alta calidad para acelerar la cetosis y aumentar la energía mental.',
-    precio: '$24.99',
-    imagen: '/amazon/mct-oil.jpg',
-    enlaceAfiliado: 'https://amazon.com/...',
-    rating: 4.7,
-    categoria: 'Suplementos',
-    beneficios: [
-      'Acelera la cetosis',
-      'Aumenta energía mental',
-      'Mejora el metabolismo',
-      'Sabor neutro'
-    ]
-  },
-  {
-    id: 'amz2',
-    titulo: 'Tiras Reactivas de Cetona - Pack 100 unidades',
-    descripcion: 'Mide tus niveles de cetosis de forma precisa con estas tiras reactivas profesionales.',
-    precio: '$12.99',
-    imagen: '/amazon/tiras-cetona.jpg',
-    enlaceAfiliado: 'https://amazon.com/...',
-    rating: 4.6,
-    categoria: 'Medición',
-    beneficios: [
-      'Medición precisa',
-      'Fácil de usar',
-      'Resultados en 15 segundos',
-      'Pack económico'
-    ]
-  },
-  {
-    id: 'amz3',
-    titulo: 'Electrolitos Keto - Suplemento Sin Azúcar',
-    descripcion: 'Mantén el equilibrio electrolítico perfecto durante tu dieta keto sin azúcares añadidos.',
-    precio: '$29.99',
-    imagen: '/amazon/electrolitos.jpg',
-    enlaceAfiliado: 'https://amazon.com/...',
-    rating: 4.8,
-    categoria: 'Suplementos',
-    beneficios: [
-      'Previene la keto flu',
-      'Sin azúcar añadido',
-      'Sabor delicioso',
-      '30 porciones'
-    ]
-  },
-  {
-    id: 'amz4',
-    titulo: 'Harina de Almendras Orgánica - 1kg',
-    descripcion: 'Harina de almendras premium para tus recetas keto favoritas. 100% orgánica y sin gluten.',
-    precio: '$18.99',
-    imagen: '/amazon/harina-almendras.jpg',
-    enlaceAfiliado: 'https://amazon.com/...',
+    id: 'plan-personalizado',
+    nombre: 'Plan Keto Personalizado',
+    descripcion: 'Plan alimenticio personalizado según tus objetivos, gustos y estilo de vida',
+    precio: 97,
+    duracion: '4 semanas',
+    imagen: '/images/plan-personalizado.jpg',
+    categoria: 'Nutrición',
     rating: 4.9,
-    categoria: 'Ingredientes',
+    reviews: 523,
+    urlContacto: '#contacto',
+    incluye: [
+      'Evaluación inicial completa',
+      'Menú semanal personalizado',
+      'Lista de compras inteligente',
+      'Guía de suplementos',
+      'Ajustes semanales'
+    ]
+  },
+  {
+    id: 'asesoria-privada',
+    nombre: 'Asesoría Privada Keto',
+    descripcion: 'Sesión privada de 60 minutos para resolver todas tus dudas sobre la dieta keto',
+    precio: 67,
+    duracion: '60 minutos',
+    imagen: '/images/asesoria.jpg',
+    categoria: 'Consultoría',
+    rating: 4.8,
+    reviews: 189,
+    urlContacto: '#contacto',
+    incluye: [
+      'Sesión Zoom privada',
+      'Análisis de tu situación actual',
+      'Respuestas personalizadas',
+      'Guía de inicio rápido',
+      'Seguimiento por email'
+    ]
+  }
+];
+
+const productosAmazon = [
+  {
+    id: 'aceite-coco',
+    titulo: 'Aceite de Coco Orgánico Virgen',
+    descripcion: 'Aceite MCT puro para impulsar la cetosis y energía sostenida',
+    precio: '$18.99',
+    categoria: 'Aceites Saludables',
+    rating: 4.6,
+    enlaceAfiliado: '#',
     beneficios: [
-      '100% orgánica',
-      'Sin gluten',
-      'Rica en proteína',
-      'Textura perfecta'
+      '100% orgánico y virgen',
+      'Rico en ácidos grasos MCT',
+      'Sin refinar ni procesar',
+      'Apto para cocinar a alta temperatura'
+    ]
+  },
+  {
+    id: 'almendras',
+    titulo: 'Almendras Naturales Sin Sal',
+    descripcion: 'Snack perfecto para la dieta keto, alto en grasas saludables y proteínas',
+    precio: '$22.50',
+    categoria: 'Snacks Keto',
+    rating: 4.7,
+    enlaceAfiliado: '#',
+    beneficios: [
+      'Sin sal ni azúcar añadida',
+      'Alta en grasas buenas',
+      'Fuente de proteína vegetal',
+      'Perfecto para snacks rápidos'
+    ]
+  },
+  {
+    id: 'eritritol',
+    titulo: 'Eritritol Natural Endulzante',
+    descripcion: 'Endulzante keto-friendly sin calorías ni efecto en la glucosa',
+    precio: '$15.99',
+    categoria: 'Endulzantes',
+    rating: 4.5,
+    enlaceAfiliado: '#',
+    beneficios: [
+      'Cero calorías',
+      'Cero índice glucémico',
+      'Sabor idéntico al azúcar',
+      'No causa problemas digestivos'
+    ]
+  },
+  {
+    id: 'collagen',
+    titulo: 'Colágeno Hidrolizado Premium',
+    descripcion: 'Suplemento esencial para piel, uñas y articulaciones en dieta keto',
+    precio: '$29.99',
+    categoria: 'Suplementos',
+    rating: 4.8,
+    enlaceAfiliado: '#',
+    beneficios: [
+      'Tipo I y III de alta calidad',
+      'Sin sabor ni olor',
+      'Se disuelve fácilmente',
+      'Apoya la salud articular'
     ]
   }
 ];
 
 export default function ServiciosYProductos() {
-  const [categoriaSeleccionada, setCategoriaSeleccionada] = useState<string>('Todos');
-  const [productos, setProductos] = useState<any[]>([]);
-  const [servicios, setServicios] = useState<any[]>([]);
-  const [productosFiltrados, setProductosFiltrados] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [categoriaSeleccionada, setCategoriaSeleccionada] = useState('Todos');
+  const [loading, setLoading] = useState(false);
 
-  const categorias = ['Todos', 'Servicios', 'Productos'];
+  const categorias = ['Todos', 'Guías Digitales', 'Recetas', 'Herramientas', 'Servicios', 'Suplementos'];
 
-  // Cargar datos de Sanity
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [productosResponse, serviciosResponse] = await Promise.all([
-          fetch('/api/products'),
-          fetch('/api/services')
-        ]);
+  // Combinar productos y servicios
+  const todosLosItems = [
+    ...productosDestacados.map(p => ({ ...p, tipo: 'producto' })),
+    ...serviciosExpertos.map(s => ({ ...s, tipo: 'servicio' }))
+  ];
 
-        const productosData = productosResponse.ok ? await productosResponse.json() : { products: [] };
-        const serviciosData = serviciosResponse.ok ? await serviciosResponse.json() : { services: [] };
-
-        setProductos(productosData.products || []);
-        setServicios(serviciosData.services || []);
-        
-        // Combinar productos y servicios para mostrarlos juntos
-        const allItems = [
-          ...(serviciosData.services || []).map((service: any) => ({
-            ...service,
-            tipo: 'servicio',
-            categoria: 'Servicios'
-          })),
-          ...(productosData.products || []).map((product: any) => ({
-            ...product,
-            tipo: 'producto',
-            categoria: 'Productos'
-          }))
-        ];
-        
-        setProductosFiltrados(allItems);
-      } catch (error) {
-        console.error('Error loading data:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  useEffect(() => {
-    const allItems = [
-      ...servicios.map((service: any) => ({
-        ...service,
-        tipo: 'servicio',
-        categoria: 'Servicios'
-      })),
-      ...productos.map((product: any) => ({
-        ...product,
-        tipo: 'producto',
-        categoria: 'Productos'
-      }))
-    ];
-
-    if (categoriaSeleccionada === 'Todos') {
-      setProductosFiltrados(allItems);
-    } else {
-      setProductosFiltrados(allItems.filter(item => item.categoria === categoriaSeleccionada));
-    }
-  }, [categoriaSeleccionada, productos, servicios]);
+  const productosFiltrados = categoriaSeleccionada === 'Todos' 
+    ? todosLosItems 
+    : todosLosItems.filter(item => item.categoria === categoriaSeleccionada);
 
   const renderStars = (rating: number) => {
-    return [...Array(5)].map((_, i) => (
+    return Array.from({ length: 5 }, (_, i) => (
       <StarSolid
         key={i}
         className={`h-4 w-4 ${
@@ -355,11 +341,11 @@ export default function ServiciosYProductos() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   {productosFiltrados.map((item, index) => (
                     <div
-                      key={item._id || item.id}
+                      key={item.id}
                       className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group"
                     >
                       {/* Badge para destacados */}
-                      {item.featured && (
+                      {(item as any).destacado && (
                         <div className="absolute top-4 right-4 z-10">
                           <span className="bg-yellow-400 text-yellow-900 px-3 py-1 rounded-full text-xs font-semibold">
                             ⭐ Destacado
@@ -369,10 +355,11 @@ export default function ServiciosYProductos() {
 
                       {/* Imagen */}
                       <div className="relative h-48 bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center overflow-hidden">
-                        {item.image?.asset ? (
-                          <img 
-                            src={`https://cdn.sanity.io/images/${process.env.NEXT_PUBLIC_SANITY_PROJECT_ID}/${process.env.NEXT_PUBLIC_SANITY_DATASET}/${item.image.asset._ref.replace('image-', '').replace('-jpg', '.jpg').replace('-png', '.png').replace('-webp', '.webp')}`}
-                            alt={item.name}
+                        {item.imagen ? (
+                          <Image 
+                            src={item.imagen}
+                            alt={item.nombre}
+                            fill
                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                           />
                         ) : (
@@ -391,80 +378,64 @@ export default function ServiciosYProductos() {
                               {item.categoria}
                             </span>
                             <div className="flex items-center">
-                              {renderStars(4.5)} {/* Default rating for now */}
-                              <span className="ml-1 text-sm text-gray-500">
-                                (0)
-                              </span>
+                              {renderStars(item.rating || 4.5)}
+                              <span className="ml-1 text-sm text-gray-500">({item.reviews || 0})</span>
                             </div>
                           </div>
-                          <h3 className="text-xl font-bold text-gray-900 mb-2">
-                            {item.name}
-                          </h3>
-                          <p className="text-gray-600 text-sm">
-                            {item.description}
-                          </p>
+                          <h3 className="text-xl font-bold text-gray-900 mb-2">{item.nombre}</h3>
+                          <p className="text-gray-600 text-sm mb-4">{item.descripcion}</p>
                         </div>
 
-                        {/* Características */}
-                        {item.features && (
-                          <div className="mb-6">
-                            <ul className="space-y-2">
-                              {item.features.slice(0, 3).map((feature: string, i: number) => (
-                                <li key={i} className="flex items-center text-sm text-gray-600">
-                                  <CheckCircleIcon className="h-4 w-4 text-green-500 mr-2" />
-                                  {feature}
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        )}
+                        {/* Características o beneficios */}
+                        <div className="mb-6">
+                          <ul className="space-y-2">
+                            {((item.tipo === 'servicio' ? (item as any).incluye : (item as any).beneficios) || []).slice(0, 3).map((feature: string, i: number) => (
+                              <li key={i} className="flex items-center text-sm text-gray-600">
+                                <CheckCircleIcon className="h-4 w-4 text-green-500 mr-2" />
+                                {feature}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
 
                         {/* Precio y CTA */}
                         <div className="flex items-center justify-between">
                           <div>
                             <div className="flex items-center">
                               <span className="text-2xl font-bold text-gray-900">
-                                {item.price ? `${item.currency || '$'}${item.price}` : 'Consultar'}
+                                ${item.precio}
                               </span>
+                              {(item as any).precioOriginal && (
+                                <span className="ml-2 text-sm text-gray-500 line-through">
+                                  ${(item as any).precioOriginal}
+                                </span>
+                              )}
                             </div>
-                            {item.duration && (
+                            {(item as any).duracion && (
                               <div className="text-sm text-green-600 font-medium">
-                                {item.duration}
+                                {(item as any).duracion}
                               </div>
                             )}
                           </div>
-                          {item.tipo === 'servicio' && item.contactUrl ? (
-                            <a 
-                              href={item.contactUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-lg font-semibold transition-colors duration-200 flex items-center"
-                            >
-                              <ExternalLinkIcon className="h-4 w-4 mr-2" />
-                              Contratar
-                            </a>
-                          ) : item.tipo === 'producto' && item.affiliateUrl ? (
-                            <a 
-                              href={item.affiliateUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-lg font-semibold transition-colors duration-200 flex items-center"
-                            >
-                              <ShoppingCartIcon className="h-4 w-4 mr-2" />
-                              Comprar
-                            </a>
-                          ) : (
-                            <button className="bg-gray-300 text-gray-500 px-6 py-2 rounded-lg font-semibold cursor-not-allowed">
-                              No disponible
-                            </button>
-                          )}
+                          <a
+                            href={item.tipo === 'servicio' ? (item as any).urlContacto : (item as any).urlCompra}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={`px-6 py-2 rounded-lg font-semibold transition-colors duration-200 flex items-center ${
+                              item.tipo === 'servicio' 
+                                ? 'bg-blue-500 hover:bg-blue-600 text-white' 
+                                : 'bg-green-500 hover:bg-green-600 text-white'
+                            }`}
+                          >
+                            <ExternalLinkIcon className="h-4 w-4 mr-2" />
+                            {item.tipo === 'servicio' ? 'Contactar' : 'Comprar'}
+                          </a>
                         </div>
                       </div>
                     </div>
                   ))}
                 </div>
               )}
-              </div>
             </section>
 
             {/* Anuncio en el medio */}
@@ -500,24 +471,16 @@ export default function ServiciosYProductos() {
                             {producto.categoria}
                           </span>
                         </div>
-                        <h3 className="font-semibold text-gray-900 mb-1 line-clamp-2">
-                          {producto.titulo}
-                        </h3>
-                        <p className="text-sm text-gray-600 mb-3 line-clamp-2">
-                          {producto.descripcion}
-                        </p>
+                        <h3 className="font-semibold text-gray-900 mb-1 line-clamp-2">{producto.titulo}</h3>
+                        <p className="text-sm text-gray-600 mb-3 line-clamp-2">{producto.descripcion}</p>
                         
                         {/* Rating y precio */}
                         <div className="flex items-center justify-between mb-3">
                           <div className="flex items-center">
                             {renderStars(producto.rating)}
-                            <span className="ml-1 text-sm text-gray-500">
-                              {producto.rating}
-                            </span>
+                            <span className="ml-1 text-sm text-gray-500">{producto.rating}</span>
                           </div>
-                          <span className="text-lg font-bold text-gray-900">
-                            {producto.precio}
-                          </span>
+                          <span className="text-lg font-bold text-gray-900">{producto.precio}</span>
                         </div>
 
                         {/* Beneficios */}
@@ -555,8 +518,7 @@ export default function ServiciosYProductos() {
             {/* Widget de testimonio */}
             <div className="bg-white rounded-2xl p-6 shadow-lg mb-6">
               <div className="text-center">
-                <div className="flex justify-center mb-4">
-                  {[...Array(5)].map((_, i) => (
+                <div className="flex justify-center mb-4">{[...Array(5)].map((_, i) => (
                     <StarSolid key={i} className="h-5 w-5 text-yellow-400" />
                   ))}
                 </div>
