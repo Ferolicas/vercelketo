@@ -252,17 +252,17 @@ export default function HomePage({
             <p className="text-xl text-green-100 mb-8 max-w-2xl mx-auto">
               Únete a miles de personas que ya han transformado su vida con nuestras recetas keto probadas y deliciosas.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center max-w-4xl mx-auto">
+            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center max-w-4xl mx-auto">
               <Link
                 href="/recetas"
-                className="bg-white text-green-600 px-6 py-4 rounded-xl font-semibold text-lg hover:bg-green-50 transition-all duration-200 inline-flex items-center justify-center"
+                className="bg-white text-green-600 px-8 py-4 rounded-xl font-semibold text-lg hover:bg-green-50 transition-all duration-200 inline-flex items-center justify-center min-w-[200px]"
               >
                 <span className="mr-2">👨‍🍳</span>
                 Explorar Recetas
               </Link>
               <Link
                 href="/productos-y-servicios"
-                className="border-2 border-white text-white px-6 py-4 rounded-xl font-semibold text-lg hover:bg-white hover:text-green-600 transition-all duration-200 inline-flex items-center justify-center"
+                className="border-2 border-white text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-white hover:text-green-600 transition-all duration-200 inline-flex items-center justify-center min-w-[200px]"
               >
                 <span className="mr-2">🛒</span>
                 Productos y Servicios

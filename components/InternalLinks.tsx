@@ -13,11 +13,11 @@ interface InternalLink {
 const allLinks = [
   { id: 'dieta-keto-guia', href: '/dieta-keto', text: 'Guía Completa de Dieta Keto', emoji: '🥑' },
   { id: 'recetas-deliciosas', href: '/recetas', text: 'Recetas Keto Deliciosas', emoji: '👨‍🍳' },
-  { id: 'bajar-peso', href: '/dieta-keto', text: 'Cómo Bajar de Peso Rápido', emoji: '⚖️' },
-  { id: 'quemar-grasa', href: '/dieta-keto', text: 'Quemar Grasa Abdominal', emoji: '🔥' },
-  { id: 'recetas-saludables', href: '/recetas', text: 'Recetas Saludables', emoji: '🌱' },
-  { id: 'dieta-cetogenica', href: '/dieta-keto', text: 'Dieta Cetogénica Científica', emoji: '🧬' },
-  { id: 'dieta-baja-carbs', href: '/dieta-keto', text: 'Dieta Baja en Carbohidratos', emoji: '🥬' },
+  { id: 'bajar-peso', href: '/bajar-de-peso', text: 'Cómo Bajar de Peso Rápido', emoji: '⚖️' },
+  { id: 'quemar-grasa', href: '/quemar-grasa', text: 'Quemar Grasa Abdominal', emoji: '🔥' },
+  { id: 'recetas-saludables', href: '/recetas-saludables', text: 'Recetas Saludables', emoji: '🌱' },
+  { id: 'dieta-cetogenica', href: '/dieta-cetogenica', text: 'Dieta Cetogénica Científica', emoji: '🧬' },
+  { id: 'dieta-baja-carbs', href: '/dieta-baja-carbohidratos', text: 'Dieta Baja en Carbohidratos', emoji: '🥬' },
   { id: 'productos-premium', href: '/productos-y-servicios', text: 'Productos Keto Premium', emoji: '🛒' },
   { id: 'blog-consejos', href: '/blog', text: 'Blog Keto con Consejos', emoji: '📝' },
   { id: 'comunidad-keto', href: '/foro', text: 'Comunidad Keto', emoji: '💬' },
@@ -71,9 +71,21 @@ export default function InternalLinks({
   );
 }
 
+// Enlaces específicos para footer con las redirecciones correctas
+const footerLinks = [
+  { id: 'dieta-keto-guia', href: '/dieta-keto', text: 'Guía Completa de Dieta Keto', emoji: '🥑' },
+  { id: 'recetas-deliciosas', href: '/recetas', text: 'Recetas Keto Deliciosas', emoji: '👨‍🍳' },
+  { id: 'bajar-peso', href: '/dieta-keto', text: 'Cómo Bajar de Peso Rápido', emoji: '⚖️' },
+  { id: 'quemar-grasa', href: '/dieta-keto', text: 'Quemar Grasa Abdominal', emoji: '🔥' },
+  { id: 'recetas-saludables', href: '/recetas', text: 'Recetas Saludables', emoji: '🌱' },
+  { id: 'dieta-cetogenica', href: '/dieta-keto', text: 'Dieta Cetogénica Científica', emoji: '🧬' },
+  { id: 'dieta-baja-carbs', href: '/dieta-keto', text: 'Dieta Baja en Carbohidratos', emoji: '🥬' },
+  { id: 'productos-premium', href: '/productos-y-servicios', text: 'Productos Keto Premium', emoji: '🛒' },
+] as const;
+
 // Componente específico para footer con todas las categorías principales
 export function FooterLinks() {
-  const mainCategories = allLinks.slice(0, 8);
+  const mainCategories = footerLinks;
   
   return (
     <footer className="bg-gray-900 text-white py-16">
