@@ -82,7 +82,7 @@ export default function RecipePageClient({ recipe, thumbnailUrl, youtubeId }: Re
                 backgroundPosition: 'center'
               }}
               onClick={() => {
-                const iframe = document.getElementById('youtube-player')
+                const iframe = document.getElementById('youtube-player') as HTMLIFrameElement
                 const thumbnail = document.getElementById('video-thumbnail')
                 if (iframe && thumbnail) {
                   iframe.src = iframe.src.replace('autoplay=0', 'autoplay=1')
