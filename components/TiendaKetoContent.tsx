@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import { Product } from '@/types/sanity';
-import { ContentAd } from './AdSystem';
 
 interface TiendaKetoContentProps {
   featuredProducts: Product[];
@@ -40,15 +39,14 @@ export default function TiendaKetoContent({
             🥑 Recetas Gratis
           </Link>
           <Link
-            href="/servicios"
+            href="/productos-y-servicios"
             className="border-2 border-green-500 text-green-600 px-8 py-4 rounded-xl font-semibold hover:bg-green-50 transition"
           >
-            👨‍⚕️ Servicios Premium
+            👨‍⚕️ Productos y Servicios
           </Link>
         </div>
       </div>
 
-      <ContentAd position="top" />
 
       <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
         <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6">
@@ -88,7 +86,6 @@ export default function TiendaKetoContent({
         </div>
       </div>
 
-      <ContentAd position="bottom" />
     </div>
   );
 }

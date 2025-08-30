@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ForumPost } from '@/types/sanity';
-import { ContentAd } from './AdSystem';
 import { Plus, MessageCircle, Eye, ThumbsUp, Clock, Pin, Users, Send, Search } from 'lucide-react';
 
 interface ForoContentProps {
@@ -453,7 +452,6 @@ export default function ForoContent({
         </div>
       )}
       
-      <ContentAd position="bottom" />
     </div>
   );
 }

@@ -59,27 +59,41 @@ export default function RecipePageClient({ recipe, thumbnailUrl, youtubeId }: Re
         {/* Modern YouTube Video Player */}
         {youtubeId ? (
           <div className="relative w-full h-full">
-            {/* Custom Video Overlay */}
-            <div className="absolute inset-0 bg-black/10 z-10" />
-            
             {/* YouTube Embed with Custom Styling */}
             <div className="relative w-full h-full overflow-hidden rounded-none">
               <iframe
-                src={`https://www.youtube.com/embed/${youtubeId}?modestbranding=1&showinfo=0&rel=0&fs=1&controls=1&autoplay=0`}
+                id="youtube-player"
+                src={`https://www.youtube.com/embed/${youtubeId}?modestbranding=1&showinfo=0&rel=0&fs=1&controls=1&autoplay=0&cc_load_policy=0&iv_load_policy=3&logo=0&color=white&disablekb=1`}
                 title={`Tutorial: ${recipe.name}`}
                 allowFullScreen
                 className="absolute top-0 left-0 w-full h-full"
-                style={{ pointerEvents: 'auto' }}
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                style={{ display: 'none' }}
               />
             </div>
             
-            {/* Custom Play Button Overlay */}
-            <div className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
-              <div className="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border border-white/30">
-                <div className="w-16 h-16 bg-white/30 rounded-full flex items-center justify-center">
-                  <div className="w-0 h-0 border-l-[12px] border-l-white border-t-[8px] border-t-transparent border-b-[8px] border-b-transparent ml-1" />
-                </div>
+            {/* Video Thumbnail with Custom Play Button */}
+            <div 
+              id="video-thumbnail"
+              className="absolute inset-0 bg-gradient-to-br from-gray-900 to-gray-800 flex items-center justify-center cursor-pointer group"
+              style={{
+                backgroundImage: `url(https://img.youtube.com/vi/${youtubeId}/maxresdefault.jpg)`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center'
+              }}
+              onClick={() => {
+                const iframe = document.getElementById('youtube-player')
+                const thumbnail = document.getElementById('video-thumbnail')
+                if (iframe && thumbnail) {
+                  iframe.src = iframe.src.replace('autoplay=0', 'autoplay=1')
+                  iframe.style.display = 'block'
+                  thumbnail.style.display = 'none'
+                }
+              }}
+            >
+              <div className="absolute inset-0 bg-black/30"></div>
+              <div className="relative z-10 w-20 h-20 bg-orange-500/90 backdrop-blur-sm rounded-full flex items-center justify-center border-2 border-white/80 shadow-2xl group-hover:bg-orange-600/90 transition-all duration-300 transform group-hover:scale-110">
+                <div className="w-0 h-0 border-l-[20px] border-l-white border-t-[12px] border-t-transparent border-b-[12px] border-b-transparent ml-2" />
               </div>
             </div>
           </div>
@@ -104,20 +118,6 @@ export default function RecipePageClient({ recipe, thumbnailUrl, youtubeId }: Re
             </button>
           </Link>
           
-          <div className="flex gap-3">
-            <button 
-              onClick={scrollToComments}
-              className="w-10 h-10 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:bg-white/90 transition-colors"
-            >
-              <MessageCircle className="w-5 h-5 text-gray-700" />
-            </button>
-            <button 
-              onClick={handleShare}
-              className="w-10 h-10 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:bg-white/90 transition-colors"
-            >
-              <Share className="w-5 h-5 text-gray-700" />
-            </button>
-          </div>
         </div>
       </div>
 
@@ -167,8 +167,11 @@ export default function RecipePageClient({ recipe, thumbnailUrl, youtubeId }: Re
               </div>
             </div>
             <div className="flex gap-2">
-              <button className="w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center hover:bg-orange-600 transition-colors">
-                <MessageCircle className="w-5 h-5 text-white" />
+              <button 
+                onClick={handleShare}
+                className="w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center hover:bg-orange-600 transition-colors"
+              >
+                <Share className="w-5 h-5 text-white" />
               </button>
               <button 
                 onClick={handleWhatsAppContact}

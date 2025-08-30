@@ -262,6 +262,61 @@ export const queries = {
     "replyCount": length(replies[approved == true]),
     createdAt
   }`,
+
+  // LISTAS DE AMAZON
+  allAmazonLists: `*[_type == "amazonList"] | order(featured desc, createdAt desc) {
+    _id,
+    title,
+    slug,
+    description,
+    amazonUrl,
+    image,
+    price,
+    category,
+    rating,
+    reviewsCount,
+    benefits,
+    keyFeatures,
+    featured,
+    isKeto,
+    createdAt
+  }`,
+
+  amazonListBySlug: `*[_type == "amazonList" && slug.current == $slug][0] {
+    _id,
+    title,
+    slug,
+    description,
+    amazonUrl,
+    image,
+    price,
+    category,
+    rating,
+    reviewsCount,
+    benefits,
+    keyFeatures,
+    featured,
+    isKeto,
+    createdAt
+  }`,
+
+  amazonListsByCategory: `*[_type == "amazonList" && category == $category] | order(featured desc, rating desc) {
+    _id,
+    title,
+    slug,
+    description,
+    amazonUrl,
+    image,
+    price,
+    category,
+    rating,
+    reviewsCount,
+    benefits,
+    keyFeatures,
+    featured,
+    isKeto,
+    createdAt
+  }`,
 }
 
 // Utilidades para admin

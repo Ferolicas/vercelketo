@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import { Recipe, Category } from '@/types/sanity';
-import { ContentAd } from './AdSystem';
 
 interface RecetasSaludablesContentProps {
   healthyRecipes: Recipe[];
@@ -43,7 +42,6 @@ export default function RecetasSaludablesContent(props: RecetasSaludablesContent
         </div>
       </div>
 
-      <ContentAd position="top" />
 
       <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-2xl p-8 max-w-4xl mx-auto">
         <div className="grid md:grid-cols-3 gap-6">
@@ -80,7 +78,6 @@ export default function RecetasSaludablesContent(props: RecetasSaludablesContent
         </div>
       </div>
 
-      <ContentAd position="middle" />
     </div>
   );
 }

@@ -17,8 +17,7 @@ import {
 const navigation = [
   { name: 'Inicio', href: '/', icon: HomeIcon },
   { name: 'Recetas', href: '/recetas', icon: BookOpenIcon },
-  { name: 'Productos', href: '/productos', icon: ShoppingCartIcon },
-  { name: 'Servicios', href: '/servicios', icon: ShoppingCartIcon },
+  { name: 'Productos y Servicios', href: '/productos-y-servicios', icon: ShoppingCartIcon },
   { name: 'Blog', href: '/blog', icon: BookOpenIcon },
   { name: 'Foro', href: '/foro', icon: HomeIcon },
   { name: 'Admin', href: '/admin', icon: ChartBarIcon, adminOnly: true },

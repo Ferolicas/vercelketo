@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import { Recipe } from '@/types/sanity';
-import { ContentAd, StickyAd, RecipeAd } from './AdSystem';
 import InternalLinks from './InternalLinks';
 
 interface BajarDePesoContentProps {
@@ -37,15 +36,14 @@ export default function BajarDePesoContent({
               🥑 Ver Recetas para Bajar de Peso
             </Link>
             <Link
-              href="/productos"
+              href="/productos-y-servicios"
               className="border-2 border-green-500 text-green-600 px-8 py-4 rounded-xl font-semibold text-lg hover:bg-green-50 transition-all duration-200"
             >
-              🛒 Productos para Adelgazar
+              🛒 Productos y Servicios
             </Link>
           </div>
         </div>
 
-        <ContentAd position="top" />
 
         {/* Contenido SEO optimizado */}
         <div className="prose prose-lg max-w-none">
@@ -88,7 +86,6 @@ export default function BajarDePesoContent({
             </Link>
           </div>
 
-          <ContentAd position="middle" />
 
           <h3>Plan de Acción: Tu Primera Semana Keto</h3>
           <div className="bg-yellow-50 border-l-4 border-yellow-400 p-6">
@@ -109,27 +106,19 @@ export default function BajarDePesoContent({
             </p>
             <div className="grid sm:grid-cols-2 gap-4">
               <Link 
-                href="/productos"
-                className="block bg-green-600 text-white p-4 rounded-lg font-semibold hover:bg-green-700 transition text-center"
+                href="/productos-y-servicios"
+                className="block bg-green-600 text-white p-4 rounded-lg font-semibold hover:bg-green-700 transition text-center col-span-2"
               >
-                🛒 Productos Premium
-              </Link>
-              <Link 
-                href="/servicios"
-                className="block bg-green-600 text-white p-4 rounded-lg font-semibold hover:bg-green-700 transition text-center"
-              >
-                👨‍⚕️ Consultas Personalizadas
+                🛒 Productos y Servicios Premium
               </Link>
             </div>
           </div>
 
-          <ContentAd position="bottom" />
         </div>
 
         <InternalLinks className="mt-12" />
       </div>
 
-      <StickyAd position="bottom-right" />
     </>
   );
 }

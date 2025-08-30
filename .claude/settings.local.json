@@ -40,7 +40,10 @@
       "Bash(grep:*)",
       "Bash(vercel --version)",
       "Bash(npx tsc:*)",
-      "WebFetch(domain:github.com)"
+      "WebFetch(domain:github.com)",
+      "Bash(del \"C:\\PLANETA KETO V2\\planetaketonext\\app\\productos\\page.tsx\")",
+      "Bash(del \"C:\\PLANETA KETO V2\\planetaketonext\\app\\servicios\\page.tsx\")",
+      "Bash(rm:*)"
     ],
     "deny": [],
     "ask": [],

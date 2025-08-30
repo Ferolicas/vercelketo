@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import { Recipe, Category } from '@/types/sanity';
-import { ContentAd } from './AdSystem';
 
 interface DietaCetogenicaContentProps {
   scientificRecipes: Recipe[];
@@ -30,15 +29,14 @@ export default function DietaCetogenicaContent(props: DietaCetogenicaContentProp
             🧬 Recetas Científicas
           </Link>
           <Link
-            href="/servicios"
+            href="/productos-y-servicios"
             className="border-2 border-purple-500 text-purple-600 px-8 py-4 rounded-xl font-semibold hover:bg-purple-50 transition"
           >
-            👨‍⚕️ Consulta Profesional
+            👨‍⚕️ Productos y Servicios
           </Link>
         </div>
       </div>
 
-      <ContentAd position="top" />
 
       <div className="prose prose-lg max-w-none">
         <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-2xl p-8 mb-8">
@@ -72,7 +70,6 @@ export default function DietaCetogenicaContent(props: DietaCetogenicaContentProp
           </Link>
         </div>
 
-        <ContentAd position="middle" />
 
         <h2>Fundamentos Bioquímicos de la Cetosis</h2>
         <p>

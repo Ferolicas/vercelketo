@@ -44,7 +44,7 @@ const nextConfig: NextConfig = {
     optimizeCss: true,
     webpackBuildWorker: true,
     // Preload para mejorar performance
-    typedRoutes: true,
+      // typedRoutes: true,
   },
   
   // External packages para server components

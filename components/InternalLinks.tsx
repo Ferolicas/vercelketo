@@ -4,22 +4,23 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 interface InternalLink {
+  id: string;
   href: string;
   text: string;
   emoji: string;
 }
 
 const allLinks = [
-  { href: '/dieta-keto', text: 'Guía Completa de Dieta Keto', emoji: '🥑' },
-  { href: '/recetas-keto', text: 'Recetas Keto Deliciosas', emoji: '👨‍🍳' },
-  { href: '/bajar-de-peso', text: 'Cómo Bajar de Peso Rápido', emoji: '⚖️' },
-  { href: '/quemar-grasa', text: 'Quemar Grasa Abdominal', emoji: '🔥' },
-  { href: '/recetas-saludables', text: 'Recetas Saludables', emoji: '🌱' },
-  { href: '/dieta-cetogenica', text: 'Dieta Cetogénica Científica', emoji: '🧬' },
-  { href: '/dieta-baja-carbohidratos', text: 'Dieta Baja en Carbohidratos', emoji: '🥬' },
-  { href: '/tienda-keto', text: 'Productos Keto Premium', emoji: '🛒' },
-  { href: '/blog', text: 'Blog Keto con Consejos', emoji: '📝' },
-  { href: '/foro', text: 'Comunidad Keto', emoji: '💬' },
+  { id: 'dieta-keto-guia', href: '/dieta-keto', text: 'Guía Completa de Dieta Keto', emoji: '🥑' },
+  { id: 'recetas-deliciosas', href: '/recetas', text: 'Recetas Keto Deliciosas', emoji: '👨‍🍳' },
+  { id: 'bajar-peso', href: '/dieta-keto', text: 'Cómo Bajar de Peso Rápido', emoji: '⚖️' },
+  { id: 'quemar-grasa', href: '/dieta-keto', text: 'Quemar Grasa Abdominal', emoji: '🔥' },
+  { id: 'recetas-saludables', href: '/recetas', text: 'Recetas Saludables', emoji: '🌱' },
+  { id: 'dieta-cetogenica', href: '/dieta-keto', text: 'Dieta Cetogénica Científica', emoji: '🧬' },
+  { id: 'dieta-baja-carbs', href: '/dieta-keto', text: 'Dieta Baja en Carbohidratos', emoji: '🥬' },
+  { id: 'productos-premium', href: '/productos-y-servicios', text: 'Productos Keto Premium', emoji: '🛒' },
+  { id: 'blog-consejos', href: '/blog', text: 'Blog Keto con Consejos', emoji: '📝' },
+  { id: 'comunidad-keto', href: '/foro', text: 'Comunidad Keto', emoji: '💬' },
 ] as const;
 
 interface InternalLinksProps {
@@ -53,7 +54,7 @@ export default function InternalLinks({
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
         {selectedLinks.map((link) => (
           <Link
-            key={link.href}
+            key={link.id}
             href={link.href}
             className="flex items-center p-3 bg-white rounded-lg hover:bg-green-50 hover:border-green-200 border border-gray-200 transition-all duration-200 group"
           >
@@ -91,7 +92,7 @@ export function FooterLinks() {
             <div className="space-y-2">
               {mainCategories.slice(0, 4).map(link => (
                 <Link 
-                  key={link.href}
+                  key={link.id}
                   href={link.href} 
                   className="block text-sm text-gray-400 hover:text-white transition-colors"
                 >
@@ -106,7 +107,7 @@ export function FooterLinks() {
             <div className="space-y-2">
               {mainCategories.slice(4, 8).map(link => (
                 <Link 
-                  key={link.href}
+                  key={link.id}
                   href={link.href} 
                   className="block text-sm text-gray-400 hover:text-white transition-colors"
                 >

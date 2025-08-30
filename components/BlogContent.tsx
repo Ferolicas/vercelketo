@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import { BlogPost } from '@/types/sanity';
-import { ContentAd } from './AdSystem';
 
 interface BlogContentProps {
   blogPosts: BlogPost[];
@@ -45,7 +44,6 @@ export default function BlogContent({
         </div>
       </div>
 
-      <ContentAd position="top" />
 
       <div className="bg-gray-50 rounded-2xl p-8 text-center">
         <h2 className="text-2xl font-bold text-gray-900 mb-4">
@@ -61,11 +59,11 @@ export default function BlogContent({
             <div className="text-3xl mb-2">🥑</div>
             <h3 className="font-semibold">Guía Keto</h3>
           </Link>
-          <Link href="/recetas-keto" className="bg-white p-6 rounded-lg shadow hover:shadow-lg transition">
+          <Link href="/recetas" className="bg-white p-6 rounded-lg shadow hover:shadow-lg transition">
             <div className="text-3xl mb-2">👨‍🍳</div>
             <h3 className="font-semibold">Recetas</h3>
           </Link>
-          <Link href="/tienda-keto" className="bg-white p-6 rounded-lg shadow hover:shadow-lg transition">
+          <Link href="/productos-y-servicios" className="bg-white p-6 rounded-lg shadow hover:shadow-lg transition">
             <div className="text-3xl mb-2">🛒</div>
             <h3 className="font-semibold">Tienda</h3>
           </Link>

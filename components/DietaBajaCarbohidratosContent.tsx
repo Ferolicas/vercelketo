@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import { Recipe } from '@/types/sanity';
-import { ContentAd } from './AdSystem';
 
 interface DietaBajaCarbohidratosContentProps {
   lowCarbRecipes: Recipe[];
@@ -37,7 +36,6 @@ export default function DietaBajaCarbohidratosContent(props: DietaBajaCarbohidra
         </div>
       </div>
 
-      <ContentAd position="top" />
 
       <div className="prose prose-lg max-w-none">
         <div className="bg-gradient-to-r from-green-500 to-teal-600 text-white rounded-2xl p-8 mb-8">
@@ -75,7 +73,6 @@ export default function DietaBajaCarbohidratosContent(props: DietaBajaCarbohidra
           </Link>
         </div>
 
-        <ContentAd position="middle" />
 
         <h2>¿Qué Son las Dietas Bajas en Carbohidratos?</h2>
         <p>

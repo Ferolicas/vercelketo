@@ -14,7 +14,6 @@ import {
   SparklesIcon,
   ArrowRightIcon
 } from '@heroicons/react/24/outline'
-import AdSystem, { HeaderAd, ContentAd } from './AdSystem'
 import ProductRecommendations from './ProductRecommendations'
 
 interface HomePageProps {
@@ -43,7 +42,6 @@ export default function HomePage({
   
   return (
     <>
-      <AdSystem />
       
       {/* Hero Section */}
       <section className="relative bg-gradient-to-r from-green-600 via-green-500 to-emerald-600 pt-20 pb-16 overflow-hidden">
@@ -95,11 +93,11 @@ export default function HomePage({
                 </Link>
                 
                 <Link
-                  href="/productos"
+                  href="/productos-y-servicios"
                   className="bg-white/20 backdrop-blur-sm border-2 border-white/30 text-white px-8 py-4 rounded-2xl font-semibold text-lg hover:bg-white/30 transition-all duration-300 transform hover:scale-105"
                 >
                   <span className="mr-2">🛒</span>
-                  Productos Premium
+                  Productos y Servicios
                 </Link>
               </div>
             </div>
@@ -123,8 +121,6 @@ export default function HomePage({
         </div>
       </section>
 
-      {/* Header Ad */}
-      <HeaderAd />
 
       {/* Featured Categories */}
       <section className="py-16 bg-gradient-to-br from-gray-50 via-white to-green-50/30">
@@ -141,8 +137,7 @@ export default function HomePage({
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {([
               { name: 'Recetas Keto', emoji: '🍽️', count: '500+', color: 'from-green-400 to-green-600', href: '/recetas' },
-              { name: 'Productos', emoji: '🛒', count: 'Premium', color: 'from-blue-400 to-indigo-500', href: '/productos' },
-              { name: 'Servicios', emoji: '⚕️', count: 'Consultas', color: 'from-purple-400 to-pink-500', href: '/servicios' },
+              { name: 'Productos y Servicios', emoji: '🛒', count: 'Premium', color: 'from-blue-400 to-indigo-500', href: '/productos-y-servicios' },
               { name: 'Blog Keto', emoji: '📝', count: 'Artículos', color: 'from-yellow-400 to-orange-500', href: '/blog' },
               { name: 'Foro Keto', emoji: '💬', count: 'Comunidad', color: 'from-indigo-400 to-blue-500', href: '/foro' },
               { name: 'Bajar de Peso', emoji: '⚖️', count: 'Guías', color: 'from-red-400 to-pink-500', href: '/bajar-de-peso' },
@@ -174,8 +169,6 @@ export default function HomePage({
         </div>
       </section>
 
-      {/* Content Ad */}
-      <ContentAd position="middle" />
 
       {/* Why Choose Keto */}
       <section className="py-16 bg-white">
@@ -259,7 +252,7 @@ export default function HomePage({
             <p className="text-xl text-green-100 mb-8 max-w-2xl mx-auto">
               Únete a miles de personas que ya han transformado su vida con nuestras recetas keto probadas y deliciosas.
             </p>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 justify-center max-w-4xl mx-auto">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center max-w-4xl mx-auto">
               <Link
                 href="/recetas"
                 className="bg-white text-green-600 px-6 py-4 rounded-xl font-semibold text-lg hover:bg-green-50 transition-all duration-200 inline-flex items-center justify-center"
@@ -268,38 +261,18 @@ export default function HomePage({
                 Explorar Recetas
               </Link>
               <Link
-                href="/productos"
-                className="border-2 border-white text-white px-6 py-4 rounded-xl font-semibold text-lg hover:bg-white hover:text-green-600 transition-all duration-200"
+                href="/productos-y-servicios"
+                className="border-2 border-white text-white px-6 py-4 rounded-xl font-semibold text-lg hover:bg-white hover:text-green-600 transition-all duration-200 inline-flex items-center justify-center"
               >
                 <span className="mr-2">🛒</span>
-                Ver Productos
-              </Link>
-              <Link
-                href="/servicios"
-                className="bg-yellow-400 text-yellow-900 px-6 py-4 rounded-xl font-semibold text-lg hover:bg-yellow-300 transition-all duration-200"
-              >
-                <span className="mr-2">👨‍⚕️</span>
-                Servicios Premium
+                Productos y Servicios
               </Link>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Product Recommendations */}
-      <section className="py-16 bg-gradient-to-br from-gray-50 via-white to-green-50/30">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <ProductRecommendations 
-            title="🛒 Productos Keto Recomendados"
-            description="Los productos más populares y efectivos para tu transformación cetogénica"
-            featured={true}
-            limit={6}
-          />
-        </div>
-      </section>
 
-      {/* Bottom Content Ad */}
-      <ContentAd position="bottom" />
     </>
   )
 }

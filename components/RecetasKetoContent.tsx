@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import { Recipe, Category } from '@/types/sanity';
-import { ContentAd, RecipeAd } from './AdSystem';
 
 interface RecetasKetoContentProps {
   recipes: Recipe[];
@@ -49,7 +48,6 @@ export default function RecetasKetoContent({
         </div>
       </div>
 
-      <ContentAd position="top" />
 
       <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-4xl mx-auto mt-12">
         <div className="bg-green-50 rounded-lg p-6">
@@ -74,7 +72,6 @@ export default function RecetasKetoContent({
         </div>
       </div>
 
-      <ContentAd position="middle" />
 
       <div className="text-center mt-16">
         <div className="bg-green-50 rounded-2xl p-8">

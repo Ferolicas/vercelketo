@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import { Product } from '@/types/sanity';
-import { ContentAd } from './AdSystem';
 import ProductRecommendations from './ProductRecommendations';
 
 interface ProductsContentProps {
@@ -39,15 +38,14 @@ export default function ProductsContent({
             🛒 Tienda Premium
           </Link>
           <Link
-            href="/servicios"
+            href="/productos-y-servicios"
             className="border-2 border-green-500 text-green-600 px-8 py-4 rounded-xl font-semibold hover:bg-green-50 transition"
           >
-            👨‍⚕️ Servicios
+            👨‍⚕️ Productos y Servicios
           </Link>
         </div>
       </div>
 
-      <ContentAd position="top" />
 
       <div className="bg-green-50 border border-green-200 rounded-lg p-6 max-w-md mx-auto">
         <h3 className="font-semibold text-green-800 mb-2">¿Buscas algo específico?</h3>

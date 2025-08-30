@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import { Recipe, Category } from '@/types/sanity';
-import { ContentAd } from './AdSystem';
 
 interface DietaKetoContentProps {
   ketoRecipes: Recipe[];
@@ -27,13 +26,13 @@ export default function DietaKetoContent({
         
         <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
           <Link
-            href="/recetas-keto"
+            href="/recetas"
             className="bg-gradient-to-r from-green-600 to-green-500 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:from-green-700 hover:to-green-600 transition-all duration-200"
           >
             👨‍🍳 Ver Recetas Keto
           </Link>
           <Link
-            href="/tienda-keto"
+            href="/productos-y-servicios"
             className="border-2 border-green-500 text-green-600 px-8 py-4 rounded-xl font-semibold text-lg hover:bg-green-50 transition-all duration-200"
           >
             🛒 Productos Premium
@@ -41,7 +40,6 @@ export default function DietaKetoContent({
         </div>
       </div>
 
-      <ContentAd position="top" />
 
       <div className="prose prose-lg max-w-none">
         <div className="bg-gradient-to-r from-green-500 to-green-600 text-white rounded-2xl p-8 mb-8">
@@ -75,14 +73,13 @@ export default function DietaKetoContent({
             Más de 500 recetas keto deliciosas y fáciles de preparar:
           </p>
           <Link 
-            href="/recetas-keto"
+            href="/recetas"
             className="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition"
           >
             Explorar Todas las Recetas →
           </Link>
         </div>
 
-        <ContentAd position="middle" />
 
         <h2>Beneficios de la Dieta Keto</h2>
         <ul>
@@ -100,16 +97,16 @@ export default function DietaKetoContent({
           </p>
           <div className="grid sm:grid-cols-2 gap-4">
             <Link 
-              href="/tienda-keto"
+              href="/productos-y-servicios"
               className="block bg-green-600 text-white p-4 rounded-lg font-semibold hover:bg-green-700 transition text-center"
             >
               🛒 Tienda Keto
             </Link>
             <Link 
-              href="/servicios"
+              href="/productos-y-servicios"
               className="block bg-green-600 text-white p-4 rounded-lg font-semibold hover:bg-green-700 transition text-center"
             >
-              👨‍⚕️ Servicios Premium
+              👨‍⚕️ Productos y Servicios
             </Link>
           </div>
         </div>

@@ -6,6 +6,7 @@ import service from './service'
 import blogPost from './blogPost'
 import forumPost from './forumPost'
 import affiliateList from './affiliateList'
+import amazonList from './amazonList'
 
 export const schemaTypes = [
   // Contenido principal
@@ -17,6 +18,7 @@ export const schemaTypes = [
   product,
   service,
   affiliateList,
+  amazonList,
   
   // Blog y foro
   blogPost,

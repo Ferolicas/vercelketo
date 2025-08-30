@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import { Recipe } from '@/types/sanity';
-import { ContentAd, StickyAd } from './AdSystem';
 
 interface QuemarGrasaContentProps {
   fatBurningRecipes: Recipe[];
@@ -38,7 +37,6 @@ export default function QuemarGrasaContent(props: QuemarGrasaContentProps) {
           </div>
         </div>
 
-        <ContentAd position="top" />
 
         <div className="prose prose-lg max-w-none">
           <div className="bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-2xl p-8 mb-8">
@@ -72,7 +70,6 @@ export default function QuemarGrasaContent(props: QuemarGrasaContentProps) {
             </Link>
           </div>
 
-          <ContentAd position="middle" />
 
           <h2>La Ciencia de Quemar Grasa con Keto</h2>
           <p>
@@ -94,7 +91,6 @@ export default function QuemarGrasaContent(props: QuemarGrasaContentProps) {
           </div>
         </div>
       </div>
-      <StickyAd position="bottom-right" />
     </>
   );
 }

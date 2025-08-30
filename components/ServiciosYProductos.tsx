@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-// import { motion } from 'framer-motion'; // Disabled for Next.js 15 compatibility
 import { 
   StarIcon,
   ShoppingCartIcon,
@@ -17,237 +16,148 @@ import {
   SparklesIcon
 } from '@heroicons/react/24/outline';
 import { StarIcon as StarSolid } from '@heroicons/react/24/solid';
-import { ContentAd, SidebarAd } from './AdSystem';
+import { client, queries, urlFor } from '@/lib/sanity';
 
-interface Producto {
-  id: string;
+interface SanityProduct {
+  _id: string;
+  name: string;
+  slug: { current: string };
+  description: string;
+  price: number;
+  currency: string;
+  image: any;
+  affiliateUrl: string;
+  featured: boolean;
+  createdAt: string;
+}
+
+interface SanityService {
+  _id: string;
+  name: string;
+  slug: { current: string };
+  description: string;
+  price: number;
+  currency: string;
+  duration?: string;
+  image: any;
+  features?: string[];
+  contactUrl?: string;
+  whatsapp?: string;
+  featured: boolean;
+  createdAt: string;
+}
+
+interface SanityAmazonList {
+  _id: string;
+  title: string;
+  slug: { current: string };
+  description: string;
+  amazonUrl: string;
+  image: any;
+  price: string;
+  category: string;
+  rating: number;
+  reviewsCount?: number;
+  benefits?: string[];
+  keyFeatures?: string[];
+  featured: boolean;
+  isKeto: boolean;
+  createdAt: string;
+}
+
+interface ProductoUnificado {
+  _id: string;
+  tipo: 'producto' | 'servicio';
   nombre: string;
   descripcion: string;
   precio: number;
-  precioOriginal?: number;
-  imagen: string;
+  imagen: any;
   categoria: string;
-  rating: number;
-  reviews: number;
-  destacado?: boolean;
-  urlCompra: string;
-  beneficios: string[];
+  destacado: boolean;
+  urlCompra?: string;
+  urlContacto?: string;
+  incluye?: string[];
+  beneficios?: string[];
+  rating?: number;
+  reviews?: number;
 }
-
-interface Servicio {
-  id: string;
-  nombre: string;
-  descripcion: string;
-  precio: number;
-  duracion: string;
-  imagen: string;
-  categoria: string;
-  rating: number;
-  reviews: number;
-  urlContacto: string;
-  incluye: string[];
-}
-
-const productosDestacados: Producto[] = [
-  {
-    id: 'guia-completa-keto',
-    nombre: 'Guía Completa Dieta Keto 2024',
-    descripcion: 'Todo lo que necesitas saber para empezar y mantener la dieta cetogénica con éxito',
-    precio: 27,
-    precioOriginal: 47,
-    imagen: '/images/guia-keto.jpg',
-    categoria: 'Guías Digitales',
-    rating: 4.8,
-    reviews: 2341,
-    destacado: true,
-    urlCompra: '#',
-    beneficios: [
-      '150+ páginas de contenido premium',
-      '50+ recetas exclusivas',
-      'Plan de 30 días paso a paso',
-      'Tablas de alimentos permitidos',
-      'Acceso a grupo VIP privado'
-    ]
-  },
-  {
-    id: 'recetario-keto',
-    nombre: 'Recetario Keto Premium',
-    descripcion: '100+ recetas deliciosas y fáciles para mantener la cetosis sin esfuerzo',
-    precio: 19,
-    precioOriginal: 35,
-    imagen: '/images/recetario.jpg',
-    categoria: 'Recetas',
-    rating: 4.9,
-    reviews: 1856,
-    urlCompra: '#',
-    beneficios: [
-      'Recetas testeadas y aprobadas',
-      'Macros calculados por receta',
-      'Opciones para toda la familia',
-      'Snacks y postres incluidos',
-      'Videos paso a paso'
-    ]
-  },
-  {
-    id: 'calculadora-macros',
-    nombre: 'Calculadora de Macros PRO',
-    descripcion: 'Herramienta digital para calcular tus macros personalizados y seguimiento',
-    precio: 15,
-    precioOriginal: 25,
-    imagen: '/images/calculadora.jpg',
-    categoria: 'Herramientas',
-    rating: 4.7,
-    reviews: 943,
-    urlCompra: '#',
-    beneficios: [
-      'Cálculo personalizado de macros',
-      'Seguimiento de progreso',
-      'Base de datos de alimentos',
-      'App móvil incluida',
-      'Soporte técnico 24/7'
-    ]
-  },
-  {
-    id: 'coaching-keto',
-    nombre: 'Coaching 1:1 Keto Expert',
-    descripcion: 'Guía personalizada con nutricionista experto en dieta cetogénica',
-    precio: 197,
-    precioOriginal: 297,
-    imagen: '/images/coaching.jpg',
-    categoria: 'Servicios',
-    rating: 5.0,
-    reviews: 312,
-    destacado: true,
-    urlCompra: '#',
-    beneficios: [
-      '4 sesiones privadas',
-      'Plan personalizado',
-      'Seguimiento semanal',
-      'Chat directo 24/7',
-      'Garantía de resultados'
-    ]
-  }
-];
-
-const serviciosExpertos: Servicio[] = [
-  {
-    id: 'plan-personalizado',
-    nombre: 'Plan Keto Personalizado',
-    descripcion: 'Plan alimenticio personalizado según tus objetivos, gustos y estilo de vida',
-    precio: 97,
-    duracion: '4 semanas',
-    imagen: '/images/plan-personalizado.jpg',
-    categoria: 'Nutrición',
-    rating: 4.9,
-    reviews: 523,
-    urlContacto: '#contacto',
-    incluye: [
-      'Evaluación inicial completa',
-      'Menú semanal personalizado',
-      'Lista de compras inteligente',
-      'Guía de suplementos',
-      'Ajustes semanales'
-    ]
-  },
-  {
-    id: 'asesoria-privada',
-    nombre: 'Asesoría Privada Keto',
-    descripcion: 'Sesión privada de 60 minutos para resolver todas tus dudas sobre la dieta keto',
-    precio: 67,
-    duracion: '60 minutos',
-    imagen: '/images/asesoria.jpg',
-    categoria: 'Consultoría',
-    rating: 4.8,
-    reviews: 189,
-    urlContacto: '#contacto',
-    incluye: [
-      'Sesión Zoom privada',
-      'Análisis de tu situación actual',
-      'Respuestas personalizadas',
-      'Guía de inicio rápido',
-      'Seguimiento por email'
-    ]
-  }
-];
-
-const productosAmazon = [
-  {
-    id: 'aceite-coco',
-    titulo: 'Aceite de Coco Orgánico Virgen',
-    descripcion: 'Aceite MCT puro para impulsar la cetosis y energía sostenida',
-    precio: '$18.99',
-    categoria: 'Aceites Saludables',
-    rating: 4.6,
-    enlaceAfiliado: '#',
-    beneficios: [
-      '100% orgánico y virgen',
-      'Rico en ácidos grasos MCT',
-      'Sin refinar ni procesar',
-      'Apto para cocinar a alta temperatura'
-    ]
-  },
-  {
-    id: 'almendras',
-    titulo: 'Almendras Naturales Sin Sal',
-    descripcion: 'Snack perfecto para la dieta keto, alto en grasas saludables y proteínas',
-    precio: '$22.50',
-    categoria: 'Snacks Keto',
-    rating: 4.7,
-    enlaceAfiliado: '#',
-    beneficios: [
-      'Sin sal ni azúcar añadida',
-      'Alta en grasas buenas',
-      'Fuente de proteína vegetal',
-      'Perfecto para snacks rápidos'
-    ]
-  },
-  {
-    id: 'eritritol',
-    titulo: 'Eritritol Natural Endulzante',
-    descripcion: 'Endulzante keto-friendly sin calorías ni efecto en la glucosa',
-    precio: '$15.99',
-    categoria: 'Endulzantes',
-    rating: 4.5,
-    enlaceAfiliado: '#',
-    beneficios: [
-      'Cero calorías',
-      'Cero índice glucémico',
-      'Sabor idéntico al azúcar',
-      'No causa problemas digestivos'
-    ]
-  },
-  {
-    id: 'collagen',
-    titulo: 'Colágeno Hidrolizado Premium',
-    descripcion: 'Suplemento esencial para piel, uñas y articulaciones en dieta keto',
-    precio: '$29.99',
-    categoria: 'Suplementos',
-    rating: 4.8,
-    enlaceAfiliado: '#',
-    beneficios: [
-      'Tipo I y III de alta calidad',
-      'Sin sabor ni olor',
-      'Se disuelve fácilmente',
-      'Apoya la salud articular'
-    ]
-  }
-];
 
 export default function ServiciosYProductos() {
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState('Todos');
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [productos, setProductos] = useState<SanityProduct[]>([]);
+  const [servicios, setServicios] = useState<SanityService[]>([]);
+  const [amazonLists, setAmazonLists] = useState<SanityAmazonList[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
-  const categorias = ['Todos', 'Guías Digitales', 'Recetas', 'Herramientas', 'Servicios', 'Suplementos'];
+  const categorias = ['Todos', 'Productos', 'Servicios', 'Amazon'];
 
-  // Combinar productos y servicios
-  const todosLosItems = [
-    ...productosDestacados.map(p => ({ ...p, tipo: 'producto' })),
-    ...serviciosExpertos.map(s => ({ ...s, tipo: 'servicio' }))
-  ];
+  useEffect(() => {
+    loadData();
+  }, []);
 
-  const productosFiltrados = categoriaSeleccionada === 'Todos' 
-    ? todosLosItems 
-    : todosLosItems.filter(item => item.categoria === categoriaSeleccionada);
+  const loadData = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const [productosData, serviciosData, amazonData] = await Promise.all([
+        client.fetch<SanityProduct[]>(queries.allProducts),
+        client.fetch<SanityService[]>(queries.allServices),
+        client.fetch<SanityAmazonList[]>(queries.allAmazonLists)
+      ]);
+
+      setProductos(productosData || []);
+      setServicios(serviciosData || []);
+      setAmazonLists(amazonData || []);
+    } catch (err) {
+      console.error('Error cargando datos:', err);
+      setError('Error al cargar los datos');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getAllItems = (): ProductoUnificado[] => {
+    const items: ProductoUnificado[] = [];
+
+    if (categoriaSeleccionada === 'Todos' || categoriaSeleccionada === 'Productos') {
+      productos.forEach(producto => {
+        items.push({
+          ...producto,
+          tipo: 'producto',
+          nombre: producto.name,
+          descripcion: producto.description,
+          precio: producto.price,
+          imagen: producto.image,
+          categoria: 'Productos',
+          urlCompra: producto.affiliateUrl,
+          destacado: producto.featured
+        });
+      });
+    }
+
+    if (categoriaSeleccionada === 'Todos' || categoriaSeleccionada === 'Servicios') {
+      servicios.forEach(servicio => {
+        items.push({
+          ...servicio,
+          tipo: 'servicio',
+          nombre: servicio.name,
+          descripcion: servicio.description,
+          precio: servicio.price,
+          imagen: servicio.image,
+          categoria: 'Servicios',
+          urlContacto: servicio.contactUrl || `https://wa.me/${servicio.whatsapp}`,
+          destacado: servicio.featured,
+          incluye: servicio.features || []
+        });
+      });
+    }
+
+    return items;
+  };
+
+  const productosFiltrados = getAllItems();
 
   const renderStars = (rating: number) => {
     return Array.from({ length: 5 }, (_, i) => (
@@ -341,7 +251,7 @@ export default function ServiciosYProductos() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   {productosFiltrados.map((item, index) => (
                     <div
-                      key={item.id}
+                      key={item._id}
                       className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group"
                     >
                       {/* Badge para destacados */}
@@ -438,82 +348,97 @@ export default function ServiciosYProductos() {
               )}
             </section>
 
-            {/* Anuncio en el medio */}
-            <ContentAd position="middle" />
 
             {/* Sección de Productos de Amazon */}
-            <section>
-              <div className="mb-8">
-                <h2 className="text-3xl font-bold text-gray-900 mb-2">
-                  Productos Recomendados de Amazon
-                </h2>
-                <p className="text-gray-600">
-                  Los mejores productos keto seleccionados por nuestros expertos
-                </p>
-              </div>
+            {(categoriaSeleccionada === 'Todos' || categoriaSeleccionada === 'Amazon') && (
+              <section>
+                <div className="mb-8">
+                  <h2 className="text-3xl font-bold text-gray-900 mb-2">
+                    Productos Recomendados de Amazon
+                  </h2>
+                  <p className="text-gray-600">
+                    Los mejores productos keto seleccionados por nuestros expertos
+                  </p>
+                </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {productosAmazon.map((producto, index) => (
-                  <div
-                    key={producto.id}
-                    className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 p-6"
-                  >
-                    <div className="flex space-x-4">
-                      {/* Imagen del producto */}
-                      <div className="flex-shrink-0 w-24 h-24 bg-gradient-to-br from-orange-400 to-orange-600 rounded-lg flex items-center justify-center">
-                        <span className="text-2xl">📦</span>
-                      </div>
-
-                      {/* Información del producto */}
-                      <div className="flex-1">
-                        <div className="mb-2">
-                          <span className="text-xs text-orange-600 font-medium bg-orange-50 px-2 py-1 rounded">
-                            {producto.categoria}
-                          </span>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {amazonLists.map((producto) => (
+                    <div
+                      key={producto._id}
+                      className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 p-6"
+                    >
+                      <div className="flex space-x-4">
+                        {/* Imagen del producto */}
+                        <div className="flex-shrink-0 w-24 h-24 bg-gradient-to-br from-orange-400 to-orange-600 rounded-lg flex items-center justify-center overflow-hidden">
+                          {producto.image ? (
+                            <Image 
+                              src={urlFor(producto.image).url()}
+                              alt={producto.title}
+                              width={96}
+                              height={96}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <span className="text-2xl">📦</span>
+                          )}
                         </div>
-                        <h3 className="font-semibold text-gray-900 mb-1 line-clamp-2">{producto.titulo}</h3>
-                        <p className="text-sm text-gray-600 mb-3 line-clamp-2">{producto.descripcion}</p>
-                        
-                        {/* Rating y precio */}
-                        <div className="flex items-center justify-between mb-3">
-                          <div className="flex items-center">
-                            {renderStars(producto.rating)}
-                            <span className="ml-1 text-sm text-gray-500">{producto.rating}</span>
+
+                        {/* Información del producto */}
+                        <div className="flex-1">
+                          <div className="mb-2">
+                            <span className="text-xs text-orange-600 font-medium bg-orange-50 px-2 py-1 rounded">
+                              {producto.category}
+                            </span>
                           </div>
-                          <span className="text-lg font-bold text-gray-900">{producto.precio}</span>
+                          <h3 className="font-semibold text-gray-900 mb-1 line-clamp-2">{producto.title}</h3>
+                          <p className="text-sm text-gray-600 mb-3 line-clamp-2">{producto.description}</p>
+                          
+                          {/* Rating y precio */}
+                          <div className="flex items-center justify-between mb-3">
+                            <div className="flex items-center">
+                              {renderStars(producto.rating)}
+                              <span className="ml-1 text-sm text-gray-500">{producto.rating}</span>
+                            </div>
+                            <span className="text-lg font-bold text-gray-900">{producto.price}</span>
+                          </div>
+
+                          {/* Beneficios */}
+                          <ul className="text-xs text-gray-600 mb-4 space-y-1">
+                            {(producto.benefits || []).slice(0, 2).map((beneficio, i) => (
+                              <li key={i} className="flex items-center">
+                                <CheckCircleIcon className="h-3 w-3 text-green-500 mr-1" />
+                                {beneficio}
+                              </li>
+                            ))}
+                          </ul>
+
+                          {/* CTA */}
+                          <a
+                            href={producto.amazonUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center text-sm bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200"
+                          >
+                            Ver en Amazon
+                            <ExternalLinkIcon className="ml-1 h-3 w-3" />
+                          </a>
                         </div>
-
-                        {/* Beneficios */}
-                        <ul className="text-xs text-gray-600 mb-4 space-y-1">
-                          {producto.beneficios.slice(0, 2).map((beneficio, i) => (
-                            <li key={i} className="flex items-center">
-                              <CheckCircleIcon className="h-3 w-3 text-green-500 mr-1" />
-                              {beneficio}
-                            </li>
-                          ))}
-                        </ul>
-
-                        {/* CTA */}
-                        <a
-                          href={producto.enlaceAfiliado}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center text-sm bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200"
-                        >
-                          Ver en Amazon
-                          <ExternalLinkIcon className="ml-1 h-3 w-3" />
-                        </a>
                       </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-            </section>
+                  ))}
+                  
+                  {amazonLists.length === 0 && !loading && (
+                    <div className="col-span-2 text-center py-8">
+                      <p className="text-gray-500">No hay productos de Amazon disponibles en este momento.</p>
+                    </div>
+                  )}
+                </div>
+              </section>
+            )}
           </div>
 
           {/* Sidebar */}
           <div className="lg:col-span-1">
-            <SidebarAd />
             
             {/* Widget de testimonio */}
             <div className="bg-white rounded-2xl p-6 shadow-lg mb-6">

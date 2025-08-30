@@ -1,7 +1,6 @@
 'use client'
 
 import { BlogPost } from '@/types/sanity';
-import { ContentAd } from './AdSystem';
 
 interface BlogPostViewProps {
   post: BlogPost;
@@ -19,13 +18,11 @@ export default function BlogPostView({ post, relatedPosts }: BlogPostViewProps) 
           )}
         </header>
 
-        <ContentAd position="top" />
 
         <div className="prose prose-lg max-w-none">
           <p>Contenido del blog post aquí...</p>
         </div>
 
-        <ContentAd position="bottom" />
       </article>
     </div>
   );
