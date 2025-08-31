@@ -187,7 +187,7 @@ export default function ServiciosYProductos() {
   };
 
   const handlePurchase = (item: ProductoUnificado) => {
-    // Convertir el producto para que sea compatible con el modal
+    // Convertir el producto/servicio para que sea compatible con el modal
     const modalProduct = {
       _id: item._id,
       name: item.nombre,
@@ -198,6 +198,11 @@ export default function ServiciosYProductos() {
     };
     setSelectedProduct(modalProduct);
     setShowPurchaseModal(true);
+  };
+
+  const handleServiceContact = (item: ProductoUnificado) => {
+    // Para servicios, también abrir modal de pago
+    handlePurchase(item);
   };
 
   return (
@@ -374,25 +379,17 @@ export default function ServiciosYProductos() {
                               </div>
                             )}
                           </div>
-                          {item.tipo === 'servicio' ? (
-                            <a
-                              href={(item as any).urlContacto}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="px-6 py-2 rounded-lg font-semibold transition-colors duration-200 flex items-center bg-blue-500 hover:bg-blue-600 text-white"
-                            >
-                              <ExternalLinkIcon className="h-4 w-4 mr-2" />
-                              Contactar
-                            </a>
-                          ) : (
-                            <button
-                              onClick={() => handlePurchase(item)}
-                              className="px-6 py-2 rounded-lg font-semibold transition-colors duration-200 flex items-center bg-green-500 hover:bg-green-600 text-white"
-                            >
-                              <ShoppingCartIcon className="h-4 w-4 mr-2" />
-                              Comprar
-                            </button>
-                          )}
+                          <button
+                            onClick={() => handlePurchase(item)}
+                            className={`px-6 py-2 rounded-lg font-semibold transition-colors duration-200 flex items-center text-white ${
+                              item.tipo === 'servicio' 
+                                ? 'bg-blue-500 hover:bg-blue-600' 
+                                : 'bg-green-500 hover:bg-green-600'
+                            }`}
+                          >
+                            <ShoppingCartIcon className="h-4 w-4 mr-2" />
+                            {item.tipo === 'servicio' ? 'Contratar' : 'Comprar'}
+                          </button>
                         </div>
                       </div>
                     </div>

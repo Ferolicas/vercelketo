@@ -78,7 +78,7 @@ function CheckoutForm({ product, onClose, finalPrice }: { product: Product; onCl
                  font-semibold text-lg transition-all hover:shadow-lg hover:scale-105 
                  disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
       >
-        {loading ? 'Procesando...' : `Pagar €${finalPrice.toFixed(2)}`}
+        {loading ? 'Procesando...' : `Proceder al Pago €${finalPrice.toFixed(2)}`}
       </button>
     </form>
   )
