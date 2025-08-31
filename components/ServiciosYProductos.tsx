@@ -101,18 +101,24 @@ export default function ServiciosYProductos() {
       setLoading(true);
       setError(null);
 
+      console.log('🔍 Fetching products and services from Sanity...');
+      
       const [productosData, serviciosData, amazonData] = await Promise.all([
         client.fetch<SanityProduct[]>(queries.allProducts),
         client.fetch<SanityService[]>(queries.allServices),
         client.fetch<SanityAmazonList[]>(queries.allAmazonLists)
       ]);
 
+      console.log('📦 Products:', productosData?.length || 0);
+      console.log('🎯 Services:', serviciosData?.length || 0);
+      console.log('📱 Amazon Lists:', amazonData?.length || 0);
+
       setProductos(productosData || []);
       setServicios(serviciosData || []);
       setAmazonLists(amazonData || []);
     } catch (err) {
-      console.error('Error cargando datos:', err);
-      setError('Error al cargar los datos');
+      console.error('❌ Error cargando datos:', err);
+      setError(err instanceof Error ? err.message : 'Error al cargar los datos');
     } finally {
       setLoading(false);
     }
@@ -239,6 +245,20 @@ export default function ServiciosYProductos() {
                     </div>
                   ))}
                 </div>
+              ) : error ? (
+                <div className="col-span-full text-center py-12">
+                  <div className="text-red-400 mb-4 text-6xl">❌</div>
+                  <h3 className="text-xl font-semibold text-red-700 mb-2">
+                    Error al cargar los datos
+                  </h3>
+                  <p className="text-red-500 mb-4">{error}</p>
+                  <button
+                    onClick={loadData}
+                    className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-colors"
+                  >
+                    Reintentar
+                  </button>
+                </div>
               ) : productosFiltrados.length === 0 ? (
                 <div className="col-span-full text-center py-12">
                   <div className="text-gray-400 mb-4 text-6xl">🛒</div>
@@ -246,6 +266,9 @@ export default function ServiciosYProductos() {
                     No hay {categoriaSeleccionada === 'Todos' ? 'productos o servicios' : categoriaSeleccionada.toLowerCase()} disponibles
                   </h3>
                   <p className="text-gray-500">Pronto añadiremos más contenido para ti.</p>
+                  <p className="text-sm text-gray-400 mt-2">
+                    Debug: Products: {productos.length}, Services: {servicios.length}, Amazon: {amazonLists.length}
+                  </p>
                 </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -267,7 +290,7 @@ export default function ServiciosYProductos() {
                       <div className="relative h-48 bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center overflow-hidden">
                         {item.imagen ? (
                           <Image 
-                            src={item.imagen}
+                            src={urlFor(item.imagen).width(400).height(300).url()}
                             alt={item.nombre}
                             fill
                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"

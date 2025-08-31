@@ -23,6 +23,32 @@ export default function ForoContent({
 }: ForoContentProps) {
   const [forumPosts, setForumPosts] = useState(initialForumPosts);
   const [pinnedPosts, setPinnedPosts] = useState(initialPinnedPosts);
+  
+  // Debug logging (remove in production)
+  if (process.env.NODE_ENV === 'development') {
+    console.log('🎯 ForoContent - Received posts:', initialForumPosts.length);
+    console.log('📝 First post sample:', initialForumPosts[0]);
+    console.log('🏷️ Categories received:', categories);
+  }
+  
+  // Load posts from API instead of using server data
+  useEffect(() => {
+    loadForumPosts();
+  }, []);
+
+  const loadForumPosts = async () => {
+    try {
+      const response = await fetch('/api/forum');
+      const data = await response.json();
+      if (process.env.NODE_ENV === 'development') {
+        console.log('📡 API Forum posts loaded:', data.posts?.length || 0);
+        console.log('📋 Sample API post:', data.posts?.[0]);
+      }
+      setForumPosts(data.posts || []);
+    } catch (error) {
+      console.error('❌ Error loading forum posts:', error);
+    }
+  };
   const [showCreatePost, setShowCreatePost] = useState(false);
   const [newPost, setNewPost] = useState({
     title: '',
@@ -65,8 +91,24 @@ export default function ForoContent({
       } else {
         // Use local filtering for category selection
         let filtered = [...forumPosts];
+        if (process.env.NODE_ENV === 'development') {
+          console.log('🔍 Filtering posts. Selected category:', selectedCategory);
+          console.log('📝 Available posts:', forumPosts.length);
+        }
+        
         if (selectedCategory !== 'Todos') {
-          filtered = filtered.filter(post => post.category?.slug?.current === selectedCategory);
+          filtered = filtered.filter(post => {
+            // Simple string matching for API data
+            const postCategory = post.category;
+            if (process.env.NODE_ENV === 'development') {
+              console.log(`📂 Post: "${post.title}" - Category: "${postCategory}" - Selected: "${selectedCategory}" - Match: ${postCategory === selectedCategory}`);
+            }
+            return postCategory === selectedCategory;
+          });
+        }
+        
+        if (process.env.NODE_ENV === 'development') {
+          console.log('✅ Filtered posts:', filtered.length);
         }
         setFilteredPosts(filtered);
       }
@@ -269,9 +311,8 @@ export default function ForoContent({
         ) : (
           <div className="space-y-4">
             {filteredPosts.map((post) => {
-              // Buscar la categoría en forumCategories
-              const categoryData = forumCategories.find(cat => cat.id === post.category?.slug?.current) || 
-                                  forumCategories[0]; // fallback a la primera categoría
+              // Find category data by matching ID
+              const categoryData = forumCategories.find(cat => cat.id === post.category) || forumCategories[0];
               
               return (
                 <div key={post._id} className="bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-all duration-300">
@@ -302,9 +343,9 @@ export default function ForoContent({
                         <div className="flex items-center space-x-4">
                           <div className="flex items-center">
                             <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white text-sm font-bold mr-2">
-                              {(post.authorName || 'U').charAt(0).toUpperCase()}
+                              {(post.author?.name || post.authorName || 'U').charAt(0).toUpperCase()}
                             </div>
-                            <span className="font-medium">{post.authorName || 'Usuario'}</span>
+                            <span className="font-medium">{post.author?.name || post.authorName || 'Usuario'}</span>
                           </div>
                           
                           <div className="flex items-center">

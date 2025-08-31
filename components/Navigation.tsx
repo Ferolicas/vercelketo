@@ -26,6 +26,7 @@ const navigation = [
 export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const [hasAdminAccess, setHasAdminAccess] = useState(false)
   const pathname = usePathname()
 
   useEffect(() => {
@@ -34,6 +35,10 @@ export default function Navigation() {
     }
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
+  useEffect(() => {
+    setHasAdminAccess(!!localStorage.getItem('admin_access'))
   }, [])
 
   return (
@@ -65,7 +70,7 @@ export default function Navigation() {
           <div className="hidden md:block">
             <div className="ml-10 flex items-baseline space-x-4">
               {navigation.map((item) => {
-                if ('adminOnly' in item && item.adminOnly && typeof window !== 'undefined' && !localStorage.getItem('admin_access')) {
+                if ('adminOnly' in item && item.adminOnly && !hasAdminAccess) {
                   return null
                 }
                 
@@ -109,7 +114,7 @@ export default function Navigation() {
         <div className="md:hidden bg-white border-t border-gray-200 shadow-lg">
             <div className="px-2 pt-2 pb-3 space-y-1">
               {navigation.map((item) => {
-                if ('adminOnly' in item && item.adminOnly && typeof window !== 'undefined' && !localStorage.getItem('admin_access')) {
+                if ('adminOnly' in item && item.adminOnly && !hasAdminAccess) {
                   return null
                 }
                 
