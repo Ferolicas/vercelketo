@@ -1,0 +1,1881 @@
+[
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "name",
+        "type": "string",
+        "title": "Nombre"
+      },
+      {
+        "options": {
+          "source": "name",
+          "maxLength": 96
+        },
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "custom"
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "slug",
+        "type": "slug"
+      },
+      {
+        "rows": 3,
+        "name": "description",
+        "type": "text",
+        "title": "Descripción"
+      },
+      {
+        "description": "Un emoji que represente la categoría",
+        "name": "icon",
+        "type": "string",
+        "title": "Icono (Emoji)"
+      }
+    ],
+    "name": "category",
+    "type": "document",
+    "title": "Categoría"
+  },
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "name",
+        "type": "string",
+        "title": "Nombre de la receta"
+      },
+      {
+        "options": {
+          "source": "name",
+          "maxLength": 96
+        },
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "custom"
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "slug",
+        "type": "slug"
+      },
+      {
+        "rows": 4,
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "description",
+        "type": "text",
+        "title": "Descripción"
+      },
+      {
+        "rows": 8,
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "Lista de ingredientes en formato libre. Puedes usar saltos de línea para separar cada ingrediente.",
+        "name": "ingredients",
+        "type": "text",
+        "title": "Ingredientes"
+      },
+      {
+        "rows": 6,
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "preparation",
+        "type": "text",
+        "title": "Preparación"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "uri",
+                "constraint": {
+                  "options": {
+                    "scheme": [
+                      "/^https$/"
+                    ],
+                    "allowRelative": false,
+                    "relativeOnly": false,
+                    "allowCredentials": false
+                  }
+                }
+              },
+              {
+                "flag": "custom"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "youtubeUrl",
+        "type": "url",
+        "title": "URL de YouTube"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              },
+              {
+                "flag": "min",
+                "constraint": 1
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "preparationTime",
+        "type": "number",
+        "title": "Tiempo de preparación (minutos)"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              },
+              {
+                "flag": "min",
+                "constraint": 1
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "servings",
+        "type": "number",
+        "title": "Porciones"
+      },
+      {
+        "options": {
+          "hotspot": true
+        },
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "thumbnail",
+        "type": "image",
+        "title": "Miniatura"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "to": [
+          {
+            "type": "category"
+          }
+        ],
+        "name": "category",
+        "type": "reference",
+        "title": "Categoría"
+      },
+      {
+        "initialValue": 0,
+        "readOnly": true,
+        "name": "averageRating",
+        "type": "number",
+        "title": "Valoración promedio"
+      },
+      {
+        "initialValue": 0,
+        "readOnly": true,
+        "name": "totalRatings",
+        "type": "number",
+        "title": "Total de valoraciones"
+      },
+      {
+        "readOnly": true,
+        "name": "createdAt",
+        "type": "datetime",
+        "title": "Fecha de creación"
+      }
+    ],
+    "name": "recipe",
+    "type": "document",
+    "title": "Receta"
+  },
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "Slug de la receta o post al que pertenece el comentario",
+        "name": "postSlug",
+        "type": "string",
+        "title": "Slug del Post"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "Título de la receta o post para referencia",
+        "name": "postTitle",
+        "type": "string",
+        "title": "Título del Post"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "authorName",
+        "type": "string",
+        "title": "Nombre del autor"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "authorEmail",
+        "type": "string",
+        "title": "Email del autor"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "ID único del autor para permitir edición/eliminación",
+        "name": "authorId",
+        "type": "string",
+        "title": "ID del autor"
+      },
+      {
+        "rows": 4,
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              },
+              {
+                "flag": "min",
+                "constraint": 4
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "content",
+        "type": "text",
+        "title": "Comentario"
+      },
+      {
+        "options": {
+          "list": [
+            {
+              "title": "⭐ 1 estrella",
+              "value": 1
+            },
+            {
+              "title": "⭐⭐ 2 estrellas",
+              "value": 2
+            },
+            {
+              "title": "⭐⭐⭐ 3 estrellas",
+              "value": 3
+            },
+            {
+              "title": "⭐⭐⭐⭐ 4 estrellas",
+              "value": 4
+            },
+            {
+              "title": "⭐⭐⭐⭐⭐ 5 estrellas",
+              "value": 5
+            }
+          ]
+        },
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "valid",
+                "constraint": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ]
+              },
+              {
+                "flag": "min",
+                "constraint": 1
+              },
+              {
+                "flag": "max",
+                "constraint": 5
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "rating",
+        "type": "number",
+        "title": "Valoración"
+      },
+      {
+        "description": "Referencia al comentario al que responde (para respuestas)",
+        "to": [
+          {
+            "type": "comment"
+          }
+        ],
+        "name": "parentComment",
+        "type": "reference",
+        "title": "Comentario padre"
+      },
+      {
+        "initialValue": true,
+        "description": "Los comentarios se aprueban automáticamente",
+        "name": "approved",
+        "type": "boolean",
+        "title": "Aprobado"
+      },
+      {
+        "initialValue": false,
+        "description": "Marca si el comentario ha sido editado",
+        "name": "isEdited",
+        "type": "boolean",
+        "title": "Editado"
+      },
+      {
+        "initialValue": false,
+        "description": "Marca si el comentario ha sido eliminado (soft delete)",
+        "name": "isDeleted",
+        "type": "boolean",
+        "title": "Eliminado"
+      },
+      {
+        "description": "Respuesta oficial de Planeta Keto",
+        "name": "adminReply",
+        "type": "text",
+        "title": "Respuesta del admin"
+      },
+      {
+        "initialValue": false,
+        "name": "adminReplyPublished",
+        "type": "boolean",
+        "title": "Respuesta del admin publicada"
+      },
+      {
+        "name": "adminReplyDate",
+        "type": "datetime",
+        "title": "Fecha respuesta admin"
+      },
+      {
+        "name": "createdAt",
+        "type": "datetime",
+        "title": "Fecha de creación"
+      },
+      {
+        "name": "updatedAt",
+        "type": "datetime",
+        "title": "Fecha de actualización"
+      }
+    ],
+    "name": "comment",
+    "type": "document",
+    "title": "Comentario"
+  },
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "name",
+        "type": "string",
+        "title": "Nombre del producto"
+      },
+      {
+        "options": {
+          "source": "name",
+          "maxLength": 96
+        },
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "custom"
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "slug",
+        "type": "slug"
+      },
+      {
+        "rows": 4,
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "description",
+        "type": "text",
+        "title": "Descripción"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              },
+              {
+                "flag": "min",
+                "constraint": 0
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "price",
+        "type": "number",
+        "title": "Precio"
+      },
+      {
+        "initialValue": "USD",
+        "options": {
+          "list": [
+            {
+              "title": "USD ($)",
+              "value": "USD"
+            },
+            {
+              "title": "EUR (€)",
+              "value": "EUR"
+            },
+            {
+              "title": "COP ($)",
+              "value": "COP"
+            }
+          ]
+        },
+        "name": "currency",
+        "type": "string",
+        "title": "Moneda"
+      },
+      {
+        "options": {
+          "hotspot": true
+        },
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "image",
+        "type": "image",
+        "title": "Imagen"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "uri",
+                "constraint": {
+                  "options": {
+                    "scheme": [
+                      "/^http$/",
+                      "/^https$/"
+                    ],
+                    "allowRelative": false,
+                    "relativeOnly": false,
+                    "allowCredentials": false
+                  }
+                }
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "affiliateUrl",
+        "type": "url",
+        "title": "URL de afiliado"
+      },
+      {
+        "initialValue": false,
+        "name": "featured",
+        "type": "boolean",
+        "title": "Destacado"
+      },
+      {
+        "readOnly": true,
+        "name": "createdAt",
+        "type": "datetime",
+        "title": "Fecha de creación"
+      }
+    ],
+    "name": "product",
+    "type": "document",
+    "title": "Producto"
+  },
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "name",
+        "type": "string",
+        "title": "Nombre del servicio"
+      },
+      {
+        "options": {
+          "source": "name",
+          "maxLength": 96
+        },
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "custom"
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "slug",
+        "type": "slug"
+      },
+      {
+        "rows": 4,
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "description",
+        "type": "text",
+        "title": "Descripción"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              },
+              {
+                "flag": "min",
+                "constraint": 0
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "price",
+        "type": "number",
+        "title": "Precio"
+      },
+      {
+        "initialValue": "USD",
+        "options": {
+          "list": [
+            {
+              "title": "USD ($)",
+              "value": "USD"
+            },
+            {
+              "title": "EUR (€)",
+              "value": "EUR"
+            },
+            {
+              "title": "COP ($)",
+              "value": "COP"
+            }
+          ]
+        },
+        "name": "currency",
+        "type": "string",
+        "title": "Moneda"
+      },
+      {
+        "description": "Ej: 1 hora, 30 días, etc.",
+        "name": "duration",
+        "type": "string",
+        "title": "Duración"
+      },
+      {
+        "options": {
+          "hotspot": true
+        },
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "image",
+        "type": "image",
+        "title": "Imagen"
+      },
+      {
+        "of": [
+          {
+            "type": "string"
+          }
+        ],
+        "name": "features",
+        "type": "array",
+        "title": "Características incluidas"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "uri",
+                "constraint": {
+                  "options": {
+                    "scheme": [
+                      "/^http$/",
+                      "/^https$/"
+                    ],
+                    "allowRelative": false,
+                    "relativeOnly": false,
+                    "allowCredentials": false
+                  }
+                }
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "Link para contratar el servicio",
+        "name": "contactUrl",
+        "type": "url",
+        "title": "URL de contacto"
+      },
+      {
+        "description": "Número de WhatsApp sin símbolos, ej: 573001234567",
+        "name": "whatsapp",
+        "type": "string",
+        "title": "WhatsApp"
+      },
+      {
+        "initialValue": false,
+        "name": "featured",
+        "type": "boolean",
+        "title": "Destacado"
+      },
+      {
+        "readOnly": true,
+        "name": "createdAt",
+        "type": "datetime",
+        "title": "Fecha de creación"
+      }
+    ],
+    "name": "service",
+    "type": "document",
+    "title": "Servicio"
+  },
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "title",
+        "type": "string",
+        "title": "Título"
+      },
+      {
+        "rows": 3,
+        "name": "description",
+        "type": "text",
+        "title": "Descripción"
+      },
+      {
+        "options": {
+          "source": "title",
+          "maxLength": 96
+        },
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "custom"
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "slug",
+        "type": "slug"
+      },
+      {
+        "options": {
+          "hotspot": true
+        },
+        "name": "image",
+        "type": "image",
+        "title": "Imagen Principal"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "min",
+                "constraint": 1
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "of": [
+          {
+            "fields": [
+              {
+                "validation": [
+                  {
+                    "rules": [
+                      {
+                        "flag": "presence",
+                        "constraint": "required"
+                      }
+                    ],
+                    "level": "error"
+                  }
+                ],
+                "name": "title",
+                "type": "string",
+                "title": "Título del Producto"
+              },
+              {
+                "rows": 2,
+                "validation": [
+                  {
+                    "rules": [
+                      {
+                        "flag": "presence",
+                        "constraint": "required"
+                      }
+                    ],
+                    "level": "error"
+                  }
+                ],
+                "name": "description",
+                "type": "text",
+                "title": "Descripción"
+              },
+              {
+                "options": {
+                  "hotspot": true
+                },
+                "name": "image",
+                "type": "image",
+                "title": "Imagen del Producto"
+              },
+              {
+                "validation": [
+                  {
+                    "rules": [
+                      {
+                        "flag": "presence",
+                        "constraint": "required"
+                      },
+                      {
+                        "flag": "uri",
+                        "constraint": {
+                          "options": {
+                            "scheme": [
+                              "/^http$/",
+                              "/^https$/"
+                            ],
+                            "allowRelative": false,
+                            "relativeOnly": false,
+                            "allowCredentials": false
+                          }
+                        }
+                      }
+                    ],
+                    "level": "error"
+                  }
+                ],
+                "name": "link",
+                "type": "url",
+                "title": "Enlace de Afiliado"
+              },
+              {
+                "name": "price",
+                "type": "number",
+                "title": "Precio"
+              },
+              {
+                "options": {
+                  "list": [
+                    {
+                      "title": "USD",
+                      "value": "USD"
+                    },
+                    {
+                      "title": "EUR",
+                      "value": "EUR"
+                    },
+                    {
+                      "title": "COP",
+                      "value": "COP"
+                    }
+                  ]
+                },
+                "initialValue": "USD",
+                "name": "currency",
+                "type": "string",
+                "title": "Moneda"
+              },
+              {
+                "validation": [
+                  {
+                    "rules": [
+                      {
+                        "flag": "min",
+                        "constraint": 0
+                      },
+                      {
+                        "flag": "max",
+                        "constraint": 5
+                      }
+                    ],
+                    "level": "error"
+                  }
+                ],
+                "name": "rating",
+                "type": "number",
+                "title": "Calificación"
+              },
+              {
+                "name": "category",
+                "type": "string",
+                "title": "Categoría"
+              }
+            ],
+            "type": "object",
+            "name": "affiliateItem",
+            "title": "Producto Afiliado"
+          }
+        ],
+        "name": "items",
+        "type": "array",
+        "title": "Productos"
+      },
+      {
+        "initialValue": false,
+        "name": "featured",
+        "type": "boolean",
+        "title": "Destacado"
+      },
+      {
+        "name": "createdAt",
+        "type": "datetime",
+        "title": "Fecha de Creación"
+      },
+      {
+        "name": "updatedAt",
+        "type": "datetime",
+        "title": "Última Actualización"
+      }
+    ],
+    "name": "affiliateList",
+    "type": "document",
+    "title": "Lista de Afiliados"
+  },
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "title",
+        "type": "string",
+        "title": "Título del producto"
+      },
+      {
+        "options": {
+          "source": "title",
+          "maxLength": 96
+        },
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "custom"
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "slug",
+        "type": "slug"
+      },
+      {
+        "rows": 4,
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "description",
+        "type": "text",
+        "title": "Descripción"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              },
+              {
+                "flag": "uri",
+                "constraint": {
+                  "options": {
+                    "scheme": [
+                      "/^https$/"
+                    ],
+                    "allowRelative": false,
+                    "relativeOnly": false,
+                    "allowCredentials": false
+                  }
+                }
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "amazonUrl",
+        "type": "url",
+        "title": "URL de Amazon"
+      },
+      {
+        "options": {
+          "hotspot": true
+        },
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "image",
+        "type": "image",
+        "title": "Imagen del producto"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "Precio en formato texto, ej: $25.99",
+        "name": "price",
+        "type": "string",
+        "title": "Precio aproximado"
+      },
+      {
+        "options": {
+          "list": [
+            {
+              "title": "Suplementos",
+              "value": "suplementos"
+            },
+            {
+              "title": "Aceites Saludables",
+              "value": "aceites"
+            },
+            {
+              "title": "Endulzantes",
+              "value": "endulzantes"
+            },
+            {
+              "title": "Snacks Keto",
+              "value": "snacks"
+            },
+            {
+              "title": "Cocina y Hogar",
+              "value": "cocina"
+            },
+            {
+              "title": "Libros y Guías",
+              "value": "libros"
+            },
+            {
+              "title": "Equipos Fitness",
+              "value": "fitness"
+            },
+            {
+              "title": "Otros",
+              "value": "otros"
+            }
+          ]
+        },
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "valid",
+                "constraint": [
+                  "suplementos",
+                  "aceites",
+                  "endulzantes",
+                  "snacks",
+                  "cocina",
+                  "libros",
+                  "fitness",
+                  "otros"
+                ]
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "category",
+        "type": "string",
+        "title": "Categoría"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              },
+              {
+                "flag": "min",
+                "constraint": 1
+              },
+              {
+                "flag": "max",
+                "constraint": 5
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "Calificación de 1 a 5 estrellas",
+        "name": "rating",
+        "type": "number",
+        "title": "Calificación"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "min",
+                "constraint": 0
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "reviewsCount",
+        "type": "number",
+        "title": "Número de reseñas"
+      },
+      {
+        "description": "Lista de beneficios del producto",
+        "of": [
+          {
+            "type": "string"
+          }
+        ],
+        "name": "benefits",
+        "type": "array",
+        "title": "Beneficios"
+      },
+      {
+        "description": "Características principales del producto",
+        "of": [
+          {
+            "type": "string"
+          }
+        ],
+        "name": "keyFeatures",
+        "type": "array",
+        "title": "Características clave"
+      },
+      {
+        "initialValue": false,
+        "name": "featured",
+        "type": "boolean",
+        "title": "Destacado"
+      },
+      {
+        "initialValue": true,
+        "name": "isKeto",
+        "type": "boolean",
+        "title": "Producto Keto-friendly"
+      },
+      {
+        "readOnly": true,
+        "name": "createdAt",
+        "type": "datetime",
+        "title": "Fecha de creación"
+      }
+    ],
+    "name": "amazonList",
+    "type": "document",
+    "title": "Lista de Amazon"
+  },
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "title",
+        "type": "string",
+        "title": "Título"
+      },
+      {
+        "options": {
+          "source": "title",
+          "maxLength": 96
+        },
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "custom"
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "slug",
+        "type": "slug"
+      },
+      {
+        "rows": 3,
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "Resumen que aparece en la tarjeta del blog",
+        "name": "excerpt",
+        "type": "text",
+        "title": "Resumen"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "of": [
+          {
+            "marks": {
+              "annotations": [
+                {
+                  "i18nTitleKey": "inputs.portable-text.annotation.link",
+                  "options": {
+                    "modal": {
+                      "type": "popover"
+                    }
+                  },
+                  "fields": [
+                    {
+                      "validation": [
+                        {
+                          "rules": [
+                            {
+                              "flag": "uri",
+                              "constraint": {
+                                "options": {
+                                  "scheme": [
+                                    "/^http$/",
+                                    "/^https$/",
+                                    "/^tel$/",
+                                    "/^mailto$/"
+                                  ],
+                                  "allowRelative": true,
+                                  "relativeOnly": false,
+                                  "allowCredentials": false
+                                }
+                              }
+                            }
+                          ],
+                          "level": "error"
+                        }
+                      ],
+                      "description": "A valid web, email, phone, or relative link.",
+                      "name": "href",
+                      "type": "url",
+                      "title": "Link"
+                    }
+                  ],
+                  "name": "link",
+                  "type": "object"
+                }
+              ],
+              "decorators": [
+                {
+                  "value": "strong",
+                  "title": "Strong"
+                },
+                {
+                  "value": "em",
+                  "title": "Italic"
+                },
+                {
+                  "value": "code",
+                  "title": "Code"
+                },
+                {
+                  "value": "underline",
+                  "title": "Underline"
+                },
+                {
+                  "value": "strike-through",
+                  "title": "Strike"
+                }
+              ]
+            },
+            "lists": [
+              {
+                "value": "bullet",
+                "title": "Bulleted list"
+              },
+              {
+                "value": "number",
+                "title": "Numbered list"
+              }
+            ],
+            "styles": [
+              {
+                "value": "normal",
+                "title": "Normal"
+              },
+              {
+                "value": "h1",
+                "title": "Heading 1"
+              },
+              {
+                "value": "h2",
+                "title": "Heading 2"
+              },
+              {
+                "value": "h3",
+                "title": "Heading 3"
+              },
+              {
+                "value": "h4",
+                "title": "Heading 4"
+              },
+              {
+                "value": "h5",
+                "title": "Heading 5"
+              },
+              {
+                "value": "h6",
+                "title": "Heading 6"
+              },
+              {
+                "value": "blockquote",
+                "title": "Quote"
+              }
+            ],
+            "of": [],
+            "type": "block"
+          }
+        ],
+        "name": "content",
+        "type": "array",
+        "title": "Contenido completo"
+      },
+      {
+        "options": {
+          "hotspot": true
+        },
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "featuredImage",
+        "type": "image",
+        "title": "Imagen destacada"
+      },
+      {
+        "initialValue": "Planeta Keto",
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "author",
+        "type": "string",
+        "title": "Autor"
+      },
+      {
+        "options": {
+          "layout": "tags"
+        },
+        "of": [
+          {
+            "type": "string"
+          }
+        ],
+        "name": "tags",
+        "type": "array",
+        "title": "Etiquetas"
+      },
+      {
+        "initialValue": false,
+        "name": "published",
+        "type": "boolean",
+        "title": "Publicado"
+      },
+      {
+        "readOnly": true,
+        "name": "createdAt",
+        "type": "datetime",
+        "title": "Fecha de creación"
+      }
+    ],
+    "name": "blogPost",
+    "type": "document",
+    "title": "Artículo de Blog"
+  },
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              },
+              {
+                "flag": "max",
+                "constraint": 200
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "title",
+        "type": "string",
+        "title": "Título"
+      },
+      {
+        "options": {
+          "source": "title",
+          "maxLength": 96
+        },
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "custom"
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "slug",
+        "type": "slug"
+      },
+      {
+        "rows": 6,
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              },
+              {
+                "flag": "min",
+                "constraint": 10
+              },
+              {
+                "flag": "max",
+                "constraint": 5000
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "content",
+        "type": "text",
+        "title": "Contenido"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              },
+              {
+                "flag": "max",
+                "constraint": 100
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "authorName",
+        "type": "string",
+        "title": "Nombre del autor"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "authorEmail",
+        "type": "string",
+        "title": "Email del autor"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "ID único del autor para permitir edición/eliminación",
+        "name": "authorId",
+        "type": "string",
+        "title": "ID del autor"
+      },
+      {
+        "options": {
+          "list": [
+            {
+              "title": "🌱 Principiantes",
+              "value": "principiantes"
+            },
+            {
+              "title": "🎉 Testimonios",
+              "value": "testimonios"
+            },
+            {
+              "title": "👩‍🍳 Recetas",
+              "value": "recetas"
+            },
+            {
+              "title": "❓ Dudas",
+              "value": "dudas"
+            },
+            {
+              "title": "💪 Ejercicio",
+              "value": "ejercicio"
+            },
+            {
+              "title": "🛒 Productos",
+              "value": "productos"
+            }
+          ]
+        },
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "valid",
+                "constraint": [
+                  "principiantes",
+                  "testimonios",
+                  "recetas",
+                  "dudas",
+                  "ejercicio",
+                  "productos"
+                ]
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "category",
+        "type": "string",
+        "title": "Categoría"
+      },
+      {
+        "options": {
+          "layout": "tags"
+        },
+        "of": [
+          {
+            "type": "string"
+          }
+        ],
+        "name": "tags",
+        "type": "array",
+        "title": "Etiquetas"
+      },
+      {
+        "initialValue": false,
+        "description": "Publicaciones fijadas aparecen al inicio",
+        "name": "isPinned",
+        "type": "boolean",
+        "title": "Fijado"
+      },
+      {
+        "initialValue": false,
+        "description": "Las publicaciones bloqueadas no permiten respuestas",
+        "name": "isLocked",
+        "type": "boolean",
+        "title": "Bloqueado"
+      },
+      {
+        "initialValue": true,
+        "description": "Los posts se aprueban automáticamente",
+        "name": "approved",
+        "type": "boolean",
+        "title": "Aprobado"
+      },
+      {
+        "initialValue": false,
+        "description": "Marca si el post ha sido editado",
+        "name": "isEdited",
+        "type": "boolean",
+        "title": "Editado"
+      },
+      {
+        "initialValue": false,
+        "description": "Marca si el post ha sido eliminado (soft delete)",
+        "name": "isDeleted",
+        "type": "boolean",
+        "title": "Eliminado"
+      },
+      {
+        "initialValue": 0,
+        "description": "Contador de vistas del post",
+        "name": "views",
+        "type": "number",
+        "title": "Visualizaciones"
+      },
+      {
+        "initialValue": 0,
+        "description": "Contador de likes del post",
+        "name": "likes",
+        "type": "number",
+        "title": "Me gusta"
+      },
+      {
+        "initialValue": 0,
+        "description": "Contador automático de respuestas",
+        "name": "replyCount",
+        "type": "number",
+        "title": "Número de respuestas"
+      },
+      {
+        "description": "Fecha de la última respuesta o actualización",
+        "name": "lastActivityAt",
+        "type": "datetime",
+        "title": "Última actividad"
+      },
+      {
+        "name": "createdAt",
+        "type": "datetime",
+        "title": "Fecha de creación"
+      },
+      {
+        "name": "updatedAt",
+        "type": "datetime",
+        "title": "Fecha de actualización"
+      }
+    ],
+    "name": "forumPost",
+    "type": "document",
+    "title": "Publicación del Foro"
+  }
+]

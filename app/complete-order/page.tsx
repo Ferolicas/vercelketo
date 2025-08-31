@@ -1,11 +1,11 @@
 'use client'
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { CheckCircleIcon, XCircleIcon } from '@heroicons/react/24/outline';
 
-export default function CompleteOrderPage() {
+function CompleteOrderContent() {
   const searchParams = useSearchParams();
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
   const [paymentDetails, setPaymentDetails] = useState<any>(null);
@@ -129,5 +129,24 @@ export default function CompleteOrderPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function CompleteOrderPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gray-50 pt-20">
+        <div className="max-w-2xl mx-auto px-4 py-16">
+          <div className="bg-white rounded-2xl shadow-lg p-8 text-center">
+            <div className="animate-spin rounded-full h-20 w-20 border-4 border-green-500 border-t-transparent mx-auto mb-6"></div>
+            <h1 className="text-3xl font-bold text-gray-900 mb-4">
+              Cargando...
+            </h1>
+          </div>
+        </div>
+      </div>
+    }>
+      <CompleteOrderContent />
+    </Suspense>
   );
 }
