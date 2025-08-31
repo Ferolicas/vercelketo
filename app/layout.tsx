@@ -6,6 +6,7 @@ import Navigation from "@/components/Navigation"
 import PerformanceOptimizer from "@/components/PerformanceOptimizer"
 import SEOBreadcrumbs from "@/components/SEOBreadcrumbs"
 import { FooterLinks } from "@/components/InternalLinks"
+import SchemaMarkup from "@/components/SchemaMarkup"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -77,6 +78,16 @@ export default function RootLayout({
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+        
+        {/* Schema Markup para Organization y Website */}
+        <SchemaMarkup 
+          type="organization" 
+          data={{}} 
+        />
+        <SchemaMarkup 
+          type="website" 
+          data={{}} 
+        />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-[100dvh] bg-white`}
