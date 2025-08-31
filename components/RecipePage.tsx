@@ -85,14 +85,18 @@ export default function RecipePageClient({ recipe, thumbnailUrl, youtubeId }: Re
                 const iframe = document.getElementById('youtube-player') as HTMLIFrameElement
                 const thumbnail = document.getElementById('video-thumbnail')
                 if (iframe && thumbnail) {
-                  // Update src with autoplay and ensure it loads immediately
-                  iframe.src = `https://www.youtube.com/embed/${youtubeId}?modestbranding=1&showinfo=0&rel=0&fs=1&controls=1&autoplay=1&cc_load_policy=0&iv_load_policy=3&logo=0&color=white&disablekb=0&enablejsapi=1`
-                  iframe.style.display = 'block'
+                  // Create a new iframe with autoplay enabled
+                  const newIframe = document.createElement('iframe')
+                  newIframe.id = 'youtube-player'
+                  newIframe.src = `https://www.youtube.com/embed/${youtubeId}?autoplay=1&mute=0&controls=1&modestbranding=1&showinfo=0&rel=0&fs=1&cc_load_policy=0&iv_load_policy=3&color=white&disablekb=0&enablejsapi=1`
+                  newIframe.title = `Tutorial: ${recipe.name}`
+                  newIframe.allowFullscreen = true
+                  newIframe.className = 'absolute top-0 left-0 w-full h-full'
+                  newIframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share'
+                  
+                  // Replace the old iframe
+                  iframe.parentNode?.replaceChild(newIframe, iframe)
                   thumbnail.style.display = 'none'
-                  // Force iframe to focus and trigger play
-                  setTimeout(() => {
-                    iframe.focus()
-                  }, 100)
                 }
               }}
             >
