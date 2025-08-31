@@ -52,7 +52,8 @@
       "WebFetch(domain:www.clara.es)",
       "Read(C:\\storeplanetaketo/**)",
       "Read(C:\\storeplanetaketo\\components/**)",
-      "Read(C:\\storeplanetaketo\\components/**)"
+      "Read(C:\\storeplanetaketo\\components/**)",
+      "Bash(timeout 10 curl -s \"https://planetaketo.es/api/create-checkout\" -X POST -H \"Content-Type: application/json\" -d '{\"\"\"\"productId\"\"\"\":\"\"\"\"test\"\"\"\"}')"
     ],
     "deny": [],
     "ask": [],
