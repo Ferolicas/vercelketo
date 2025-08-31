@@ -103,11 +103,13 @@ export default function ServiciosYProductos() {
 
       console.log('🔍 Fetching products and services from Sanity...');
       
-      const [productosData, serviciosData, amazonData] = await Promise.all([
+      const [productosData, serviciosData] = await Promise.all([
         client.fetch<SanityProduct[]>(queries.allProducts),
-        client.fetch<SanityService[]>(queries.allServices),
-        client.fetch<SanityAmazonList[]>(queries.allAmazonLists)
+        client.fetch<SanityService[]>(queries.allServices)
       ]);
+      
+      // Skip Amazon lists for now as the type doesn't exist
+      const amazonData: SanityAmazonList[] = [];
 
       console.log('📦 Products:', productosData?.length || 0);
       console.log('🎯 Services:', serviciosData?.length || 0);

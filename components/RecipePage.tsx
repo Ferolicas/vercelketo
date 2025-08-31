@@ -63,8 +63,8 @@ export default function RecipePageClient({ recipe, thumbnailUrl, youtubeId }: Re
             <div className="relative w-full h-full overflow-hidden rounded-none">
               <iframe
                 id="youtube-player"
-                src={`https://www.youtube.com/embed/${youtubeId}?modestbranding=1&showinfo=0&rel=0&fs=1&controls=1&autoplay=0&cc_load_policy=0&iv_load_policy=3&logo=0&color=white&disablekb=0`}
-                title={`Tutorial: ${recipe.name}`}
+                src={`https://www.youtube.com/embed/${youtubeId}?controls=0&modestbranding=1&showinfo=0&rel=0&fs=1&autoplay=0&cc_load_policy=0&iv_load_policy=3&logo=0&disablekb=1`}
+                title=""
                 allowFullScreen
                 className="absolute top-0 left-0 w-full h-full"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -85,24 +85,34 @@ export default function RecipePageClient({ recipe, thumbnailUrl, youtubeId }: Re
                 const iframe = document.getElementById('youtube-player') as HTMLIFrameElement
                 const thumbnail = document.getElementById('video-thumbnail')
                 if (iframe && thumbnail) {
-                  // Create a new iframe with autoplay enabled
+                  // Create a new iframe with autoplay and controls visible
                   const newIframe = document.createElement('iframe')
                   newIframe.id = 'youtube-player'
-                  newIframe.src = `https://www.youtube.com/embed/${youtubeId}?autoplay=1&mute=0&controls=1&modestbranding=1&showinfo=0&rel=0&fs=1&cc_load_policy=0&iv_load_policy=3&color=white&disablekb=0&enablejsapi=1`
-                  newIframe.title = `Tutorial: ${recipe.name}`
+                  newIframe.src = `https://www.youtube.com/embed/${youtubeId}?autoplay=1&controls=1&modestbranding=1&showinfo=0&rel=0&fs=1&cc_load_policy=0&iv_load_policy=3&disablekb=0`
+                  newIframe.title = ""
                   newIframe.allowFullscreen = true
                   newIframe.className = 'absolute top-0 left-0 w-full h-full'
                   newIframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share'
                   
-                  // Replace the old iframe
+                  // Replace the old iframe and hide thumbnail
                   iframe.parentNode?.replaceChild(newIframe, iframe)
                   thumbnail.style.display = 'none'
                 }
               }}
             >
-              <div className="absolute inset-0 bg-black/30"></div>
-              <div className="relative z-10 w-20 h-20 bg-orange-500/90 backdrop-blur-sm rounded-full flex items-center justify-center border-2 border-white/80 shadow-2xl group-hover:bg-orange-600/90 transition-all duration-300 transform group-hover:scale-110">
-                <div className="w-0 h-0 border-l-[20px] border-l-white border-t-[12px] border-t-transparent border-b-[12px] border-b-transparent ml-2" />
+              <div className="absolute inset-0 bg-gradient-to-br from-black/20 via-black/40 to-black/60"></div>
+              
+              {/* Custom Play Button */}
+              <div className="relative z-10 w-24 h-24 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center border-3 border-white/90 shadow-2xl group-hover:from-green-600 group-hover:to-green-700 transition-all duration-300 transform group-hover:scale-110 group-hover:rotate-3">
+                <div className="w-0 h-0 border-l-[22px] border-l-white border-t-[14px] border-t-transparent border-b-[14px] border-b-transparent ml-1 drop-shadow-sm" />
+              </div>
+              
+              {/* Play Text */}
+              <div className="absolute bottom-4 left-4 right-4 text-center">
+                <div className="bg-black/60 backdrop-blur-sm rounded-lg px-4 py-2">
+                  <p className="text-white font-semibold text-sm">▶ Ver Tutorial Completo</p>
+                  <p className="text-white/80 text-xs">Haz clic para reproducir</p>
+                </div>
               </div>
             </div>
           </div>
