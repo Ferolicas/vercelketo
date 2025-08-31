@@ -99,7 +99,7 @@ export default function ForoContent({
         if (selectedCategory !== 'Todos') {
           filtered = filtered.filter(post => {
             // Simple string matching for API data
-            const postCategory = post.category;
+            const postCategory = typeof post.category === 'string' ? post.category : post.category?.slug?.current || '';
             if (process.env.NODE_ENV === 'development') {
               console.log(`📂 Post: "${post.title}" - Category: "${postCategory}" - Selected: "${selectedCategory}" - Match: ${postCategory === selectedCategory}`);
             }
@@ -312,7 +312,8 @@ export default function ForoContent({
           <div className="space-y-4">
             {filteredPosts.map((post) => {
               // Find category data by matching ID
-              const categoryData = forumCategories.find(cat => cat.id === post.category) || forumCategories[0];
+              const postCategoryId = typeof post.category === 'string' ? post.category : post.category?.slug?.current || '';
+              const categoryData = forumCategories.find(cat => cat.id === postCategoryId) || forumCategories[0];
               
               return (
                 <div key={post._id} className="bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-all duration-300">

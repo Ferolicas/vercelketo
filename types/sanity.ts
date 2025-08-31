@@ -154,12 +154,17 @@ export interface ForumPost {
   excerpt: string
   authorName: string
   authorEmail: string
+  // Support both API and Sanity formats
+  author?: {
+    name: string
+    email: string
+  }
   category: {
     name: string
     slug: {
       current: string
     }
-  }
+  } | string
   tags: string[]
   createdAt: string
   updatedAt: string
