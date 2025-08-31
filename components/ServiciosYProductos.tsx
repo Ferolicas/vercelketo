@@ -101,26 +101,20 @@ export default function ServiciosYProductos() {
       setLoading(true);
       setError(null);
 
-      console.log('🔍 Fetching products and services from Sanity...');
+      console.log('🔍 Fetching products and services from APIs...');
       
-      // Safely fetch data with comprehensive error handling
-      let productosData: SanityProduct[] = [];
-      let serviciosData: SanityService[] = [];
-      let amazonData: SanityAmazonList[] = [];
-      
-      try {
-        productosData = await client.fetch<SanityProduct[]>(queries.allProducts);
-      } catch (err) {
-        console.warn('Products fetch failed:', err);
-        productosData = [];
-      }
-      
-      try {
-        serviciosData = await client.fetch<SanityService[]>(queries.allServices);
-      } catch (err) {
-        console.warn('Services fetch failed:', err);
-        serviciosData = [];
-      }
+      // Use API endpoints like recipes do
+      const [productsRes, servicesRes] = await Promise.all([
+        fetch('/api/products'),
+        fetch('/api/services')
+      ]);
+
+      const productsData = await productsRes.json();
+      const servicesData = await servicesRes.json();
+
+      const productosData = productsData.products || [];
+      const serviciosData = servicesData.services || [];
+      const amazonData: SanityAmazonList[] = []; // Keep empty for now
 
       console.log('📦 Products:', productosData?.length || 0);
       console.log('🎯 Services:', serviciosData?.length || 0);
