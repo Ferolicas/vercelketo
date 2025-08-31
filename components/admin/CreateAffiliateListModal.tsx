@@ -1,16 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { X, Plus, Image, Link, Save, Loader2 } from 'lucide-react'
+import { X, Image, Link, Save, Loader2 } from 'lucide-react'
 import { urlFor } from '@/lib/sanity'
-
-interface AffiliateItem {
-  id: string
-  title: string
-  description: string
-  imageUrl: string
-  link: string
-}
 
 interface CreateAffiliateListModalProps {
   isOpen: boolean
@@ -27,15 +19,8 @@ export default function CreateAffiliateListModal({
   const [description, setDescription] = useState('')
   const [imageFile, setImageFile] = useState<File | null>(null)
   const [imagePreview, setImagePreview] = useState<string | null>(null)
-  const [affiliateLink, setAffiliateLink] = useState('')
+  const [amazonListUrl, setAmazonListUrl] = useState('')
   const [loading, setLoading] = useState(false)
-  const [items, setItems] = useState<AffiliateItem[]>([])
-  const [currentItem, setCurrentItem] = useState<Partial<AffiliateItem>>({
-    title: '',
-    description: '',
-    imageUrl: '',
-    link: ''
-  })
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -44,34 +29,9 @@ export default function CreateAffiliateListModal({
       const reader = new FileReader()
       reader.onloadend = () => {
         setImagePreview(reader.result as string)
-        setCurrentItem(prev => ({ ...prev, imageUrl: reader.result as string }))
       }
       reader.readAsDataURL(file)
     }
-  }
-
-  const addItem = () => {
-    if (!currentItem.title || !currentItem.description || !currentItem.link) {
-      alert('Por favor completa todos los campos del producto')
-      return
-    }
-
-    const newItem: AffiliateItem = {
-      id: Date.now().toString(),
-      title: currentItem.title,
-      description: currentItem.description,
-      imageUrl: currentItem.imageUrl || '',
-      link: currentItem.link
-    }
-
-    setItems([...items, newItem])
-    setCurrentItem({ title: '', description: '', imageUrl: '', link: '' })
-    setImageFile(null)
-    setImagePreview(null)
-  }
-
-  const removeItem = (id: string) => {
-    setItems(items.filter(item => item.id !== id))
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -82,15 +42,20 @@ export default function CreateAffiliateListModal({
       return
     }
 
-    if (items.length === 0) {
-      alert('Por favor agrega al menos un producto a la lista')
+    if (!amazonListUrl.trim()) {
+      alert('Por favor ingresa el enlace de la lista de Amazon')
+      return
+    }
+
+    // Validate Amazon URL
+    if (!amazonListUrl.includes('amazon.') || !amazonListUrl.startsWith('http')) {
+      alert('Por favor ingresa un enlace válido de Amazon')
       return
     }
 
     setLoading(true)
 
     try {
-      // Upload images and create affiliate list
       const formData = new FormData()
       
       // Upload main image if provided
@@ -102,12 +67,7 @@ export default function CreateAffiliateListModal({
       const affiliateData = {
         title: title.trim(),
         description: description.trim(),
-        items: items.map(item => ({
-          title: item.title,
-          description: item.description,
-          imageUrl: item.imageUrl,
-          link: item.link
-        }))
+        amazonListUrl: amazonListUrl.trim()
       }
 
       formData.append('affiliateData', JSON.stringify(affiliateData))
@@ -139,9 +99,7 @@ export default function CreateAffiliateListModal({
     setDescription('')
     setImageFile(null)
     setImagePreview(null)
-    setAffiliateLink('')
-    setItems([])
-    setCurrentItem({ title: '', description: '', imageUrl: '', link: '' })
+    setAmazonListUrl('')
   }
 
   if (!isOpen) return null
@@ -160,7 +118,6 @@ export default function CreateAffiliateListModal({
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
-          {/* Main List Info */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-gray-900">Información de la Lista</h3>
             
@@ -193,6 +150,26 @@ export default function CreateAffiliateListModal({
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
+                Enlace de la Lista de Amazon *
+              </label>
+              <div className="flex items-center space-x-2">
+                <Link size={20} className="text-gray-500" />
+                <input
+                  type="url"
+                  value={amazonListUrl}
+                  onChange={(e) => setAmazonListUrl(e.target.value)}
+                  className="flex-1 px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  placeholder="https://www.amazon.es/hz/wishlist/ls/XXXXXXXXX"
+                  required
+                />
+              </div>
+              <p className="text-sm text-gray-500 mt-2">
+                Pega aquí el enlace de tu lista de Amazon ya creada
+              </p>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
                 Imagen Principal
               </label>
               <div className="flex items-center space-x-4">
@@ -217,103 +194,6 @@ export default function CreateAffiliateListModal({
             </div>
           </div>
 
-          {/* Items Section */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-gray-900">Agregar Productos</h3>
-            
-            <div className="grid md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Título del Producto *</label>
-                <input
-                  type="text"
-                  value={currentItem.title || ''}
-                  onChange={(e) => setCurrentItem(prev => ({ ...prev, title: e.target.value }))}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                  placeholder="Nombre del producto"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Enlace de Afiliado *</label>
-                <input
-                  type="url"
-                  value={currentItem.link || ''}
-                  onChange={(e) => setCurrentItem(prev => ({ ...prev, link: e.target.value }))}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                  placeholder="https://amazon.com/..."
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Descripción *</label>
-              <textarea
-                value={currentItem.description || ''}
-                onChange={(e) => setCurrentItem(prev => ({ ...prev, description: e.target.value }))}
-                rows={2}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                placeholder="Descripción breve del producto..."
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Imagen del Producto</label>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={(e) => {
-                  const file = e.target.files?.[0]
-                  if (file) {
-                    const reader = new FileReader()
-                    reader.onloadend = () => {
-                      setCurrentItem(prev => ({ ...prev, imageUrl: reader.result as string }))
-                    }
-                    reader.readAsDataURL(file)
-                  }
-                }}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-              />
-            </div>
-
-            <button
-              type="button"
-              onClick={addItem}
-              className="w-full flex items-center justify-center px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
-            >
-              <Plus size={20} className="mr-2" />
-              Agregar Producto a la Lista
-            </button>
-          </div>
-
-          {/* Items List */}
-          {items.length > 0 && (
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-gray-900">Productos Agregados ({items.length})</h3>
-              
-              <div className="space-y-3">
-                {items.map((item) => (
-                  <div key={item.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                    <div className="flex-1">
-                      <h4 className="font-semibold text-gray-900">{item.title}</h4>
-                      <p className="text-sm text-gray-600">{item.description}</p>
-                      <a href={item.link} target="_blank" rel="noopener noreferrer" className="text-sm text-blue-500 hover:text-blue-600">
-                        Ver enlace →
-                      </a>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => removeItem(item.id)}
-                      className="ml-4 p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
-                    >
-                      <X size={16} />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Submit Button */}
           <div className="flex justify-end space-x-4 pt-6 border-t border-gray-200">
             <button
               type="button"
@@ -324,7 +204,7 @@ export default function CreateAffiliateListModal({
             </button>
             <button
               type="submit"
-              disabled={loading || items.length === 0}
+              disabled={loading || !title.trim() || !amazonListUrl.trim()}
               className="px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl hover:from-green-600 hover:to-emerald-700 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
             >
               {loading ? (

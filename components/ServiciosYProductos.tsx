@@ -17,6 +17,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { StarIcon as StarSolid } from '@heroicons/react/24/solid';
 import { client, queries, urlFor } from '@/lib/sanity';
+import PurchaseModal from './PurchaseModal';
 
 interface SanityProduct {
   _id: string;
@@ -89,6 +90,8 @@ export default function ServiciosYProductos() {
   const [servicios, setServicios] = useState<SanityService[]>([]);
   const [amazonLists, setAmazonLists] = useState<SanityAmazonList[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [showPurchaseModal, setShowPurchaseModal] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<any>(null);
 
   const categorias = ['Todos', 'Productos', 'Servicios', 'Amazon'];
 
@@ -181,6 +184,20 @@ export default function ServiciosYProductos() {
         }`}
       />
     ));
+  };
+
+  const handlePurchase = (item: ProductoUnificado) => {
+    // Convertir el producto para que sea compatible con el modal
+    const modalProduct = {
+      _id: item._id,
+      name: item.nombre,
+      description: item.descripcion,
+      price: item.precio,
+      image: item.imagen ? urlFor(item.imagen).width(400).height(300).url() : undefined,
+      includes: item.incluye || []
+    };
+    setSelectedProduct(modalProduct);
+    setShowPurchaseModal(true);
   };
 
   return (
@@ -357,19 +374,25 @@ export default function ServiciosYProductos() {
                               </div>
                             )}
                           </div>
-                          <a
-                            href={item.tipo === 'servicio' ? (item as any).urlContacto : (item as any).urlCompra}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className={`px-6 py-2 rounded-lg font-semibold transition-colors duration-200 flex items-center ${
-                              item.tipo === 'servicio' 
-                                ? 'bg-blue-500 hover:bg-blue-600 text-white' 
-                                : 'bg-green-500 hover:bg-green-600 text-white'
-                            }`}
-                          >
-                            <ExternalLinkIcon className="h-4 w-4 mr-2" />
-                            {item.tipo === 'servicio' ? 'Contactar' : 'Comprar'}
-                          </a>
+                          {item.tipo === 'servicio' ? (
+                            <a
+                              href={(item as any).urlContacto}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="px-6 py-2 rounded-lg font-semibold transition-colors duration-200 flex items-center bg-blue-500 hover:bg-blue-600 text-white"
+                            >
+                              <ExternalLinkIcon className="h-4 w-4 mr-2" />
+                              Contactar
+                            </a>
+                          ) : (
+                            <button
+                              onClick={() => handlePurchase(item)}
+                              className="px-6 py-2 rounded-lg font-semibold transition-colors duration-200 flex items-center bg-green-500 hover:bg-green-600 text-white"
+                            >
+                              <ShoppingCartIcon className="h-4 w-4 mr-2" />
+                              Comprar
+                            </button>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -503,6 +526,17 @@ export default function ServiciosYProductos() {
           </div>
         </div>
       </div>
+
+      {/* Purchase Modal */}
+      {showPurchaseModal && selectedProduct && (
+        <PurchaseModal
+          product={selectedProduct}
+          onClose={() => {
+            setShowPurchaseModal(false);
+            setSelectedProduct(null);
+          }}
+        />
+      )}
     </div>
   );
 }
