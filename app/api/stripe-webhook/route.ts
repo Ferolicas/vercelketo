@@ -55,9 +55,18 @@ export async function POST(request: Request) {
         expand: ['charges.data.payment_method_details', 'payment_method']
       })
       
-      // Obtener detalles del producto
+      // Obtener detalles del producto o servicio
       const product = await client.fetch(
-        `*[_type == "product" && _id == $productId][0]`,
+        `*[_type in ["product", "service"] && _id == $productId][0]{
+          _id,
+          _type,
+          title,
+          name,
+          category,
+          pdfFile,
+          image,
+          calendlyUrl
+        }`,
         { productId: paymentIntent.metadata?.productId }
       )
 

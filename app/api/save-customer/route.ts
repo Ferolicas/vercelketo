@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { client } from '@/lib/sanity'
-import { sendPurchaseEmailWithNewsletter, sendAdvisoryPurchaseEmail, sendAdminAdvisoryNotification } from '@/lib/resend'
+import { sendPurchaseEmailWithNewsletter, sendServicePurchaseEmail, sendAdminAdvisoryNotification } from '@/lib/resend'
 import bcrypt from 'bcryptjs'
 
 export async function POST(request: Request) {
@@ -22,7 +22,9 @@ export async function POST(request: Request) {
         amount,
         productId->{
           _id,
+          _type,
           title,
+          name,
           category,
           pdfFile,
           image,
@@ -87,23 +89,27 @@ export async function POST(request: Request) {
       downloadUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/download/${existingTransaction.ketoCode}/${existingTransaction._id}`
     }
 
+    // Determinar el título del producto/servicio
+    const productTitle = existingTransaction.productId.title || existingTransaction.productId.name
+
     // Enviar email específico según el tipo de producto
-    if (existingTransaction.productId.category === 'Asesoria') {
-      // Enviar email de asesoría
-      await sendAdvisoryPurchaseEmail(
+    if (existingTransaction.productId._type === 'service' || existingTransaction.productId.category === 'Asesoria') {
+      // Enviar email de asesoría con botón de Calendly
+      await sendServicePurchaseEmail(
         email,
         nombre,
         existingTransaction.ketoCode,
-        existingTransaction.productId.title,
+        productTitle,
         rawPassword,
-        suscribirNewsletter
+        suscribirNewsletter,
+        existingTransaction.productId.calendlyUrl
       )
       
       // Enviar notificación al administrador
       await sendAdminAdvisoryNotification(
         nombre,
         email,
-        existingTransaction.productId.title,
+        productTitle,
         existingTransaction.ketoCode
       )
     } else {
@@ -112,7 +118,7 @@ export async function POST(request: Request) {
         email,
         nombre,
         existingTransaction.ketoCode,
-        existingTransaction.productId.title,
+        productTitle,
         rawPassword,
         suscribirNewsletter,
         downloadUrl

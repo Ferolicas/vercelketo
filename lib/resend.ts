@@ -151,13 +151,14 @@ export const sendPurchaseEmailWithNewsletter = async (
   return data
 }
 
-export const sendAdvisoryPurchaseEmail = async (
+export const sendServicePurchaseEmail = async (
   email: string,
   name: string,
   ketoCode: string,
   productTitle: string,
   password: string,
-  subscribeNewsletter: boolean
+  subscribeNewsletter: boolean,
+  calendlyUrl: string
 ) => {
   if (!resend) {
     console.warn('Resend not configured, email not sent')
@@ -181,11 +182,26 @@ export const sendAdvisoryPurchaseEmail = async (
           <p><strong>Código de transacción:</strong> ${ketoCode}</p>
           <p><strong>Contraseña de acceso:</strong> ${password}</p>
           
+          <div style="margin: 30px 0; text-align: center;">
+            <a href="${calendlyUrl}" 
+               style="background: #00a854; color: white; padding: 18px 35px; 
+                      text-decoration: none; border-radius: 8px; display: inline-block;
+                      font-weight: bold; font-size: 16px; box-shadow: 0 4px 15px rgba(0,168,84,0.3);">
+              📅 Agendar mi Asesoría Keto
+            </a>
+            <p style="margin: 15px 0 0 0; font-size: 13px; color: #666;">
+              Haz clic para seleccionar tu fecha y hora preferida
+            </p>
+          </div>
+          
           <div style="margin: 30px 0; padding: 20px; background: #e3f2fd; border-radius: 5px;">
-            <p><strong>Próximos pasos:</strong></p>
-            <p>1. En las próximas 24 horas recibirás un enlace de Calendly para agendar tu sesión</p>
-            <p>2. Nuestro nutricionista especializado en keto se pondrá en contacto contigo</p>
-            <p>3. Prepara tus preguntas y objetivos para aprovechar al máximo la sesión</p>
+            <p><strong>¿Qué puedes esperar de tu asesoría?</strong></p>
+            <ul style="margin: 10px 0; padding-left: 20px; color: #555;">
+              <li>Plan nutricional keto personalizado</li>
+              <li>Evaluación de tus objetivos y necesidades</li>
+              <li>Resolución de dudas sobre la dieta cetogénica</li>
+              <li>Tips y estrategias para el éxito</li>
+            </ul>
           </div>
           
           ${subscribeNewsletter ? `
@@ -198,8 +214,12 @@ export const sendAdvisoryPurchaseEmail = async (
           <hr style="margin: 30px 0; border: none; border-top: 1px solid #ddd;">
           
           <p style="font-size: 14px; color: #666;">
-            <strong>¿Tienes preguntas?</strong><br>
+            <strong>¿Tienes preguntas antes de tu sesión?</strong><br>
             Responde a este email y te ayudaremos con cualquier duda.
+          </p>
+          
+          <p style="font-size: 12px; color: #999; margin-top: 30px;">
+            Este email fue enviado desde Planeta Keto.
           </p>
         </div>
       </div>
@@ -207,8 +227,8 @@ export const sendAdvisoryPurchaseEmail = async (
   })
 
   if (error) {
-    console.error('Error sending advisory email:', error)
-    throw new Error('Failed to send advisory email')
+    console.error('Error sending service email:', error)
+    throw new Error('Failed to send service email')
   }
 
   return data
