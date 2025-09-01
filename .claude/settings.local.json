@@ -73,7 +73,8 @@
       "Bash(del \"C:\\PLANETA KETO V2\\planetaketonext\\app\\api\\test-email\\route.ts\")",
       "Bash(dir \"C:\\PLANETA KETO V2\\planetaketonext\\sanity\\schemaTypes\")",
       "Bash(dir \"C:\\PLANETA KETO V2\\planetaketonext\\components\\admin\")",
-      "Bash(del \"C:\\PLANETA KETO V2\\planetaketonext\\fix-forum-slugs.mjs\")"
+      "Bash(del \"C:\\PLANETA KETO V2\\planetaketonext\\fix-forum-slugs.mjs\")",
+      "Bash(vercel logs:*)"
     ],
     "deny": [],
     "ask": [],

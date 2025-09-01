@@ -43,8 +43,6 @@ const nextConfig: NextConfig = {
     optimizePackageImports: ['lucide-react', '@sanity/client', '@sanity/image-url', '@heroicons/react'],
     optimizeCss: true,
     webpackBuildWorker: true,
-    // Reducir warnings de CSS preload
-    cssChunking: 'loose',
     // typedRoutes: true,
   },
   
