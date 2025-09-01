@@ -68,7 +68,11 @@
       "Bash(dir \"C:\\storeplanetaketo\\sanity\\schemaTypes\")",
       "Read(C:\\storeplanetaketo\\sanity\\schemaTypes/**)",
       "Read(C:\\storeplanetaketo\\sanity\\schemaTypes/**)",
-      "Read(C:\\storeplanetaketo\\sanity\\schemaTypes/**)"
+      "Read(C:\\storeplanetaketo\\sanity\\schemaTypes/**)",
+      "Bash(timeout 30 curl -X POST https://planetaketo.es/api/test-email -H \"Content-Type: application/json\")",
+      "Bash(del \"C:\\PLANETA KETO V2\\planetaketonext\\app\\api\\test-email\\route.ts\")",
+      "Bash(dir \"C:\\PLANETA KETO V2\\planetaketonext\\sanity\\schemaTypes\")",
+      "Bash(dir \"C:\\PLANETA KETO V2\\planetaketonext\\components\\admin\")"
     ],
     "deny": [],
     "ask": [],

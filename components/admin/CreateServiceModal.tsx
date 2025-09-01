@@ -1,371 +1,309 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { X, Upload, Users } from 'lucide-react';
+import { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { XMarkIcon, PhotoIcon, CalendarDaysIcon } from '@heroicons/react/24/outline'
+import { client } from '@/lib/sanity'
 
 interface CreateServiceModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onSuccess: () => void;
+  isOpen: boolean
+  onClose: () => void
+  onSuccess?: () => void
 }
 
 export default function CreateServiceModal({ isOpen, onClose, onSuccess }: CreateServiceModalProps) {
-  const [loading, setLoading] = useState(false);
-  const [features, setFeatures] = useState(['']);
-  const [form, setForm] = useState({
-    name: '',
+  const [formData, setFormData] = useState({
+    title: '',
     description: '',
     price: '',
-    currency: 'EUR',
-    duration: '',
-    contactUrl: '',
-    whatsapp: '',
-    featured: false,
-    image: null as File | null
-  });
+    originalPrice: '',
+    stripePriceId: '',
+    category: 'Asesoria' as 'Asesoria' | 'Servicios',
+    calendlyUrl: '',
+    featured: false
+  })
+  const [image, setImage] = useState<File | null>(null)
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
+    e.preventDefault()
+    setIsSubmitting(true)
 
     try {
-      const formData = new FormData();
-      
-      // Basic fields
-      formData.append('name', form.name);
-      formData.append('description', form.description);
-      formData.append('price', form.price);
-      formData.append('currency', form.currency);
-      formData.append('duration', form.duration);
-      formData.append('contactUrl', form.contactUrl);
-      formData.append('whatsapp', form.whatsapp);
-      formData.append('featured', String(form.featured));
-      formData.append('features', JSON.stringify(features.filter(f => f.trim())));
-      
-      // Image
-      if (form.image) {
-        formData.append('image', form.image);
+      // Upload image
+      let imageAsset = null
+      if (image) {
+        imageAsset = await client.assets.upload('image', image)
       }
 
-      // Create service in Sanity
-      const response = await fetch('/api/services', {
-        method: 'POST',
-        body: formData
-      });
-      
-      const data = await response.json();
-      
-      if (response.ok) {
-        alert('¡Servicio creado exitosamente!');
-        onSuccess();
-        onClose();
-        resetForm();
-      } else {
-        throw new Error(data.error || 'Error al crear servicio');
-      }
+      // Create service
+      const service = await client.create({
+        _type: 'service',
+        title: formData.title,
+        slug: {
+          _type: 'slug',
+          current: formData.title.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')
+        },
+        description: formData.description,
+        price: parseFloat(formData.price),
+        originalPrice: formData.originalPrice ? parseFloat(formData.originalPrice) : undefined,
+        stripePriceId: formData.stripePriceId || undefined,
+        category: formData.category,
+        calendlyUrl: formData.calendlyUrl,
+        image: imageAsset ? {
+          _type: 'image',
+          asset: {
+            _type: 'reference',
+            _ref: imageAsset._id
+          },
+          alt: formData.title
+        } : undefined,
+        featured: formData.featured,
+        clickCount: 0,
+        createdAt: new Date().toISOString()
+      })
 
+      alert('¡Servicio creado exitosamente!')
+      
+      // Reset form
+      setFormData({
+        title: '',
+        description: '',
+        price: '',
+        originalPrice: '',
+        stripePriceId: '',
+        category: 'Asesoria',
+        calendlyUrl: '',
+        featured: false
+      })
+      setImage(null)
+      
+      onSuccess?.()
+      onClose()
+      
     } catch (error) {
-      console.error('Error creating service:', error);
-      alert('Error al crear el servicio');
+      console.error('Error creating service:', error)
+      alert('Error al crear el servicio. Por favor intenta de nuevo.')
     } finally {
-      setLoading(false);
+      setIsSubmitting(false)
     }
-  };
-
-  const resetForm = () => {
-    setForm({
-      name: '',
-      description: '',
-      price: '',
-      currency: 'EUR',
-      duration: '',
-      contactUrl: '',
-      whatsapp: '',
-      featured: false,
-      image: null
-    });
-    setFeatures(['']);
-  };
-
-  const addFeature = () => {
-    setFeatures([...features, '']);
-  };
-
-  const removeFeature = (index: number) => {
-    if (features.length > 1) {
-      setFeatures(features.filter((_, i) => i !== index));
-    }
-  };
-
-  const updateFeature = (index: number, value: string) => {
-    const updated = [...features];
-    updated[index] = value;
-    setFeatures(updated);
-  };
-
-  if (!isOpen) return null;
+  }
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/50 backdrop-blur-sm">
-      <div className="flex min-h-full items-center justify-center p-4">
-        <div className="relative w-full max-w-4xl bg-white rounded-3xl shadow-2xl max-h-[90vh] overflow-hidden">
-          {/* Header */}
-          <div className="bg-gradient-to-r from-teal-500 to-cyan-600 px-8 py-6 text-white">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-2xl font-bold">Crear Nuevo Servicio</h2>
-                <p className="text-teal-100 mt-1">Agrega un servicio profesional</p>
-              </div>
-              <button
-                onClick={onClose}
-                className="w-10 h-10 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center transition-colors"
-                disabled={loading}
-              >
-                <X size={24} />
-              </button>
-            </div>
-          </div>
+    <AnimatePresence>
+      {isOpen && (
+        <div className="fixed inset-0 z-50 overflow-y-auto">
+          <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
+              onClick={onClose}
+            />
 
-          {/* Form */}
-          <form onSubmit={handleSubmit} className="p-8 overflow-y-auto max-h-[calc(90vh-120px)]">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              {/* Left Column */}
-              <div className="space-y-6">
-                {/* Name */}
+            {/* Modal */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="inline-block align-bottom bg-white rounded-2xl px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full sm:p-6"
+            >
+              {/* Header */}
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center">
+                  <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-blue-500 rounded-xl flex items-center justify-center mr-4">
+                    <CalendarDaysIcon className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-2xl font-bold text-gray-900">Crear Servicio</h3>
+                    <p className="text-gray-600">Agregar nueva asesoría o servicio</p>
+                  </div>
+                </div>
+                <button
+                  onClick={onClose}
+                  className="text-gray-400 hover:text-gray-500 transition-colors"
+                >
+                  <XMarkIcon className="h-6 w-6" />
+                </button>
+              </div>
+
+              <form onSubmit={handleSubmit} className="space-y-6">
+                {/* Título */}
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Nombre del Servicio *
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Título del Servicio *
                   </label>
                   <input
                     type="text"
                     required
-                    value={form.name}
-                    onChange={(e) => setForm({ ...form, name: e.target.value })}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-transparent"
-                    placeholder="Ej: Consultoría Nutricional Keto"
+                    value={formData.title}
+                    onChange={(e) => setFormData({...formData, title: e.target.value})}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="Ej: Asesoría Nutricional Personalizada"
                   />
                 </div>
 
-                {/* Description */}
+                {/* Descripción */}
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Descripción *
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Descripción
                   </label>
                   <textarea
-                    required
-                    rows={4}
-                    value={form.description}
-                    onChange={(e) => setForm({ ...form, description: e.target.value })}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-transparent"
-                    placeholder="Describe el servicio, beneficios y lo que incluye..."
+                    rows={3}
+                    value={formData.description}
+                    onChange={(e) => setFormData({...formData, description: e.target.value})}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="Descripción del servicio..."
                   />
                 </div>
 
-                {/* Price and Duration */}
+                {/* Categoría */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Categoría *
+                  </label>
+                  <select
+                    required
+                    value={formData.category}
+                    onChange={(e) => setFormData({...formData, category: e.target.value as 'Asesoria' | 'Servicios'})}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  >
+                    <option value="Asesoria">Asesoría</option>
+                    <option value="Servicios">Servicios</option>
+                  </select>
+                </div>
+
+                {/* Precios */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
-                      Precio *
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Precio a Cobrar (€) *
                     </label>
-                    <div className="relative">
-                      <input
-                        type="number"
-                        step="0.01"
-                        required
-                        min="0"
-                        value={form.price}
-                        onChange={(e) => setForm({ ...form, price: e.target.value })}
-                        className="w-full px-4 py-3 pr-16 border border-gray-300 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-transparent"
-                        placeholder="97.00"
-                      />
-                      <select
-                        value={form.currency}
-                        onChange={(e) => setForm({ ...form, currency: e.target.value })}
-                        className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-transparent border-none text-gray-600 text-sm focus:ring-0"
-                      >
-                        <option value="EUR">EUR</option>
-                        <option value="USD">USD</option>
-                      </select>
-                    </div>
+                    <input
+                      type="number"
+                      step="0.01"
+                      required
+                      value={formData.price}
+                      onChange={(e) => setFormData({...formData, price: e.target.value})}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="99.99"
+                    />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
-                      Duración (opcional)
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Precio Original (€)
                     </label>
                     <input
-                      type="text"
-                      value={form.duration}
-                      onChange={(e) => setForm({ ...form, duration: e.target.value })}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-transparent"
-                      placeholder="60 minutos"
+                      type="number"
+                      step="0.01"
+                      value={formData.originalPrice}
+                      onChange={(e) => setFormData({...formData, originalPrice: e.target.value})}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="149.99"
                     />
                   </div>
                 </div>
 
-                {/* Contact Info */}
+                {/* Stripe Price ID */}
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    URL de Contacto *
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Stripe Price ID
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.stripePriceId}
+                    onChange={(e) => setFormData({...formData, stripePriceId: e.target.value})}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="price_1234..."
+                  />
+                  <p className="mt-1 text-xs text-gray-500">ID del precio en Stripe para pagos automatizados</p>
+                </div>
+
+                {/* URL de Calendly */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    URL de Calendly *
                   </label>
                   <input
                     type="url"
                     required
-                    value={form.contactUrl}
-                    onChange={(e) => setForm({ ...form, contactUrl: e.target.value })}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-transparent"
-                    placeholder="https://calendly.com/tu-usuario"
+                    value={formData.calendlyUrl}
+                    onChange={(e) => setFormData({...formData, calendlyUrl: e.target.value})}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="https://calendly.com/tu-usuario/asesoria-keto"
                   />
+                  <p className="mt-1 text-xs text-gray-500">URL específica de Calendly para este servicio</p>
                 </div>
 
+                {/* Imagen */}
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    WhatsApp (opcional)
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Imagen del Servicio *
                   </label>
-                  <input
-                    type="text"
-                    value={form.whatsapp}
-                    onChange={(e) => setForm({ ...form, whatsapp: e.target.value })}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-transparent"
-                    placeholder="+34123456789"
-                  />
+                  <div className="flex items-center justify-center w-full">
+                    <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
+                      <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                        <PhotoIcon className="w-8 h-8 mb-2 text-gray-400" />
+                        <p className="text-sm text-gray-500">
+                          {image ? image.name : 'Click para subir imagen'}
+                        </p>
+                      </div>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(e) => setImage(e.target.files?.[0] || null)}
+                      />
+                    </label>
+                  </div>
                 </div>
 
                 {/* Featured */}
                 <div className="flex items-center">
                   <input
                     type="checkbox"
-                    checked={form.featured}
-                    onChange={(e) => setForm({ ...form, featured: e.target.checked })}
-                    className="w-5 h-5 text-teal-600 border-gray-300 rounded focus:ring-2 focus:ring-teal-500"
+                    id="featured"
+                    checked={formData.featured}
+                    onChange={(e) => setFormData({...formData, featured: e.target.checked})}
+                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                   />
-                  <label className="ml-3 text-sm font-semibold text-gray-700">
-                    Servicio destacado
+                  <label htmlFor="featured" className="ml-2 block text-sm text-gray-700">
+                    Mostrar como destacado
                   </label>
                 </div>
-              </div>
 
-              {/* Right Column */}
-              <div className="space-y-6">
-                {/* Image */}
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Imagen del Servicio *
-                  </label>
-                  <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:border-teal-400 transition-colors">
-                    <Upload size={48} className="mx-auto text-gray-400 mb-4" />
-                    <input
-                      type="file"
-                      accept="image/*"
-                      required
-                      onChange={(e) => setForm({ ...form, image: e.target.files?.[0] || null })}
-                      className="hidden"
-                      id="service-image-upload"
-                    />
-                    <label
-                      htmlFor="service-image-upload"
-                      className="cursor-pointer text-teal-600 font-semibold hover:text-teal-700"
-                    >
-                      {form.image ? form.image.name : 'Seleccionar imagen'}
-                    </label>
-                    <p className="text-gray-500 text-sm mt-2">PNG, JPG hasta 5MB</p>
-                  </div>
+                {/* Botones */}
+                <div className="flex justify-end space-x-4 pt-6 border-t border-gray-200">
+                  <button
+                    type="button"
+                    onClick={onClose}
+                    className="px-6 py-3 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-lg hover:from-blue-700 hover:to-blue-600 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                        Creando...
+                      </>
+                    ) : (
+                      'Crear Servicio'
+                    )}
+                  </button>
                 </div>
-
-                {/* Features */}
-                <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <label className="block text-sm font-semibold text-gray-700">
-                      Características del Servicio *
-                    </label>
-                    <button
-                      type="button"
-                      onClick={addFeature}
-                      className="text-teal-600 hover:text-teal-700 font-semibold text-sm flex items-center gap-1"
-                    >
-                      <Users size={16} />
-                      Agregar
-                    </button>
-                  </div>
-                  <div className="space-y-3">
-                    {features.map((feature, index) => (
-                      <div key={index} className="flex gap-2">
-                        <input
-                          type="text"
-                          value={feature}
-                          onChange={(e) => updateFeature(index, e.target.value)}
-                          className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent text-sm"
-                          placeholder={`Característica ${index + 1}`}
-                        />
-                        {features.length > 1 && (
-                          <button
-                            type="button"
-                            onClick={() => removeFeature(index)}
-                            className="text-red-500 hover:text-red-700 p-2"
-                          >
-                            <X size={16} />
-                          </button>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Service Preview */}
-                <div className="bg-gradient-to-br from-teal-50 to-cyan-50 rounded-xl p-6 border border-teal-200">
-                  <h4 className="text-lg font-bold text-teal-800 mb-4">Vista Previa</h4>
-                  <div className="bg-white rounded-lg shadow-md p-6">
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="w-16 h-16 bg-gradient-to-r from-teal-500 to-cyan-600 rounded-full flex items-center justify-center text-white text-2xl">
-                        🎯
-                      </div>
-                      {form.featured && (
-                        <span className="bg-yellow-400 text-yellow-900 px-3 py-1 rounded-full text-sm font-bold">
-                          ⭐ Destacado
-                        </span>
-                      )}
-                    </div>
-                    <h5 className="text-xl font-bold text-gray-900 mb-2">
-                      {form.name || 'Nombre del servicio'}
-                    </h5>
-                    <p className="text-gray-600 mb-4 text-sm">
-                      {form.description || 'Descripción del servicio...'}
-                    </p>
-                    <div className="flex items-center justify-between">
-                      <div className="text-2xl font-bold text-teal-600">
-                        €{form.price || '0'}
-                        {form.duration && <span className="text-sm text-gray-500 ml-1">/ {form.duration}</span>}
-                      </div>
-                      <button className="bg-teal-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-teal-700">
-                        Contratar
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Actions */}
-            <div className="flex justify-end gap-4 mt-8 pt-6 border-t border-gray-200">
-              <button
-                type="button"
-                onClick={onClose}
-                disabled={loading}
-                className="px-6 py-3 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors disabled:opacity-50"
-              >
-                Cancelar
-              </button>
-              <button
-                type="submit"
-                disabled={loading}
-                className="px-8 py-3 bg-gradient-to-r from-teal-500 to-cyan-600 hover:from-teal-600 hover:to-cyan-700 text-white font-semibold rounded-xl transition-all duration-300 disabled:opacity-50 min-w-32"
-              >
-                {loading ? 'Creando...' : 'Crear Servicio'}
-              </button>
-            </div>
-          </form>
+              </form>
+            </motion.div>
+          </div>
         </div>
-      </div>
-    </div>
-  );
+      )}
+    </AnimatePresence>
+  )
 }

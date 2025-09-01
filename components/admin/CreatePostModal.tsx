@@ -1,282 +1,85 @@
 'use client'
 
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { 
-  XMarkIcon,
-  PhotoIcon,
-  PlusIcon,
-  MinusIcon,
-  ClockIcon,
-  FireIcon,
-  UserIcon
-} from '@heroicons/react/24/outline';
-
-const postSchema = z.object({
-  title: z.string().min(5, 'El título debe tener al menos 5 caracteres'),
-  slug: z.string().min(3, 'El slug debe tener al menos 3 caracteres'),
-  excerpt: z.string().min(20, 'El resumen debe tener al menos 20 caracteres'),
-  content: z.string().min(100, 'El contenido debe tener al menos 100 caracteres'),
-  category: z.string().min(1, 'Selecciona una categoría'),
-  mainImage: z.string().url('Debe ser una URL válida').optional().or(z.literal('')),
-  prepTime: z.number().min(1, 'Tiempo mínimo 1 minuto'),
-  cookTime: z.number().min(1, 'Tiempo mínimo 1 minuto'),
-  servings: z.number().min(1, 'Mínimo 1 porción'),
-  difficulty: z.enum(['Fácil', 'Intermedio', 'Difícil']),
-  ingredients: z.array(z.string().min(1)).min(1, 'Agrega al menos 1 ingrediente'),
-  instructions: z.array(z.string().min(1)).min(1, 'Agrega al menos 1 instrucción'),
-  nutritionFacts: z.object({
-    calories: z.number().optional(),
-    carbs: z.number().optional(),
-    protein: z.number().optional(),
-    fat: z.number().optional(),
-  }).optional(),
-  tags: z.array(z.string()).optional(),
-  seoKeywords: z.string().optional(),
-});
-
-type PostFormData = z.infer<typeof postSchema>;
+import { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { XMarkIcon, PhotoIcon, DocumentTextIcon } from '@heroicons/react/24/outline'
+import { client } from '@/lib/sanity'
 
 interface CreatePostModalProps {
-  isOpen: boolean;
-  onClose: () => void;
+  isOpen: boolean
+  onClose: () => void
+  onSuccess?: () => void
 }
 
-const categories = [
-  'Desayunos',
-  'Comidas',
-  'Cenas',
-  'Postres',
-  'Bebidas',
-  'Snacks',
-  'Panes',
-  'Dulces'
-];
+export default function CreatePostModal({ isOpen, onClose, onSuccess }: CreatePostModalProps) {
+  const [formData, setFormData] = useState({
+    title: '',
+    excerpt: '',
+    content: '',
+    author: '',
+    tags: ''
+  })
+  const [featuredImage, setFeaturedImage] = useState<File | null>(null)
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
-export default function CreatePostModal({ isOpen, onClose }: CreatePostModalProps) {
-  const [activeTab, setActiveTab] = useState('basic');
-  const [ingredients, setIngredients] = useState(['']);
-  const [instructions, setInstructions] = useState(['']);
-  const [tags, setTags] = useState(['']);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsSubmitting(true)
 
-  const { 
-    register, 
-    handleSubmit, 
-    watch,
-    setValue,
-    formState: { errors, isSubmitting },
-    reset 
-  } = useForm<PostFormData>({
-    defaultValues: {
-      title: '',
-      slug: '',
-      excerpt: '',
-      content: '',
-      category: '',
-      difficulty: 'Fácil',
-      prepTime: 15,
-      cookTime: 30,
-      servings: 4,
-      ingredients: [''],
-      instructions: [''],
-      tags: []
-    }
-  });
-
-  const watchTitle = watch('title', '');
-
-  // Auto-generar slug basado en el título
-  const generateSlug = (title: string) => {
-    return title
-      .toLowerCase()
-      .replace(/[áàäâ]/g, 'a')
-      .replace(/[éèëê]/g, 'e')
-      .replace(/[íìïî]/g, 'i')
-      .replace(/[óòöô]/g, 'o')
-      .replace(/[úùüû]/g, 'u')
-      .replace(/ñ/g, 'n')
-      .replace(/[^a-z0-9\s-]/g, '')
-      .replace(/\s+/g, '-')
-      .replace(/-+/g, '-')
-      .replace(/^-+|-+$/g, '');
-  };
-
-  // Actualizar slug cuando cambie el título
-  useState(() => {
-    if (watchTitle) {
-      setValue('slug', generateSlug(watchTitle));
-    }
-  });
-
-  const addItem = (type: 'ingredient' | 'instruction' | 'tag') => {
-    if (type === 'ingredient') {
-      setIngredients([...ingredients, '']);
-    } else if (type === 'instruction') {
-      setInstructions([...instructions, '']);
-    } else {
-      setTags([...tags, '']);
-    }
-  };
-
-  const removeItem = (type: 'ingredient' | 'instruction' | 'tag', index: number) => {
-    if (type === 'ingredient') {
-      const newIngredients = ingredients.filter((_, i) => i !== index);
-      setIngredients(newIngredients);
-      setValue('ingredients', newIngredients);
-    } else if (type === 'instruction') {
-      const newInstructions = instructions.filter((_, i) => i !== index);
-      setInstructions(newInstructions);
-      setValue('instructions', newInstructions);
-    } else {
-      setTags(tags.filter((_, i) => i !== index));
-    }
-  };
-
-  const updateItem = (type: 'ingredient' | 'instruction' | 'tag', index: number, value: string) => {
-    if (type === 'ingredient') {
-      const newIngredients = [...ingredients];
-      newIngredients[index] = value;
-      setIngredients(newIngredients);
-      setValue('ingredients', newIngredients);
-    } else if (type === 'instruction') {
-      const newInstructions = [...instructions];
-      newInstructions[index] = value;
-      setInstructions(newInstructions);
-      setValue('instructions', newInstructions);
-    } else {
-      const newTags = [...tags];
-      newTags[index] = value;
-      setTags(newTags);
-      setValue('tags', newTags.filter(tag => tag.length > 0));
-    }
-  };
-
-  const onSubmit = async (data: PostFormData) => {
     try {
-      const formData = new FormData();
-      
-      // Basic fields
-      formData.append('title', data.title);
-      formData.append('excerpt', data.excerpt);
-      formData.append('content', data.content);
-      formData.append('author', 'Planeta Keto');
-      formData.append('published', 'true');
-      
-      // Tags (combine ingredients, instructions, and tags)
-      const allTags = [
-        ...tags.filter(t => t.trim()),
-        'keto',
-        'cetogenica',
-        data.category?.toLowerCase() || ''
-      ];
-      formData.append('tags', JSON.stringify(allTags));
-      
-      // Create a simple image for the blog post - FIXED APPROACH
-      try {
-        const canvas = document.createElement('canvas');
-        canvas.width = 600;
-        canvas.height = 400;
-        const ctx = canvas.getContext('2d');
-        if (ctx) {
-          ctx.fillStyle = '#10B981';
-          ctx.fillRect(0, 0, 600, 400);
-          ctx.fillStyle = 'white';
-          ctx.font = 'bold 24px Arial';
-          ctx.textAlign = 'center';
-          
-          // Handle text wrapping for longer titles
-          const maxWidth = 580;
-          const words = data.title.split(' ');
-          let line = '';
-          let y = 180;
-          for(let n = 0; n < words.length; n++) {
-            const testLine = line + words[n] + ' ';
-            const metrics = ctx.measureText(testLine);
-            const testWidth = metrics.width;
-            if (testWidth > maxWidth && n > 0) {
-              ctx.fillText(line, 300, y);
-              line = words[n] + ' ';
-              y += 30;
-            } else {
-              line = testLine;
-            }
-          }
-          ctx.fillText(line, 300, y);
-        }
-        
-        // Convert canvas to blob with error handling
-        canvas.toBlob(async (blob) => {
-          if (blob) {
-            formData.append('featuredImage', blob, `${data.slug || 'blog-post'}.png`);
-            
-            try {
-              const response = await fetch('/api/blog', {
-                method: 'POST',
-                body: formData
-              });
-              
-              const result = await response.json();
-              
-              if (response.ok) {
-                alert('¡Artículo creado exitosamente!');
-                reset();
-                setIngredients(['']);
-                setInstructions(['']);
-                setTags(['']);
-                onClose();
-              } else {
-                throw new Error(result.error || 'Error al crear artículo');
-              }
-            } catch (fetchError) {
-              console.error('Error creating blog post:', fetchError);
-              alert(`Error al crear el artículo: ${fetchError instanceof Error ? fetchError.message : 'Error desconocido'}`);
-            }
-          } else {
-            throw new Error('Error al crear la imagen: blob is null');
-          }
-        }, 'image/png', 0.8);
-        
-      } catch (canvasError) {
-        console.error('Canvas error:', canvasError);
-        // Fallback: create a simple text-based image
-        const fallbackBlob = new Blob([data.title], { type: 'text/plain' });
-        formData.append('featuredImage', fallbackBlob, `${data.slug || 'blog-post'}.txt`);
-        
-        // Try to submit anyway
-        const response = await fetch('/api/blog', {
-          method: 'POST',
-          body: formData
-        });
-        
-        const result = await response.json();
-        
-        if (response.ok) {
-          alert('¡Artículo creado exitosamente!');
-          reset();
-          setIngredients(['']);
-          setInstructions(['']);
-          setTags(['']);
-          onClose();
-        } else {
-          throw new Error(result.error || 'Error al crear artículo');
-        }
+      // Upload featured image
+      let imageAsset = null
+      if (featuredImage) {
+        imageAsset = await client.assets.upload('image', featuredImage)
       }
+
+      // Create blog post
+      const blogPost = await client.create({
+        _type: 'blogPost',
+        title: formData.title,
+        slug: {
+          _type: 'slug',
+          current: formData.title.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')
+        },
+        excerpt: formData.excerpt,
+        content: formData.content,
+        author: formData.author || 'Planeta Keto',
+        featuredImage: imageAsset ? {
+          _type: 'image',
+          asset: {
+            _type: 'reference',
+            _ref: imageAsset._id
+          },
+          alt: formData.title
+        } : undefined,
+        tags: formData.tags ? formData.tags.split(',').map(tag => tag.trim()).filter(Boolean) : [],
+        published: true,
+        publishedAt: new Date().toISOString(),
+        createdAt: new Date().toISOString()
+      })
+
+      alert('¡Blog post creado exitosamente!')
+      
+      // Reset form
+      setFormData({
+        title: '',
+        excerpt: '',
+        content: '',
+        author: '',
+        tags: ''
+      })
+      setFeaturedImage(null)
+      
+      onSuccess?.()
+      onClose()
       
     } catch (error) {
-      console.error('Error creating blog post:', error);
-      alert(`Error al crear el artículo: ${error instanceof Error ? error.message : 'Error desconocido'}`);
+      console.error('Error creating blog post:', error)
+      alert('Error al crear el blog post. Por favor intenta de nuevo.')
+    } finally {
+      setIsSubmitting(false)
     }
-  };
-
-  const tabs = [
-    { id: 'basic', name: 'Información Básica', icon: '📝' },
-    { id: 'recipe', name: 'Receta', icon: '👨‍🍳' },
-    { id: 'nutrition', name: 'Nutrición', icon: '🥗' },
-    { id: 'seo', name: 'SEO', icon: '🔍' },
-  ];
+  }
 
   return (
     <AnimatePresence>
@@ -297,13 +100,18 @@ export default function CreatePostModal({ isOpen, onClose }: CreatePostModalProp
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="inline-block align-bottom bg-white rounded-2xl px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full sm:p-6"
+              className="inline-block align-bottom bg-white rounded-2xl px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-3xl sm:w-full sm:p-6"
             >
               {/* Header */}
               <div className="flex items-center justify-between mb-6">
-                <div>
-                  <h3 className="text-2xl font-bold text-gray-900">Crear Nuevo Post</h3>
-                  <p className="text-gray-600">Añade una nueva receta a tu sitio</p>
+                <div className="flex items-center">
+                  <div className="w-12 h-12 bg-gradient-to-r from-purple-600 to-purple-500 rounded-xl flex items-center justify-center mr-4">
+                    <DocumentTextIcon className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-2xl font-bold text-gray-900">Crear Blog Post</h3>
+                    <p className="text-gray-600">Agregar nuevo artículo al blog</p>
+                  </div>
                 </div>
                 <button
                   onClick={onClose}
@@ -313,383 +121,105 @@ export default function CreatePostModal({ isOpen, onClose }: CreatePostModalProp
                 </button>
               </div>
 
-              {/* Tabs */}
-              <div className="border-b border-gray-200 mb-6">
-                <nav className="-mb-px flex space-x-8">
-                  {tabs.map((tab) => (
-                    <button
-                      key={tab.id}
-                      onClick={() => setActiveTab(tab.id)}
-                      className={`py-2 px-1 border-b-2 font-medium text-sm ${
-                        activeTab === tab.id
-                          ? 'border-green-500 text-green-600'
-                          : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                      }`}
-                    >
-                      <span className="mr-2">{tab.icon}</span>
-                      {tab.name}
-                    </button>
-                  ))}
-                </nav>
-              </div>
+              <form onSubmit={handleSubmit} className="space-y-6">
+                {/* Título */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Título del Artículo *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={formData.title}
+                    onChange={(e) => setFormData({...formData, title: e.target.value})}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    placeholder="Ej: Los Beneficios de la Dieta Keto"
+                  />
+                </div>
 
-              <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                {/* Tab: Información Básica */}
-                {activeTab === 'basic' && (
-                  <div className="space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Título de la Receta *
-                        </label>
-                        <input
-                          {...register('title')}
-                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                          placeholder="Ej: Pan Keto Esponjoso Sin Harina"
-                        />
-                        {errors.title && (
-                          <p className="mt-1 text-sm text-red-600">{errors.title.message}</p>
-                        )}
+                {/* Autor */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Autor
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.author}
+                    onChange={(e) => setFormData({...formData, author: e.target.value})}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    placeholder="Planeta Keto"
+                  />
+                </div>
+
+                {/* Resumen */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Resumen/Descripción *
+                  </label>
+                  <textarea
+                    rows={3}
+                    required
+                    value={formData.excerpt}
+                    onChange={(e) => setFormData({...formData, excerpt: e.target.value})}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    placeholder="Breve descripción del artículo..."
+                  />
+                </div>
+
+                {/* Contenido */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Contenido Completo *
+                  </label>
+                  <textarea
+                    rows={8}
+                    required
+                    value={formData.content}
+                    onChange={(e) => setFormData({...formData, content: e.target.value})}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    placeholder="Contenido completo del artículo. Puedes usar markdown para formatear..."
+                  />
+                </div>
+
+                {/* Tags */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Tags (Etiquetas)
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.tags}
+                    onChange={(e) => setFormData({...formData, tags: e.target.value})}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    placeholder="keto, dieta, nutrición, recetas (separadas por comas)"
+                  />
+                  <p className="mt-1 text-xs text-gray-500">Separa los tags con comas</p>
+                </div>
+
+                {/* Imagen destacada */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Imagen Destacada
+                  </label>
+                  <div className="flex items-center justify-center w-full">
+                    <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
+                      <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                        <PhotoIcon className="w-8 h-8 mb-2 text-gray-400" />
+                        <p className="text-sm text-gray-500">
+                          {featuredImage ? featuredImage.name : 'Click para subir imagen (opcional)'}
+                        </p>
                       </div>
-
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Slug (URL) *
-                        </label>
-                        <input
-                          {...register('slug')}
-                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                          placeholder="pan-keto-esponjoso-sin-harina"
-                        />
-                        {errors.slug && (
-                          <p className="mt-1 text-sm text-red-600">{errors.slug.message}</p>
-                        )}
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Categoría *
-                      </label>
-                      <select
-                        {...register('category')}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                      >
-                        <option value="">Selecciona una categoría</option>
-                        {categories.map(cat => (
-                          <option key={cat} value={cat}>{cat}</option>
-                        ))}
-                      </select>
-                      {errors.category && (
-                        <p className="mt-1 text-sm text-red-600">{errors.category.message}</p>
-                      )}
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        URL de la Imagen Principal
-                      </label>
                       <input
-                        {...register('mainImage')}
-                        type="url"
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                        placeholder="https://ejemplo.com/imagen.jpg"
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(e) => setFeaturedImage(e.target.files?.[0] || null)}
                       />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Resumen/Descripción *
-                      </label>
-                      <textarea
-                        {...register('excerpt')}
-                        rows={3}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                        placeholder="Breve descripción de la receta..."
-                      />
-                      {errors.excerpt && (
-                        <p className="mt-1 text-sm text-red-600">{errors.excerpt.message}</p>
-                      )}
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Contenido Completo *
-                      </label>
-                      <textarea
-                        {...register('content')}
-                        rows={8}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                        placeholder="Contenido completo del post con introducción, preparación, consejos, etc..."
-                      />
-                      {errors.content && (
-                        <p className="mt-1 text-sm text-red-600">{errors.content.message}</p>
-                      )}
-                    </div>
+                    </label>
                   </div>
-                )}
+                </div>
 
-                {/* Tab: Receta */}
-                {activeTab === 'recipe' && (
-                  <div className="space-y-6">
-                    {/* Tiempos y dificultad */}
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          <ClockIcon className="h-4 w-4 inline mr-1" />
-                          Prep. (min) *
-                        </label>
-                        <input
-                          {...register('prepTime', { valueAsNumber: true })}
-                          type="number"
-                          min="1"
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                        />
-                      </div>
-                      
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          <FireIcon className="h-4 w-4 inline mr-1" />
-                          Cocción (min) *
-                        </label>
-                        <input
-                          {...register('cookTime', { valueAsNumber: true })}
-                          type="number"
-                          min="1"
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                        />
-                      </div>
-                      
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          <UserIcon className="h-4 w-4 inline mr-1" />
-                          Porciones *
-                        </label>
-                        <input
-                          {...register('servings', { valueAsNumber: true })}
-                          type="number"
-                          min="1"
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                        />
-                      </div>
-                      
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Dificultad *
-                        </label>
-                        <select
-                          {...register('difficulty')}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                        >
-                          <option value="Fácil">Fácil</option>
-                          <option value="Intermedio">Intermedio</option>
-                          <option value="Difícil">Difícil</option>
-                        </select>
-                      </div>
-                    </div>
-
-                    {/* Ingredientes */}
-                    <div>
-                      <div className="flex justify-between items-center mb-3">
-                        <label className="block text-sm font-medium text-gray-700">
-                          Ingredientes *
-                        </label>
-                        <button
-                          type="button"
-                          onClick={() => addItem('ingredient')}
-                          className="text-green-600 hover:text-green-700 flex items-center text-sm"
-                        >
-                          <PlusIcon className="h-4 w-4 mr-1" />
-                          Agregar
-                        </button>
-                      </div>
-                      <div className="space-y-2">
-                        {ingredients.map((ingredient, index) => (
-                          <div key={index} className="flex space-x-2">
-                            <input
-                              value={ingredient}
-                              onChange={(e) => updateItem('ingredient', index, e.target.value)}
-                              className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                              placeholder={`Ingrediente ${index + 1}`}
-                            />
-                            {ingredients.length > 1 && (
-                              <button
-                                type="button"
-                                onClick={() => removeItem('ingredient', index)}
-                                className="text-red-600 hover:text-red-700"
-                              >
-                                <MinusIcon className="h-5 w-5" />
-                              </button>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Instrucciones */}
-                    <div>
-                      <div className="flex justify-between items-center mb-3">
-                        <label className="block text-sm font-medium text-gray-700">
-                          Instrucciones *
-                        </label>
-                        <button
-                          type="button"
-                          onClick={() => addItem('instruction')}
-                          className="text-green-600 hover:text-green-700 flex items-center text-sm"
-                        >
-                          <PlusIcon className="h-4 w-4 mr-1" />
-                          Agregar
-                        </button>
-                      </div>
-                      <div className="space-y-3">
-                        {instructions.map((instruction, index) => (
-                          <div key={index} className="flex space-x-2">
-                            <div className="flex-shrink-0 w-8 h-8 bg-green-100 rounded-full flex items-center justify-center text-sm font-semibold text-green-600 mt-1">
-                              {index + 1}
-                            </div>
-                            <textarea
-                              value={instruction}
-                              onChange={(e) => updateItem('instruction', index, e.target.value)}
-                              className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                              rows={2}
-                              placeholder={`Paso ${index + 1}: Describe el paso detalladamente...`}
-                            />
-                            {instructions.length > 1 && (
-                              <button
-                                type="button"
-                                onClick={() => removeItem('instruction', index)}
-                                className="text-red-600 hover:text-red-700 flex-shrink-0"
-                              >
-                                <MinusIcon className="h-5 w-5" />
-                              </button>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Tab: Nutrición */}
-                {activeTab === 'nutrition' && (
-                  <div className="space-y-6">
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Calorías
-                        </label>
-                        <input
-                          {...register('nutritionFacts.calories', { valueAsNumber: true })}
-                          type="number"
-                          min="0"
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                          placeholder="250"
-                        />
-                      </div>
-                      
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Carbohidratos (g)
-                        </label>
-                        <input
-                          {...register('nutritionFacts.carbs', { valueAsNumber: true })}
-                          type="number"
-                          min="0"
-                          step="0.1"
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                          placeholder="5.2"
-                        />
-                      </div>
-                      
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Proteínas (g)
-                        </label>
-                        <input
-                          {...register('nutritionFacts.protein', { valueAsNumber: true })}
-                          type="number"
-                          min="0"
-                          step="0.1"
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                          placeholder="12.5"
-                        />
-                      </div>
-                      
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Grasas (g)
-                        </label>
-                        <input
-                          {...register('nutritionFacts.fat', { valueAsNumber: true })}
-                          type="number"
-                          min="0"
-                          step="0.1"
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                          placeholder="18.3"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Tab: SEO */}
-                {activeTab === 'seo' && (
-                  <div className="space-y-6">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Keywords SEO
-                      </label>
-                      <textarea
-                        {...register('seoKeywords')}
-                        rows={3}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                        placeholder="receta keto, pan sin harina, desayuno cetogénico, receta fácil..."
-                      />
-                      <p className="mt-1 text-sm text-gray-500">
-                        Separa las keywords con comas. Estas se añadirán a las keywords por defecto del sitio.
-                      </p>
-                    </div>
-
-                    <div>
-                      <div className="flex justify-between items-center mb-3">
-                        <label className="block text-sm font-medium text-gray-700">
-                          Tags/Etiquetas
-                        </label>
-                        <button
-                          type="button"
-                          onClick={() => addItem('tag')}
-                          className="text-green-600 hover:text-green-700 flex items-center text-sm"
-                        >
-                          <PlusIcon className="h-4 w-4 mr-1" />
-                          Agregar Tag
-                        </button>
-                      </div>
-                      <div className="grid grid-cols-2 gap-2">
-                        {tags.map((tag, index) => (
-                          <div key={index} className="flex space-x-2">
-                            <input
-                              value={tag}
-                              onChange={(e) => updateItem('tag', index, e.target.value)}
-                              className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                              placeholder={`Tag ${index + 1}`}
-                            />
-                            {tags.length > 1 && (
-                              <button
-                                type="button"
-                                onClick={() => removeItem('tag', index)}
-                                className="text-red-600 hover:text-red-700"
-                              >
-                                <MinusIcon className="h-5 w-5" />
-                              </button>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Footer con botones */}
+                {/* Botones */}
                 <div className="flex justify-end space-x-4 pt-6 border-t border-gray-200">
                   <button
                     type="button"
@@ -701,7 +231,7 @@ export default function CreatePostModal({ isOpen, onClose }: CreatePostModalProp
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="px-6 py-3 bg-gradient-to-r from-green-600 to-green-500 text-white rounded-lg hover:from-green-700 hover:to-green-600 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
+                    className="px-6 py-3 bg-gradient-to-r from-purple-600 to-purple-500 text-white rounded-lg hover:from-purple-700 hover:to-purple-600 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
                   >
                     {isSubmitting ? (
                       <>
@@ -709,7 +239,7 @@ export default function CreatePostModal({ isOpen, onClose }: CreatePostModalProp
                         Creando...
                       </>
                     ) : (
-                      'Crear Post'
+                      'Crear Blog Post'
                     )}
                   </button>
                 </div>
@@ -719,5 +249,5 @@ export default function CreatePostModal({ isOpen, onClose }: CreatePostModalProp
         </div>
       )}
     </AnimatePresence>
-  );
+  )
 }

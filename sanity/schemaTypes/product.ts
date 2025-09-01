@@ -68,29 +68,21 @@ export default defineType({
       type: 'string',
       options: {
         list: [
-          { title: 'Asesoría', value: 'Asesoria' },
           { title: 'Libro', value: 'Libro' },
-          { title: 'Servicios', value: 'Servicios' },
         ],
       },
       validation: (Rule) => Rule.required(),
-      initialValue: 'Asesoria',
+      initialValue: 'Libro',
+      readOnly: true,
     }),
     defineField({
       name: 'pdfFile',
-      title: 'Archivo PDF (para libros)',
+      title: 'Archivo PDF',
       type: 'file',
       options: {
         accept: '.pdf'
       },
-      hidden: ({ document }) => document?.category !== 'Libro',
-    }),
-    defineField({
-      name: 'calendlyUrl',
-      title: 'URL de Calendly (para asesorías)',
-      type: 'url',
-      hidden: ({ document }) => document?.category !== 'Asesoria',
-      description: 'URL específica de Calendly para este tipo de asesoría',
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'featured',
