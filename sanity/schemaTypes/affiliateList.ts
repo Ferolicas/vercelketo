@@ -1,21 +1,15 @@
 import { defineType, defineField } from 'sanity'
 
-export default defineType({
-  name: 'affiliateList',
-  title: 'Lista de Afiliados',
+export const amazonList = defineType({
+  name: 'amazonList',
+  title: 'Lista Amazon',
   type: 'document',
   fields: [
     defineField({
       name: 'title',
-      title: 'Título',
+      title: 'Título de la Lista',
       type: 'string',
       validation: (Rule) => Rule.required(),
-    }),
-    defineField({
-      name: 'description',
-      title: 'Descripción',
-      type: 'text',
-      rows: 3,
     }),
     defineField({
       name: 'slug',
@@ -28,106 +22,51 @@ export default defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
+      name: 'category',
+      title: 'Categoría',
+      type: 'string',
+      options: {
+        list: [
+          { title: 'Cocina Keto', value: 'cooking' },
+          { title: 'Suplementos', value: 'supplements' },
+          { title: 'Utensilios', value: 'utensils' },
+          { title: 'Ingredientes', value: 'ingredients' },
+          { title: 'Libros', value: 'books' },
+          { title: 'Deportes', value: 'sports' },
+        ],
+      },
+      validation: (Rule) => Rule.required(),
+    }),
+    defineField({
       name: 'image',
-      title: 'Imagen Principal',
+      title: 'Imagen de la Lista',
       type: 'image',
       options: {
         hotspot: true,
       },
-    }),
-    defineField({
-      name: 'items',
-      title: 'Productos',
-      type: 'array',
-      of: [
+      fields: [
         {
-          type: 'object',
-          name: 'affiliateItem',
-          title: 'Producto Afiliado',
-          fields: [
-            defineField({
-              name: 'title',
-              title: 'Título del Producto',
-              type: 'string',
-              validation: (Rule) => Rule.required(),
-            }),
-            defineField({
-              name: 'description',
-              title: 'Descripción',
-              type: 'text',
-              rows: 2,
-              validation: (Rule) => Rule.required(),
-            }),
-            defineField({
-              name: 'image',
-              title: 'Imagen del Producto',
-              type: 'image',
-              options: {
-                hotspot: true,
-              },
-            }),
-            defineField({
-              name: 'link',
-              title: 'Enlace de Afiliado',
-              type: 'url',
-              validation: (Rule) => Rule.required().uri({
-                allowRelative: false,
-                scheme: ['http', 'https'],
-              }),
-            }),
-            defineField({
-              name: 'price',
-              title: 'Precio',
-              type: 'number',
-            }),
-            defineField({
-              name: 'currency',
-              title: 'Moneda',
-              type: 'string',
-              options: {
-                list: [
-                  { title: 'USD', value: 'USD' },
-                  { title: 'EUR', value: 'EUR' },
-                  { title: 'COP', value: 'COP' },
-                ],
-              },
-              initialValue: 'USD',
-            }),
-            defineField({
-              name: 'rating',
-              title: 'Calificación',
-              type: 'number',
-              validation: (Rule) => Rule.min(0).max(5),
-            }),
-            defineField({
-              name: 'category',
-              title: 'Categoría',
-              type: 'string',
-            }),
-          ],
-          preview: {
-            select: {
-              title: 'title',
-              description: 'description',
-              media: 'image',
-            },
-            prepare({ title, description, media }) {
-              return {
-                title,
-                subtitle: description,
-                media,
-              }
-            },
-          },
+          name: 'alt',
+          type: 'string',
+          title: 'Texto alternativo',
         },
       ],
-      validation: (Rule) => Rule.min(1).required(),
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
-      name: 'featured',
-      title: 'Destacado',
-      type: 'boolean',
-      initialValue: false,
+      name: 'url',
+      title: 'URL de Amazon',
+      type: 'url',
+      validation: (Rule) => Rule.required().uri({
+        scheme: ['http', 'https'],
+      }),
+    }),
+    defineField({
+      name: 'clickCount',
+      title: 'Número de clicks',
+      type: 'number',
+      initialValue: 0,
+      readOnly: true,
     }),
     defineField({
       name: 'createdAt',
@@ -135,26 +74,38 @@ export default defineType({
       type: 'datetime',
       initialValue: () => new Date().toISOString(),
     }),
-    defineField({
-      name: 'updatedAt',
-      title: 'Última Actualización',
-      type: 'datetime',
-    }),
   ],
   preview: {
     select: {
       title: 'title',
-      description: 'description',
       media: 'image',
-      featured: 'featured',
-      itemCount: 'items',
+      category: 'category',
+      clickCount: 'clickCount',
     },
-    prepare({ title, description, media, featured, itemCount }) {
+    prepare(selection) {
+      const { title, media, category, clickCount } = selection
       return {
         title,
-        subtitle: `${description || ''} (${itemCount?.length || 0} productos) ${featured ? '⭐ Destacado' : ''}`,
+        subtitle: `${category || 'Sin categoría'} • ${clickCount} clicks`,
         media,
       }
     },
   },
+  orderings: [
+    {
+      title: 'Más antiguas primero',
+      name: 'createdAsc',
+      by: [{ field: 'createdAt', direction: 'asc' }],
+    },
+    {
+      title: 'Más recientes primero',
+      name: 'createdDesc',
+      by: [{ field: 'createdAt', direction: 'desc' }],
+    },
+    {
+      title: 'Más clicks',
+      name: 'clicksDesc',
+      by: [{ field: 'clickCount', direction: 'desc' }],
+    },
+  ],
 })

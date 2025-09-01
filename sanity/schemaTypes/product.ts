@@ -6,8 +6,8 @@ export default defineType({
   type: 'document',
   fields: [
     defineField({
-      name: 'name',
-      title: 'Nombre del producto',
+      name: 'title',
+      title: 'Título',
       type: 'string',
       validation: (Rule) => Rule.required(),
     }),
@@ -16,7 +16,7 @@ export default defineType({
       title: 'Slug',
       type: 'slug',
       options: {
-        source: 'name',
+        source: 'title',
         maxLength: 96,
       },
       validation: (Rule) => Rule.required(),
@@ -26,88 +26,146 @@ export default defineType({
       title: 'Descripción',
       type: 'text',
       rows: 4,
-      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'price',
-      title: 'Precio',
+      title: 'Precio a Cobrar (€)',
       type: 'number',
       validation: (Rule) => Rule.required().min(0),
     }),
     defineField({
-      name: 'currency',
-      title: 'Moneda',
+      name: 'originalPrice',
+      title: 'Precio Original (€)',
+      type: 'number',
+      validation: (Rule) => Rule.min(0),
+      description: 'Precio original antes del descuento (opcional)',
+    }),
+    defineField({
+      name: 'stripePriceId',
+      title: 'Stripe Price ID',
       type: 'string',
-      initialValue: 'USD',
-      options: {
-        list: [
-          {title: 'USD ($)', value: 'USD'},
-          {title: 'EUR (€)', value: 'EUR'},
-          {title: 'COP ($)', value: 'COP'},
-        ]
-      }
+      description: 'ID del precio en Stripe (opcional para productos manuales)',
     }),
     defineField({
       name: 'image',
-      title: 'Imagen',
+      title: 'Imagen Principal',
       type: 'image',
       options: {
         hotspot: true,
       },
+      fields: [
+        {
+          name: 'alt',
+          type: 'string',
+          title: 'Texto alternativo',
+        },
+      ],
       validation: (Rule) => Rule.required(),
     }),
     defineField({
-      name: 'affiliateUrl',
-      title: 'URL de afiliado',
-      type: 'url',
+      name: 'category',
+      title: 'Categoría',
+      type: 'string',
+      options: {
+        list: [
+          { title: 'Asesoría', value: 'Asesoria' },
+          { title: 'Libro', value: 'Libro' },
+          { title: 'Servicios', value: 'Servicios' },
+        ],
+      },
       validation: (Rule) => Rule.required(),
+      initialValue: 'Asesoria',
+    }),
+    defineField({
+      name: 'pdfFile',
+      title: 'Archivo PDF (para libros)',
+      type: 'file',
+      options: {
+        accept: '.pdf'
+      },
+      hidden: ({ document }) => document?.category !== 'Libro',
+    }),
+    defineField({
+      name: 'calendlyUrl',
+      title: 'URL de Calendly (para asesorías)',
+      type: 'url',
+      hidden: ({ document }) => document?.category !== 'Asesoria',
+      description: 'URL específica de Calendly para este tipo de asesoría',
     }),
     defineField({
       name: 'featured',
-      title: 'Destacado',
+      title: 'Fijar',
       type: 'boolean',
       initialValue: false,
+      description: 'Mostrar este producto como destacado',
+    }),
+    defineField({
+      name: 'clickCount',
+      title: 'Número de clicks',
+      type: 'number',
+      initialValue: 0,
+      readOnly: true,
     }),
     defineField({
       name: 'createdAt',
-      title: 'Fecha de creación',
+      title: 'Fecha de Creación',
       type: 'datetime',
       initialValue: () => new Date().toISOString(),
-      readOnly: true,
     }),
   ],
+  preview: {
+    select: {
+      title: 'title',
+      media: 'image',
+      price: 'price',
+      originalPrice: 'originalPrice',
+      category: 'category',
+      featured: 'featured',
+      clickCount: 'clickCount',
+    },
+    prepare(selection) {
+      const { title, media, price, originalPrice, category, featured, clickCount } = selection
+      const priceText = originalPrice && originalPrice > price 
+        ? `€${price} (antes €${originalPrice})` 
+        : `€${price}`
+      return {
+        title: `${featured ? '📌 ' : ''}${title}`,
+        subtitle: `${priceText} - ${category} • ${clickCount || 0} clicks`,
+        media,
+      }
+    },
+  },
   orderings: [
     {
-      title: 'Más recientes',
-      name: 'createdAtDesc',
+      title: 'Más nuevos primero',
+      name: 'createdDesc',
       by: [
-        {field: 'createdAt', direction: 'desc'}
-      ]
+        { field: 'featured', direction: 'desc' },
+        { field: 'createdAt', direction: 'desc' }
+      ],
+    },
+    {
+      title: 'Más antiguos primero',
+      name: 'createdAsc',
+      by: [
+        { field: 'featured', direction: 'desc' },
+        { field: 'createdAt', direction: 'asc' }
+      ],
     },
     {
       title: 'Precio menor a mayor',
       name: 'priceAsc',
-      by: [
-        {field: 'price', direction: 'asc'}
-      ]
-    }
-  ],
-  preview: {
-    select: {
-      title: 'name',
-      subtitle: 'price',
-      media: 'image',
-      currency: 'currency',
-      featured: 'featured'
+      by: [{ field: 'price', direction: 'asc' }],
     },
-    prepare(selection) {
-      const {title, subtitle, media, currency, featured} = selection
-      const featuredIcon = featured ? '⭐ ' : ''
-      return {
-        title: `${featuredIcon}${title}`,
-        subtitle: `${currency} $${subtitle}`,
-        media
-      }
-    }
-  },
+    {
+      title: 'Precio mayor a menor',
+      name: 'priceDesc',
+      by: [{ field: 'price', direction: 'desc' }],
+    },
+    {
+      title: 'Más clicks',
+      name: 'clicksDesc',
+      by: [{ field: 'clickCount', direction: 'desc' }],
+    },
+  ],
 })
