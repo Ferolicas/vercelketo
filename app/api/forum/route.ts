@@ -19,6 +19,7 @@ export async function GET(request: NextRequest) {
     query += `] | order(isPinned desc, createdAt desc) [${offset}...${offset + limit}] {
       _id,
       title,
+      slug,
       content,
       "author": {
         "name": authorName,
