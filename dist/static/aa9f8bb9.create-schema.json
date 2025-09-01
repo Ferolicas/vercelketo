@@ -1,0 +1,2288 @@
+[
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "name",
+        "type": "string",
+        "title": "Nombre"
+      },
+      {
+        "options": {
+          "source": "name",
+          "maxLength": 96
+        },
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "custom"
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "slug",
+        "type": "slug"
+      },
+      {
+        "rows": 3,
+        "name": "description",
+        "type": "text",
+        "title": "Descripción"
+      },
+      {
+        "description": "Un emoji que represente la categoría",
+        "name": "icon",
+        "type": "string",
+        "title": "Icono (Emoji)"
+      }
+    ],
+    "name": "category",
+    "type": "document",
+    "title": "Categoría"
+  },
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "name",
+        "type": "string",
+        "title": "Nombre de la receta"
+      },
+      {
+        "options": {
+          "source": "name",
+          "maxLength": 96
+        },
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "custom"
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "slug",
+        "type": "slug"
+      },
+      {
+        "rows": 4,
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "description",
+        "type": "text",
+        "title": "Descripción"
+      },
+      {
+        "rows": 8,
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "Lista de ingredientes en formato libre. Puedes usar saltos de línea para separar cada ingrediente.",
+        "name": "ingredients",
+        "type": "text",
+        "title": "Ingredientes"
+      },
+      {
+        "rows": 6,
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "preparation",
+        "type": "text",
+        "title": "Preparación"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "uri",
+                "constraint": {
+                  "options": {
+                    "scheme": [
+                      "/^https$/"
+                    ],
+                    "allowRelative": false,
+                    "relativeOnly": false,
+                    "allowCredentials": false
+                  }
+                }
+              },
+              {
+                "flag": "custom"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "youtubeUrl",
+        "type": "url",
+        "title": "URL de YouTube"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              },
+              {
+                "flag": "min",
+                "constraint": 1
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "preparationTime",
+        "type": "number",
+        "title": "Tiempo de preparación (minutos)"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              },
+              {
+                "flag": "min",
+                "constraint": 1
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "servings",
+        "type": "number",
+        "title": "Porciones"
+      },
+      {
+        "options": {
+          "hotspot": true
+        },
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "thumbnail",
+        "type": "image",
+        "title": "Miniatura"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "to": [
+          {
+            "type": "category"
+          }
+        ],
+        "name": "category",
+        "type": "reference",
+        "title": "Categoría"
+      },
+      {
+        "initialValue": 0,
+        "readOnly": true,
+        "name": "averageRating",
+        "type": "number",
+        "title": "Valoración promedio"
+      },
+      {
+        "initialValue": 0,
+        "readOnly": true,
+        "name": "totalRatings",
+        "type": "number",
+        "title": "Total de valoraciones"
+      },
+      {
+        "readOnly": true,
+        "name": "createdAt",
+        "type": "datetime",
+        "title": "Fecha de creación"
+      }
+    ],
+    "name": "recipe",
+    "type": "document",
+    "title": "Receta"
+  },
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "Slug de la receta o post al que pertenece el comentario",
+        "name": "postSlug",
+        "type": "string",
+        "title": "Slug del Post"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "Título de la receta o post para referencia",
+        "name": "postTitle",
+        "type": "string",
+        "title": "Título del Post"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "authorName",
+        "type": "string",
+        "title": "Nombre del autor"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "authorEmail",
+        "type": "string",
+        "title": "Email del autor"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "ID único del autor para permitir edición/eliminación",
+        "name": "authorId",
+        "type": "string",
+        "title": "ID del autor"
+      },
+      {
+        "rows": 4,
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              },
+              {
+                "flag": "min",
+                "constraint": 4
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "content",
+        "type": "text",
+        "title": "Comentario"
+      },
+      {
+        "options": {
+          "list": [
+            {
+              "title": "⭐ 1 estrella",
+              "value": 1
+            },
+            {
+              "title": "⭐⭐ 2 estrellas",
+              "value": 2
+            },
+            {
+              "title": "⭐⭐⭐ 3 estrellas",
+              "value": 3
+            },
+            {
+              "title": "⭐⭐⭐⭐ 4 estrellas",
+              "value": 4
+            },
+            {
+              "title": "⭐⭐⭐⭐⭐ 5 estrellas",
+              "value": 5
+            }
+          ]
+        },
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "valid",
+                "constraint": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ]
+              },
+              {
+                "flag": "min",
+                "constraint": 1
+              },
+              {
+                "flag": "max",
+                "constraint": 5
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "rating",
+        "type": "number",
+        "title": "Valoración"
+      },
+      {
+        "description": "Referencia al comentario al que responde (para respuestas)",
+        "to": [
+          {
+            "type": "comment"
+          }
+        ],
+        "name": "parentComment",
+        "type": "reference",
+        "title": "Comentario padre"
+      },
+      {
+        "initialValue": true,
+        "description": "Los comentarios se aprueban automáticamente",
+        "name": "approved",
+        "type": "boolean",
+        "title": "Aprobado"
+      },
+      {
+        "initialValue": false,
+        "description": "Marca si el comentario ha sido editado",
+        "name": "isEdited",
+        "type": "boolean",
+        "title": "Editado"
+      },
+      {
+        "initialValue": false,
+        "description": "Marca si el comentario ha sido eliminado (soft delete)",
+        "name": "isDeleted",
+        "type": "boolean",
+        "title": "Eliminado"
+      },
+      {
+        "description": "Respuesta oficial de Planeta Keto",
+        "name": "adminReply",
+        "type": "text",
+        "title": "Respuesta del admin"
+      },
+      {
+        "initialValue": false,
+        "name": "adminReplyPublished",
+        "type": "boolean",
+        "title": "Respuesta del admin publicada"
+      },
+      {
+        "name": "adminReplyDate",
+        "type": "datetime",
+        "title": "Fecha respuesta admin"
+      },
+      {
+        "name": "createdAt",
+        "type": "datetime",
+        "title": "Fecha de creación"
+      },
+      {
+        "name": "updatedAt",
+        "type": "datetime",
+        "title": "Fecha de actualización"
+      }
+    ],
+    "name": "comment",
+    "type": "document",
+    "title": "Comentario"
+  },
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "title",
+        "type": "string",
+        "title": "Título"
+      },
+      {
+        "options": {
+          "source": "title",
+          "maxLength": 96
+        },
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "custom"
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "slug",
+        "type": "slug"
+      },
+      {
+        "rows": 4,
+        "name": "description",
+        "type": "text",
+        "title": "Descripción"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              },
+              {
+                "flag": "min",
+                "constraint": 0
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "price",
+        "type": "number",
+        "title": "Precio a Cobrar (€)"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "min",
+                "constraint": 0
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "Precio original antes del descuento (opcional)",
+        "name": "originalPrice",
+        "type": "number",
+        "title": "Precio Original (€)"
+      },
+      {
+        "description": "ID del precio en Stripe (opcional para productos manuales)",
+        "name": "stripePriceId",
+        "type": "string",
+        "title": "Stripe Price ID"
+      },
+      {
+        "options": {
+          "hotspot": true
+        },
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "fields": [
+          {
+            "name": "alt",
+            "type": "string",
+            "title": "Texto alternativo"
+          }
+        ],
+        "name": "image",
+        "type": "image",
+        "title": "Imagen Principal"
+      },
+      {
+        "options": {
+          "list": [
+            {
+              "title": "Asesoría",
+              "value": "Asesoria"
+            },
+            {
+              "title": "Libro",
+              "value": "Libro"
+            },
+            {
+              "title": "Servicios",
+              "value": "Servicios"
+            }
+          ]
+        },
+        "initialValue": "Asesoria",
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "valid",
+                "constraint": [
+                  "Asesoria",
+                  "Libro",
+                  "Servicios"
+                ]
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "category",
+        "type": "string",
+        "title": "Categoría"
+      },
+      {
+        "options": {
+          "accept": ".pdf"
+        },
+        "hidden": "conditional",
+        "name": "pdfFile",
+        "type": "file",
+        "title": "Archivo PDF (para libros)"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "uri",
+                "constraint": {
+                  "options": {
+                    "scheme": [
+                      "/^http$/",
+                      "/^https$/"
+                    ],
+                    "allowRelative": false,
+                    "relativeOnly": false,
+                    "allowCredentials": false
+                  }
+                }
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "URL específica de Calendly para este tipo de asesoría",
+        "hidden": "conditional",
+        "name": "calendlyUrl",
+        "type": "url",
+        "title": "URL de Calendly (para asesorías)"
+      },
+      {
+        "initialValue": false,
+        "description": "Mostrar este producto como destacado",
+        "name": "featured",
+        "type": "boolean",
+        "title": "Fijar"
+      },
+      {
+        "initialValue": 0,
+        "readOnly": true,
+        "name": "clickCount",
+        "type": "number",
+        "title": "Número de clicks"
+      },
+      {
+        "name": "createdAt",
+        "type": "datetime",
+        "title": "Fecha de Creación"
+      }
+    ],
+    "name": "product",
+    "type": "document",
+    "title": "Producto"
+  },
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "name",
+        "type": "string",
+        "title": "Nombre del servicio"
+      },
+      {
+        "options": {
+          "source": "name",
+          "maxLength": 96
+        },
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "custom"
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "slug",
+        "type": "slug"
+      },
+      {
+        "rows": 4,
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "description",
+        "type": "text",
+        "title": "Descripción"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              },
+              {
+                "flag": "min",
+                "constraint": 0
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "price",
+        "type": "number",
+        "title": "Precio"
+      },
+      {
+        "initialValue": "USD",
+        "options": {
+          "list": [
+            {
+              "title": "USD ($)",
+              "value": "USD"
+            },
+            {
+              "title": "EUR (€)",
+              "value": "EUR"
+            },
+            {
+              "title": "COP ($)",
+              "value": "COP"
+            }
+          ]
+        },
+        "name": "currency",
+        "type": "string",
+        "title": "Moneda"
+      },
+      {
+        "description": "Ej: 1 hora, 30 días, etc.",
+        "name": "duration",
+        "type": "string",
+        "title": "Duración"
+      },
+      {
+        "options": {
+          "hotspot": true
+        },
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "image",
+        "type": "image",
+        "title": "Imagen"
+      },
+      {
+        "of": [
+          {
+            "type": "string"
+          }
+        ],
+        "name": "features",
+        "type": "array",
+        "title": "Características incluidas"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "uri",
+                "constraint": {
+                  "options": {
+                    "scheme": [
+                      "/^http$/",
+                      "/^https$/"
+                    ],
+                    "allowRelative": false,
+                    "relativeOnly": false,
+                    "allowCredentials": false
+                  }
+                }
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "Link para contratar el servicio",
+        "name": "contactUrl",
+        "type": "url",
+        "title": "URL de contacto"
+      },
+      {
+        "description": "Número de WhatsApp sin símbolos, ej: 573001234567",
+        "name": "whatsapp",
+        "type": "string",
+        "title": "WhatsApp"
+      },
+      {
+        "initialValue": false,
+        "name": "featured",
+        "type": "boolean",
+        "title": "Destacado"
+      },
+      {
+        "readOnly": true,
+        "name": "createdAt",
+        "type": "datetime",
+        "title": "Fecha de creación"
+      }
+    ],
+    "name": "service",
+    "type": "document",
+    "title": "Servicio"
+  },
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "title",
+        "type": "string",
+        "title": "Título de la Lista"
+      },
+      {
+        "options": {
+          "source": "title",
+          "maxLength": 96
+        },
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "custom"
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "slug",
+        "type": "slug"
+      },
+      {
+        "options": {
+          "list": [
+            {
+              "title": "Cocina Keto",
+              "value": "cooking"
+            },
+            {
+              "title": "Suplementos",
+              "value": "supplements"
+            },
+            {
+              "title": "Utensilios",
+              "value": "utensils"
+            },
+            {
+              "title": "Ingredientes",
+              "value": "ingredients"
+            },
+            {
+              "title": "Libros",
+              "value": "books"
+            },
+            {
+              "title": "Deportes",
+              "value": "sports"
+            }
+          ]
+        },
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "valid",
+                "constraint": [
+                  "cooking",
+                  "supplements",
+                  "utensils",
+                  "ingredients",
+                  "books",
+                  "sports"
+                ]
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "category",
+        "type": "string",
+        "title": "Categoría"
+      },
+      {
+        "options": {
+          "hotspot": true
+        },
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "fields": [
+          {
+            "name": "alt",
+            "type": "string",
+            "title": "Texto alternativo"
+          }
+        ],
+        "name": "image",
+        "type": "image",
+        "title": "Imagen de la Lista"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              },
+              {
+                "flag": "uri",
+                "constraint": {
+                  "options": {
+                    "scheme": [
+                      "/^http$/",
+                      "/^https$/"
+                    ],
+                    "allowRelative": false,
+                    "relativeOnly": false,
+                    "allowCredentials": false
+                  }
+                }
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "url",
+        "type": "url",
+        "title": "URL de Amazon"
+      },
+      {
+        "initialValue": 0,
+        "readOnly": true,
+        "name": "clickCount",
+        "type": "number",
+        "title": "Número de clicks"
+      },
+      {
+        "name": "createdAt",
+        "type": "datetime",
+        "title": "Fecha de Creación"
+      }
+    ],
+    "name": "amazonList",
+    "type": "document",
+    "title": "Lista Amazon"
+  },
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "title",
+        "type": "string",
+        "title": "Título"
+      },
+      {
+        "options": {
+          "source": "title",
+          "maxLength": 96
+        },
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "custom"
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "slug",
+        "type": "slug"
+      },
+      {
+        "rows": 3,
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "Resumen que aparece en la tarjeta del blog",
+        "name": "excerpt",
+        "type": "text",
+        "title": "Resumen"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "of": [
+          {
+            "marks": {
+              "annotations": [
+                {
+                  "i18nTitleKey": "inputs.portable-text.annotation.link",
+                  "options": {
+                    "modal": {
+                      "type": "popover"
+                    }
+                  },
+                  "fields": [
+                    {
+                      "validation": [
+                        {
+                          "rules": [
+                            {
+                              "flag": "uri",
+                              "constraint": {
+                                "options": {
+                                  "scheme": [
+                                    "/^http$/",
+                                    "/^https$/",
+                                    "/^tel$/",
+                                    "/^mailto$/"
+                                  ],
+                                  "allowRelative": true,
+                                  "relativeOnly": false,
+                                  "allowCredentials": false
+                                }
+                              }
+                            }
+                          ],
+                          "level": "error"
+                        }
+                      ],
+                      "description": "A valid web, email, phone, or relative link.",
+                      "name": "href",
+                      "type": "url",
+                      "title": "Link"
+                    }
+                  ],
+                  "name": "link",
+                  "type": "object"
+                }
+              ],
+              "decorators": [
+                {
+                  "value": "strong",
+                  "title": "Strong"
+                },
+                {
+                  "value": "em",
+                  "title": "Italic"
+                },
+                {
+                  "value": "code",
+                  "title": "Code"
+                },
+                {
+                  "value": "underline",
+                  "title": "Underline"
+                },
+                {
+                  "value": "strike-through",
+                  "title": "Strike"
+                }
+              ]
+            },
+            "lists": [
+              {
+                "value": "bullet",
+                "title": "Bulleted list"
+              },
+              {
+                "value": "number",
+                "title": "Numbered list"
+              }
+            ],
+            "styles": [
+              {
+                "value": "normal",
+                "title": "Normal"
+              },
+              {
+                "value": "h1",
+                "title": "Heading 1"
+              },
+              {
+                "value": "h2",
+                "title": "Heading 2"
+              },
+              {
+                "value": "h3",
+                "title": "Heading 3"
+              },
+              {
+                "value": "h4",
+                "title": "Heading 4"
+              },
+              {
+                "value": "h5",
+                "title": "Heading 5"
+              },
+              {
+                "value": "h6",
+                "title": "Heading 6"
+              },
+              {
+                "value": "blockquote",
+                "title": "Quote"
+              }
+            ],
+            "of": [],
+            "type": "block"
+          }
+        ],
+        "name": "content",
+        "type": "array",
+        "title": "Contenido completo"
+      },
+      {
+        "options": {
+          "hotspot": true
+        },
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "featuredImage",
+        "type": "image",
+        "title": "Imagen destacada"
+      },
+      {
+        "initialValue": "Planeta Keto",
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "author",
+        "type": "string",
+        "title": "Autor"
+      },
+      {
+        "options": {
+          "layout": "tags"
+        },
+        "of": [
+          {
+            "type": "string"
+          }
+        ],
+        "name": "tags",
+        "type": "array",
+        "title": "Etiquetas"
+      },
+      {
+        "initialValue": false,
+        "name": "published",
+        "type": "boolean",
+        "title": "Publicado"
+      },
+      {
+        "readOnly": true,
+        "name": "createdAt",
+        "type": "datetime",
+        "title": "Fecha de creación"
+      }
+    ],
+    "name": "blogPost",
+    "type": "document",
+    "title": "Artículo de Blog"
+  },
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              },
+              {
+                "flag": "max",
+                "constraint": 200
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "title",
+        "type": "string",
+        "title": "Título"
+      },
+      {
+        "options": {
+          "source": "title",
+          "maxLength": 96
+        },
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "custom"
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "slug",
+        "type": "slug"
+      },
+      {
+        "rows": 6,
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              },
+              {
+                "flag": "min",
+                "constraint": 10
+              },
+              {
+                "flag": "max",
+                "constraint": 5000
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "content",
+        "type": "text",
+        "title": "Contenido"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              },
+              {
+                "flag": "max",
+                "constraint": 100
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "authorName",
+        "type": "string",
+        "title": "Nombre del autor"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "authorEmail",
+        "type": "string",
+        "title": "Email del autor"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "ID único del autor para permitir edición/eliminación",
+        "name": "authorId",
+        "type": "string",
+        "title": "ID del autor"
+      },
+      {
+        "options": {
+          "list": [
+            {
+              "title": "🌱 Principiantes",
+              "value": "principiantes"
+            },
+            {
+              "title": "🎉 Testimonios",
+              "value": "testimonios"
+            },
+            {
+              "title": "👩‍🍳 Recetas",
+              "value": "recetas"
+            },
+            {
+              "title": "❓ Dudas",
+              "value": "dudas"
+            },
+            {
+              "title": "💪 Ejercicio",
+              "value": "ejercicio"
+            },
+            {
+              "title": "🛒 Productos",
+              "value": "productos"
+            }
+          ]
+        },
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "valid",
+                "constraint": [
+                  "principiantes",
+                  "testimonios",
+                  "recetas",
+                  "dudas",
+                  "ejercicio",
+                  "productos"
+                ]
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "category",
+        "type": "string",
+        "title": "Categoría"
+      },
+      {
+        "options": {
+          "layout": "tags"
+        },
+        "of": [
+          {
+            "type": "string"
+          }
+        ],
+        "name": "tags",
+        "type": "array",
+        "title": "Etiquetas"
+      },
+      {
+        "initialValue": false,
+        "description": "Publicaciones fijadas aparecen al inicio",
+        "name": "isPinned",
+        "type": "boolean",
+        "title": "Fijado"
+      },
+      {
+        "initialValue": false,
+        "description": "Las publicaciones bloqueadas no permiten respuestas",
+        "name": "isLocked",
+        "type": "boolean",
+        "title": "Bloqueado"
+      },
+      {
+        "initialValue": true,
+        "description": "Los posts se aprueban automáticamente",
+        "name": "approved",
+        "type": "boolean",
+        "title": "Aprobado"
+      },
+      {
+        "initialValue": false,
+        "description": "Marca si el post ha sido editado",
+        "name": "isEdited",
+        "type": "boolean",
+        "title": "Editado"
+      },
+      {
+        "initialValue": false,
+        "description": "Marca si el post ha sido eliminado (soft delete)",
+        "name": "isDeleted",
+        "type": "boolean",
+        "title": "Eliminado"
+      },
+      {
+        "initialValue": 0,
+        "description": "Contador de vistas del post",
+        "name": "views",
+        "type": "number",
+        "title": "Visualizaciones"
+      },
+      {
+        "initialValue": 0,
+        "description": "Contador de likes del post",
+        "name": "likes",
+        "type": "number",
+        "title": "Me gusta"
+      },
+      {
+        "initialValue": 0,
+        "description": "Contador automático de respuestas",
+        "name": "replyCount",
+        "type": "number",
+        "title": "Número de respuestas"
+      },
+      {
+        "description": "Fecha de la última respuesta o actualización",
+        "name": "lastActivityAt",
+        "type": "datetime",
+        "title": "Última actividad"
+      },
+      {
+        "name": "createdAt",
+        "type": "datetime",
+        "title": "Fecha de creación"
+      },
+      {
+        "name": "updatedAt",
+        "type": "datetime",
+        "title": "Fecha de actualización"
+      }
+    ],
+    "name": "forumPost",
+    "type": "document",
+    "title": "Publicación del Foro"
+  },
+  {
+    "fields": [
+      {
+        "readOnly": true,
+        "name": "clienteId",
+        "type": "string",
+        "title": "ID de Cliente"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              },
+              {
+                "flag": "min",
+                "constraint": 2
+              },
+              {
+                "flag": "max",
+                "constraint": 100
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "nombre",
+        "type": "string",
+        "title": "Nombre Completo"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "email",
+        "type": "string",
+        "title": "Correo Electrónico"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              },
+              {
+                "flag": "min",
+                "constraint": 8
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "telefono",
+        "type": "string",
+        "title": "Número de Teléfono"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "pais",
+        "type": "string",
+        "title": "País"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "to": [
+          {
+            "type": "product"
+          }
+        ],
+        "name": "productoComprado",
+        "type": "reference"
+      },
+      {
+        "options": {
+          "accept": ".pdf,.doc,.docx,.epub"
+        },
+        "name": "archivoProducto",
+        "type": "file",
+        "title": "Archivo del Producto"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "fechaCompra",
+        "type": "datetime",
+        "title": "Fecha de Compra"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              },
+              {
+                "flag": "min",
+                "constraint": 0
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "precioCompra",
+        "type": "number",
+        "title": "Precio de Compra"
+      },
+      {
+        "options": {
+          "list": [
+            {
+              "title": "Tarjeta de Crédito/Débito",
+              "value": "card"
+            },
+            {
+              "title": "PayPal",
+              "value": "paypal"
+            },
+            {
+              "title": "Bancontact",
+              "value": "bancontact"
+            },
+            {
+              "title": "iDEAL",
+              "value": "ideal"
+            },
+            {
+              "title": "SEPA",
+              "value": "sepa_debit"
+            },
+            {
+              "title": "Klarna",
+              "value": "klarna"
+            }
+          ]
+        },
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "valid",
+                "constraint": [
+                  "card",
+                  "paypal",
+                  "bancontact",
+                  "ideal",
+                  "sepa_debit",
+                  "klarna"
+                ]
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "metodoPago",
+        "type": "string",
+        "title": "Método de Pago"
+      },
+      {
+        "options": {
+          "list": [
+            {
+              "title": "✅ Exitoso",
+              "value": "exitoso"
+            },
+            {
+              "title": "⏳ Pendiente",
+              "value": "pendiente"
+            }
+          ]
+        },
+        "initialValue": "pendiente",
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "valid",
+                "constraint": [
+                  "exitoso",
+                  "pendiente"
+                ]
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "estadoTransaccion",
+        "type": "string",
+        "title": "Estado de Transacción"
+      },
+      {
+        "options": {
+          "list": [
+            {
+              "title": "✅ Exitoso",
+              "value": "exitoso"
+            },
+            {
+              "title": "⏳ Pendiente",
+              "value": "pendiente"
+            },
+            {
+              "title": "↩️ Devolución",
+              "value": "devolucion"
+            }
+          ]
+        },
+        "initialValue": "pendiente",
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "valid",
+                "constraint": [
+                  "exitoso",
+                  "pendiente",
+                  "devolucion"
+                ]
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "estadoVenta",
+        "type": "string",
+        "title": "Estado de Venta"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "codigoTransaccion",
+        "type": "string",
+        "title": "Código de Transacción"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "contrasenaAcceso",
+        "type": "string",
+        "title": "Contraseña de Acceso (Cifrada)"
+      },
+      {
+        "initialValue": 0,
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              },
+              {
+                "flag": "min",
+                "constraint": 0
+              },
+              {
+                "flag": "max",
+                "constraint": 2
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "contadorDescargas",
+        "type": "number",
+        "title": "Contador de Descargas"
+      },
+      {
+        "initialValue": 2,
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              },
+              {
+                "flag": "min",
+                "constraint": 1
+              },
+              {
+                "flag": "max",
+                "constraint": 5
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "maxDescargas",
+        "type": "number",
+        "title": "Máximo de Descargas Permitidas"
+      },
+      {
+        "initialValue": false,
+        "name": "suscritoNewsletter",
+        "type": "boolean",
+        "title": "Suscrito al Newsletter"
+      },
+      {
+        "name": "fechaSuscripcionNewsletter",
+        "type": "datetime",
+        "title": "Fecha de Suscripción al Newsletter"
+      },
+      {
+        "of": [
+          {
+            "fields": [
+              {
+                "name": "codigo",
+                "type": "string",
+                "title": "Código"
+              },
+              {
+                "name": "fechaUso",
+                "type": "datetime",
+                "title": "Fecha de Uso"
+              },
+              {
+                "name": "descuento",
+                "type": "number",
+                "title": "Porcentaje de Descuento"
+              }
+            ],
+            "type": "object"
+          }
+        ],
+        "name": "codigosDescuentoUsados",
+        "type": "array",
+        "title": "Códigos de Descuento Usados"
+      }
+    ],
+    "name": "clientes",
+    "type": "document"
+  },
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "Código único para la descarga del producto",
+        "name": "ketoCode",
+        "type": "string",
+        "title": "Código Keto"
+      },
+      {
+        "description": "ID de la sesión de Stripe",
+        "name": "stripeSessionId",
+        "type": "string",
+        "title": "Stripe Session ID"
+      },
+      {
+        "description": "ID del payment intent de Stripe",
+        "name": "stripePaymentIntentId",
+        "type": "string",
+        "title": "Stripe Payment Intent ID"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "min",
+                "constraint": 0
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "amount",
+        "type": "number",
+        "title": "Monto Total (€)"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "min",
+                "constraint": 0
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "stripeCommission",
+        "type": "number",
+        "title": "Comisión Stripe (€)"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "min",
+                "constraint": 0
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "iva",
+        "type": "number",
+        "title": "IVA (€)"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "min",
+                "constraint": 0
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "irpf",
+        "type": "number",
+        "title": "IRPF (€)"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "min",
+                "constraint": 0
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "description": "Monto después de comisiones e impuestos",
+        "name": "netAmount",
+        "type": "number",
+        "title": "Monto Neto (€)"
+      },
+      {
+        "name": "customerEmail",
+        "type": "string",
+        "title": "Email del Cliente"
+      },
+      {
+        "name": "customerName",
+        "type": "string",
+        "title": "Nombre del Cliente"
+      },
+      {
+        "name": "customerPhone",
+        "type": "string",
+        "title": "Teléfono del Cliente"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "to": [
+          {
+            "type": "product"
+          }
+        ],
+        "name": "productId",
+        "type": "reference",
+        "title": "Producto"
+      },
+      {
+        "options": {
+          "list": [
+            {
+              "title": "Tarjeta de Crédito",
+              "value": "card"
+            },
+            {
+              "title": "Bizum",
+              "value": "bizum"
+            },
+            {
+              "title": "PayPal",
+              "value": "paypal"
+            },
+            {
+              "title": "Transferencia",
+              "value": "transfer"
+            },
+            {
+              "title": "Otro",
+              "value": "other"
+            }
+          ]
+        },
+        "name": "paymentMethod",
+        "type": "string",
+        "title": "Método de Pago"
+      },
+      {
+        "name": "country",
+        "type": "string",
+        "title": "País"
+      },
+      {
+        "name": "city",
+        "type": "string",
+        "title": "Ciudad"
+      },
+      {
+        "options": {
+          "list": [
+            {
+              "title": "✅ Exitoso",
+              "value": "success"
+            },
+            {
+              "title": "⏳ Pendiente",
+              "value": "pending"
+            },
+            {
+              "title": "❌ Fallido",
+              "value": "failed"
+            },
+            {
+              "title": "🔄 Devuelto",
+              "value": "refunded"
+            },
+            {
+              "title": "⚠️ Cancelado",
+              "value": "canceled"
+            }
+          ]
+        },
+        "initialValue": "pending",
+        "name": "status",
+        "type": "string",
+        "title": "Estado"
+      },
+      {
+        "initialValue": 0,
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "min",
+                "constraint": 0
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "downloadCount",
+        "type": "number",
+        "title": "Número de Descargas"
+      },
+      {
+        "initialValue": 2,
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "min",
+                "constraint": 1
+              },
+              {
+                "flag": "max",
+                "constraint": 10
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "maxDownloads",
+        "type": "number",
+        "title": "Máximo de Descargas Permitidas"
+      },
+      {
+        "readOnly": true,
+        "name": "lastDownloadAt",
+        "type": "datetime",
+        "title": "Última Descarga"
+      },
+      {
+        "rows": 3,
+        "description": "Notas para uso interno",
+        "name": "notes",
+        "type": "text",
+        "title": "Notas Internas"
+      },
+      {
+        "name": "createdAt",
+        "type": "datetime",
+        "title": "Fecha de Transacción"
+      },
+      {
+        "name": "updatedAt",
+        "type": "datetime",
+        "title": "Última Actualización"
+      }
+    ],
+    "name": "transaction",
+    "type": "document",
+    "title": "Transacción"
+  }
+]
