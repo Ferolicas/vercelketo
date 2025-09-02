@@ -81,47 +81,34 @@ export default function CreatePostModal({ isOpen, onClose, onSuccess }: CreatePo
     }
   }
 
-  return (
-    <AnimatePresence>
-      {isOpen && (
-        <div className="fixed inset-0 z-50 overflow-y-auto">
-          <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-            {/* Backdrop */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
-              onClick={onClose}
-            />
+  if (!isOpen) return null;
 
-            {/* Modal */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="inline-block align-bottom bg-white rounded-2xl px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-3xl sm:w-full sm:p-6"
-            >
+  return (
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/50 backdrop-blur-sm">
+      <div className="flex min-h-full items-center justify-center p-4">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95, y: 20 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.95, y: 20 }}
+          className="relative w-full max-w-3xl bg-white rounded-2xl shadow-2xl max-h-[90vh] overflow-hidden"
+        >
               {/* Header */}
-              <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center">
-                  <div className="w-12 h-12 bg-gradient-to-r from-purple-600 to-purple-500 rounded-xl flex items-center justify-center mr-4">
-                    <DocumentTextIcon className="h-6 w-6 text-white" />
-                  </div>
+              <div className="bg-gradient-to-r from-purple-600 to-purple-500 px-8 py-6 text-white">
+                <div className="flex items-center justify-between">
                   <div>
-                    <h3 className="text-2xl font-bold text-gray-900">Crear Blog Post</h3>
-                    <p className="text-gray-600">Agregar nuevo artículo al blog</p>
+                    <h3 className="text-2xl font-bold">Crear Blog Post</h3>
+                    <p className="text-purple-100 mt-1">Agregar nuevo artículo al blog</p>
                   </div>
+                  <button
+                    onClick={onClose}
+                    className="w-10 h-10 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center transition-colors"
+                  >
+                    <XMarkIcon className="h-6 w-6" />
+                  </button>
                 </div>
-                <button
-                  onClick={onClose}
-                  className="text-gray-400 hover:text-gray-500 transition-colors"
-                >
-                  <XMarkIcon className="h-6 w-6" />
-                </button>
               </div>
 
-              <form onSubmit={handleSubmit} className="space-y-6">
+              <form onSubmit={handleSubmit} className="p-6 overflow-y-auto max-h-[calc(90vh-120px)] space-y-6">
                 {/* Título */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -243,11 +230,10 @@ export default function CreatePostModal({ isOpen, onClose, onSuccess }: CreatePo
                     )}
                   </button>
                 </div>
-              </form>
-            </motion.div>
-          </div>
+            </form>
+          </motion.div>
         </div>
-      )}
-    </AnimatePresence>
+      </div>
+    </div>
   )
 }
