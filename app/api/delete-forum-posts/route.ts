@@ -20,20 +20,28 @@ export async function DELETE() {
     
     console.log('🗑️  Eliminando publicaciones del foro...')
     
-    // Eliminar todos los posts del foro
+    // Crear transacción para eliminar todos los posts del foro
+    const transaction = writeClient.transaction()
+    
+    // Agregar eliminaciones a la transacción
     for (const post of forumPosts) {
-      console.log(`   - Eliminando: "${post.title}" (${post._id})`)
-      await writeClient.delete(post._id)
+      console.log(`   - Preparando eliminación: "${post.title}" (${post._id})`)
+      transaction.delete(post._id)
     }
     
-    console.log('🧹 Eliminando comentarios del foro...')
+    console.log('🧹 Buscando comentarios del foro...')
     
-    // Obtener y eliminar todos los comentarios del foro
+    // Obtener todos los comentarios del foro
     const forumComments = await writeClient.fetch(`*[_type == "forumComment"]{_id}`)
     
     for (const comment of forumComments) {
-      await writeClient.delete(comment._id)
+      transaction.delete(comment._id)
     }
+    
+    console.log('💥 Ejecutando eliminación masiva...')
+    
+    // Ejecutar transacción
+    await transaction.commit()
     
     console.log(`✅ Eliminadas ${forumPosts.length} publicaciones y ${forumComments.length} comentarios del foro`)
     
