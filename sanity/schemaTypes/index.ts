@@ -5,6 +5,8 @@ import product from './product'
 import service from './service'
 import blogPost from './blogPost'
 import forumPost from './forumPost'
+import forumReply from './forumReply'
+import forumComment from './forumComment'
 import { amazonList } from './affiliateList'
 import { clientes } from './clientes'
 import { transaction } from './transaction'
@@ -23,6 +25,8 @@ export const schemaTypes = [
   // Blog y foro
   blogPost,
   forumPost,
+  forumReply,
+  forumComment,
   
   // E-commerce y clientes
   clientes,

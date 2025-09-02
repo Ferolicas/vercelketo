@@ -77,7 +77,8 @@
       "Bash(vercel logs:*)",
       "Bash(dir \"C:\\PLANETA KETO V2\\planetaketonext\\app\\api\")",
       "Bash(del \"C:\\PLANETA KETO V2\\planetaketonext\\app\\api\\delete-forum-posts\\route.ts\")",
-      "Bash(del \"C:\\PLANETA KETO V2\\planetaketonext\\app\\api\\list-forum-posts\\route.ts\")"
+      "Bash(del \"C:\\PLANETA KETO V2\\planetaketonext\\app\\api\\list-forum-posts\\route.ts\")",
+      "Bash(del \"C:\\PLANETA KETO V2\\planetaketonext\\delete-forum-content.mjs\")"
     ],
     "deny": [],
     "ask": [],
