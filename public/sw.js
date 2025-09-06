@@ -7,11 +7,8 @@ const DYNAMIC_CACHE = 'planeta-keto-dynamic-v1';
 // Recursos que se cachearán inmediatamente
 const STATIC_ASSETS = [
   '/',
-  '/recetas',
-  '/servicios',
   '/manifest.json',
-  '/favicon.ico',
-  '/og-image.jpg'
+  '/favicon.ico'
 ];
 
 // Recursos que NO se deben cachear
