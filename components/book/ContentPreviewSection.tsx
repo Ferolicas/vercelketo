@@ -105,7 +105,7 @@ const capitulosData: Capitulo[] = [
   {
     numero: 6,
     titulo: "Superando Obstáculos Comunes",
-    descripción: "Soluciones para mesetas, antojos y efectos secundarios",
+    descripcion: "Soluciones para mesetas, antojos y efectos secundarios",
     paginas: 32,
     icono: "🏆",
     contenido: [

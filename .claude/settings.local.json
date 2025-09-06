@@ -87,7 +87,10 @@
       "Bash(mcp list:*)",
       "Read(//c/Users/ferne/.config/**)",
       "Bash(dir /b \"C:\\PLANETA KETO V2\\planetaketonext\\components\\ads\")",
-      "Bash(del \"C:\\PLANETA KETO V2\\planetaketonext\\app\\favicon.ico\")"
+      "Bash(del \"C:\\PLANETA KETO V2\\planetaketonext\\app\\favicon.ico\")",
+      "Bash(dir:*)",
+      "Bash(npx @sanity/client exec:*)",
+      "Bash(del \"C:\\PLANETA KETO V2\\planetaketonext\\get-recipe-count.mjs\")"
     ],
     "deny": [],
     "ask": [],

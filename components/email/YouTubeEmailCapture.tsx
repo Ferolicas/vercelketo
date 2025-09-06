@@ -1,4 +1,102 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { \n  PlayIcon,\n  EnvelopeIcon,\n  XMarkIcon,\n  CheckCircleIcon,\n  StarIcon as StarSolid,\n  FireIcon,\n  BoltIcon\n} from '@heroicons/react/24/outline'\nimport { StarIcon } from '@heroicons/react/24/solid'\n\ninterface YouTubeEmailCaptureProps {\n  trigger: 'immediate' | 'scroll' | 'time' | 'exit-intent'\n  position: 'modal' | 'inline' | 'floating' | 'sidebar'\n  context?: string\n  priority?: 'high' | 'medium' | 'low'\n  youtubeChannelUrl?: string\n  leadMagnetTitle?: string\n}\n\nconst defaultProps = {\n  youtubeChannelUrl: 'https://youtube.com/@PlanetaKeto',\n  leadMagnetTitle: 'Accede a Mi Canal de YouTube con Recetas Exclusivas'\n}\n\nexport default function YouTubeEmailCapture({\n  trigger = 'scroll',\n  position = 'modal',\n  context,\n  priority = 'medium',\n  youtubeChannelUrl = defaultProps.youtubeChannelUrl,\n  leadMagnetTitle = defaultProps.leadMagnetTitle\n}: YouTubeEmailCaptureProps) {\n  const [isVisible, setIsVisible] = useState(false)\n  const [email, setEmail] = useState('')\n  const [isSubmitting, setIsSubmitting] = useState(false)\n  const [isSubmitted, setIsSubmitted] = useState(false)\n  const [error, setError] = useState('')\n\n  // Trigger logic\n  useEffect(() => {\n    switch (trigger) {\n      case 'immediate':\n        setTimeout(() => setIsVisible(true), 1000)\n        break\n      case 'time':\n        setTimeout(() => setIsVisible(true), 30000) // 30 segundos\n        break\n      case 'scroll':\n        const handleScroll = () => {\n          const scrollPercent = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100\n          if (scrollPercent > 50) {\n            setIsVisible(true)\n            window.removeEventListener('scroll', handleScroll)\n          }\n        }\n        window.addEventListener('scroll', handleScroll)\n        return () => window.removeEventListener('scroll', handleScroll)\n      case 'exit-intent':\n        const handleMouseLeave = (e: MouseEvent) => {\n          if (e.clientY <= 0) {\n            setIsVisible(true)\n            document.removeEventListener('mouseleave', handleMouseLeave)\n          }\n        }\n        document.addEventListener('mouseleave', handleMouseLeave)\n        return () => document.removeEventListener('mouseleave', handleMouseLeave)\n    }\n  }, [trigger])\n\n  const handleSubmit = async (e: React.FormEvent) => {\n    e.preventDefault()\n    setIsSubmitting(true)\n    setError('')\n\n    try {\n      // Aquí integrarías con tu servicio de email marketing (Mailchimp, ConvertKit, etc.)\n      const response = await fetch('/api/email-signup', {\n        method: 'POST',\n        headers: {\n          'Content-Type': 'application/json',\n        },\n        body: JSON.stringify({\n          email,\n          source: 'youtube_email_capture',\n          context: context || 'general',\n          leadMagnet: 'youtube_channel_access'\n        }),\n      })\n\n      if (response.ok) {\n        setIsSubmitted(true)\n        \n        // Analytics tracking\n        if (typeof window !== 'undefined' && (window as any).gtag) {\n          (window as any).gtag('event', 'email_signup', {\n            method: 'youtube_capture',\n            source: context || 'general',\n            engagement_time_msec: Date.now()\n          })\n        }\n\n        // Redirigir a YouTube después de 3 segundos\n        setTimeout(() => {\n          window.open(youtubeChannelUrl, '_blank')\n        }, 3000)\n      } else {\n        throw new Error('Error al suscribirse')\n      }\n    } catch (err) {\n      setError('Error al suscribirse. Inténtalo de nuevo.')\n    } finally {\n      setIsSubmitting(false)\n    }\n  }\n\n  const handleClose = () => {\n    setIsVisible(false)\n  }\n\n  if (!isVisible) return null\n\n  // Modal version\n  if (position === 'modal') {\n    return (\n      <div className=\"fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4\">\n        <div className=\"bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto relative\">\n          <button\n            onClick={handleClose}\n            className=\"absolute top-4 right-4 z-10 w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center transition-colors\"\n          >\n            <XMarkIcon className=\"h-6 w-6 text-gray-600\" />\n          </button>\n\n          {!isSubmitted ? (\n            <div className=\"p-8\">\n              {/* Header */}\n              <div className=\"text-center mb-8\">\n                <div className=\"text-6xl mb-4\">📺</div>\n                <h2 className=\"text-3xl font-black text-gray-900 mb-4\">\n                  ¡Únete a Mi Canal de YouTube!\n                </h2>\n                <p className=\"text-xl text-gray-700 leading-relaxed\">\n                  Recibe <strong>videos exclusivos</strong> con recetas keto step-by-step, \n                  tips de nutrición y todo lo que necesitas para dominar la dieta cetogénica.\n                </p>\n              </div>\n\n              {/* Benefits */}\n              <div className=\"grid md:grid-cols-2 gap-6 mb-8\">\n                <div className=\"bg-gradient-to-br from-red-50 to-orange-50 rounded-2xl p-6\">\n                  <div className=\"text-3xl mb-3\">🎬</div>\n                  <h3 className=\"font-bold text-lg text-gray-900 mb-2\">Videos Semanales</h3>\n                  <p className=\"text-gray-700 text-sm\">Nuevas recetas keto cada semana con todos los pasos detallados</p>\n                </div>\n                <div className=\"bg-gradient-to-br from-green-50 to-blue-50 rounded-2xl p-6\">\n                  <div className=\"text-3xl mb-3\">💡</div>\n                  <h3 className=\"font-bold text-lg text-gray-900 mb-2\">Tips Exclusivos</h3>\n                  <p className=\"text-gray-700 text-sm\">Trucos y secretos que solo comparto en YouTube</p>\n                </div>\n                <div className=\"bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl p-6\">\n                  <div className=\"text-3xl mb-3\">👥</div>\n                  <h3 className=\"font-bold text-lg text-gray-900 mb-2\">Comunidad</h3>\n                  <p className=\"text-gray-700 text-sm\">Únete a miles de personas en su transformación keto</p>\n                </div>\n                <div className=\"bg-gradient-to-br from-yellow-50 to-orange-50 rounded-2xl p-6\">\n                  <div className=\"text-3xl mb-3\">🆓</div>\n                  <h3 className=\"font-bold text-lg text-gray-900 mb-2\">100% Gratis</h3>\n                  <p className=\"text-gray-700 text-sm\">Todo el contenido es completamente gratuito</p>\n                </div>\n              </div>\n\n              {/* Social proof */}\n              <div className=\"bg-gray-50 rounded-2xl p-6 mb-8\">\n                <div className=\"flex items-center justify-center mb-4\">\n                  <div className=\"flex text-yellow-400 mr-3\">\n                    {[1,2,3,4,5].map(i => (\n                      <StarIcon key={i} className=\"h-5 w-5\" />\n                    ))}\n                  </div>\n                  <span className=\"font-semibold text-gray-900\">4.9/5 valoración del canal</span>\n                </div>\n                <blockquote className=\"text-center text-gray-700 italic mb-3\">\n                  \"Gracias a los videos de Planeta Keto he perdido 12kg en 4 meses. \n                  ¡Las recetas son increíbles y fáciles de seguir!\"\n                </blockquote>\n                <cite className=\"text-center text-sm font-semibold text-gray-600 block\">\n                  - María, suscriptora del canal\n                </cite>\n              </div>\n\n              {/* Email form */}\n              <form onSubmit={handleSubmit} className=\"space-y-4\">\n                <div>\n                  <input\n                    type=\"email\"\n                    value={email}\n                    onChange={(e) => setEmail(e.target.value)}\n                    placeholder=\"Ingresa tu email para acceso prioritario\"\n                    className=\"w-full px-6 py-4 border-2 border-gray-200 rounded-xl text-lg focus:outline-none focus:border-red-500 transition-colors\"\n                    required\n                  />\n                </div>\n                \n                {error && (\n                  <div className=\"text-red-600 text-sm bg-red-50 p-3 rounded-lg\">\n                    {error}\n                  </div>\n                )}\n\n                <button\n                  type=\"submit\"\n                  disabled={isSubmitting || !email}\n                  className=\"w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-bold py-4 px-8 rounded-xl text-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center\"\n                >\n                  {isSubmitting ? (\n                    <>\n                      <div className=\"animate-spin rounded-full h-6 w-6 border-b-2 border-white mr-3\"></div>\n                      Enviando...\n                    </>\n                  ) : (\n                    <>\n                      <PlayIcon className=\"h-6 w-6 mr-3\" />\n                      ACCEDER AL CANAL AHORA\n                    </>\n                  )}\n                </button>\n              </form>\n\n              <p className=\"text-center text-xs text-gray-500 mt-4\">\n                📧 Solo recibirás notificaciones de nuevos videos. Sin spam. \n                Puedes desuscribirte en cualquier momento.\n              </p>\n            </div>\n          ) : (\n            // Success state\n            <div className=\"p-8 text-center\">\n              <div className=\"text-6xl mb-6\">🎉</div>\n              <h2 className=\"text-3xl font-black text-gray-900 mb-4\">\n                ¡Perfecto! Ya estás en la lista\n              </h2>\n              <p className=\"text-xl text-gray-700 mb-6\">\n                En 3 segundos te llevaremos a nuestro canal de YouTube...\n              </p>\n              \n              <div className=\"bg-gradient-to-r from-green-50 to-blue-50 rounded-2xl p-6 mb-6\">\n                <div className=\"flex items-center justify-center mb-4\">\n                  <CheckCircleIcon className=\"h-8 w-8 text-green-600 mr-3\" />\n                  <span className=\"font-bold text-lg text-gray-900\">¡Suscripción confirmada!</span>\n                </div>\n                <p className=\"text-gray-700\">\n                  Recibirás notificaciones de nuevos videos directamente en tu email. \n                  ¡No te pierdas ninguna receta!\n                </p>\n              </div>\n\n              <a\n                href={youtubeChannelUrl}\n                target=\"_blank\"\n                rel=\"noopener noreferrer\"\n                className=\"inline-flex items-center bg-red-600 hover:bg-red-700 text-white font-bold py-4 px-8 rounded-xl transition-colors\"\n              >\n                <PlayIcon className=\"h-6 w-6 mr-3\" />\n                IR AL CANAL AHORA\n              </a>\n            </div>\n          )}\n        </div>\n      </div>\n    )\n  }\n\n  // Inline version (dentro del contenido)\n  if (position === 'inline') {\n    return (\n      <div className=\"bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50 rounded-3xl p-8 border-2 border-red-200 shadow-lg my-12\">\n        {!isSubmitted ? (\n          <>\n            <div className=\"text-center mb-8\">\n              <div className=\"text-5xl mb-4\">📺</div>\n              <h3 className=\"text-2xl font-bold text-gray-900 mb-2\">\n                ¿Te gustan estas recetas?\n              </h3>\n              <p className=\"text-lg text-gray-700\">\n                En mi canal de YouTube tienes <strong>+100 videos</strong> con recetas paso a paso\n              </p>\n            </div>\n\n            <div className=\"grid md:grid-cols-3 gap-4 mb-6\">\n              <div className=\"text-center\">\n                <div className=\"text-2xl mb-2\">🎬</div>\n                <p className=\"text-sm font-semibold text-gray-800\">Videos Semanales</p>\n              </div>\n              <div className=\"text-center\">\n                <div className=\"text-2xl mb-2\">💡</div>\n                <p className=\"text-sm font-semibold text-gray-800\">Tips Exclusivos</p>\n              </div>\n              <div className=\"text-center\">\n                <div className=\"text-2xl mb-2\">🆓</div>\n                <p className=\"text-sm font-semibold text-gray-800\">100% Gratis</p>\n              </div>\n            </div>\n\n            <form onSubmit={handleSubmit} className=\"flex gap-4\">\n              <input\n                type=\"email\"\n                value={email}\n                onChange={(e) => setEmail(e.target.value)}\n                placeholder=\"Tu email para acceder al canal\"\n                className=\"flex-1 px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-red-500\"\n                required\n              />\n              <button\n                type=\"submit\"\n                disabled={isSubmitting || !email}\n                className=\"bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-xl transition-colors disabled:opacity-50 flex items-center\"\n              >\n                {isSubmitting ? (\n                  <div className=\"animate-spin rounded-full h-5 w-5 border-b-2 border-white\"></div>\n                ) : (\n                  <>\n                    <PlayIcon className=\"h-5 w-5 mr-2\" />\n                    Acceder\n                  </>\n                )}\n              </button>\n            </form>\n\n            {error && (\n              <div className=\"text-red-600 text-sm mt-2 bg-red-100 p-2 rounded\">\n                {error}\n              </div>\n            )}\n          </>\n        ) : (\n          <div className=\"text-center\">\n            <div className=\"text-4xl mb-4\">✅</div>\n            <h3 className=\"text-xl font-bold text-gray-900 mb-2\">\n              ¡Listo! Te estamos redirigiendo al canal...\n            </h3>\n            <a\n              href={youtubeChannelUrl}\n              target=\"_blank\"\n              rel=\"noopener noreferrer\"\n              className=\"inline-flex items-center text-red-600 hover:text-red-700 font-semibold\"\n            >\n              <PlayIcon className=\"h-5 w-5 mr-2\" />\n              O haz clic aquí para ir al canal\n            </a>\n          </div>\n        )}\n      </div>\n    )\n  }\n\n  // Floating version (esquina de la pantalla)\n  if (position === 'floating') {\n    return (\n      <div className=\"fixed bottom-4 left-4 z-40 bg-white rounded-2xl shadow-2xl border border-gray-200 p-6 max-w-sm\">\n        <button\n          onClick={handleClose}\n          className=\"absolute top-2 right-2 w-6 h-6 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center\"\n        >\n          <XMarkIcon className=\"h-4 w-4 text-gray-600\" />\n        </button>\n\n        {!isSubmitted ? (\n          <>\n            <div className=\"text-center mb-4\">\n              <div className=\"text-3xl mb-2\">📺</div>\n              <h4 className=\"font-bold text-lg text-gray-900 mb-1\">\n                Mi Canal YouTube\n              </h4>\n              <p className=\"text-sm text-gray-600\">\n                +100 videos con recetas gratis\n              </p>\n            </div>\n\n            <form onSubmit={handleSubmit} className=\"space-y-3\">\n              <input\n                type=\"email\"\n                value={email}\n                onChange={(e) => setEmail(e.target.value)}\n                placeholder=\"Tu email\"\n                className=\"w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-red-500\"\n                required\n              />\n              <button\n                type=\"submit\"\n                disabled={isSubmitting || !email}\n                className=\"w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg text-sm transition-colors disabled:opacity-50 flex items-center justify-center\"\n              >\n                {isSubmitting ? (\n                  <div className=\"animate-spin rounded-full h-4 w-4 border-b-2 border-white\"></div>\n                ) : (\n                  <>\n                    <PlayIcon className=\"h-4 w-4 mr-2\" />\n                    Ver Canal\n                  </>\n                )}\n              </button>\n            </form>\n          </>\n        ) : (\n          <div className=\"text-center\">\n            <div className=\"text-3xl mb-2\">✅</div>\n            <p className=\"text-sm font-semibold text-gray-900 mb-2\">\n              ¡Suscrito! Redirigiendo...\n            </p>\n          </div>\n        )}\n      </div>\n    )\n  }\n\n  return null\n}"
+import { useState } from 'react'
+import { PlayIcon, XMarkIcon } from '@heroicons/react/24/outline'
+
+interface YouTubeEmailCaptureProps {
+  trigger?: 'immediate' | 'scroll'
+  position?: 'modal' | 'inline'
+}
+
+export default function YouTubeEmailCapture({
+  trigger = 'scroll',
+  position = 'modal'
+}: YouTubeEmailCaptureProps) {
+  const [isVisible, setIsVisible] = useState(false)
+  const [email, setEmail] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isSubmitted, setIsSubmitted] = useState(false)
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsSubmitting(true)
+
+    try {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000))
+      setIsSubmitted(true)
+      
+      // Redirect to YouTube after short delay
+      setTimeout(() => {
+        window.open('https://youtube.com/@PlanetaKeto', '_blank')
+        setIsVisible(false)
+      }, 2000)
+    } catch (error) {
+      console.error('Error:', error)
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  const handleClose = () => {
+    setIsVisible(false)
+  }
+
+  if (!isVisible) return null
+
+  if (position === 'modal') {
+    return (
+      <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+        <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8">
+          <button
+            onClick={handleClose}
+            className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+          >
+            <XMarkIcon className="h-6 w-6" />
+          </button>
+
+          <div className="text-center">
+            <div className="text-4xl mb-4">📺</div>
+            <h3 className="text-2xl font-bold text-gray-900 mb-4">
+              ¡Accede a mi canal de YouTube!
+            </h3>
+            
+            {!isSubmitted ? (
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Tu email"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                />
+                <button
+                  type="submit"
+                  disabled={isSubmitting || !email}
+                  className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-lg transition-colors disabled:opacity-50 flex items-center justify-center"
+                >
+                  {isSubmitting ? (
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                  ) : (
+                    <>
+                      <PlayIcon className="h-5 w-5 mr-2" />
+                      Ver Canal Gratis
+                    </>
+                  )}
+                </button>
+              </form>
+            ) : (
+              <div>
+                <div className="text-4xl mb-4">✅</div>
+                <p className="text-lg text-green-600">¡Gracias! Redirigiendo al canal...</p>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  return null
+}

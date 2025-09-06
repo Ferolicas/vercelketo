@@ -12,13 +12,26 @@ const config: Config = {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        // Planeta Keto Brand Colors
+        planetaketo: {
+          50: '#f0fdf4',
+          100: '#dcfce7', 
+          200: '#bbf7d0',
+          300: '#86efac',
+          400: '#4ade80',
+          500: '#22c55e', // Primary green
+          600: '#16a34a', // Dark green
+          700: '#15803d', // Darker green
+          800: '#166534',
+          900: '#14532d',
+        },
         primary: {
           50: '#f0fdf4',
           100: '#dcfce7',
           200: '#bbf7d0',
           300: '#86efac',
           400: '#4ade80',
-          500: '#22c55e',
+          500: '#22c55e', // Primary green from brand
           600: '#16a34a',
           700: '#15803d',
           800: '#166534',
@@ -30,12 +43,33 @@ const config: Config = {
           200: '#bbf7d0',
           300: '#86efac',
           400: '#4ade80',
-          500: '#22c55e',
+          500: '#22c55e', // Brand green
           600: '#16a34a',
           700: '#15803d',
           800: '#166534',
           900: '#14532d',
         },
+        // Brand accent colors
+        brand: {
+          orange: {
+            400: '#fb923c',
+            500: '#f97316', // Brand orange
+            600: '#ea580c',
+          },
+          blue: {
+            500: '#3b82f6', // Brand blue
+            600: '#2563eb',
+            700: '#1d4ed8',
+          },
+          yellow: {
+            400: '#facc15', // Brand yellow highlights
+            500: '#eab308',
+          },
+          red: {
+            500: '#ef4444', // CTA red
+            600: '#dc2626',
+          }
+        }
       },
       fontFamily: {
         sans: ['var(--font-geist-sans)', 'Inter', 'system-ui', 'sans-serif'],

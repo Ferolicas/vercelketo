@@ -58,7 +58,7 @@ export default function Navigation() {
                 />
               </div>
               <div className="hidden sm:block">
-                <h1 className="text-xl font-bold bg-gradient-to-r from-green-600 to-green-500 bg-clip-text text-transparent">
+                <h1 className="text-xl font-bold bg-gradient-to-r from-planetaketo-600 to-planetaketo-500 bg-clip-text text-transparent">
                   Planeta Keto
                 </h1>
                 <p className="text-xs text-gray-500">Recetas Cetogénicas #1</p>
@@ -81,8 +81,8 @@ export default function Navigation() {
                     href={item.href}
                     className={`px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 flex items-center ${
                       isActive
-                        ? 'bg-green-100 text-green-700'
-                        : 'text-gray-700 hover:text-green-600 hover:bg-green-50'
+                        ? 'bg-planetaketo-100 text-planetaketo-700'
+                        : 'text-gray-700 hover:text-planetaketo-600 hover:bg-planetaketo-50'
                     }`}
                   >
                     <item.icon className="h-4 w-4 mr-2" />
@@ -125,8 +125,8 @@ export default function Navigation() {
                     href={item.href}
                     className={`block px-3 py-2 rounded-md text-base font-medium transition-colors duration-200 ${
                       isActive
-                        ? 'bg-green-100 text-green-700'
-                        : 'text-gray-700 hover:text-green-600 hover:bg-green-50'
+                        ? 'bg-planetaketo-100 text-planetaketo-700'
+                        : 'text-gray-700 hover:text-planetaketo-600 hover:bg-planetaketo-50'
                     }`}
                     onClick={() => setIsOpen(false)}
                   >

@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { 
   ShoppingCartIcon, 
   StarIcon as StarSolid,
-  ExternalLinkIcon,
+  ArrowTopRightOnSquareIcon,
   CheckCircleIcon,
   FireIcon,
   BoltIcon
@@ -275,7 +275,7 @@ export default function AffiliateLinksWidget({
                 >
                   <ShoppingCartIcon className="h-4 w-4 mr-2" />
                   Ver en Amazon
-                  <ExternalLinkIcon className="h-4 w-4 ml-2" />
+                  <ArrowTopRightOnSquareIcon className="h-4 w-4 ml-2" />
                 </Link>
               </div>
             </div>
@@ -339,7 +339,7 @@ export default function AffiliateLinksWidget({
                 className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 px-4 rounded-lg transition-colors text-sm flex items-center justify-center"
               >
                 Ver en Amazon
-                <ExternalLinkIcon className="h-3 w-3 ml-2" />
+                <ArrowTopRightOnSquareIcon className="h-3 w-3 ml-2" />
               </Link>
             </div>
           ))}
@@ -401,7 +401,7 @@ export default function AffiliateLinksWidget({
           className="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-bold py-2 px-4 rounded-lg transition-all duration-200 text-sm flex items-center justify-center"
         >
           Ver en Amazon
-          <ExternalLinkIcon className="h-3 w-3 ml-2" />
+          <ArrowTopRightOnSquareIcon className="h-3 w-3 ml-2" />
         </Link>
       </div>
     )

@@ -67,14 +67,14 @@ function CheckoutForm({ product, onClose, finalPrice }: { product: Product; onCl
         }}
       />
       {error && (
-        <div className="text-red-400 text-sm p-3 bg-red-500/10 rounded-lg border border-red-500/20">
+        <div className="text-brand-red-400 text-sm p-3 bg-brand-red-500/10 rounded-lg border border-brand-red-500/20">
           {error}
         </div>
       )}
       <button
         type="submit"
         disabled={!stripe || loading}
-        className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 rounded-xl 
+        className="w-full bg-gradient-to-r from-brand-blue-500 to-brand-orange-500 text-white py-4 rounded-xl 
                  font-semibold text-lg transition-all hover:shadow-lg hover:scale-105 
                  disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
       >
@@ -185,7 +185,7 @@ export default function PurchaseModal({ product, onClose }: PurchaseModalProps) 
                     <span className="text-white font-bold text-lg">
                       €{finalPrice.toFixed(2)}
                     </span>
-                    <span className="text-green-400 text-xs font-medium bg-green-400/20 px-2 py-1 rounded">
+                    <span className="text-planetaketo-400 text-xs font-medium bg-planetaketo-400/20 px-2 py-1 rounded">
                       20% off
                     </span>
                   </>
@@ -217,7 +217,7 @@ export default function PurchaseModal({ product, onClose }: PurchaseModalProps) 
                 <div className="space-y-2">
                   {product.includes.map((item, index) => (
                     <div key={index} className="flex items-start space-x-2">
-                      <Check className="text-green-400 mt-0.5 flex-shrink-0" size={14} />
+                      <Check className="text-planetaketo-400 mt-0.5 flex-shrink-0" size={14} />
                       <span className="text-xs text-white/70 leading-relaxed">{item}</span>
                     </div>
                   ))}
@@ -237,20 +237,20 @@ export default function PurchaseModal({ product, onClose }: PurchaseModalProps) 
                   onChange={(e) => setDiscountCode(e.target.value.toUpperCase())}
                   placeholder="Ingresa tu código"
                   className="flex-1 bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white text-sm 
-                           placeholder:text-white/50 focus:outline-none focus:border-blue-400"
+                           placeholder:text-white/50 focus:outline-none focus:border-brand-blue-400"
                 />
                 <button
                   type="button"
                   onClick={handleApplyDiscount}
                   disabled={loadingIntent || !discountCode.trim()}
-                  className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium
+                  className="bg-brand-blue-500 hover:bg-brand-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium
                            disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   Aplicar
                 </button>
               </div>
               {discountError && (
-                <p className="text-red-400 text-xs mt-2">{discountError}</p>
+                <p className="text-brand-red-400 text-xs mt-2">{discountError}</p>
               )}
             </div>
           )}
@@ -272,7 +272,7 @@ export default function PurchaseModal({ product, onClose }: PurchaseModalProps) 
                   appearance: {
                     theme: 'night',
                     variables: {
-                      colorPrimary: '#3b82f6',
+                      colorPrimary: '#22c55e',
                       colorBackground: '#1e293b',
                       colorText: '#f1f5f9',
                       colorDanger: '#ef4444',
@@ -286,7 +286,7 @@ export default function PurchaseModal({ product, onClose }: PurchaseModalProps) 
                 <CheckoutForm product={product} onClose={onClose} finalPrice={finalPrice} />
               </Elements>
             ) : (
-              <div className="text-center text-red-400 py-8">
+              <div className="text-center text-brand-red-400 py-8">
                 Error al cargar el formulario de pago
               </div>
             )}
