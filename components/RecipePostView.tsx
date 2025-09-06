@@ -127,9 +127,10 @@ function ExpandableContent({ title, content, isIngredients = false }: { title: s
 
 interface RecipePostViewProps {
   recipe: PostData;
+  onBackClick?: () => void;
 }
 
-export function RecipePostView({ recipe }: RecipePostViewProps) {
+export function RecipePostView({ recipe, onBackClick }: RecipePostViewProps) {
   const shareUrl = typeof window !== 'undefined' ? window.location.href : '';
 
   return (

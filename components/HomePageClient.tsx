@@ -125,8 +125,8 @@ export default function HomePageClient({
                       <div className="inline-flex space-x-2">
                           <CategoryButtons 
                               categories={categories} 
-                              selectedSlug={activeCategorySlug} 
-                              onCategorySelect={handleCategorySelect} 
+                              activeCategorySlug={activeCategorySlug} 
+                              onSelectCategory={handleCategorySelect} 
                           />
                       </div>
                   </div>
