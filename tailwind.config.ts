@@ -12,18 +12,18 @@ const config: Config = {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
-        // Planeta Keto Brand Colors
+        // Planeta Keto Brand Colors - Matches recipe page gradient
         planetaketo: {
           50: '#f0fdf4',
           100: '#dcfce7', 
           200: '#bbf7d0',
           300: '#86efac',
           400: '#4ade80',
-          500: '#22c55e', // Primary green
-          600: '#16a34a', // Dark green
-          700: '#15803d', // Darker green
-          800: '#166534',
-          900: '#14532d',
+          500: '#10b981', // emerald-500 from gradient
+          600: '#059669', // emerald-600 from gradient  
+          700: '#047857', // emerald-700
+          800: '#065f46',
+          900: '#064e3b',
         },
         primary: {
           50: '#f0fdf4',

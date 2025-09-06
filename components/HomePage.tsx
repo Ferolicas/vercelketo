@@ -123,7 +123,7 @@ export default function HomePage({
     <>
       
       {/* Hero Section - Redesigned with Planeta Keto brand colors */}
-      <section className="relative bg-gradient-to-br from-planetaketo-600 via-brand-blue-600 to-brand-orange-500 pt-20 pb-16 overflow-hidden">
+      <section className="relative bg-gradient-to-r from-green-600 via-green-500 to-emerald-600 pt-20 pb-16 overflow-hidden">
         {/* Decorative background */}
         <div className="absolute inset-0 bg-black/20"></div>
         <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent"></div>
@@ -158,7 +158,7 @@ export default function HomePage({
               
               <h1 className="text-4xl md:text-6xl lg:text-7xl font-black text-white mb-6 leading-tight">
                 Organiza tu
-                <span className="block bg-gradient-to-r from-brand-yellow-400 to-brand-orange-400 bg-clip-text text-transparent mt-2">
+                <span className="block bg-gradient-to-r from-yellow-300 to-orange-300 bg-clip-text text-transparent mt-2">
                   Keto Completo
                 </span>
                 <span className="block text-3xl md:text-4xl font-light mt-2">
@@ -230,7 +230,7 @@ export default function HomePage({
                     <div className="text-center">
                       <div className="text-5xl mb-4">📊</div>
                       <h3 className="font-black text-2xl text-gray-900 mb-2">PLANETA KETO</h3>
-                      <h2 className="font-black text-3xl bg-gradient-to-r from-planetaketo-600 to-brand-blue-600 bg-clip-text text-transparent mb-4">
+                      <h2 className="font-black text-3xl bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-4">
                         PLANIFICADOR 2025
                       </h2>
                       <div className="text-sm text-gray-800 font-medium mb-6">
@@ -313,10 +313,10 @@ export default function HomePage({
       />
 
       {/* Sección de Acceso Rápido - Optimizada para conversión */}
-      <section className="py-16 bg-gradient-to-br from-gray-50 via-white to-planetaketo-50/30">
+      <section className="py-16 bg-gradient-to-br from-gray-50 via-white to-green-50/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Banner de conversión libro */}
-          <div className="bg-gradient-to-r from-brand-blue-600 to-brand-orange-500 rounded-3xl p-8 mb-12 text-white text-center">
+          <div className="bg-gradient-to-r from-green-600 via-green-500 to-emerald-600 rounded-3xl p-8 mb-12 text-white text-center">
             <h2 className="text-2xl md:text-3xl font-bold mb-4">
               🎯 ¿Por qué necesitas el PLANIFICADOR si las recetas son gratis?
             </h2>
@@ -493,7 +493,7 @@ export default function HomePage({
       </div>
 
       {/* CTA Section - Mega optimizado para libro */}
-      <section className="py-20 bg-gradient-to-br from-brand-red-600 via-brand-orange-600 to-brand-yellow-400 relative overflow-hidden">
+      <section className="py-20 bg-gradient-to-r from-green-600 via-green-500 to-emerald-600 relative overflow-hidden">
         {/* Efectos de fondo */}
         <div className="absolute inset-0 bg-black/20"></div>
         <div className="absolute top-10 left-10 w-32 h-32 bg-white/10 rounded-full blur-3xl animate-pulse"></div>
@@ -518,7 +518,7 @@ export default function HomePage({
               {/* Libro visual */}
               <div className="text-center">
                 <div className="relative inline-block">
-                  <div className="bg-gradient-to-br from-planetaketo-600 to-brand-blue-600 rounded-2xl p-6 transform rotate-3 shadow-xl">
+                  <div className="bg-gradient-to-br from-green-600 to-emerald-600 rounded-2xl p-6 transform rotate-3 shadow-xl">
                     <div className="text-4xl mb-3">📊</div>
                     <h3 className="text-white font-black text-xl mb-2">PLANIFICADOR KETO COMPLETO</h3>
                     <div className="text-planetaketo-100 text-sm">Sistema organización • 30 días planificados • Listas compras</div>
@@ -555,7 +555,7 @@ export default function HomePage({
                 </ul>
                 <button
                   onClick={handlePurchaseBook}
-                  className="w-full bg-gradient-to-r from-brand-red-600 to-brand-orange-600 text-white font-bold py-4 px-8 rounded-2xl text-xl hover:from-brand-red-700 hover:to-brand-orange-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 flex items-center justify-center"
+                  className="w-full bg-gradient-to-r from-orange-500 to-red-500 text-white font-bold py-4 px-8 rounded-2xl text-xl hover:from-orange-600 hover:to-red-600 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 flex items-center justify-center"
                 >
                   <ShoppingCartIcon className="h-6 w-6 mr-3" />
                   CONSEGUIR PLANIFICADOR COMPLETO AHORA
@@ -614,7 +614,7 @@ export default function HomePage({
       <div className="fixed bottom-4 left-4 right-4 z-50 md:hidden">
         <button
           onClick={handlePurchaseBook}
-          className="w-full bg-gradient-to-r from-brand-red-600 to-brand-orange-600 text-white font-bold py-4 px-6 rounded-xl shadow-2xl flex items-center justify-center text-lg"
+          className="w-full bg-gradient-to-r from-orange-500 to-red-500 text-white font-bold py-4 px-6 rounded-xl shadow-2xl flex items-center justify-center text-lg"
         >
           <ShoppingCartIcon className="h-5 w-5 mr-2" />
           Mi Planificador Keto €14.75 
