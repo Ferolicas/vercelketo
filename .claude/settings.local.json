@@ -93,7 +93,10 @@
       "Bash(del \"C:\\PLANETA KETO V2\\planetaketonext\\get-recipe-count.mjs\")",
       "Bash(vercel:*)",
       "Bash(copy:*)",
-      "Bash(del sw.js)"
+      "Bash(del sw.js)",
+      "mcp__serena__search_for_pattern",
+      "mcp__serena__activate_project",
+      "mcp__serena__check_onboarding_performed"
     ],
     "deny": [],
     "ask": [],

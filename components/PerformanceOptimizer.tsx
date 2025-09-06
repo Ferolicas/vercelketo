@@ -20,7 +20,7 @@ interface PerformanceOptimizerProps {
 
 export default function PerformanceOptimizer({
   enablePreloading = true,
-  enableServiceWorker = false, // Temporalmente deshabilitado
+  enableServiceWorker = false, // Deshabilitado hasta resolver cache issues
   enableImageOptimization = true,
   enableResourceHints = true
 }: PerformanceOptimizerProps) {
@@ -103,8 +103,10 @@ export default function PerformanceOptimizer({
       'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap'
     ];
 
-    // Precargar imágenes críticas
-    criticalImages.forEach(src => {
+    // Precargar solo recursos que existen
+    const existingImages = criticalImages.filter(src => src !== '/og-image.jpg'); // Remover recursos problemáticos
+    
+    existingImages.forEach(src => {
       const link = document.createElement('link');
       link.rel = 'preload';
       link.as = 'image';
@@ -112,13 +114,15 @@ export default function PerformanceOptimizer({
       document.head.appendChild(link);
     });
 
-    // Precargar fuentes críticas
+    // Precargar fuentes con manejo de errores
     criticalFonts.forEach(href => {
       const link = document.createElement('link');
       link.rel = 'preload';
       link.as = 'style';
       link.href = href;
       link.crossOrigin = 'anonymous';
+      link.onload = () => console.log(`Font preloaded: ${href}`);
+      link.onerror = () => console.warn(`Failed to preload font: ${href}`);
       document.head.appendChild(link);
     });
   }, [enablePreloading]);
@@ -148,6 +152,8 @@ export default function PerformanceOptimizer({
 
     } catch (error) {
       console.error('Service Worker registration failed:', error);
+      // Desactivar service worker si hay errores
+      console.log('Service Worker deshabilitado temporalmente');
     }
   }, [enableServiceWorker]);
 

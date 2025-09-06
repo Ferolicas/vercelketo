@@ -11,7 +11,10 @@ function AdScript({ clientId }: AdScriptProps) {
   const adsenseClient = clientId || process.env.NEXT_PUBLIC_ADSENSE_CLIENT
 
   if (!adsenseClient) {
-    console.warn('AdSense client ID no encontrado')
+    // Solo mostrar warning en desarrollo
+    if (process.env.NODE_ENV === 'development') {
+      console.warn('AdSense client ID no encontrado - normal en desarrollo')
+    }
     return null
   }
 

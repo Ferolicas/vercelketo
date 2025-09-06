@@ -6,8 +6,6 @@ const DYNAMIC_CACHE = 'planeta-keto-dynamic-v1';
 
 // Recursos que se cachearán inmediatamente
 const STATIC_ASSETS = [
-  '/',
-  '/manifest.json',
   '/favicon.ico'
 ];
 
