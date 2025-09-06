@@ -14,6 +14,7 @@ import ConversionTrackingSetup from "@/components/analytics/ConversionTracking"
 import WebVitalsTracker, { PerformanceMonitor, AdSensePerformanceMonitor } from "@/components/performance/WebVitalsTracker"
 import { ServiceWorkerManager, StaticAssetOptimizer } from "@/components/performance/CachingOptimizer"
 import AdSenseOptimizer from "@/components/performance/AdSenseOptimizer"
+import AdScript from "@/components/ads/AdScript"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -100,6 +101,9 @@ export default function RootLayout({
         <SearchConsoleVerification 
           verificationCode={process.env.GOOGLE_VERIFICATION}
         />
+        
+        {/* AdSense Script - Carga temprana */}
+        <AdScript />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-[100dvh] bg-white`}
@@ -135,6 +139,7 @@ export default function RootLayout({
               enableTracking={true}
             />
             <AdSenseOptimizer 
+              clientId={process.env.NEXT_PUBLIC_ADSENSE_CLIENT}
               enableLazyLoading={true}
               enableViewabilityTracking={true}
               enableCLSPrevention={true}
@@ -152,4 +157,3 @@ export default function RootLayout({
     </html>
   );
 }
-

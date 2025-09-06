@@ -82,7 +82,12 @@
       "Bash(dir /b \"C:\\PLANETA KETO V2\\planetaketonext\\app\")",
       "Bash(dir /b \"C:\\PLANETA KETO V2\\planetaketonext\\app\\api\")",
       "Bash(npm ls:*)",
-      "Bash(npx @next/bundle-analyzer:*)"
+      "Bash(npx @next/bundle-analyzer:*)",
+      "Bash(timeout:*)",
+      "Bash(mcp list:*)",
+      "Read(//c/Users/ferne/.config/**)",
+      "Bash(dir /b \"C:\\PLANETA KETO V2\\planetaketonext\\components\\ads\")",
+      "Bash(del \"C:\\PLANETA KETO V2\\planetaketonext\\app\\favicon.ico\")"
     ],
     "deny": [],
     "ask": [],

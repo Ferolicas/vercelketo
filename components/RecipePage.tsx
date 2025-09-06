@@ -1,11 +1,18 @@
 'use client'
 
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { Clock, Users, Star, ChefHat, Heart, BookOpen, ArrowLeft, Share, Phone, MessageCircle, ChevronDown } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
 import type { Recipe } from '@/types/sanity'
 import Comments from '@/components/Comments'
+import AdPlacement from '@/components/ads/AdPlacement'
+import InContentAd from '@/components/ads/InContentAd'
+import BookRecommendationWidget from '@/components/recipe/BookRecommendationWidget'
+import RecipeEngagementSuite from '@/components/recipe/RecipeEngagementSuite'
+import AdSenseAutoAds from '@/components/ads/AdSenseAutoAds'
+import BookUpsellWidget from '@/components/recipe/BookUpsellWidget'
+import AffiliateLinksWidget from '@/components/recipe/AffiliateLinksWidget'
 
 interface RecipePageProps {
   recipe: Recipe
@@ -16,6 +23,19 @@ interface RecipePageProps {
 export default function RecipePageClient({ recipe, thumbnailUrl, youtubeId }: RecipePageProps) {
   const [showFullDescription, setShowFullDescription] = useState(false)
   const [showAllIngredients, setShowAllIngredients] = useState(false)
+  const [showExitIntent, setShowExitIntent] = useState(false)
+
+  // Exit intent detection
+  React.useEffect(() => {
+    const handleMouseLeave = (e: MouseEvent) => {
+      if (e.clientY <= 0 && !showExitIntent) {
+        setShowExitIntent(true)
+      }
+    }
+
+    document.addEventListener('mouseleave', handleMouseLeave)
+    return () => document.removeEventListener('mouseleave', handleMouseLeave)
+  }, [showExitIntent])
 
   // Share functionality
   const handleShare = async () => {
@@ -53,7 +73,24 @@ export default function RecipePageClient({ recipe, thumbnailUrl, youtubeId }: Re
   const displayedIngredients = showAllIngredients ? ingredientsList : ingredientsList.slice(0, 3)
 
   return (
-    <div className="min-h-screen bg-white">
+    <>
+      {/* AdSense Auto Ads Configuration */}
+      <AdSenseAutoAds 
+        enableAutoAds={true}
+        enableManualControl={true}
+        adDensity="medium"
+        adFormats={{
+          display: true,
+          inFeed: true,
+          inArticle: true,
+          matchedContent: true,
+          link: false,
+          multiplex: true
+        }}
+        pageExclusions={['/admin', '/api']}
+      />
+      
+      <div className="min-h-screen bg-white">
       {/* Hero Video with Navigation Buttons */}
       <div className="relative h-96 md:h-[500px] bg-gradient-to-br from-orange-100 to-red-100">
         {/* Modern YouTube Video Player */}
@@ -140,8 +177,21 @@ export default function RecipePageClient({ recipe, thumbnailUrl, youtubeId }: Re
         </div>
       </div>
 
-      {/* Content */}
-      <div className="px-6 py-6 space-y-6">
+      {/* AdSense Header - Solo Desktop */}
+      <AdPlacement 
+        position="header" 
+        className="py-4 bg-gray-50"
+        showOnMobile={false}
+        showOnDesktop={true}
+      />
+
+      {/* Content Layout with Sidebar */}
+      <div className="max-w-7xl mx-auto px-4 py-6">
+        <div className="grid lg:grid-cols-3 gap-8">
+          
+          {/* Main Content - Left Column */}
+          <div className="lg:col-span-2">
+            <div className="space-y-6">
         
         {/* Category and Rating */}
         <div className="flex items-center justify-between">
@@ -166,8 +216,15 @@ export default function RecipePageClient({ recipe, thumbnailUrl, youtubeId }: Re
           </div>
         </div>
 
-        {/* Recipe by Chef */}
-        <div className="space-y-3">
+            {/* Pre-Recipe Ad */}
+            <InContentAd 
+              adSlot="recipe-pre-content" 
+              className="my-8"
+              minViewportHeight={400}
+            />
+
+            {/* Recipe by Chef */}
+            <div className="space-y-3">
           <p className="text-gray-600 text-sm font-medium">Receta por</p>
           <div className="flex items-center justify-between">
             <div className="flex items-center">
@@ -200,9 +257,9 @@ export default function RecipePageClient({ recipe, thumbnailUrl, youtubeId }: Re
               </button>
             </div>
           </div>
-        </div>
+            </div>
 
-        {/* Description */}
+            {/* Description */}
         <div className="space-y-3">
           <h3 className="font-semibold text-gray-900">Descripción</h3>
           <div>
@@ -219,9 +276,9 @@ export default function RecipePageClient({ recipe, thumbnailUrl, youtubeId }: Re
               {showFullDescription ? 'Leer menos' : 'Leer más'}
             </button>
           </div>
-        </div>
+            </div>
 
-        {/* Cooking Time and Cuisine */}
+            {/* Cooking Time and Cuisine */}
         <div className="grid grid-cols-2 gap-4">
           <div className="flex items-center">
             <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center mr-3">
@@ -241,9 +298,43 @@ export default function RecipePageClient({ recipe, thumbnailUrl, youtubeId }: Re
               <p className="font-semibold text-gray-900">Keto</p>
             </div>
           </div>
-        </div>
+            </div>
 
-        {/* Ingredients */}
+            {/* Recipe Engagement Suite */}
+            <RecipeEngagementSuite 
+              recipe={{
+                id: recipe._id || 'unknown',
+                name: recipe.name,
+                preparationTime: recipe.preparationTime || 30,
+                cookingTime: recipe.preparationTime,
+                servings: recipe.servings || 1,
+                difficulty: 'easy' as const,
+                ingredients: recipe.ingredients?.split('\n').filter(i => i.trim()) || [],
+                instructions: [],
+                rating: recipe.averageRating,
+                totalRatings: recipe.totalRatings
+              }}
+              onEngagementEvent={(event, data) => {
+                if (typeof window !== 'undefined' && window.gtag) {
+                  window.gtag('event', event, {
+                    event_category: 'recipe_engagement',
+                    event_label: data.recipe_id,
+                    ...data
+                  });
+                }
+              }}
+            />
+
+            {/* Mid-Recipe Ad */}
+            <div className="my-12">
+              <InContentAd 
+                adSlot="recipe-mid-content" 
+                className="border-t border-b border-gray-200 py-8"
+                minViewportHeight={300}
+              />
+            </div>
+
+            {/* Ingredients */}
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center">
@@ -257,30 +348,145 @@ export default function RecipePageClient({ recipe, thumbnailUrl, youtubeId }: Re
             </span>
           </div>
           
-          <div className="space-y-3">
-            {displayedIngredients.map((ingredient, index) => (
-              <p key={index} className="text-gray-700 text-sm">
-                {ingredient.trim() || `${index === 0 ? '1 taza Lorem Ipsum' : index === 1 ? '200g dolor sit amet' : '2 cucharaditas Lorem'}`}
-              </p>
-            ))}
-            
-            {ingredientsList.length > 3 && (
-              <button 
-                onClick={() => setShowAllIngredients(!showAllIngredients)}
-                className="text-orange-500 font-medium text-sm hover:text-orange-600 transition-colors flex items-center"
-              >
-                {showAllIngredients ? 'Ver menos' : `Ver todos (${ingredientsList.length})`}
-                <ChevronDown className={`w-4 h-4 ml-1 transition-transform ${showAllIngredients ? 'rotate-180' : ''}`} />
-              </button>
-            )}
+            <div className="bg-gray-50 rounded-xl p-6">
+              <div className="space-y-3">
+                {displayedIngredients.map((ingredient, index) => (
+                  <div key={index} className="flex items-center text-gray-700">
+                    <div className="w-2 h-2 bg-green-500 rounded-full mr-3 flex-shrink-0" />
+                    <span className="text-sm">{ingredient.trim() || `${index === 0 ? '1 taza Lorem Ipsum' : index === 1 ? '200g dolor sit amet' : '2 cucharaditas Lorem'}`}</span>
+                  </div>
+                ))}
+                
+                {ingredientsList.length > 3 && (
+                  <button 
+                    onClick={() => setShowAllIngredients(!showAllIngredients)}
+                    className="text-orange-500 font-medium text-sm hover:text-orange-600 transition-colors flex items-center"
+                  >
+                    {showAllIngredients ? 'Ver menos' : `Ver todos (${ingredientsList.length})`}
+                    <ChevronDown className={`w-4 h-4 ml-1 transition-transform ${showAllIngredients ? 'rotate-180' : ''}`} />
+                  </button>
+                )}
+              </div>
+            </div>
+            </div>
+
+            {/* Book Upsell - Optimizado para conversión */}
+            <div className="my-12">
+              <BookUpsellWidget 
+                position="inline"
+                recipeCategory={recipe.category?.name || 'general'}
+                priority="high"
+                context="recipe_page"
+              />
+            </div>
+
+            {/* Affiliate Links - Productos relevantes */}
+            <div className="my-12">
+              <AffiliateLinksWidget 
+                recipeCategory={recipe.category?.name || 'general'}
+                recipeIngredients={recipe.ingredients?.split('\n').filter(i => i.trim()) || []}
+                position="inline"
+                maxProducts={3}
+              />
+            </div>
+
+            {/* Comments */}
+            <div id="comments-section" className="pt-8">
+              <Comments postSlug={recipe.slug.current} postTitle={recipe.name} />
+            </div>
+
+            {/* Bottom Content Ad */}
+            <div className="mt-12">
+              <AdPlacement 
+                position="content-bottom" 
+                className="border-t pt-8"
+              />
+            </div>
           </div>
         </div>
-
-        {/* Comments */}
-        <div id="comments-section" className="pt-8">
-          <Comments postSlug={recipe.slug.current} postTitle={recipe.name} />
+        
+        {/* Sidebar - Right Column */}
+        <div className="lg:col-span-1">
+          <div className="sticky top-4 space-y-6">
+            
+            {/* Book Upsell Sidebar */}
+            <BookUpsellWidget 
+              position="floating"
+              recipeCategory={recipe.category?.name || 'general'}
+              priority="high"
+            />
+            
+            {/* Affiliate Links Sidebar */}
+            <AffiliateLinksWidget 
+              recipeCategory={recipe.category?.name || 'general'}
+              recipeIngredients={recipe.ingredients?.split('\n').filter(i => i.trim()) || []}
+              position="sidebar"
+              maxProducts={2}
+            />
+            
+            {/* Sidebar Ad */}
+            <AdPlacement 
+              position="sidebar" 
+              className="hidden lg:block"
+            />
+            
+            {/* Related Recipes Placeholder */}
+            <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
+              <h3 className="font-bold text-gray-900 mb-4 flex items-center">
+                <ChefHat className="w-5 h-5 mr-2 text-green-600" />
+                Recetas Similares
+              </h3>
+              <div className="space-y-3">
+                <p className="text-gray-600 text-sm">
+                  Próximamente: Recetas relacionadas basadas en ingredientes y categoría.
+                </p>
+                <div className="grid grid-cols-1 gap-3">
+                  {[1, 2, 3].map((i) => (
+                    <div key={i} className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+                      <div className="w-12 h-12 bg-gradient-to-br from-green-400 to-green-600 rounded-lg flex items-center justify-center">
+                        <ChefHat className="w-6 h-6 text-white" />
+                      </div>
+                      <div className="flex-1">
+                        <h4 className="font-medium text-gray-900 text-sm">Receta Keto #{i}</h4>
+                        <p className="text-xs text-gray-600">Próximamente...</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
+        
+        </div>
+        
       </div>
-    </div>
+      </div>
+
+      {/* Mobile Sticky Ad */}
+      <AdPlacement 
+        position="mobile-sticky" 
+        showOnMobile={true}
+        showOnDesktop={false}
+      />
+
+      {/* Floating Affiliate Product */}
+      <AffiliateLinksWidget 
+        recipeCategory={recipe.category?.name || 'general'}
+        recipeIngredients={recipe.ingredients?.split('\n').filter(i => i.trim()) || []}
+        position="floating"
+        maxProducts={1}
+      />
+
+      {/* Exit Intent Modal */}
+      {showExitIntent && (
+        <BookUpsellWidget 
+          position="exit-intent"
+          recipeCategory={recipe.category?.name || 'general'}
+          trigger="exit"
+          priority="high"
+        />
+      )}
+    </>
   )
 }

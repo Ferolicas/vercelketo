@@ -90,9 +90,7 @@ const nextConfig: NextConfig = {
     dangerouslyAllowSVG: false,
     contentDispositionType: 'attachment',
     minimumCacheTTL: 31536000, // 1 year cache for optimized images
-    // Enable image optimization for better Core Web Vitals
     loader: 'default',
-    quality: 85,
   },
   
   // Experimental features for maximum performance
@@ -107,8 +105,7 @@ const nextConfig: NextConfig = {
     ],
     optimizeCss: true,
     webpackBuildWorker: true,
-    // Enable modern bundling
-    swcMinify: true,
+    // swcMinify: true, // REMOVIDO - ya no es experimental y está habilitado por defecto
     // Optimize server components
     serverComponentsExternalPackages: ['canvas-confetti', '@sanity/client'],
     // Enable partial prerendering for better performance

@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, Suspense } from 'react'
 import { usePathname, useSearchParams } from 'next/navigation'
 
 declare global {
@@ -14,7 +14,8 @@ interface GoogleAnalyticsProps {
   measurementId: string
 }
 
-export default function GoogleAnalytics({ measurementId }: GoogleAnalyticsProps) {
+// Internal component that uses searchParams
+function GoogleAnalyticsTracker({ measurementId }: GoogleAnalyticsProps) {
   const pathname = usePathname()
   const searchParams = useSearchParams()
 
@@ -32,6 +33,10 @@ export default function GoogleAnalytics({ measurementId }: GoogleAnalyticsProps)
     handleRouteChange()
   }, [pathname, searchParams, measurementId])
 
+  return null
+}
+
+export default function GoogleAnalytics({ measurementId }: GoogleAnalyticsProps) {
   if (!measurementId) return null
 
   return (
@@ -89,6 +94,9 @@ export default function GoogleAnalytics({ measurementId }: GoogleAnalyticsProps)
           `,
         }}
       />
+      <Suspense fallback={null}>
+        <GoogleAnalyticsTracker measurementId={measurementId} />
+      </Suspense>
     </>
   )
 }

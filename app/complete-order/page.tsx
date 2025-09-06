@@ -253,7 +253,6 @@ function CompleteOrderContent() {
           </div>
         );
 
-      
       case 'error':
         return (
           <div className="text-center">
@@ -318,20 +317,25 @@ function CompleteOrderContent() {
   );
 }
 
-export default function CompleteOrderPage() {
+// Loading component for the Suspense fallback
+function LoadingFallback() {
   return (
-    <Suspense fallback={
-      <div className="min-h-screen bg-gray-50 pt-20">
-        <div className="max-w-2xl mx-auto px-4 py-16">
-          <div className="bg-white rounded-2xl shadow-lg p-8 text-center">
-            <div className="animate-spin rounded-full h-20 w-20 border-4 border-green-500 border-t-transparent mx-auto mb-6"></div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-4">
-              Cargando...
-            </h1>
-          </div>
+    <div className="min-h-screen bg-gray-50 pt-20">
+      <div className="max-w-2xl mx-auto px-4 py-16">
+        <div className="bg-white rounded-2xl shadow-lg p-8 text-center">
+          <div className="animate-spin rounded-full h-20 w-20 border-4 border-green-500 border-t-transparent mx-auto mb-6"></div>
+          <h1 className="text-3xl font-bold text-gray-900 mb-4">
+            Cargando...
+          </h1>
         </div>
       </div>
-    }>
+    </div>
+  );
+}
+
+export default function CompleteOrderPage() {
+  return (
+    <Suspense fallback={<LoadingFallback />}>
       <CompleteOrderContent />
     </Suspense>
   );

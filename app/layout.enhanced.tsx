@@ -141,15 +141,16 @@ export default function RootLayout({
         )}
         
         {/* Optimized AdSense with performance tracking */}
-        {process.env.NEXT_PUBLIC_ADSENSE_CLIENT && (
-          <AdSenseOptimizer 
-            clientId={process.env.NEXT_PUBLIC_ADSENSE_CLIENT}
-            enableLazyLoading={true}
-            enablePerformanceTracking={true}
-            adLoadDelay={2000}
-          />
-        )}
-      </body>
-    </html>
+      {process.env.NEXT_PUBLIC_ADSENSE_CLIENT && (
+        <AdSenseOptimizer 
+          clientId={process.env.NEXT_PUBLIC_ADSENSE_CLIENT}
+          enableLazyLoading={true}
+          enableViewabilityTracking={true}
+          enableCLSPrevention={true}
+          minViewportHeight={0.5}
+        />
+      )}
+    </body>
+  </html>
   );
 }

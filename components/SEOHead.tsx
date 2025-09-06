@@ -147,7 +147,7 @@ export function generateSEOMetadata({
       }
     },
     openGraph: {
-      type: type as 'website' | 'article',
+      type: type === 'product' ? 'website' : (type as 'website' | 'article'),
       title: `${title} | La Comunidad Keto #1 🥑`,
       description: `${description} 🔥 ÚNETE A 15,000+ PERSONAS QUE YA TRANSFORMARON SU VIDA 🔥`,
       url: fullUrl,

@@ -9,7 +9,8 @@ interface RecipeCardProps {
   onClick?: (recipe: Recipe) => void
 }
 
-export function RecipeCard({ recipe, onClick }: RecipeCardProps) {
+// Changed to default export
+export default function RecipeCard({ recipe, onClick }: RecipeCardProps) {
   // Usar la imagen principal (thumbnail)
   const recipeImage = recipe.thumbnail;
   const imageUrl = recipeImage 
@@ -104,3 +105,6 @@ export function RecipeCard({ recipe, onClick }: RecipeCardProps) {
     </div>
   );
 }
+
+// Keep named export for backward compatibility
+export { RecipeCard }

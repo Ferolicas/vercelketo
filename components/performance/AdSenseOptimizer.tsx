@@ -3,6 +3,7 @@
 import { useEffect, useCallback, useState } from 'react'
 
 interface AdSenseOptimizerProps {
+  clientId: string
   enableLazyLoading?: boolean
   enableViewabilityTracking?: boolean
   enableCLSPrevention?: boolean
@@ -10,6 +11,7 @@ interface AdSenseOptimizerProps {
 }
 
 export default function AdSenseOptimizer({
+  clientId,
   enableLazyLoading = true,
   enableViewabilityTracking = true,
   enableCLSPrevention = true,
@@ -247,7 +249,7 @@ export default function AdSenseOptimizer({
       if (!document.querySelector('link[href*="pagead2.googlesyndication.com"]')) {
         const preloadLink = document.createElement('link')
         preloadLink.rel = 'preload'
-        preloadLink.href = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADSENSE_CLIENT}`
+	preloadLink.href = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${clientId}`
         preloadLink.as = 'script'
         preloadLink.crossOrigin = 'anonymous'
         document.head.appendChild(preloadLink)

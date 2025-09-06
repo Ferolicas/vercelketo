@@ -285,7 +285,12 @@ export class ClientSideCache {
         store.put({ ...recipe, cachedAt: Date.now() })
       })
       
-      await transaction.complete
+      // CORRECCIÓN: Usar Promise para esperar la transacción
+      await new Promise<void>((resolve, reject) => {
+        transaction.oncomplete = () => resolve()
+        transaction.onerror = () => reject(transaction.error)
+      })
+      
     } catch (error) {
       console.warn('Failed to cache recipes:', error)
     }
@@ -305,7 +310,11 @@ export class ClientSideCache {
         request = store.getAll()
       }
       
-      const result = await request
+      // CORRECCIÓN: Usar Promise para esperar el resultado
+      const result = await new Promise<any[]>((resolve, reject) => {
+        request.onsuccess = () => resolve(request.result)
+        request.onerror = () => reject(request.error)
+      })
       
       // Filter out stale data (older than 1 hour)
       const oneHourAgo = Date.now() - (60 * 60 * 1000)
@@ -322,10 +331,25 @@ export class ClientSideCache {
       const db = await this.openDB()
       const transaction = db.transaction(['recipes', 'preferences'], 'readwrite')
       
-      await transaction.objectStore('recipes').clear()
-      await transaction.objectStore('preferences').clear()
+      await Promise.all([
+        new Promise<void>((resolve, reject) => {
+          const clearRecipes = transaction.objectStore('recipes').clear()
+          clearRecipes.onsuccess = () => resolve()
+          clearRecipes.onerror = () => reject(clearRecipes.error)
+        }),
+        new Promise<void>((resolve, reject) => {
+          const clearPrefs = transaction.objectStore('preferences').clear()
+          clearPrefs.onsuccess = () => resolve()
+          clearPrefs.onerror = () => reject(clearPrefs.error)
+        })
+      ])
       
-      await transaction.complete
+      // CORRECCIÓN: Esperar que la transacción complete
+      await new Promise<void>((resolve, reject) => {
+        transaction.oncomplete = () => resolve()
+        transaction.onerror = () => reject(transaction.error)
+      })
+      
       console.log('✅ Cache cleared')
     } catch (error) {
       console.warn('Failed to clear cache:', error)

@@ -12,7 +12,7 @@ interface WebVitalMetric {
 interface WebVitalsData {
   fcp?: WebVitalMetric
   lcp?: WebVitalMetric
-  fid?: WebVitalMetric
+  inp?: WebVitalMetric  // Cambiado de fid a inp
   cls?: WebVitalMetric
   ttfb?: WebVitalMetric
 }
@@ -37,7 +37,8 @@ export default function WebVitalsTracker() {
     let cleanup: (() => void) | undefined
 
     const initWebVitals = async () => {
-      const { onCLS, onFID, onFCP, onLCP, onTTFB } = await import('web-vitals')
+      // Cambiado onFID por onINP
+      const { onCLS, onINP, onFCP, onLCP, onTTFB } = await import('web-vitals')
 
       const handleMetric = (metric: any) => {
         const rating = getRating(metric.name, metric.value)
@@ -90,9 +91,9 @@ export default function WebVitalsTracker() {
         })
       }
 
-      // Setup metric observers
+      // Setup metric observers - Cambiado onFID por onINP
       onCLS(handleMetric)
-      onFID(handleMetric)
+      onINP(handleMetric)  // Cambiado de onFID
       onFCP(handleMetric)
       onLCP(handleMetric)
       onTTFB(handleMetric)
@@ -157,7 +158,7 @@ function getRating(name: string, value: number): 'good' | 'needs-improvement' | 
 function getThresholds(name: string): { good: number; poor: number } {
   const thresholds: Record<string, { good: number; poor: number }> = {
     CLS: { good: 0.1, poor: 0.25 },
-    FID: { good: 100, poor: 300 },
+    INP: { good: 200, poor: 500 },  // Cambiado FID por INP con nuevos thresholds
     FCP: { good: 1800, poor: 3000 },
     LCP: { good: 2500, poor: 4000 },
     TTFB: { good: 800, poor: 1800 }
@@ -179,7 +180,7 @@ function formatValue(name: string, value: number): string {
   switch (name) {
     case 'CLS':
       return value.toFixed(3)
-    case 'FID':
+    case 'INP':  // Cambiado FID por INP
     case 'FCP':
     case 'LCP':
     case 'TTFB':
