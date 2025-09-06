@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react'
 import { motion } from 'framer-motion'
 import { XMarkIcon, PhotoIcon, DocumentIcon } from '@heroicons/react/24/outline'
-import { client } from '@/lib/sanity'
+import { writeClient } from '@/lib/sanity'
 import { z } from 'zod'
 
 const productSchema = z.object({
@@ -120,17 +120,17 @@ export default function CreateProductModal({ isOpen, onClose, onSuccess }: Creat
       // Upload image
       let imageAsset = null
       if (image) {
-        imageAsset = await client.assets.upload('image', image)
+        imageAsset = await writeClient.assets.upload('image', image)
       }
 
       // Upload PDF
       let pdfAsset = null
       if (pdfFile) {
-        pdfAsset = await client.assets.upload('file', pdfFile)
+        pdfAsset = await writeClient.assets.upload('file', pdfFile)
       }
 
       // Create product
-      const product = await client.create({
+      const product = await writeClient.create({
         _type: 'product',
         title: formData.title,
         slug: {

@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react'
 import { motion } from 'framer-motion'
 import { XMarkIcon, PhotoIcon, DocumentTextIcon } from '@heroicons/react/24/outline'
-import { client } from '@/lib/sanity'
+import { writeClient } from '@/lib/sanity'
 import { z } from 'zod'
 
 const postSchema = z.object({
@@ -103,11 +103,11 @@ export default function CreatePostModal({ isOpen, onClose, onSuccess }: CreatePo
       // Upload featured image
       let imageAsset = null
       if (featuredImage) {
-        imageAsset = await client.assets.upload('image', featuredImage)
+        imageAsset = await writeClient.assets.upload('image', featuredImage)
       }
 
       // Create blog post
-      const blogPost = await client.create({
+      const blogPost = await writeClient.create({
         _type: 'blogPost',
         title: formData.title,
         slug: {

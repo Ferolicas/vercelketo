@@ -34,6 +34,7 @@ interface HomePageProps {
 // Book product data for modal - UPDATED with new description and pricing
 const bookProduct = {
   _id: 'planeta-keto-planificador-2025',
+  title: 'Planeta Keto - Planificador Completo 2025',
   name: 'Planeta Keto - Planificador Completo 2025',
   description: `🎯 ORGANIZA TU KETO DE UNA VEZ POR TODAS
 
@@ -213,7 +214,7 @@ export default function HomePage({
                 <Link
                   href="https://youtube.com/@PlanetaKeto"
                   target="_blank"
-                  className="bg-brand-red-600/80 backdrop-blur-sm text-white px-6 py-3 rounded-xl font-semibold hover:bg-brand-red-600 transition-all duration-300 flex items-center justify-center"
+                  className="bg-brand-red-600/80 backdrop-blur-sm border-2 border-brand-red-500/30 text-white px-6 py-3 rounded-xl font-semibold hover:bg-brand-red-600 hover:border-brand-red-400 hover:shadow-lg transition-all duration-300 flex items-center justify-center cursor-pointer transform hover:scale-105"
                 >
                   <span className="mr-2">📺</span>
                   YouTube Canal

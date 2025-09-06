@@ -193,3 +193,48 @@ body {
 .responsive-spacing-large {
   margin: clamp(1rem, 3vw, 2.5rem) !important;
 }
+
+/* Global cursor pointer for all interactive elements */
+a, 
+button, 
+[role="button"], 
+[type="button"], 
+[type="submit"], 
+[type="reset"],
+input[type="checkbox"],
+input[type="radio"],
+select,
+.cursor-pointer,
+[data-clickable],
+[onClick],
+[onclick] {
+  cursor: pointer !important;
+}
+
+/* Ensure Link components from Next.js have cursor pointer */
+a[href], 
+a[href]:hover {
+  cursor: pointer !important;
+}
+
+/* Specific fixes for common interactive elements that might be missing cursor */
+.bg-gradient-to-r,
+.bg-gradient-to-l,
+.bg-gradient-to-t,
+.bg-gradient-to-b,
+.bg-gradient-to-br,
+.bg-gradient-to-bl,
+.bg-gradient-to-tr,
+.bg-gradient-to-tl {
+  cursor: pointer !important;
+}
+
+/* Interactive divs and spans with onClick handlers */
+div[role="button"],
+span[role="button"],
+div[onclick],
+span[onclick],
+div[data-onclick],
+span[data-onclick] {
+  cursor: pointer !important;
+}

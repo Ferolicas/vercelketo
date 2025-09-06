@@ -26,6 +26,7 @@ interface BookUpsellWidgetProps {
 // Book product data
 const bookProduct = {
   _id: 'guia-completa-keto-2025',
+  title: 'Guía Completa Keto 2025 - El Método Definitivo',
   name: 'Guía Completa Keto 2025 - El Método Definitivo',
   description: 'El ÚNICO libro que necesitas para dominar la dieta cetogénica y transformar tu cuerpo. +200 recetas, plan de 30 días, calculadora de macros y mucho más.',
   price: 29.99,

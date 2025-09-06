@@ -9,6 +9,7 @@ const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
 
 interface Product {
   _id: string
+  title: string
   name: string
   description: string
   price: number
@@ -251,13 +252,13 @@ export default function PurchaseModal({ product, onClose }: PurchaseModalProps) 
             {product.image && (
               <img
                 src={product.image}
-                alt={product.name}
+                alt={product.title || product.name}
                 className="w-16 h-16 object-cover rounded-lg bg-white/10"
               />
             )}
             <div className="flex-1 min-w-0">
               <h2 id="modal-title" className="text-lg font-bold text-white mb-1 line-clamp-2 leading-tight">
-                {product.name}
+                {product.title || product.name}
               </h2>
               <div className="flex items-center gap-2 flex-wrap">
                 {discountApplied ? (

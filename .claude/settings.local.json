@@ -96,7 +96,9 @@
       "Bash(del sw.js)",
       "mcp__serena__search_for_pattern",
       "mcp__serena__activate_project",
-      "mcp__serena__check_onboarding_performed"
+      "mcp__serena__check_onboarding_performed",
+      "Read(//c/storeplanetaketo/app/**)",
+      "Read(//c/storeplanetaketo/lib/**)"
     ],
     "deny": [],
     "ask": [],

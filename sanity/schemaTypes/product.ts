@@ -85,6 +85,13 @@ export default defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
+      name: 'includes',
+      title: 'Qué incluye',
+      type: 'array',
+      of: [{ type: 'string' }],
+      description: 'Lista de elementos incluidos en el producto',
+    }),
+    defineField({
       name: 'featured',
       title: 'Fijar',
       type: 'boolean',

@@ -1,43 +1,68 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server'
+import { stripe, validateCoupon } from '@/lib/stripe'
+import { client } from '@/lib/sanity'
 
-export async function POST(request: NextRequest) {
+export async function POST(request: Request) {
   try {
-    const body = await request.json();
-    const { productId } = body;
+    const { productId, discountCode } = await request.json()
 
-    if (!productId) {
-      return NextResponse.json(
-        { error: 'Product ID is required' },
-        { status: 400 }
-      );
+    // Obtener información del producto desde Sanity
+    const product = await client.fetch(`
+      *[_type == "product" && _id == $productId][0]{
+        _id,
+        title,
+        description,
+        price,
+        originalPrice,
+        stripePriceId,
+        includes,
+        "image": image.asset->url
+      }
+    `, { productId })
+
+    if (!product) {
+      return NextResponse.json({ error: 'Product not found' }, { status: 404 })
     }
 
-    // Mock checkout session
-    const mockCheckoutSession = {
-      id: 'cs_test_mock_session_id',
-      url: '/complete-order?session_id=cs_test_mock_session_id',
-      payment_status: 'pending',
-      amount_total: 1475, // €14.75 in cents
-      currency: 'eur'
-    };
+    // Validar código de descuento si se proporciona
+    let discountAmount = 0
+    let coupon = null
+    if (discountCode) {
+      coupon = await validateCoupon(discountCode)
+      if (!coupon || !coupon.valid) {
+        return NextResponse.json({ error: 'Invalid discount code' }, { status: 400 })
+      }
+      discountAmount = coupon.percent_off ? (product.price * coupon.percent_off / 100) : 0
+    }
 
-    return NextResponse.json({
-      success: true,
-      session: mockCheckoutSession
-    });
+    const finalAmount = product.price - discountAmount
 
+    // Crear Payment Intent
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: Math.round(finalAmount * 100), // Stripe usa centavos
+      currency: 'eur',
+      automatic_payment_methods: {
+        enabled: true,
+      },
+      metadata: {
+        productId: product._id,
+        productTitle: product.title,
+        discountCode: discountCode || '',
+        originalPrice: product.price.toString(),
+        finalPrice: finalAmount.toString(),
+      },
+      receipt_email: undefined, // Se llenará cuando el usuario complete el formulario
+    })
+
+    return NextResponse.json({ 
+      clientSecret: paymentIntent.client_secret,
+      amount: finalAmount,
+      originalPrice: product.price,
+      discount: discountAmount,
+      discountCode: discountCode || null
+    })
   } catch (error) {
-    console.error('Error creating checkout session:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
+    console.error('Error creating payment intent:', error)
+    return NextResponse.json({ error: 'Error creating payment intent' }, { status: 500 })
   }
-}
-
-export async function GET() {
-  return NextResponse.json(
-    { error: 'Method not allowed' },
-    { status: 405 }
-  );
 }

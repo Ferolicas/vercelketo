@@ -28,6 +28,7 @@ import ContentPreviewSection from './ContentPreviewSection'
 // Book product data for the modal
 const bookProduct = {
   _id: 'guia-completa-keto-2025',
+  title: 'Guía Completa Keto 2025 - El Libro Definitivo',
   name: 'Guía Completa Keto 2025 - El Libro Definitivo',
   description: `El único libro que necesitas para dominar la dieta cetogénica y transformar tu cuerpo para siempre.
 

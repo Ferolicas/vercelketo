@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react'
 import { motion } from 'framer-motion'
 import { XMarkIcon, PhotoIcon, CalendarDaysIcon } from '@heroicons/react/24/outline'
-import { client } from '@/lib/sanity'
+import { writeClient } from '@/lib/sanity'
 import { z } from 'zod'
 
 const serviceSchema = z.object({
@@ -114,11 +114,11 @@ export default function CreateServiceModal({ isOpen, onClose, onSuccess }: Creat
       // Upload image
       let imageAsset = null
       if (image) {
-        imageAsset = await client.assets.upload('image', image)
+        imageAsset = await writeClient.assets.upload('image', image)
       }
 
       // Create service
-      const service = await client.create({
+      const service = await writeClient.create({
         _type: 'service',
         title: formData.title,
         slug: {
