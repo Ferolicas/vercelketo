@@ -218,7 +218,7 @@ export default function BookLandingPage() {
                         <h2 className="font-bold text-3xl bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent mb-4">
                           KETO 2025
                         </h2>
-                        <div className="text-sm text-gray-600 mb-4">
+                        <div className="text-sm text-gray-800 font-medium mb-4">
                           +200 Recetas • Plan 30 Días<br />
                           Calculadora de Macros
                         </div>

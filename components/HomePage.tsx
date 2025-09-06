@@ -194,7 +194,7 @@ export default function HomePage({
                       <h2 className="font-black text-3xl bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent mb-4">
                         COMPLETO 2025
                       </h2>
-                      <div className="text-sm text-gray-600 mb-6">
+                      <div className="text-sm text-gray-800 font-medium mb-6">
                         ✅ +200 Recetas Probadas<br/>
                         ✅ Plan Personalizado 30 Días<br/>
                         ✅ Calculadora de Macros<br/>
@@ -209,7 +209,7 @@ export default function HomePage({
                           <StarIcon key={i} className="h-5 w-5" />
                         ))}
                       </div>
-                      <div className="text-xs text-gray-600">4.9/5 - Más de 2,000 reseñas</div>
+                      <div className="text-xs text-gray-800 font-medium">4.9/5 - Más de 2,000 reseñas</div>
                     </div>
                   </div>
                   

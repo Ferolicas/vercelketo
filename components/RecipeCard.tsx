@@ -66,13 +66,13 @@ export default function RecipeCard({ recipe, onClick }: RecipeCardProps) {
         </h3>
         
         {recipe.description && (
-          <p className="text-gray-600 text-sm line-clamp-2 mb-3">
+          <p className="text-gray-700 text-sm line-clamp-2 mb-3">
             {recipe.description}
           </p>
         )}
 
         {/* Recipe metadata */}
-        <div className="flex items-center justify-between text-sm text-gray-500 mt-auto pt-3 border-t border-gray-100">
+        <div className="flex items-center justify-between text-sm text-gray-600 mt-auto pt-3 border-t border-gray-100">
           <div className="flex items-center space-x-4">
             {recipe.preparationTime && (
               <div className="flex items-center">
