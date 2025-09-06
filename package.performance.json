@@ -1,0 +1,103 @@
+{
+  "name": "planetaketonext",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "build:analyze": "ANALYZE=true npm run build",
+    "start": "next start",
+    "lint": "next lint",
+    "sanity:deploy": "cd sanity-studio && npm run build && npx sanity deploy",
+    "sanity:dev": "cd sanity-studio && npm run dev",
+    "deploy:all": "npm run build && npm run sanity:deploy",
+    
+    "performance:analyze": "node scripts/analyze-bundle.js",
+    "performance:audit": "lighthouse http://localhost:3000 --output=html --output-path=./reports/lighthouse.html --chrome-flags=\"--headless\"",
+    "performance:build-analyze": "npm run build:analyze && npm run performance:analyze",
+    "performance:dev-audit": "npm run dev & sleep 10 && npm run performance:audit && pkill -f 'next dev'",
+    "performance:check-deps": "npx depcheck",
+    "performance:unused-code": "npx unimported",
+    "performance:bundle-size": "npx bundlesize"
+  },
+  "dependencies": {
+    "@headlessui/react": "^2.2.7",
+    "@heroicons/react": "^2.2.0",
+    "@hookform/resolvers": "^5.2.1",
+    "@next/bundle-analyzer": "^15.5.0",
+    "@portabletext/react": "^3.2.1",
+    "@sanity/client": "^7.6.0",
+    "@sanity/image-url": "^1.1.0",
+    "@sanity/ui": "^3.0.7",
+    "@sanity/vision": "^4.5.0",
+    "@stripe/react-stripe-js": "^3.9.2",
+    "@stripe/stripe-js": "^7.9.0",
+    "@tailwindcss/aspect-ratio": "^0.4.2",
+    "@tailwindcss/forms": "^0.5.10",
+    "@tailwindcss/typography": "^0.5.16",
+    "@types/uuid": "^10.0.0",
+    "@vercel/analytics": "^1.5.0",
+    "bcryptjs": "^3.0.2",
+    "canvas-confetti": "^1.9.3",
+    "critters": "^0.0.23",
+    "framer-motion": "^12.23.12",
+    "lucide-react": "^0.516.0",
+    "next": "15.3.3",
+    "next-sitemap": "^4.2.3",
+    "prop-types": "^15.8.1",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-hook-form": "^7.62.0",
+    "resend": "^6.0.2",
+    "sanity": "^4.5.0",
+    "stripe": "^18.5.0",
+    "styled-components": "^6.1.19",
+    "uuid": "^11.1.0",
+    "zod": "^4.1.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/canvas-confetti": "^1.9.0",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "tailwindcss": "^4",
+    "typescript": "^5",
+    
+    "lighthouse": "^10.4.0",
+    "depcheck": "^1.4.7",
+    "unimported": "^1.31.1",
+    "bundlesize": "^0.18.1"
+  },
+  "bundlesize": [
+    {
+      "path": ".next/static/chunks/framework-*.js",
+      "maxSize": "200kb",
+      "compression": "gzip"
+    },
+    {
+      "path": ".next/static/chunks/main-*.js", 
+      "maxSize": "150kb",
+      "compression": "gzip"
+    },
+    {
+      "path": ".next/static/chunks/pages/**/*.js",
+      "maxSize": "100kb",
+      "compression": "gzip"
+    }
+  ],
+  "performance": {
+    "budgets": {
+      "javascript": "300kb",
+      "css": "50kb", 
+      "images": "500kb"
+    },
+    "thresholds": {
+      "FCP": 1800,
+      "LCP": 2500,
+      "FID": 100,
+      "CLS": 0.1,
+      "TTFB": 800
+    }
+  }
+}

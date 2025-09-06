@@ -9,7 +9,11 @@
     "lint": "next lint",
     "sanity:deploy": "cd sanity-studio && npm run build && npx sanity deploy",
     "sanity:dev": "cd sanity-studio && npm run dev",
-    "deploy:all": "npm run build && npm run sanity:deploy"
+    "deploy:all": "npm run build && npm run sanity:deploy",
+    "performance:audit": "node scripts/performance-audit.js",
+    "performance:build-analyze": "npm run build && npm run performance:audit",
+    "performance:check-deps": "npx depcheck",
+    "performance:bundle-analyzer": "npx @next/bundle-analyzer"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.7",

@@ -7,6 +7,13 @@ import PerformanceOptimizer from "@/components/PerformanceOptimizer"
 import SEOBreadcrumbs from "@/components/SEOBreadcrumbs"
 import { FooterLinks } from "@/components/InternalLinks"
 import SchemaMarkup from "@/components/SchemaMarkup"
+import GoogleAnalytics from "@/components/analytics/GoogleAnalytics"
+import SearchConsoleVerification from "@/components/analytics/SearchConsoleVerification"
+import AdSenseTracking from "@/components/analytics/AdSenseTracking"
+import ConversionTrackingSetup from "@/components/analytics/ConversionTracking"
+import WebVitalsTracker, { PerformanceMonitor, AdSensePerformanceMonitor } from "@/components/performance/WebVitalsTracker"
+import { ServiceWorkerManager, StaticAssetOptimizer } from "@/components/performance/CachingOptimizer"
+import AdSenseOptimizer from "@/components/performance/AdSenseOptimizer"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -19,8 +26,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Planeta Keto | Las Mejores Recetas Cetogénicas en Español 2024",
-  description: "🥑 +500 recetas keto GRATIS en español. Desayunos, comidas, cenas y postres cetogénicos para perder peso rápido. Menús semanales, guías paso a paso y tips de expertos. ¡Empieza tu transformación keto hoy!",
+  title: "Planeta Keto | +500 Recetas Cetogénicas GRATIS 2025",
+  description: "🥑 Recetas keto fáciles y rápidas. Pierde peso con la dieta cetogénica más efectiva. +500 recetas GRATIS, menús semanales y guía completa.",
   keywords: "recetas keto, dieta keto, dieta cetogénica, bajar de peso, quemar grasa, recetas saludables, dieta baja carbohidratos, keto en español, recetas cetogénicas, comida keto, desayuno keto, almuerzo keto, cena keto, postres keto, tienda keto, dr bayter, cetosis, macros keto, menu keto, plan keto, keto facil, keto para principiantes, dieta cetogénica beneficios, alimentos keto, lista keto, productos keto, suplementos keto, libros keto, foro keto, blog keto, comunidad keto",
   metadataBase: new URL(process.env.SITE_URL || "https://planetaketo.es"),
   alternates: {
@@ -88,6 +95,11 @@ export default function RootLayout({
           type="website" 
           data={{}} 
         />
+        
+        {/* Google Search Console Verification */}
+        <SearchConsoleVerification 
+          verificationCode={process.env.GOOGLE_VERIFICATION}
+        />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-[100dvh] bg-white`}
@@ -99,28 +111,43 @@ export default function RootLayout({
         </main>
         <FooterLinks />
         <Analytics />
-        {/* Temporarily disabled PerformanceOptimizer to fix button navigation issues */}
-        {/* <PerformanceOptimizer 
+        {/* Re-enabled PerformanceOptimizer for SEO optimization */}
+        <PerformanceOptimizer 
           enablePreloading={true}
           enableServiceWorker={true}
           enableImageOptimization={true}
           enableResourceHints={true}
-        /> */}
-        
-        {/* Temporarily remove inline scripts that might block hydration */}
-        {/* 
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              // Google Analytics
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', '${process.env.NEXT_PUBLIC_GA_ID}');
-            `,
-          }}
         />
-        */}
+        
+        {/* Enhanced Google Analytics 4 with conversion tracking */}
+        {process.env.NEXT_PUBLIC_GA_ID && (
+          <>
+            <GoogleAnalytics measurementId={process.env.NEXT_PUBLIC_GA_ID} />
+            <ConversionTrackingSetup measurementId={process.env.NEXT_PUBLIC_GA_ID} />
+          </>
+        )}
+        
+        {/* AdSense tracking and performance monitoring */}
+        {process.env.NEXT_PUBLIC_ADSENSE_CLIENT && (
+          <>
+            <AdSenseTracking 
+              clientId={process.env.NEXT_PUBLIC_ADSENSE_CLIENT}
+              enableTracking={true}
+            />
+            <AdSenseOptimizer 
+              enableLazyLoading={true}
+              enableViewabilityTracking={true}
+              enableCLSPrevention={true}
+            />
+            <AdSensePerformanceMonitor />
+          </>
+        )}
+        
+        {/* Performance monitoring and optimization */}
+        <WebVitalsTracker />
+        <PerformanceMonitor />
+        <ServiceWorkerManager />
+        <StaticAssetOptimizer />
       </body>
     </html>
   );

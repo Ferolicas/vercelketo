@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "createdAt": "2025-09-01T06:33:31.596Z",
+  "createdAt": "2025-09-02T21:50:49.095Z",
   "workspaces": [
     {
       "name": "planeta-keto",
@@ -12,7 +12,7 @@
       "mediaLibrary": {
         "enabled": false
       },
-      "schema": "c807d833.create-schema.json",
+      "schema": "7af94e7c.create-schema.json",
       "tools": "22ae7f6c.create-tools.json"
     }
   ]

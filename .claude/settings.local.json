@@ -78,7 +78,11 @@
       "Bash(dir \"C:\\PLANETA KETO V2\\planetaketonext\\app\\api\")",
       "Bash(del \"C:\\PLANETA KETO V2\\planetaketonext\\app\\api\\delete-forum-posts\\route.ts\")",
       "Bash(del \"C:\\PLANETA KETO V2\\planetaketonext\\app\\api\\list-forum-posts\\route.ts\")",
-      "Bash(del \"C:\\PLANETA KETO V2\\planetaketonext\\delete-forum-content.mjs\")"
+      "Bash(del \"C:\\PLANETA KETO V2\\planetaketonext\\delete-forum-content.mjs\")",
+      "Bash(dir /b \"C:\\PLANETA KETO V2\\planetaketonext\\app\")",
+      "Bash(dir /b \"C:\\PLANETA KETO V2\\planetaketonext\\app\\api\")",
+      "Bash(npm ls:*)",
+      "Bash(npx @next/bundle-analyzer:*)"
     ],
     "deny": [],
     "ask": [],
