@@ -20,7 +20,7 @@ interface PerformanceOptimizerProps {
 
 export default function PerformanceOptimizer({
   enablePreloading = true,
-  enableServiceWorker = true,
+  enableServiceWorker = false, // Temporalmente deshabilitado
   enableImageOptimization = true,
   enableResourceHints = true
 }: PerformanceOptimizerProps) {

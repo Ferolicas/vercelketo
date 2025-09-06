@@ -2,33 +2,11 @@
 
 import { useEffect } from 'react'
 
-// Service Worker registration for advanced caching
+// Service Worker registration for advanced caching - TEMPORALMENTE DESHABILITADO
 export function ServiceWorkerManager() {
   useEffect(() => {
-    if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
-      // Register service worker for caching
-      navigator.serviceWorker.register('/sw.js')
-        .then((registration) => {
-          console.log('✅ Service Worker registered:', registration)
-          
-          // Check for updates
-          registration.addEventListener('updatefound', () => {
-            console.log('🔄 Service Worker update found')
-            const newWorker = registration.installing
-            if (newWorker) {
-              newWorker.addEventListener('statechange', () => {
-                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                  // New version available
-                  console.log('🆕 New version available')
-                }
-              })
-            }
-          })
-        })
-        .catch((error) => {
-          console.warn('❌ Service Worker registration failed:', error)
-        })
-    }
+    // Service Worker temporalmente deshabilitado para resolver problemas de rendimiento
+    console.log('Service Worker deshabilitado temporalmente')
   }, [])
   
   return null

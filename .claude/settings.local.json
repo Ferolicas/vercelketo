@@ -90,7 +90,10 @@
       "Bash(del \"C:\\PLANETA KETO V2\\planetaketonext\\app\\favicon.ico\")",
       "Bash(dir:*)",
       "Bash(npx @sanity/client exec:*)",
-      "Bash(del \"C:\\PLANETA KETO V2\\planetaketonext\\get-recipe-count.mjs\")"
+      "Bash(del \"C:\\PLANETA KETO V2\\planetaketonext\\get-recipe-count.mjs\")",
+      "Bash(vercel:*)",
+      "Bash(copy:*)",
+      "Bash(del sw.js)"
     ],
     "deny": [],
     "ask": [],
