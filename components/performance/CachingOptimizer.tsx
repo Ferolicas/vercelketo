@@ -6,7 +6,9 @@ import { useEffect } from 'react'
 export function ServiceWorkerManager() {
   useEffect(() => {
     // Service Worker temporalmente deshabilitado para resolver problemas de rendimiento
-    console.log('Service Worker deshabilitado temporalmente')
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Service Worker deshabilitado temporalmente')
+    }
   }, [])
   
   return null
@@ -79,7 +81,11 @@ export class CacheOptimizer {
             // Update cache with fresh data
             cache.put(url, new Response(JSON.stringify(freshData)))
           })
-          .catch(err => console.warn('SWR revalidation failed:', err))
+          .catch(err => {
+            if (process.env.NODE_ENV === 'development') {
+              console.warn('SWR revalidation failed:', err)
+            }
+          })
         
         return staleData
       }
@@ -270,7 +276,9 @@ export class ClientSideCache {
       })
       
     } catch (error) {
-      console.warn('Failed to cache recipes:', error)
+      if (process.env.NODE_ENV === 'development') {
+        console.warn('Failed to cache recipes:', error)
+      }
     }
   }
   
@@ -299,7 +307,9 @@ export class ClientSideCache {
       return result.filter(recipe => recipe.cachedAt > oneHourAgo)
       
     } catch (error) {
-      console.warn('Failed to get cached recipes:', error)
+      if (process.env.NODE_ENV === 'development') {
+        console.warn('Failed to get cached recipes:', error)
+      }
       return []
     }
   }
@@ -328,9 +338,13 @@ export class ClientSideCache {
         transaction.onerror = () => reject(transaction.error)
       })
       
-      console.log('✅ Cache cleared')
+      if (process.env.NODE_ENV === 'development') {
+        console.log('✅ Cache cleared')
+      }
     } catch (error) {
-      console.warn('Failed to clear cache:', error)
+      if (process.env.NODE_ENV === 'development') {
+        console.warn('Failed to clear cache:', error)
+      }
     }
   }
 }

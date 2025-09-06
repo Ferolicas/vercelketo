@@ -66,7 +66,9 @@ export function ShareButtons({ url, title, description }: ShareButtonsProps) {
           url
         })
       } catch (error) {
-        console.log('Error sharing:', error)
+        if (process.env.NODE_ENV === 'development') {
+          console.log('Error sharing:', error)
+        }
       }
     } else {
       setIsOpen(!isOpen)

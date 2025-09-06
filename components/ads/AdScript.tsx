@@ -26,10 +26,14 @@ function AdScript({ clientId }: AdScriptProps) {
         crossOrigin="anonymous"
         strategy="afterInteractive"
         onLoad={() => {
-          console.log('AdSense script cargado correctamente')
+          if (process.env.NODE_ENV === 'development') {
+            console.log('AdSense script cargado correctamente')
+          }
         }}
         onError={(error) => {
-          console.error('Error cargando AdSense:', error)
+          if (process.env.NODE_ENV === 'development') {
+            console.error('Error cargando AdSense:', error)
+          }
         }}
       />
       
@@ -40,9 +44,11 @@ function AdScript({ clientId }: AdScriptProps) {
           __html: `
             window.adsbygoogle = window.adsbygoogle || [];
             
-            // Configuración global de AdSense
+            // Configuración global de AdSense con IDs reales
             window.adsenseConfig = {
               clientId: '${adsenseClient}',
+              publisherId: '${process.env.NEXT_PUBLIC_ADSENSE_PUBLISHER_ID || adsenseClient}',
+              clientIdNumber: '${process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID || ''}',
               enableLazyLoading: true,
               enableSingleRequest: true,
               enableAutoRefresh: false,
@@ -73,7 +79,9 @@ function AdScript({ clientId }: AdScriptProps) {
                           ad.setAttribute('data-initialized', 'true');
                           observer.unobserve(ad);
                         } catch (error) {
-                          console.error('Error inicializando anuncio:', error);
+                          if (${process.env.NODE_ENV === 'development'}) {
+                            console.error('Error inicializando anuncio:', error);
+                          }
                         }
                       }
                     });

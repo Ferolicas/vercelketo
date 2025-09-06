@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { X, Check } from 'lucide-react'
 import { loadStripe } from '@stripe/stripe-js'
 import { Elements, PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js'
@@ -20,6 +20,32 @@ interface Product {
 interface PurchaseModalProps {
   product: Product
   onClose: () => void
+}
+
+interface ToastProps {
+  message: string
+  type: 'error' | 'success'
+  onClose: () => void
+}
+
+function Toast({ message, type, onClose }: ToastProps) {
+  useEffect(() => {
+    const timer = setTimeout(onClose, 5000)
+    return () => clearTimeout(timer)
+  }, [onClose])
+
+  return (
+    <div className={`fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg ${
+      type === 'error' ? 'bg-red-500' : 'bg-green-500'
+    } text-white max-w-md`}>
+      <div className="flex items-center justify-between">
+        <span>{message}</span>
+        <button onClick={onClose} className="ml-2 hover:opacity-70">
+          <X size={16} />
+        </button>
+      </div>
+    </div>
+  )
 }
 
 function CheckoutForm({ product, onClose, finalPrice }: { product: Product; onClose: () => void; finalPrice: number }) {
@@ -92,8 +118,11 @@ export default function PurchaseModal({ product, onClose }: PurchaseModalProps) 
   const [finalPrice, setFinalPrice] = useState(product.price)
   const [discountAmount, setDiscountAmount] = useState(0)
   const [discountError, setDiscountError] = useState('')
+  const [toast, setToast] = useState<{ message: string; type: 'error' | 'success' } | null>(null)
+  const modalRef = useRef<HTMLDivElement>(null)
+  const closeButtonRef = useRef<HTMLButtonElement>(null)
 
-  const createPaymentIntent = async (discountCodeToApply = '') => {
+  const createPaymentIntent = useCallback(async (discountCodeToApply = '') => {
     setLoadingIntent(true)
     try {
       const response = await fetch('/api/create-checkout', {
@@ -114,8 +143,7 @@ export default function PurchaseModal({ product, onClose }: PurchaseModalProps) 
           return
         }
         console.error('Error:', data.error)
-        alert('Error al crear el pago. Inténtalo de nuevo.')
-        onClose()
+        setToast({ message: 'Error al crear el pago. Inténtalo de nuevo.', type: 'error' })
         return
       }
 
@@ -128,38 +156,93 @@ export default function PurchaseModal({ product, onClose }: PurchaseModalProps) 
       }
     } catch (error) {
       console.error('Error:', error)
-      alert('Error al crear el pago. Inténtalo de nuevo.')
-      onClose()
+      setToast({ message: 'Error al crear el pago. Inténtalo de nuevo.', type: 'error' })
     } finally {
       setLoadingIntent(false)
     }
-  }
+  }, [product._id])
 
+  // Focus management and keyboard handling
+  useEffect(() => {
+    if (closeButtonRef.current) {
+      closeButtonRef.current.focus()
+    }
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose()
+      }
+      
+      // Focus trap
+      if (e.key === 'Tab') {
+        const focusableElements = modalRef.current?.querySelectorAll(
+          'button, input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        )
+        if (focusableElements && focusableElements.length > 0) {
+          const firstElement = focusableElements[0] as HTMLElement
+          const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement
+          
+          if (e.shiftKey && document.activeElement === firstElement) {
+            e.preventDefault()
+            lastElement.focus()
+          } else if (!e.shiftKey && document.activeElement === lastElement) {
+            e.preventDefault()
+            firstElement.focus()
+          }
+        }
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [onClose])
+
+  // Create payment intent
   useEffect(() => {
     createPaymentIntent()
-  }, [product._id, onClose])
+  }, [createPaymentIntent])
 
-  const handleApplyDiscount = () => {
+  const handleApplyDiscount = useCallback(() => {
     if (!discountCode.trim()) {
       setDiscountError('Ingresa un código de descuento')
       return
     }
     setDiscountError('')
     createPaymentIntent(discountCode)
-  }
+  }, [discountCode, createPaymentIntent])
+
+  const handleClose = useCallback(() => {
+    onClose()
+  }, [onClose])
 
   const discountPercentage = product.originalPrice && product.originalPrice > product.price 
     ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
     : 0
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl max-w-sm w-full max-h-[90vh] flex flex-col text-white border border-white/10 overflow-hidden">
+    <>
+      <div 
+        className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+        onClick={handleClose}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modal-title"
+        aria-describedby="modal-description"
+      >
+        <div 
+          ref={modalRef}
+          className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl max-w-sm w-full max-h-[90vh] flex flex-col text-white border border-white/10 overflow-hidden"
+          onClick={(e) => e.stopPropagation()}
+        >
         {/* Header - Fixed */}
         <div className="relative p-4 border-b border-white/10 flex-shrink-0">
           <button
-            onClick={onClose}
+            ref={closeButtonRef}
+            onClick={handleClose}
             className="absolute top-2 right-2 bg-white/20 text-white rounded-full p-2 hover:bg-white/30 backdrop-blur-md z-10"
+            aria-label="Cerrar modal"
           >
             <X size={16} />
           </button>
@@ -173,7 +256,7 @@ export default function PurchaseModal({ product, onClose }: PurchaseModalProps) 
               />
             )}
             <div className="flex-1 min-w-0">
-              <h2 className="text-lg font-bold text-white mb-1 line-clamp-2 leading-tight">
+              <h2 id="modal-title" className="text-lg font-bold text-white mb-1 line-clamp-2 leading-tight">
                 {product.name}
               </h2>
               <div className="flex items-center gap-2 flex-wrap">
@@ -204,7 +287,7 @@ export default function PurchaseModal({ product, onClose }: PurchaseModalProps) 
           {/* Description Section */}
           <div className="p-4 border-b border-white/10">
             <h3 className="text-sm font-semibold text-white/90 mb-3">Descripción</h3>
-            <div className="text-white/70 text-sm mb-4 leading-relaxed max-h-40 overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">
+            <div id="modal-description" className="text-white/70 text-sm mb-4 leading-relaxed max-h-40 overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">
               <p className="whitespace-pre-wrap">
                 {product.description}
               </p>
@@ -238,6 +321,7 @@ export default function PurchaseModal({ product, onClose }: PurchaseModalProps) 
                   placeholder="Ingresa tu código"
                   className="flex-1 bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white text-sm 
                            placeholder:text-white/50 focus:outline-none focus:border-brand-blue-400"
+                  aria-label="Código de descuento"
                 />
                 <button
                   type="button"
@@ -291,8 +375,16 @@ export default function PurchaseModal({ product, onClose }: PurchaseModalProps) 
               </div>
             )}
           </div>
+          </div>
         </div>
       </div>
-    </div>
+      {toast && (
+        <Toast 
+          message={toast.message} 
+          type={toast.type} 
+          onClose={() => setToast(null)} 
+        />
+      )}
+    </>
   )
 }

@@ -82,13 +82,19 @@ export default function WebVitalsTracker() {
               timestamp: Date.now()
             }
           })
-        }).catch(err => console.warn('Failed to send web vital to analytics:', err))
-
-        console.log(`📊 Web Vital - ${metric.name}:`, {
-          value: metric.value,
-          rating,
-          threshold: getThresholds(metric.name)
+        }).catch(err => {
+          if (process.env.NODE_ENV === 'development') {
+            console.warn('Failed to send web vital to analytics:', err)
+          }
         })
+
+        if (process.env.NODE_ENV === 'development') {
+          console.log(`📊 Web Vital - ${metric.name}:`, {
+            value: metric.value,
+            rating,
+            threshold: getThresholds(metric.name)
+          })
+        }
       }
 
       // Setup metric observers - Cambiado onFID por onINP
@@ -200,11 +206,13 @@ export function PerformanceMonitor() {
       const longTaskObserver = new PerformanceObserver((list) => {
         list.getEntries().forEach((entry) => {
           if (entry.duration > 50) { // Tasks longer than 50ms
-            console.warn('🐌 Long Task detected:', {
-              duration: entry.duration,
-              startTime: entry.startTime,
-              name: entry.name
-            })
+            if (process.env.NODE_ENV === 'development') {
+              console.warn('🐌 Long Task detected:', {
+                duration: entry.duration,
+                startTime: entry.startTime,
+                name: entry.name
+              })
+            }
             
             // Send to analytics
             if (window.gtag) {
@@ -222,7 +230,9 @@ export function PerformanceMonitor() {
       try {
         longTaskObserver.observe({ entryTypes: ['longtask'] })
       } catch (e) {
-        console.warn('Long task observer not supported')
+        if (process.env.NODE_ENV === 'development') {
+          console.warn('Long task observer not supported')
+        }
       }
 
       // Monitor resource loading
@@ -232,11 +242,13 @@ export function PerformanceMonitor() {
           
           // Check for slow resources (>2s)
           if (resourceEntry.duration > 2000) {
-            console.warn('🐌 Slow Resource:', {
-              name: resourceEntry.name,
-              duration: resourceEntry.duration,
-              size: resourceEntry.transferSize
-            })
+            if (process.env.NODE_ENV === 'development') {
+              console.warn('🐌 Slow Resource:', {
+                name: resourceEntry.name,
+                duration: resourceEntry.duration,
+                size: resourceEntry.transferSize
+              })
+            }
             
             if (window.gtag) {
               window.gtag('event', 'slow_resource', {
@@ -253,7 +265,9 @@ export function PerformanceMonitor() {
       try {
         resourceObserver.observe({ entryTypes: ['resource'] })
       } catch (e) {
-        console.warn('Resource observer not supported')
+        if (process.env.NODE_ENV === 'development') {
+          console.warn('Resource observer not supported')
+        }
       }
 
       return () => {
@@ -293,7 +307,9 @@ export function AdSensePerformanceMonitor() {
         })
       }
       
-      console.log('📱 AdSense Performance:', metrics)
+      if (process.env.NODE_ENV === 'development') {
+        console.log('📱 AdSense Performance:', metrics)
+      }
     }
 
     // Check AdSense performance after 3 seconds

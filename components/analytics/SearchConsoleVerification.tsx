@@ -16,15 +16,17 @@ export default function SearchConsoleVerification({ verificationCode }: SearchCo
 export const submitSitemapToSearchConsole = async (siteUrl: string) => {
   // This would typically be done through Google Search Console API
   // For now, we'll provide the manual instructions
-  console.log(`
-    Para enviar tu sitemap a Google Search Console:
-    1. Ve a https://search.google.com/search-console
-    2. Selecciona tu propiedad: ${siteUrl}
-    3. Ve a Sitemaps en el menú lateral
-    4. Añade estas URLs:
-       - ${siteUrl}/sitemap.xml
-       - ${siteUrl}/server-sitemap-index.xml
-  `)
+  if (process.env.NODE_ENV === 'development') {
+    console.log(`
+      Para enviar tu sitemap a Google Search Console:
+      1. Ve a https://search.google.com/search-console
+      2. Selecciona tu propiedad: ${siteUrl}
+      3. Ve a Sitemaps en el menú lateral
+      4. Añade estas URLs:
+         - ${siteUrl}/sitemap.xml
+         - ${siteUrl}/server-sitemap-index.xml
+    `)
+  }
 }
 
 // Schema markup for website verification

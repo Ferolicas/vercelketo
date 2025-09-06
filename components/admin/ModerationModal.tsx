@@ -1,7 +1,33 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { X, MessageCircle, CheckCircle, XCircle, Eye, Calendar, User, Star, Reply } from 'lucide-react';
+
+interface ToastProps {
+  message: string
+  type: 'error' | 'success'
+  onClose: () => void
+}
+
+function Toast({ message, type, onClose }: ToastProps) {
+  useEffect(() => {
+    const timer = setTimeout(onClose, 5000)
+    return () => clearTimeout(timer)
+  }, [onClose])
+
+  return (
+    <div className={`fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg ${
+      type === 'error' ? 'bg-red-500' : 'bg-green-500'
+    } text-white max-w-md`}>
+      <div className="flex items-center justify-between">
+        <span>{message}</span>
+        <button onClick={onClose} className="ml-2 hover:opacity-70">
+          <X size={16} />
+        </button>
+      </div>
+    </div>
+  )
+}
 
 interface ModerationModalProps {
   isOpen: boolean;
@@ -35,6 +61,9 @@ export default function ModerationModal({ isOpen, onClose }: ModerationModalProp
   const [activeTab, setActiveTab] = useState<'all' | 'pending' | 'approved' | 'rejected'>('pending');
   const [filterType, setFilterType] = useState<'all' | 'forumPost' | 'forumReply' | 'recipeComment' | 'blogComment'>('all');
   const [showReportedOnly, setShowReportedOnly] = useState(false);
+  const [toast, setToast] = useState<{ message: string; type: 'error' | 'success' } | null>(null)
+  const modalRef = useRef<HTMLDivElement>(null)
+  const closeButtonRef = useRef<HTMLButtonElement>(null)
 
   useEffect(() => {
     if (isOpen) {
@@ -90,10 +119,11 @@ export default function ModerationModal({ isOpen, onClose }: ModerationModalProp
       );
       
       const result = await response.json();
-      alert(result.message);
+      const actionText = action === 'approve' ? 'aprobado' : action === 'reject' ? 'rechazado' : 'eliminado'
+      setToast({ message: `Contenido ${actionText} exitosamente`, type: 'success' })
     } catch (error) {
       console.error('Error processing moderation:', error);
-      alert('Error al procesar la moderación');
+      setToast({ message: 'Error al procesar la moderación', type: 'error' })
     } finally {
       setProcessing(null);
     }
@@ -120,13 +150,22 @@ export default function ModerationModal({ isOpen, onClose }: ModerationModalProp
   });
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg max-w-6xl w-full max-h-[90vh] overflow-hidden">
+    <>
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div 
+          ref={modalRef}
+          className="bg-white rounded-lg max-w-6xl w-full max-h-[90vh] overflow-hidden"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="modal-title"
+        >
         <div className="flex justify-between items-center p-6 border-b">
-          <h2 className="text-2xl font-bold text-gray-800">Panel de Moderación</h2>
+          <h2 id="modal-title" className="text-2xl font-bold text-gray-800">Panel de Moderación</h2>
           <button
+            ref={closeButtonRef}
             onClick={onClose}
             className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+            aria-label="Cerrar modal"
           >
             <X className="w-6 h-6" />
           </button>
@@ -324,8 +363,16 @@ export default function ModerationModal({ isOpen, onClose }: ModerationModalProp
             )}
           </div>
         </div>
+        </div>
       </div>
-    </div>
+      {toast && (
+        <Toast 
+          message={toast.message} 
+          type={toast.type} 
+          onClose={() => setToast(null)} 
+        />
+      )}
+    </>
   );
 }
 

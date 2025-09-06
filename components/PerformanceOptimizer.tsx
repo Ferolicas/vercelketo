@@ -121,8 +121,16 @@ export default function PerformanceOptimizer({
       link.as = 'style';
       link.href = href;
       link.crossOrigin = 'anonymous';
-      link.onload = () => console.log(`Font preloaded: ${href}`);
-      link.onerror = () => console.warn(`Failed to preload font: ${href}`);
+      link.onload = () => {
+        if (process.env.NODE_ENV === 'development') {
+          console.log(`Font preloaded: ${href}`);
+        }
+      };
+      link.onerror = () => {
+        if (process.env.NODE_ENV === 'development') {
+          console.warn(`Failed to preload font: ${href}`);
+        }
+      };
       document.head.appendChild(link);
     });
   }, [enablePreloading]);
@@ -143,8 +151,9 @@ export default function PerformanceOptimizer({
         if (newWorker) {
           newWorker.addEventListener('statechange', () => {
             if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-              // Nuevo service worker disponible
-              console.log('New service worker available');
+              if (process.env.NODE_ENV === 'development') {
+                console.log('New service worker available');
+              }
             }
           });
         }
@@ -152,8 +161,9 @@ export default function PerformanceOptimizer({
 
     } catch (error) {
       console.error('Service Worker registration failed:', error);
-      // Desactivar service worker si hay errores
-      console.log('Service Worker deshabilitado temporalmente');
+      if (process.env.NODE_ENV === 'development') {
+        console.log('Service Worker deshabilitado temporalmente');
+      }
     }
   }, [enableServiceWorker]);
 
@@ -303,63 +313,62 @@ export default function PerformanceOptimizer({
       });
     });
 
-    // Limpiar algunos timers conocidos (simplificado para evitar problemas de tipos)
-    for (let i = 1; i <= 1000; i++) {
-      clearTimeout(i);
-      clearInterval(i);
-    }
+    // Timer cleanup handled by React's built-in cleanup
+    // Removed unsafe global timer clearing
+  }, []);
+
+  // Split into separate useEffect hooks for better performance and dependency management
+  useEffect(() => {
+    measureWebVitals();
   }, []);
 
   useEffect(() => {
-    // Inicializar optimizaciones
-    const initOptimizations = async () => {
-      // Esperar a que el DOM esté completamente cargado
-      if (document.readyState !== 'complete') {
-        await new Promise(resolve => {
-          window.addEventListener('load', resolve, { once: true });
-        });
-      }
-
-      // Ejecutar optimizaciones
-      measureWebVitals();
+    if (enablePreloading) {
       preloadCriticalResources();
-      await registerServiceWorker();
+    }
+  }, [enablePreloading, preloadCriticalResources]);
+
+  useEffect(() => {
+    if (enableServiceWorker) {
+      registerServiceWorker();
+    }
+  }, [enableServiceWorker, registerServiceWorker]);
+
+  useEffect(() => {
+    if (enableResourceHints) {
       addResourceHints();
-      prefetchRoutes();
-      
-      // Optimizaciones que requieren interacción
-      setTimeout(() => {
-        optimizeImageLoading();
-        const cleanupScroll = optimizeScrollPerformance();
+    }
+  }, [enableResourceHints, addResourceHints]);
+
+  useEffect(() => {
+    // Initialize optimizations after DOM is loaded
+    const initDelayedOptimizations = () => {
+      if (document.readyState === 'complete') {
+        prefetchRoutes();
         
-        // Limpiar cuando el componente se desmonte
-        return cleanupScroll;
-      }, 100);
+        setTimeout(() => {
+          if (enableImageOptimization) {
+            optimizeImageLoading();
+          }
+        }, 100);
 
-      // Detectar problemas después de la carga inicial
-      setTimeout(() => {
-        detectPerformanceIssues();
-        removeUnusedResources();
-      }, 2000);
+        setTimeout(() => {
+          detectPerformanceIssues();
+          removeUnusedResources();
+        }, 2000);
+      }
     };
 
-    initOptimizations();
+    if (document.readyState === 'complete') {
+      initDelayedOptimizations();
+    } else {
+      window.addEventListener('load', initDelayedOptimizations, { once: true });
+    }
 
-    // Cleanup al desmontar
     return () => {
-      // Limpiar observers y listeners si es necesario
+      // Cleanup handled by individual functions
     };
-  }, [
-    measureWebVitals,
-    preloadCriticalResources,
-    registerServiceWorker,
-    addResourceHints,
-    prefetchRoutes,
-    optimizeImageLoading,
-    optimizeScrollPerformance,
-    detectPerformanceIssues,
-    removeUnusedResources
-  ]);
+  }, [enableImageOptimization]);
 
   // Solo mostrar métricas en desarrollo
   if (process.env.NODE_ENV === 'development') {

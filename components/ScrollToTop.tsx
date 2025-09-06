@@ -12,17 +12,21 @@ export function ScrollToTop() {
       // Múltiples métodos para obtener la posición de scroll
       const scrollY = window.pageYOffset || window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0
       
-      console.log('📊 Scroll Position:', {
-        'window.scrollY': window.scrollY,
-        'window.pageYOffset': window.pageYOffset,
-        'documentElement.scrollTop': document.documentElement.scrollTop,
-        'body.scrollTop': document.body.scrollTop,
-        'final scrollY': scrollY
-      })
+      if (process.env.NODE_ENV === 'development') {
+        console.log('📊 Scroll Position:', {
+          'window.scrollY': window.scrollY,
+          'window.pageYOffset': window.pageYOffset,
+          'documentElement.scrollTop': document.documentElement.scrollTop,
+          'body.scrollTop': document.body.scrollTop,
+          'final scrollY': scrollY
+        })
+      }
       
       const shouldShow = scrollY > 50 // Reducido a 50px para que sea más fácil de activar
       
-      console.log(`🎯 Should show button: ${shouldShow} (scroll: ${scrollY}px)`)
+      if (process.env.NODE_ENV === 'development') {
+        console.log(`🎯 Should show button: ${shouldShow} (scroll: ${scrollY}px)`)
+      }
       
       setIsVisible(shouldShow)
     }
@@ -51,6 +55,7 @@ export function ScrollToTop() {
       window.removeEventListener('scroll', handleScroll)
       document.removeEventListener('scroll', handleScroll)
       document.body.removeEventListener('scroll', handleScroll)
+      
       if (rootElement && rootElement !== document.body) {
         rootElement.removeEventListener('scroll', handleScroll)
       }
@@ -58,48 +63,41 @@ export function ScrollToTop() {
   }, [])
 
   const scrollToTop = () => {
-    console.log('🔝 Scrolling to top...')
-    
-    // Múltiples métodos para scroll to top
-    if (window.scrollTo) {
-      window.scrollTo({ top: 0, behavior: 'smooth' })
-    }
-    
-    // Fallbacks
-    document.documentElement.scrollTop = 0
-    document.body.scrollTop = 0
-    
-    // Reset para contenedores específicos
-    const rootElement = document.querySelector('#__next') || document.querySelector('main')
-    if (rootElement) {
-      rootElement.scrollTop = 0
+    // Múltiples métodos para scroll to top para máxima compatibilidad
+    const scrollToTopMethods = [
+      () => window.scrollTo({ top: 0, behavior: 'smooth' }),
+      () => window.scrollTo(0, 0),
+      () => document.documentElement.scrollTop = 0,
+      () => document.body.scrollTop = 0
+    ]
+
+    // Intentar cada método hasta que uno funcione
+    for (const method of scrollToTopMethods) {
+      try {
+        method()
+        if (process.env.NODE_ENV === 'development') {
+          console.log('✅ Scroll to top executed successfully')
+        }
+        break
+      } catch (error) {
+        if (process.env.NODE_ENV === 'development') {
+          console.warn('⚠️ Scroll method failed, trying next:', error)
+        }
+      }
     }
   }
 
-  console.log('🔄 Component render - isVisible:', isVisible)
+  // No renderizar si no está visible
+  if (!isVisible) return null
 
-  // Siempre renderizar el botón, pero controlarlo con CSS
   return (
     <button
       onClick={scrollToTop}
-      className={`
-        fixed bottom-6 right-6 z-[9999]
-        bg-emerald-600 hover:bg-emerald-700 text-white 
-        p-3 rounded-full shadow-lg 
-        transition-all duration-300 hover:scale-110 
-        focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2
-        ${isVisible 
-          ? 'opacity-100 translate-y-0 pointer-events-auto' 
-          : 'opacity-0 translate-y-4 pointer-events-none'
-        }
-      `}
+      className="fixed bottom-6 right-6 z-50 bg-green-600 hover:bg-green-700 text-white p-3 rounded-full shadow-lg transition-all duration-300 transform hover:scale-110 active:scale-95"
       aria-label="Volver arriba"
-      style={{
-        display: 'block', // Forzar display
-        visibility: isVisible ? 'visible' : 'hidden' // Doble seguridad
-      }}
+      title="Volver arriba"
     >
-      <ArrowUp size={24} />
+      <ArrowUp size={20} />
     </button>
   )
 }

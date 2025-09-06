@@ -1,8 +1,46 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { X, Upload, Plus, Trash2 } from 'lucide-react';
 import type { Category, CreateRecipeForm } from '@/types/sanity';
+import { z } from 'zod'
+
+const recipeSchema = z.object({
+  name: z.string().min(3, 'El nombre debe tener al menos 3 caracteres'),
+  description: z.string().min(10, 'La descripción debe tener al menos 10 caracteres'),
+  ingredients: z.string().min(10, 'Los ingredientes deben tener al menos 10 caracteres'),
+  preparation: z.string().min(20, 'La preparación debe tener al menos 20 caracteres'),
+  preparationTime: z.string().regex(/^\d+$/, 'El tiempo debe ser un número'),
+  servings: z.string().regex(/^\d+$/, 'Las porciones deben ser un número'),
+  categoryId: z.string().min(1, 'Debe seleccionar una categoría'),
+  youtubeUrl: z.string().optional().refine((val) => !val || val.includes('youtube.'), 'Debe ser una URL válida de YouTube')
+})
+
+interface ToastProps {
+  message: string
+  type: 'error' | 'success'
+  onClose: () => void
+}
+
+function Toast({ message, type, onClose }: ToastProps) {
+  useEffect(() => {
+    const timer = setTimeout(onClose, 5000)
+    return () => clearTimeout(timer)
+  }, [onClose])
+
+  return (
+    <div className={`fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg ${
+      type === 'error' ? 'bg-red-500' : 'bg-green-500'
+    } text-white max-w-md`}>
+      <div className="flex items-center justify-between">
+        <span>{message}</span>
+        <button onClick={onClose} className="ml-2 hover:opacity-70">
+          <X size={16} />
+        </button>
+      </div>
+    </div>
+  )
+}
 
 interface CreateRecipeModalProps {
   isOpen: boolean;
@@ -24,6 +62,13 @@ export default function CreateRecipeModal({ isOpen, onClose, categories, onSucce
     categoryId: '',
     thumbnail: null as File | null
   });
+  const [errors, setErrors] = useState<Record<string, string>>({})
+  const [toast, setToast] = useState<{ message: string; type: 'error' | 'success' } | null>(null)
+  const [isDirty, setIsDirty] = useState(false)
+  
+  const modalRef = useRef<HTMLDivElement>(null)
+  const closeButtonRef = useRef<HTMLButtonElement>(null)
+  const nameInputRef = useRef<HTMLInputElement>(null)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -65,20 +110,23 @@ export default function CreateRecipeModal({ isOpen, onClose, categories, onSucce
       }
 
       // Success!
-      alert('¡Receta creada exitosamente!');
-      onSuccess();
-      onClose();
-      resetForm();
+      setToast({ message: '¡Receta creada exitosamente!', type: 'success' });
+      
+      setTimeout(() => {
+        onSuccess();
+        onClose();
+        resetForm();
+      }, 1500)
 
     } catch (error) {
       console.error('Error creating recipe:', error);
-      alert('Error al crear la receta: ' + (error instanceof Error ? error.message : 'Error desconocido'));
+      setToast({ message: 'Error al crear la receta: ' + (error instanceof Error ? error.message : 'Error desconocido'), type: 'error' });
     } finally {
       setLoading(false);
     }
   };
 
-  const resetForm = () => {
+  const resetForm = useCallback(() => {
     setForm({
       name: '',
       description: '',
@@ -90,25 +138,108 @@ export default function CreateRecipeModal({ isOpen, onClose, categories, onSucce
       categoryId: '',
       thumbnail: null
     });
-  };
+    setErrors({})
+    setIsDirty(false)
+  }, []);
+
+  // Focus management and keyboard handling
+  useEffect(() => {
+    if (!isOpen) return
+
+    const timer = setTimeout(() => {
+      if (nameInputRef.current) {
+        nameInputRef.current.focus()
+      }
+    }, 100)
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        handleClose()
+      }
+      
+      // Focus trap
+      if (e.key === 'Tab') {
+        const focusableElements = modalRef.current?.querySelectorAll(
+          'button, input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        )
+        if (focusableElements && focusableElements.length > 0) {
+          const firstElement = focusableElements[0] as HTMLElement
+          const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement
+          
+          if (e.shiftKey && document.activeElement === firstElement) {
+            e.preventDefault()
+            lastElement.focus()
+          } else if (!e.shiftKey && document.activeElement === lastElement) {
+            e.preventDefault()
+            firstElement.focus()
+          }
+        }
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    return () => {
+      clearTimeout(timer)
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [isOpen])
+
+  const handleInputChange = useCallback((field: string, value: string | File | null) => {
+    setForm(prev => ({ ...prev, [field]: value }))
+    setIsDirty(true)
+    
+    // Clear error when user starts typing
+    if (errors[field]) {
+      setErrors(prev => ({ ...prev, [field]: '' }))
+    }
+  }, [errors])
+
+  const handleClose = useCallback(() => {
+    if (isDirty) {
+      const confirmClose = window.confirm('¿Estás seguro de que quieres cerrar? Se perderán los cambios no guardados.')
+      if (!confirmClose) return
+    }
+    onClose()
+  }, [isDirty, onClose])
+
+  const isFormValid = useMemo(() => {
+    return Object.keys(errors).length === 0 && 
+           form.name.trim() !== '' && 
+           form.description.trim() !== '' && 
+           form.ingredients.trim() !== '' && 
+           form.preparation.trim() !== '' && 
+           form.preparationTime.trim() !== '' && 
+           form.servings.trim() !== '' && 
+           form.categoryId.trim() !== '' && 
+           form.thumbnail !== null
+  }, [errors, form])
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/50 backdrop-blur-sm">
-      <div className="flex min-h-full items-center justify-center p-4">
-        <div className="relative w-full max-w-4xl bg-white rounded-3xl shadow-2xl max-h-[90vh] overflow-hidden">
+    <>
+      <div className="fixed inset-0 z-50 overflow-y-auto bg-black/50 backdrop-blur-sm">
+        <div className="flex min-h-full items-center justify-center p-4">
+          <div 
+            ref={modalRef}
+            className="relative w-full max-w-4xl bg-white rounded-3xl shadow-2xl max-h-[90vh] overflow-hidden"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="modal-title"
+          >
           {/* Header */}
           <div className="bg-gradient-to-r from-green-500 to-emerald-600 px-8 py-6 text-white">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-2xl font-bold">Crear Nueva Receta</h2>
+                <h2 id="modal-title" className="text-2xl font-bold">Crear Nueva Receta</h2>
                 <p className="text-green-100 mt-1">Agrega una deliciosa receta keto</p>
               </div>
               <button
-                onClick={onClose}
+                ref={closeButtonRef}
+                onClick={handleClose}
                 className="w-10 h-10 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center transition-colors"
                 disabled={loading}
+                aria-label="Cerrar modal"
               >
                 <X size={24} />
               </button>
@@ -126,13 +257,20 @@ export default function CreateRecipeModal({ isOpen, onClose, categories, onSucce
                     Nombre de la receta *
                   </label>
                   <input
+                    ref={nameInputRef}
                     type="text"
                     required
                     value={form.name}
-                    onChange={(e) => setForm({ ...form, name: e.target.value })}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    onChange={(e) => handleInputChange('name', e.target.value)}
+                    className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent ${
+                      errors.name ? 'border-red-500' : 'border-gray-300'
+                    }`}
                     placeholder="Ej: Pizza Keto Deliciosa"
+                    aria-describedby={errors.name ? 'name-error' : undefined}
                   />
+                  {errors.name && (
+                    <p id="name-error" className="mt-1 text-sm text-red-600">{errors.name}</p>
+                  )}
                 </div>
 
                 {/* Description */}
@@ -289,7 +427,7 @@ Paprika opcional
             <div className="flex justify-end gap-4 mt-8 pt-6 border-t border-gray-200">
               <button
                 type="button"
-                onClick={onClose}
+                onClick={handleClose}
                 disabled={loading}
                 className="px-6 py-3 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors disabled:opacity-50"
               >
@@ -297,15 +435,23 @@ Paprika opcional
               </button>
               <button
                 type="submit"
-                disabled={loading}
+                disabled={loading || !isFormValid}
                 className="px-8 py-3 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-semibold rounded-xl transition-all duration-300 disabled:opacity-50 min-w-32"
               >
                 {loading ? 'Creando...' : 'Crear Receta'}
               </button>
             </div>
           </form>
+          </div>
         </div>
       </div>
-    </div>
+      {toast && (
+        <Toast 
+          message={toast.message} 
+          type={toast.type} 
+          onClose={() => setToast(null)} 
+        />
+      )}
+    </>
   );
 }

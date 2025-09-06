@@ -100,7 +100,9 @@ export default function AdSenseOptimizer({
                 })
               }
             } catch (error) {
-              console.warn('Failed to initialize lazy-loaded ad:', error)
+              if (process.env.NODE_ENV === 'development') {
+                console.warn('Failed to initialize lazy-loaded ad:', error)
+              }
             }
           }
           
@@ -229,7 +231,9 @@ export default function AdSenseOptimizer({
           try {
             ;((window as any).adsbygoogle = (window as any).adsbygoogle || []).push({})
           } catch (error) {
-            console.warn('Failed to initialize non-critical ad:', error)
+            if (process.env.NODE_ENV === 'development') {
+              console.warn('Failed to initialize non-critical ad:', error)
+            }
           }
         }
       })
@@ -249,13 +253,13 @@ export default function AdSenseOptimizer({
       if (!document.querySelector('link[href*="pagead2.googlesyndication.com"]')) {
         const preloadLink = document.createElement('link')
         preloadLink.rel = 'preload'
-	preloadLink.href = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${clientId}`
+        preloadLink.href = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${clientId}`
         preloadLink.as = 'script'
         preloadLink.crossOrigin = 'anonymous'
         document.head.appendChild(preloadLink)
       }
     })
-  }, [])
+  }, [clientId])
 
   useEffect(() => {
     if (initialized) return
@@ -317,7 +321,9 @@ export function OptimizedAd({
       try {
         ;((window as any).adsbygoogle = (window as any).adsbygoogle || []).push({})
       } catch (error) {
-        console.warn('Failed to initialize optimized ad:', error)
+        if (process.env.NODE_ENV === 'development') {
+          console.warn('Failed to initialize optimized ad:', error)
+        }
       }
     }
   }, [])
@@ -381,7 +387,9 @@ export const AdSenseMetrics = {
       try {
         observer.observe({ entryTypes: ['resource'] })
       } catch (error) {
-        console.warn('Performance observer not supported:', error)
+        if (process.env.NODE_ENV === 'development') {
+          console.warn('Performance observer not supported:', error)
+        }
       }
     }
   }

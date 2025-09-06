@@ -1,9 +1,46 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef, useEffect, useCallback, useMemo } from 'react'
 import { motion } from 'framer-motion'
 import { XMarkIcon, PhotoIcon, CalendarDaysIcon } from '@heroicons/react/24/outline'
 import { client } from '@/lib/sanity'
+import { z } from 'zod'
+
+const serviceSchema = z.object({
+  title: z.string().min(3, 'El título debe tener al menos 3 caracteres'),
+  description: z.string().min(10, 'La descripción debe tener al menos 10 caracteres'),
+  price: z.string().regex(/^\d+(\.\d{1,2})?$/, 'El precio debe ser un número válido'),
+  originalPrice: z.string().optional().refine((val) => !val || /^\d+(\.\d{1,2})?$/.test(val), 'El precio original debe ser un número válido'),
+  stripePriceId: z.string().optional(),
+  calendlyUrl: z.string().url('Debe ser una URL válida de Calendly'),
+  category: z.enum(['Asesoria', 'Servicios'])
+})
+
+interface ToastProps {
+  message: string
+  type: 'error' | 'success'
+  onClose: () => void
+}
+
+function Toast({ message, type, onClose }: ToastProps) {
+  useEffect(() => {
+    const timer = setTimeout(onClose, 5000)
+    return () => clearTimeout(timer)
+  }, [onClose])
+
+  return (
+    <div className={`fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg ${
+      type === 'error' ? 'bg-red-500' : 'bg-green-500'
+    } text-white max-w-md`}>
+      <div className="flex items-center justify-between">
+        <span>{message}</span>
+        <button onClick={onClose} className="ml-2 hover:opacity-70">
+          <XMarkIcon className="w-4 h-4" />
+        </button>
+      </div>
+    </div>
+  )
+}
 
 interface CreateServiceModalProps {
   isOpen: boolean
@@ -24,9 +61,53 @@ export default function CreateServiceModal({ isOpen, onClose, onSuccess }: Creat
   })
   const [image, setImage] = useState<File | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [errors, setErrors] = useState<Record<string, string>>({})
+  const [toast, setToast] = useState<{ message: string; type: 'error' | 'success' } | null>(null)
+  const [isDirty, setIsDirty] = useState(false)
+  
+  const modalRef = useRef<HTMLDivElement>(null)
+  const closeButtonRef = useRef<HTMLButtonElement>(null)
+  const titleInputRef = useRef<HTMLInputElement>(null)
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const validateForm = useCallback(() => {
+    try {
+      serviceSchema.parse(formData)
+      const newErrors: Record<string, string> = {}
+      
+      if (!image) {
+        newErrors.image = 'La imagen del servicio es requerida'
+      }
+      
+      setErrors(newErrors)
+      return Object.keys(newErrors).length === 0
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        const newErrors: Record<string, string> = {}
+        error.errors.forEach((err) => {
+          if (err.path[0]) {
+            newErrors[err.path[0] as string] = err.message
+          }
+        })
+        setErrors(newErrors)
+      }
+      return false
+    }
+  }, [formData, image])
+
+  const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault()
+    
+    if (!validateForm()) {
+      setToast({ message: 'Por favor corrige los errores en el formulario', type: 'error' })
+      return
+    }
+
+    // Validate file size
+    if (image && image.size > 5 * 1024 * 1024) {
+      setToast({ message: 'La imagen no puede ser mayor a 5MB', type: 'error' })
+      return
+    }
+
     setIsSubmitting(true)
 
     try {
@@ -63,7 +144,7 @@ export default function CreateServiceModal({ isOpen, onClose, onSuccess }: Creat
         createdAt: new Date().toISOString()
       })
 
-      alert('¡Servicio creado exitosamente!')
+      setToast({ message: '¡Servicio creado exitosamente!', type: 'success' })
       
       // Reset form
       setFormData({
@@ -77,39 +158,117 @@ export default function CreateServiceModal({ isOpen, onClose, onSuccess }: Creat
         featured: false
       })
       setImage(null)
+      setIsDirty(false)
       
-      onSuccess?.()
-      onClose()
+      setTimeout(() => {
+        onSuccess?.()
+        onClose()
+      }, 1500)
       
     } catch (error) {
       console.error('Error creating service:', error)
-      alert('Error al crear el servicio. Por favor intenta de nuevo.')
+      setToast({ message: 'Error al crear el servicio. Por favor intenta de nuevo.', type: 'error' })
     } finally {
       setIsSubmitting(false)
     }
-  }
+  }, [formData, image, validateForm, onSuccess, onClose])
+
+  // Focus management and keyboard handling
+  useEffect(() => {
+    if (!isOpen) return
+
+    const timer = setTimeout(() => {
+      if (titleInputRef.current) {
+        titleInputRef.current.focus()
+      }
+    }, 100)
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        handleClose()
+      }
+      
+      // Focus trap
+      if (e.key === 'Tab') {
+        const focusableElements = modalRef.current?.querySelectorAll(
+          'button, input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        )
+        if (focusableElements && focusableElements.length > 0) {
+          const firstElement = focusableElements[0] as HTMLElement
+          const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement
+          
+          if (e.shiftKey && document.activeElement === firstElement) {
+            e.preventDefault()
+            lastElement.focus()
+          } else if (!e.shiftKey && document.activeElement === lastElement) {
+            e.preventDefault()
+            firstElement.focus()
+          }
+        }
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    return () => {
+      clearTimeout(timer)
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [isOpen])
+
+  const handleInputChange = useCallback((field: string, value: string | boolean) => {
+    setFormData(prev => ({ ...prev, [field]: value }))
+    setIsDirty(true)
+    
+    // Clear error when user starts typing
+    if (errors[field]) {
+      setErrors(prev => ({ ...prev, [field]: '' }))
+    }
+  }, [errors])
+
+  const handleClose = useCallback(() => {
+    if (isDirty) {
+      const confirmClose = window.confirm('¿Estás seguro de que quieres cerrar? Se perderán los cambios no guardados.')
+      if (!confirmClose) return
+    }
+    onClose()
+  }, [isDirty, onClose])
+
+  const isFormValid = useMemo(() => {
+    return Object.keys(errors).length === 0 && 
+           formData.title.trim() !== '' && 
+           formData.price.trim() !== '' && 
+           formData.calendlyUrl.trim() !== '' && 
+           image !== null
+  }, [errors, formData, image])
 
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/50 backdrop-blur-sm">
-      <div className="flex min-h-full items-center justify-center p-4">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95, y: 20 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.95, y: 20 }}
-          className="relative w-full max-w-2xl bg-white rounded-2xl shadow-2xl max-h-[90vh] overflow-hidden"
-        >
+    <>
+      <div className="fixed inset-0 z-50 overflow-y-auto bg-black/50 backdrop-blur-sm">
+        <div className="flex min-h-full items-center justify-center p-4">
+          <motion.div
+            ref={modalRef}
+            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: 20 }}
+            className="relative w-full max-w-2xl bg-white rounded-2xl shadow-2xl max-h-[90vh] overflow-hidden"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="modal-title"
+          >
           {/* Header */}
           <div className="bg-gradient-to-r from-blue-600 to-blue-500 px-8 py-6 text-white">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-2xl font-bold">Crear Servicio</h3>
+                <h3 id="modal-title" className="text-2xl font-bold">Crear Servicio</h3>
                 <p className="text-blue-100 mt-1">Agregar nueva asesoría o servicio</p>
               </div>
               <button
-                onClick={onClose}
+                ref={closeButtonRef}
+                onClick={handleClose}
                 className="w-10 h-10 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center transition-colors"
+                aria-label="Cerrar modal"
               >
                 <XMarkIcon className="h-6 w-6" />
               </button>
@@ -123,13 +282,20 @@ export default function CreateServiceModal({ isOpen, onClose, onSuccess }: Creat
                 Título del Servicio *
               </label>
               <input
+                ref={titleInputRef}
                 type="text"
                 required
                 value={formData.title}
-                onChange={(e) => setFormData({...formData, title: e.target.value})}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                onChange={(e) => handleInputChange('title', e.target.value)}
+                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                  errors.title ? 'border-red-500' : 'border-gray-300'
+                }`}
                 placeholder="Ej: Asesoría Nutricional Personalizada"
+                aria-describedby={errors.title ? 'title-error' : undefined}
               />
+              {errors.title && (
+                <p id="title-error" className="mt-1 text-sm text-red-600">{errors.title}</p>
+              )}
             </div>
 
             {/* Descripción */}
@@ -140,10 +306,16 @@ export default function CreateServiceModal({ isOpen, onClose, onSuccess }: Creat
               <textarea
                 rows={3}
                 value={formData.description}
-                onChange={(e) => setFormData({...formData, description: e.target.value})}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                onChange={(e) => handleInputChange('description', e.target.value)}
+                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                  errors.description ? 'border-red-500' : 'border-gray-300'
+                }`}
                 placeholder="Descripción del servicio..."
+                aria-describedby={errors.description ? 'description-error' : undefined}
               />
+              {errors.description && (
+                <p id="description-error" className="mt-1 text-sm text-red-600">{errors.description}</p>
+              )}
             </div>
 
             {/* Categoría */}
@@ -154,12 +326,19 @@ export default function CreateServiceModal({ isOpen, onClose, onSuccess }: Creat
               <select
                 required
                 value={formData.category}
-                onChange={(e) => setFormData({...formData, category: e.target.value as 'Asesoria' | 'Servicios'})}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                onChange={(e) => handleInputChange('category', e.target.value)}
+                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                  errors.category ? 'border-red-500' : 'border-gray-300'
+                }`}
+                aria-describedby={errors.category ? 'category-error' : undefined}
               >
+                <option value="">Selecciona una categoría</option>
                 <option value="Asesoria">Asesoría</option>
                 <option value="Servicios">Servicios</option>
               </select>
+              {errors.category && (
+                <p id="category-error" className="mt-1 text-sm text-red-600">{errors.category}</p>
+              )}
             </div>
 
             {/* Precios */}
@@ -173,10 +352,16 @@ export default function CreateServiceModal({ isOpen, onClose, onSuccess }: Creat
                   step="0.01"
                   required
                   value={formData.price}
-                  onChange={(e) => setFormData({...formData, price: e.target.value})}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  onChange={(e) => handleInputChange('price', e.target.value)}
+                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                    errors.price ? 'border-red-500' : 'border-gray-300'
+                  }`}
                   placeholder="99.99"
+                  aria-describedby={errors.price ? 'price-error' : undefined}
                 />
+                {errors.price && (
+                  <p id="price-error" className="mt-1 text-sm text-red-600">{errors.price}</p>
+                )}
               </div>
 
               <div>
@@ -187,10 +372,16 @@ export default function CreateServiceModal({ isOpen, onClose, onSuccess }: Creat
                   type="number"
                   step="0.01"
                   value={formData.originalPrice}
-                  onChange={(e) => setFormData({...formData, originalPrice: e.target.value})}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  onChange={(e) => handleInputChange('originalPrice', e.target.value)}
+                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                    errors.originalPrice ? 'border-red-500' : 'border-gray-300'
+                  }`}
                   placeholder="149.99"
+                  aria-describedby={errors.originalPrice ? 'originalPrice-error' : undefined}
                 />
+                {errors.originalPrice && (
+                  <p id="originalPrice-error" className="mt-1 text-sm text-red-600">{errors.originalPrice}</p>
+                )}
               </div>
             </div>
 
@@ -202,7 +393,7 @@ export default function CreateServiceModal({ isOpen, onClose, onSuccess }: Creat
               <input
                 type="text"
                 value={formData.stripePriceId}
-                onChange={(e) => setFormData({...formData, stripePriceId: e.target.value})}
+                onChange={(e) => handleInputChange('stripePriceId', e.target.value)}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="price_1234..."
               />
@@ -218,10 +409,16 @@ export default function CreateServiceModal({ isOpen, onClose, onSuccess }: Creat
                 type="url"
                 required
                 value={formData.calendlyUrl}
-                onChange={(e) => setFormData({...formData, calendlyUrl: e.target.value})}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                onChange={(e) => handleInputChange('calendlyUrl', e.target.value)}
+                className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                  errors.calendlyUrl ? 'border-red-500' : 'border-gray-300'
+                }`}
                 placeholder="https://calendly.com/tu-usuario/asesoria-keto"
+                aria-describedby={errors.calendlyUrl ? 'calendlyUrl-error' : undefined}
               />
+              {errors.calendlyUrl && (
+                <p id="calendlyUrl-error" className="mt-1 text-sm text-red-600">{errors.calendlyUrl}</p>
+              )}
               <p className="mt-1 text-xs text-gray-500">URL específica de Calendly para este servicio</p>
             </div>
 
@@ -242,9 +439,24 @@ export default function CreateServiceModal({ isOpen, onClose, onSuccess }: Creat
                     type="file"
                     accept="image/*"
                     className="hidden"
-                    onChange={(e) => setImage(e.target.files?.[0] || null)}
+                    onChange={(e) => {
+                      const file = e.target.files?.[0] || null
+                      if (file && file.size > 5 * 1024 * 1024) {
+                        setToast({ message: 'La imagen no puede ser mayor a 5MB', type: 'error' })
+                        return
+                      }
+                      setImage(file)
+                      setIsDirty(true)
+                      if (errors.image) {
+                        setErrors(prev => ({ ...prev, image: '' }))
+                      }
+                    }}
                   />
                 </label>
+              </div>
+              {errors.image && (
+                <p className="mt-1 text-sm text-red-600">{errors.image}</p>
+              )}
               </div>
             </div>
 
@@ -254,7 +466,7 @@ export default function CreateServiceModal({ isOpen, onClose, onSuccess }: Creat
                 type="checkbox"
                 id="featured"
                 checked={formData.featured}
-                onChange={(e) => setFormData({...formData, featured: e.target.checked})}
+                onChange={(e) => handleInputChange('featured', e.target.checked)}
                 className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
               />
               <label htmlFor="featured" className="ml-2 block text-sm text-gray-700">
@@ -266,14 +478,15 @@ export default function CreateServiceModal({ isOpen, onClose, onSuccess }: Creat
             <div className="flex justify-end space-x-4 pt-6 border-t border-gray-200">
               <button
                 type="button"
-                onClick={onClose}
+                onClick={handleClose}
                 className="px-6 py-3 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                disabled={isSubmitting}
               >
                 Cancelar
               </button>
               <button
                 type="submit"
-                disabled={isSubmitting}
+                disabled={isSubmitting || !isFormValid}
                 className="px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-lg hover:from-blue-700 hover:to-blue-600 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
               >
                 {isSubmitting ? (
@@ -287,8 +500,16 @@ export default function CreateServiceModal({ isOpen, onClose, onSuccess }: Creat
               </button>
             </div>
           </form>
-        </motion.div>
+          </motion.div>
+        </div>
       </div>
-    </div>
+      {toast && (
+        <Toast 
+          message={toast.message} 
+          type={toast.type} 
+          onClose={() => setToast(null)} 
+        />
+      )}
+    </>
   )
 }

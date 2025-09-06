@@ -1,7 +1,33 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { X, TrendingUp, Users, Star, MessageCircle, Eye, Calendar, ChefHat, ShoppingCart } from 'lucide-react';
+
+interface ToastProps {
+  message: string
+  type: 'error' | 'success'
+  onClose: () => void
+}
+
+function Toast({ message, type, onClose }: ToastProps) {
+  useEffect(() => {
+    const timer = setTimeout(onClose, 5000)
+    return () => clearTimeout(timer)
+  }, [onClose])
+
+  return (
+    <div className={`fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg ${
+      type === 'error' ? 'bg-red-500' : 'bg-green-500'
+    } text-white max-w-md`}>
+      <div className="flex items-center justify-between">
+        <span>{message}</span>
+        <button onClick={onClose} className="ml-2 hover:opacity-70">
+          <X size={16} />
+        </button>
+      </div>
+    </div>
+  )
+}
 
 interface StatsModalProps {
   isOpen: boolean;
@@ -37,12 +63,38 @@ interface StatsData {
 export default function StatsModal({ isOpen, onClose }: StatsModalProps) {
   const [stats, setStats] = useState<StatsData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [toast, setToast] = useState<{ message: string; type: 'error' | 'success' } | null>(null)
+  const modalRef = useRef<HTMLDivElement>(null)
+  const closeButtonRef = useRef<HTMLButtonElement>(null)
 
   useEffect(() => {
     if (isOpen) {
       loadStats();
     }
   }, [isOpen]);
+
+  // Focus management and keyboard handling
+  useEffect(() => {
+    if (!isOpen) return
+
+    const timer = setTimeout(() => {
+      if (closeButtonRef.current) {
+        closeButtonRef.current.focus()
+      }
+    }, 100)
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose()
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    return () => {
+      clearTimeout(timer)
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [isOpen, onClose])
 
   const loadStats = async () => {
     try {
@@ -59,6 +111,7 @@ export default function StatsModal({ isOpen, onClose }: StatsModalProps) {
       setStats(statsData);
     } catch (error) {
       console.error('Error loading stats:', error);
+      setToast({ message: 'Error al cargar las estadísticas', type: 'error' })
     } finally {
       setLoading(false);
     }
@@ -67,19 +120,28 @@ export default function StatsModal({ isOpen, onClose }: StatsModalProps) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/50 backdrop-blur-sm">
-      <div className="flex min-h-full items-center justify-center p-4">
-        <div className="relative w-full max-w-6xl bg-white rounded-3xl shadow-2xl max-h-[90vh] overflow-hidden">
+    <>
+      <div className="fixed inset-0 z-50 overflow-y-auto bg-black/50 backdrop-blur-sm">
+        <div className="flex min-h-full items-center justify-center p-4">
+          <div 
+            ref={modalRef}
+            className="relative w-full max-w-6xl bg-white rounded-3xl shadow-2xl max-h-[90vh] overflow-hidden"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="modal-title"
+          >
           {/* Header */}
           <div className="bg-gradient-to-r from-blue-500 to-indigo-600 px-8 py-6 text-white">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-2xl font-bold">Estadísticas del Sitio</h2>
+                <h2 id="modal-title" className="text-2xl font-bold">Estadísticas del Sitio</h2>
                 <p className="text-blue-100 mt-1">Análisis completo de Planeta Keto</p>
               </div>
               <button
+                ref={closeButtonRef}
                 onClick={onClose}
                 className="w-10 h-10 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center transition-colors"
+                aria-label="Cerrar modal"
               >
                 <X size={24} />
               </button>
@@ -228,8 +290,16 @@ export default function StatsModal({ isOpen, onClose }: StatsModalProps) {
               </div>
             )}
           </div>
+          </div>
         </div>
       </div>
-    </div>
+      {toast && (
+        <Toast 
+          message={toast.message} 
+          type={toast.type} 
+          onClose={() => setToast(null)} 
+        />
+      )}
+    </>
   );
 }

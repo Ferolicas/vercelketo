@@ -15,6 +15,7 @@ import WebVitalsTracker, { PerformanceMonitor, AdSensePerformanceMonitor } from 
 import { ServiceWorkerManager, StaticAssetOptimizer } from "@/components/performance/CachingOptimizer"
 import AdSenseOptimizer from "@/components/performance/AdSenseOptimizer"
 import AdScript from "@/components/ads/AdScript"
+import ErrorBoundary from "@/components/ErrorBoundary"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -108,12 +109,23 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-[100dvh] bg-white`}
       >
-        <Navigation />
-        <SEOBreadcrumbs />
-        <main className="min-h-screen">
-          {children}
-        </main>
-        <FooterLinks />
+        <ErrorBoundary>
+          <Navigation />
+          <SEOBreadcrumbs />
+          <main className="min-h-screen">
+            <ErrorBoundary fallback={
+              <div className="flex items-center justify-center min-h-[50vh] p-6">
+                <div className="text-center">
+                  <h2 className="text-xl font-semibold mb-4">Error en el contenido</h2>
+                  <p className="text-gray-600">Por favor, recarga la página para continuar.</p>
+                </div>
+              </div>
+            }>
+              {children}
+            </ErrorBoundary>
+          </main>
+          <FooterLinks />
+        </ErrorBoundary>
         <Analytics />
         {/* Re-enabled PerformanceOptimizer for SEO optimization */}
         <PerformanceOptimizer 

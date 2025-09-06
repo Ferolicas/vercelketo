@@ -54,17 +54,27 @@ export default function GoogleAnalytics({ measurementId }: GoogleAnalyticsProps)
             gtag('config', '${measurementId}', {
               page_title: document.title,
               page_location: window.location.href,
+              send_page_view: true,
               custom_map: {
                 'custom_parameter_1': 'recipe_category',
                 'custom_parameter_2': 'user_type'
+              },
+              // Enhanced measurement settings
+              enhanced_measurements: {
+                scrolls: true,
+                outbound_clicks: true,
+                site_search: true,
+                video_engagement: true,
+                file_downloads: true
               }
             });
 
-            // Enhanced E-commerce tracking setup
+            // Enhanced E-commerce tracking setup with stream ID
             gtag('config', '${measurementId}', {
+              measurement_id: '${measurementId}',
+              stream_id: '${process.env.NEXT_PUBLIC_GA_STREAM_ID || ''}',
               custom_parameter_1: 'keto_recipes',
-              custom_parameter_2: 'organic_user',
-              send_page_view: false
+              custom_parameter_2: 'organic_user'
             });
 
             // Track scroll depth for engagement
