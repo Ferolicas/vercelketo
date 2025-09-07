@@ -10,12 +10,13 @@ export async function POST(request: Request) {
     const product = await client.fetch(`
       *[_type == "product" && _id == $productId][0]{
         _id,
-        title,
+        name,
         description,
         price,
-        originalPrice,
+        currency,
         stripePriceId,
-        includes,
+        affiliateUrl,
+        featured,
         "image": image.asset->url
       }
     `, { productId })
@@ -46,7 +47,7 @@ export async function POST(request: Request) {
       },
       metadata: {
         productId: product._id,
-        productTitle: product.title,
+        productTitle: product.name,
         discountCode: discountCode || '',
         originalPrice: product.price.toString(),
         finalPrice: finalAmount.toString(),
@@ -59,7 +60,15 @@ export async function POST(request: Request) {
       amount: finalAmount,
       originalPrice: product.price,
       discount: discountAmount,
-      discountCode: discountCode || null
+      discountCode: discountCode || null,
+      product: {
+        _id: product._id,
+        title: product.name,
+        name: product.name,
+        description: product.description,
+        price: product.price,
+        image: product.image
+      }
     })
   } catch (error) {
     console.error('Error creating payment intent:', error)

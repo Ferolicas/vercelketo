@@ -98,7 +98,9 @@
       "mcp__serena__activate_project",
       "mcp__serena__check_onboarding_performed",
       "Read(//c/storeplanetaketo/app/**)",
-      "Read(//c/storeplanetaketo/lib/**)"
+      "Read(//c/storeplanetaketo/lib/**)",
+      "Read(//c/storeplanetaketo/components/**)",
+      "mcp__sequential__sequentialthinking"
     ],
     "deny": [],
     "ask": [],
