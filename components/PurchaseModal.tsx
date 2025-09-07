@@ -58,12 +58,25 @@ function CheckoutForm({ product, onClose, finalPrice }: { product: Product; onCl
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault()
 
-    if (!stripe || !elements) {
+    setLoading(true)
+    setError(null)
+
+    // Simulación para modo development
+    if (process.env.NODE_ENV === 'development' && !stripe) {
+      console.log('🚧 Development mode: Simulating payment')
+      setTimeout(() => {
+        setLoading(false)
+        alert('Pago simulado exitoso en modo desarrollo')
+        onClose()
+      }, 2000)
       return
     }
 
-    setLoading(true)
-    setError(null)
+    if (!stripe || !elements) {
+      setError('Error de configuración de Stripe')
+      setLoading(false)
+      return
+    }
 
     const { error: submitError } = await elements.submit()
     if (submitError) {
@@ -86,26 +99,43 @@ function CheckoutForm({ product, onClose, finalPrice }: { product: Product; onCl
     setLoading(false)
   }
 
+  const isDevMode = process.env.NODE_ENV === 'development' && !stripe
+
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <PaymentElement 
-        options={{
-          layout: "tabs",
-        }}
-      />
+      {!isDevMode && (
+        <PaymentElement 
+          options={{
+            layout: "tabs",
+          }}
+        />
+      )}
+      {isDevMode && (
+        <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
+          <p className="text-gray-500 mb-2">💳 Formulario de pago (simulado)</p>
+          <p className="text-sm text-gray-400">En producción aparecería aquí el formulario real de Stripe</p>
+        </div>
+      )}
       {error && (
-        <div className="text-brand-red-400 text-sm p-3 bg-brand-red-500/10 rounded-lg border border-brand-red-500/20">
+        <div className="text-red-600 text-sm p-3 bg-red-50 rounded-lg border border-red-200">
           {error}
         </div>
       )}
       <button
         type="submit"
-        disabled={!stripe || loading}
-        className="w-full bg-gradient-to-r from-brand-blue-500 to-brand-orange-500 text-white py-4 rounded-xl 
-                 font-semibold text-lg transition-all hover:shadow-lg hover:scale-105 
-                 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+        disabled={loading}
+        className="w-full bg-green-600 hover:bg-green-700 text-white py-4 px-6 rounded-lg 
+                 font-semibold text-lg transition-all shadow-lg hover:shadow-xl
+                 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-green-600"
       >
-        {loading ? 'Procesando...' : `Proceder al Pago €${finalPrice.toFixed(2)}`}
+        {loading ? (
+          <div className="flex items-center justify-center">
+            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+            Procesando...
+          </div>
+        ) : (
+          `${isDevMode ? 'Simular Pago' : 'Pagar'} €${finalPrice.toFixed(2)}`
+        )}
       </button>
     </form>
   )
@@ -114,16 +144,12 @@ function CheckoutForm({ product, onClose, finalPrice }: { product: Product; onCl
 export default function PurchaseModal({ product, onClose }: PurchaseModalProps) {
   const [clientSecret, setClientSecret] = useState<string | null>(null)
   const [loadingIntent, setLoadingIntent] = useState(true)
-  const [discountCode, setDiscountCode] = useState('')
-  const [discountApplied, setDiscountApplied] = useState(false)
   const [finalPrice, setFinalPrice] = useState(product.price)
-  const [discountAmount, setDiscountAmount] = useState(0)
-  const [discountError, setDiscountError] = useState('')
   const [toast, setToast] = useState<{ message: string; type: 'error' | 'success' } | null>(null)
   const modalRef = useRef<HTMLDivElement>(null)
   const closeButtonRef = useRef<HTMLButtonElement>(null)
 
-  const createPaymentIntent = useCallback(async (discountCodeToApply = '') => {
+  const createPaymentIntent = useCallback(async () => {
     setLoadingIntent(true)
     try {
       const response = await fetch('/api/create-checkout', {
@@ -133,16 +159,11 @@ export default function PurchaseModal({ product, onClose }: PurchaseModalProps) 
         },
         body: JSON.stringify({
           productId: product._id,
-          discountCode: discountCodeToApply,
         }),
       })
 
       const data = await response.json()
       if (data.error) {
-        if (data.error === 'Invalid discount code') {
-          setDiscountError('Código de descuento inválido')
-          return
-        }
         console.error('Error:', data.error)
         setToast({ message: 'Error al crear el pago. Inténtalo de nuevo.', type: 'error' })
         return
@@ -150,11 +171,6 @@ export default function PurchaseModal({ product, onClose }: PurchaseModalProps) 
 
       setClientSecret(data.clientSecret)
       setFinalPrice(data.amount)
-      setDiscountAmount(data.discount || 0)
-      if (discountCodeToApply && data.discount > 0) {
-        setDiscountApplied(true)
-        setDiscountError('')
-      }
     } catch (error) {
       console.error('Error:', error)
       setToast({ message: 'Error al crear el pago. Inténtalo de nuevo.', type: 'error' })
@@ -205,14 +221,6 @@ export default function PurchaseModal({ product, onClose }: PurchaseModalProps) 
     createPaymentIntent()
   }, [createPaymentIntent])
 
-  const handleApplyDiscount = useCallback(() => {
-    if (!discountCode.trim()) {
-      setDiscountError('Ingresa un código de descuento')
-      return
-    }
-    setDiscountError('')
-    createPaymentIntent(discountCode)
-  }, [discountCode, createPaymentIntent])
 
   const handleClose = useCallback(() => {
     onClose()
@@ -230,152 +238,128 @@ export default function PurchaseModal({ product, onClose }: PurchaseModalProps) 
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-title"
-        aria-describedby="modal-description"
       >
         <div 
           ref={modalRef}
-          className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl max-w-sm w-full max-h-[90vh] flex flex-col text-white border border-white/10 overflow-hidden"
+          className="bg-white rounded-2xl max-w-md w-full max-h-[95vh] flex flex-col shadow-2xl overflow-hidden"
           onClick={(e) => e.stopPropagation()}
         >
-        {/* Header - Fixed */}
-        <div className="relative p-4 border-b border-white/10 flex-shrink-0">
-          <button
-            ref={closeButtonRef}
-            onClick={handleClose}
-            className="absolute top-2 right-2 bg-white/20 text-white rounded-full p-2 hover:bg-white/30 backdrop-blur-md z-10"
-            aria-label="Cerrar modal"
-          >
-            <X size={16} />
-          </button>
-          
-          <div className="flex items-center gap-4">
-            {product.image && (
-              <img
-                src={product.image}
-                alt={product.title || product.name}
-                className="w-16 h-16 object-cover rounded-lg bg-white/10"
-              />
-            )}
-            <div className="flex-1 min-w-0">
-              <h2 id="modal-title" className="text-lg font-bold text-white mb-1 line-clamp-2 leading-tight">
+          {/* Header */}
+          <div className="relative p-6 border-b border-gray-100">
+            <button
+              ref={closeButtonRef}
+              onClick={handleClose}
+              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
+              aria-label="Cerrar modal"
+            >
+              <X size={20} />
+            </button>
+            
+            {/* Product Title and Price */}
+            <div className="pr-8">
+              <h2 id="modal-title" className="text-2xl font-bold text-gray-900 mb-4 leading-tight">
                 {product.title || product.name}
               </h2>
-              <div className="flex items-center gap-2 flex-wrap">
-                {discountApplied ? (
-                  <>
-                    <span className="text-white/60 line-through text-sm">
-                      €{product.price}
-                    </span>
-                    <span className="text-white font-bold text-lg">
-                      €{finalPrice.toFixed(2)}
-                    </span>
-                    <span className="text-planetaketo-400 text-xs font-medium bg-planetaketo-400/20 px-2 py-1 rounded">
-                      20% off
-                    </span>
-                  </>
-                ) : (
-                  <span className="text-white font-bold text-lg">
-                    €{product.price}
+              <div className="flex items-baseline gap-2">
+                <span className="text-3xl font-bold text-green-600">
+                  €{finalPrice.toFixed(2)}
+                </span>
+                {product.originalPrice && product.originalPrice > finalPrice && (
+                  <span className="text-lg text-gray-400 line-through">
+                    €{product.originalPrice}
                   </span>
                 )}
               </div>
             </div>
           </div>
-        </div>
 
-        {/* Scrollable Content */}
-        <div className="flex-1 overflow-y-auto scrollbar-hide">
-          {/* Description Section */}
-          <div className="p-4 border-b border-white/10">
-            <h3 className="text-sm font-semibold text-white/90 mb-3">Descripción</h3>
-            <div id="modal-description" className="text-white/70 text-sm mb-4 leading-relaxed max-h-40 overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">
-              <p className="whitespace-pre-wrap">
-                {product.description}
-              </p>
+          {/* Scrollable Content */}
+          <div className="flex-1 overflow-y-auto">
+            {/* Description Section */}
+            <div className="p-6 border-b border-gray-100">
+              <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                Qué incluye:
+              </h3>
+              <div className="text-gray-600 text-sm leading-relaxed space-y-3">
+                {product.description?.split('\n').map((line, index) => {
+                  if (line.trim().startsWith('✅') || line.trim().startsWith('📊') || line.trim().startsWith('📅') || line.trim().startsWith('🛒') || line.trim().startsWith('⏰') || line.trim().startsWith('📝') || line.trim().startsWith('🎁')) {
+                    return (
+                      <div key={index} className="flex items-start space-x-3">
+                        <Check className="text-green-500 mt-0.5 flex-shrink-0" size={16} />
+                        <span className="text-gray-700">{line.replace(/^[✅📊📅🛒⏰📝🎁]\s*/, '')}</span>
+                      </div>
+                    )
+                  }
+                  if (line.trim().startsWith('-')) {
+                    return (
+                      <div key={index} className="flex items-start space-x-3 ml-6">
+                        <div className="w-1 h-1 bg-gray-400 rounded-full mt-2 flex-shrink-0"></div>
+                        <span className="text-gray-600 text-xs">{line.replace(/^-\s*/, '')}</span>
+                      </div>
+                    )
+                  }
+                  if (line.trim() && !line.includes('---') && !line.includes('@') && !line.includes('YouTube') && !line.includes('IMPORTANTE')) {
+                    return (
+                      <p key={index} className="text-gray-700 font-medium">
+                        {line.trim()}
+                      </p>
+                    )
+                  }
+                  return null
+                })}
+              </div>
             </div>
 
-            {/* Qué incluye */}
-            {product.includes && product.includes.length > 0 && (
-              <div>
-                <h4 className="font-semibold text-white/90 mb-2 text-sm">Qué incluye:</h4>
-                <div className="space-y-2">
-                  {product.includes.map((item, index) => (
-                    <div key={index} className="flex items-start space-x-2">
-                      <Check className="text-planetaketo-400 mt-0.5 flex-shrink-0" size={14} />
-                      <span className="text-xs text-white/70 leading-relaxed">{item}</span>
-                    </div>
-                  ))}
+            {/* Payment Section */}
+            <div className="p-6">
+              {loadingIntent ? (
+                <div className="flex items-center justify-center py-12">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-500"></div>
+                  <span className="ml-3 text-gray-600">Preparando pago seguro...</span>
                 </div>
-              </div>
-            )}
-          </div>
-
-          {/* Discount Code Section */}
-          {!discountApplied && (
-            <div className="p-4 border-b border-white/10">
-              <h3 className="text-sm font-semibold text-white/90 mb-3">¿Tienes un código de descuento?</h3>
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  value={discountCode}
-                  onChange={(e) => setDiscountCode(e.target.value.toUpperCase())}
-                  placeholder="Ingresa tu código"
-                  className="flex-1 bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white text-sm 
-                           placeholder:text-white/50 focus:outline-none focus:border-brand-blue-400"
-                  aria-label="Código de descuento"
-                />
-                <button
-                  type="button"
-                  onClick={handleApplyDiscount}
-                  disabled={loadingIntent || !discountCode.trim()}
-                  className="bg-brand-blue-500 hover:bg-brand-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium
-                           disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              ) : clientSecret === 'pi_mock_development_secret' ? (
+                // Modo desarrollo sin Stripe
+                <div className="space-y-4">
+                  <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                    <p className="text-yellow-800 text-sm text-center">
+                      <strong>Modo Desarrollo:</strong> Simulación de pago
+                    </p>
+                  </div>
+                  <CheckoutForm product={product} onClose={onClose} finalPrice={finalPrice} />
+                </div>
+              ) : clientSecret ? (
+                <Elements
+                  stripe={stripePromise}
+                  options={{
+                    clientSecret,
+                    appearance: {
+                      theme: 'stripe',
+                      variables: {
+                        colorPrimary: '#16a34a',
+                        colorBackground: '#ffffff',
+                        colorText: '#374151',
+                        colorDanger: '#dc2626',
+                        fontFamily: 'Inter, system-ui, sans-serif',
+                        spacingUnit: '4px',
+                        borderRadius: '8px',
+                      },
+                    },
+                  }}
                 >
-                  Aplicar
-                </button>
-              </div>
-              {discountError && (
-                <p className="text-brand-red-400 text-xs mt-2">{discountError}</p>
+                  <CheckoutForm product={product} onClose={onClose} finalPrice={finalPrice} />
+                </Elements>
+              ) : (
+                <div className="text-center text-red-500 py-12">
+                  <p className="mb-4">Error al cargar el formulario de pago</p>
+                  <button 
+                    onClick={() => createPaymentIntent()}
+                    className="text-green-600 hover:text-green-700 font-medium"
+                  >
+                    Intentar de nuevo
+                  </button>
+                </div>
               )}
             </div>
-          )}
-
-          {/* Payment Section */}
-          <div className="p-4">
-            <h3 className="text-sm font-semibold text-white/90 mb-4 text-center">Finalizar Compra</h3>
-            
-            {loadingIntent ? (
-              <div className="flex items-center justify-center py-8">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
-                <span className="ml-3 text-white/70">Preparando pago...</span>
-              </div>
-            ) : clientSecret ? (
-              <Elements
-                stripe={stripePromise}
-                options={{
-                  clientSecret,
-                  appearance: {
-                    theme: 'night',
-                    variables: {
-                      colorPrimary: '#22c55e',
-                      colorBackground: '#1e293b',
-                      colorText: '#f1f5f9',
-                      colorDanger: '#ef4444',
-                      fontFamily: 'Inter, system-ui, sans-serif',
-                      spacingUnit: '4px',
-                      borderRadius: '8px',
-                    },
-                  },
-                }}
-              >
-                <CheckoutForm product={product} onClose={onClose} finalPrice={finalPrice} />
-              </Elements>
-            ) : (
-              <div className="text-center text-brand-red-400 py-8">
-                Error al cargar el formulario de pago
-              </div>
-            )}
-          </div>
           </div>
         </div>
       </div>

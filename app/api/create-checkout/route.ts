@@ -11,6 +11,7 @@ export async function POST(request: Request) {
       *[_type == "product" && _id == $productId][0]{
         _id,
         name,
+        slug,
         description,
         price,
         currency,
@@ -23,6 +24,31 @@ export async function POST(request: Request) {
 
     if (!product) {
       return NextResponse.json({ error: 'Product not found' }, { status: 404 })
+    }
+
+    // Generar título desde nombre o slug
+    const productTitle = product.name || 
+      product.slug?.current?.replace(/-/g, ' ')?.replace(/\b\w/g, (l: string) => l.toUpperCase()) || 
+      'Producto'
+
+    // En modo development o cuando Stripe no está configurado
+    if (!stripe) {
+      console.log('🚧 Development mode: Using mock payment intent (Stripe not configured)')
+      return NextResponse.json({ 
+        clientSecret: 'pi_mock_development_secret',
+        amount: product.price,
+        originalPrice: product.price,
+        discount: 0,
+        discountCode: null,
+        product: {
+          _id: product._id,
+          title: productTitle,
+          name: productTitle,
+          description: product.description,
+          price: product.price,
+          image: product.image
+        }
+      })
     }
 
     // Validar código de descuento si se proporciona
@@ -47,7 +73,7 @@ export async function POST(request: Request) {
       },
       metadata: {
         productId: product._id,
-        productTitle: product.name,
+        productTitle: productTitle,
         discountCode: discountCode || '',
         originalPrice: product.price.toString(),
         finalPrice: finalAmount.toString(),
@@ -63,8 +89,8 @@ export async function POST(request: Request) {
       discountCode: discountCode || null,
       product: {
         _id: product._id,
-        title: product.name,
-        name: product.name,
+        title: productTitle,
+        name: productTitle,
         description: product.description,
         price: product.price,
         image: product.image
