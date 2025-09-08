@@ -13,7 +13,6 @@ import {
   ChevronUpIcon
 } from '@heroicons/react/24/outline'
 import { StarIcon as StarSolid } from '@heroicons/react/24/solid'
-import { client } from '@/lib/sanity'
 import PurchaseModal from './PurchaseModal'
 
 interface SanityProduct {
@@ -115,43 +114,22 @@ export default function ProductosYAfiliados() {
     try {
       setLoading(true)
       
-      // Only load products and amazon lists - NO SERVICES
-      const [productosData, amazonData] = await Promise.all([
-        client.fetch(`
-          *[_type == "product"] | order(featured desc, createdAt desc) {
-            _id,
-            title,
-            slug,
-            description,
-            price,
-            originalPrice,
-            currency,
-            image,
-            featured,
-            includes,
-            createdAt
-          }
-        `),
-        client.fetch(`
-          *[_type == "amazonList"] | order(featured desc, createdAt desc) {
-            _id,
-            title,
-            slug,
-            description,
-            amazonUrl,
-            image,
-            price,
-            category,
-            rating,
-            reviewsCount,
-            benefits,
-            keyFeatures,
-            featured,
-            isKeto,
-            createdAt
-          }
-        `)
+      // Load products and amazon lists via API routes
+      const [productosResponse, amazonResponse] = await Promise.all([
+        fetch('/api/products'),
+        fetch('/api/amazon-lists')
       ])
+
+      if (!productosResponse.ok) {
+        throw new Error('Error al cargar productos')
+      }
+      
+      if (!amazonResponse.ok) {
+        throw new Error('Error al cargar listas de Amazon')
+      }
+
+      const productosData = await productosResponse.json()
+      const amazonData = await amazonResponse.json()
 
       setProductos(productosData || [])
       setAmazonLists(amazonData || [])

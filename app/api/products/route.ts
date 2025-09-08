@@ -7,19 +7,20 @@ export async function GET() {
     const products = await client.fetch(
       `*[_type == "product"] | order(featured desc, createdAt desc) {
         _id,
-        name,
+        title,
         slug,
         description,
         price,
+        originalPrice,
         currency,
         image,
-        affiliateUrl,
         featured,
+        includes,
         createdAt
       }`
     )
 
-    return NextResponse.json({ products })
+    return NextResponse.json(products || [])
   } catch (error) {
     console.error('Error fetching products:', error)
     return NextResponse.json(
