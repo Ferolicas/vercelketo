@@ -65,9 +65,9 @@ function CheckoutForm({ product, onClose, finalPrice }: { product: Product; onCl
       <button
         type="submit"
         disabled={!stripe || loading}
-        className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-4 rounded-xl 
-                 font-semibold text-lg transition-all hover:shadow-lg hover:scale-105 
-                 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+        className="w-full bg-green-600 hover:bg-green-700 text-white py-4 rounded-xl 
+                 font-semibold text-lg transition-all hover:shadow-lg 
+                 disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {loading ? 'Procesando...' : `Pagar €${finalPrice.toFixed(2)}`}
       </button>
@@ -168,143 +168,86 @@ export default function PurchaseModal({ product, onClose }: PurchaseModalProps) 
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl max-w-sm w-full max-h-[90vh] flex flex-col text-white border border-white/10 overflow-hidden">
-        {/* Header - Fixed */}
-        <div className="relative p-4 border-b border-white/10 flex-shrink-0">
+      <div className="bg-gradient-to-br from-emerald-50 to-green-100 rounded-2xl max-w-md w-full shadow-2xl border border-green-200 overflow-hidden">
+        {/* Header */}
+        <div className="relative p-6 text-center border-b border-green-200">
           <button
             onClick={onClose}
-            className="absolute top-2 right-2 bg-white/20 text-white rounded-full p-2 hover:bg-white/30 backdrop-blur-md z-10"
+            className="absolute top-4 right-4 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-full p-2 transition-colors"
           >
             <X size={16} />
           </button>
           
-          <div className="flex items-center gap-4">
-            {product.image && (
-              <img
-                src={product.image}
-                alt={product.title}
-                className="w-16 h-16 object-cover rounded-lg bg-white/10"
-              />
+          <h2 className="text-xl font-bold text-gray-900 mb-2">
+            {product.title}
+          </h2>
+          
+          <div className="flex items-center justify-center gap-2">
+            {product.originalPrice && product.originalPrice > product.price ? (
+              <>
+                <span className="text-gray-500 line-through text-lg">
+                  €{product.originalPrice}
+                </span>
+                <span className="text-2xl font-bold text-green-600">
+                  €{product.price}
+                </span>
+                <span className="bg-orange-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+                  50% OFF
+                </span>
+              </>
+            ) : discountApplied ? (
+              <>
+                <span className="text-gray-500 line-through text-lg">
+                  €{product.price}
+                </span>
+                <span className="text-2xl font-bold text-green-600">
+                  €{finalPrice.toFixed(2)}
+                </span>
+                <span className="bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+                  20% OFF
+                </span>
+              </>
+            ) : (
+              <span className="text-2xl font-bold text-green-600">
+                €{product.price}
+              </span>
             )}
-            <div className="flex-1 min-w-0">
-              <h2 className="text-lg font-bold text-white mb-1 line-clamp-2 leading-tight">
-                {product.title}
-              </h2>
-              <div className="flex items-center gap-2 flex-wrap">
-                {discountApplied ? (
-                  <>
-                    <span className="text-white/60 line-through text-sm">
-                      €{product.price}
-                    </span>
-                    <span className="text-white font-bold text-lg">
-                      €{finalPrice.toFixed(2)}
-                    </span>
-                    <span className="text-green-400 text-xs font-medium bg-green-400/20 px-2 py-1 rounded">
-                      20% off
-                    </span>
-                  </>
-                ) : (
-                  <span className="text-white font-bold text-lg">
-                    €{product.price}
-                  </span>
-                )}
-              </div>
-            </div>
           </div>
         </div>
 
-        {/* Scrollable Content */}
-        <div className="flex-1 overflow-y-auto scrollbar-hide">
-          {/* Description Section */}
-          <div className="p-4 border-b border-white/10">
-            <h3 className="text-sm font-semibold text-white/90 mb-3">Descripción</h3>
-            <div className="text-white/70 text-sm mb-4 leading-relaxed max-h-40 overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">
-              <p className="whitespace-pre-wrap">
-                {product.description}
-              </p>
+        {/* Payment Section */}
+        <div className="p-6">
+          {loadingIntent ? (
+            <div className="flex items-center justify-center py-8">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600"></div>
+              <span className="ml-3 text-gray-700">Preparando pago...</span>
             </div>
-
-            {/* Qué incluye */}
-            {product.includes && product.includes.length > 0 && (
-              <div>
-                <h4 className="font-semibold text-white/90 mb-2 text-sm">Qué incluye:</h4>
-                <div className="space-y-2">
-                  {product.includes.map((item, index) => (
-                    <div key={index} className="flex items-start space-x-2">
-                      <Check className="text-green-400 mt-0.5 flex-shrink-0" size={14} />
-                      <span className="text-xs text-white/70 leading-relaxed">{item}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Discount Code Section */}
-          {!discountApplied && (
-            <div className="p-4 border-b border-white/10">
-              <h3 className="text-sm font-semibold text-white/90 mb-3">¿Tienes un código de descuento?</h3>
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  value={discountCode}
-                  onChange={(e) => setDiscountCode(e.target.value.toUpperCase())}
-                  placeholder="Ingresa tu código"
-                  className="flex-1 bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white text-sm 
-                           placeholder:text-white/50 focus:outline-none focus:border-blue-400"
-                />
-                <button
-                  type="button"
-                  onClick={handleApplyDiscount}
-                  disabled={loadingIntent || !discountCode.trim()}
-                  className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium
-                           disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                >
-                  Aplicar
-                </button>
-              </div>
-              {discountError && (
-                <p className="text-red-400 text-xs mt-2">{discountError}</p>
-              )}
+          ) : clientSecret ? (
+            <Elements
+              stripe={stripePromise}
+              options={{
+                clientSecret,
+                appearance: {
+                  theme: 'stripe',
+                  variables: {
+                    colorPrimary: '#059669',
+                    colorBackground: '#ffffff',
+                    colorText: '#1f2937',
+                    colorDanger: '#dc2626',
+                    fontFamily: 'Inter, system-ui, sans-serif',
+                    spacingUnit: '6px',
+                    borderRadius: '12px',
+                  },
+                },
+              }}
+            >
+              <CheckoutForm product={product} onClose={onClose} finalPrice={finalPrice} />
+            </Elements>
+          ) : (
+            <div className="text-center text-red-600 py-8">
+              Error al cargar el formulario de pago
             </div>
           )}
-
-          {/* Payment Section */}
-          <div className="p-4">
-            <h3 className="text-sm font-semibold text-white/90 mb-4 text-center">Finalizar Compra</h3>
-            
-            {loadingIntent ? (
-              <div className="flex items-center justify-center py-8">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
-                <span className="ml-3 text-white/70">Preparando pago...</span>
-              </div>
-            ) : clientSecret ? (
-              <Elements
-                stripe={stripePromise}
-                options={{
-                  clientSecret,
-                  appearance: {
-                    theme: 'night',
-                    variables: {
-                      colorPrimary: '#3b82f6',
-                      colorBackground: '#1e293b',
-                      colorText: '#f1f5f9',
-                      colorDanger: '#ef4444',
-                      fontFamily: 'Inter, system-ui, sans-serif',
-                      spacingUnit: '4px',
-                      borderRadius: '8px',
-                    },
-                  },
-                }}
-              >
-                <CheckoutForm product={product} onClose={onClose} finalPrice={finalPrice} />
-              </Elements>
-            ) : (
-              <div className="text-center text-red-400 py-8">
-                Error al cargar el formulario de pago
-              </div>
-            )}
-          </div>
         </div>
       </div>
     </div>

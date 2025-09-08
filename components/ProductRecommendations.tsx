@@ -69,15 +69,9 @@ export default function ProductRecommendations({
       if (lists.length > 0) {
         setAffiliateList(lists[0]);
       } else {
-        // Fallback to featured products
-        const featuredResponse = await fetch('/api/affiliates?featured=true');
-        const featuredData = await featuredResponse.json();
-        
-        if (featuredData.affiliateLists && featuredData.affiliateLists.length > 0) {
-          setAffiliateList(featuredData.affiliateLists[0]);
-        } else {
-          setLoadingState({ loading: false, error: 'No hay productos recomendados disponibles' });
-        }
+        // If no specific list found, don't show error - just hide the component
+        setLoadingState({ loading: false, error: null });
+        setAffiliateList(null);
       }
     } catch (error) {
       console.error('Error fetching affiliate list:', error);
