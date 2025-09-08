@@ -1,539 +1,408 @@
 'use client'
 
-import { useState, useEffect } from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
+import { useState, useEffect } from 'react'
+import Image from 'next/image'
+import Link from 'next/link'
 import { 
   StarIcon,
   ShoppingCartIcon,
   BookOpenIcon,
-  AcademicCapIcon,
-  ClockIcon,
   CheckCircleIcon,
   ArrowTopRightOnSquareIcon as ExternalLinkIcon,
-  HeartIcon,
-  TrophyIcon,
-  SparklesIcon
-} from '@heroicons/react/24/outline';
-import { StarIcon as StarSolid } from '@heroicons/react/24/solid';
-import { client, queries, urlFor } from '@/lib/sanity';
-import PurchaseModal from './PurchaseModal';
+  ChevronDownIcon,
+  ChevronUpIcon
+} from '@heroicons/react/24/outline'
+import { StarIcon as StarSolid } from '@heroicons/react/24/solid'
+import { client } from '@/lib/sanity'
+import PurchaseModal from './PurchaseModal'
 
 interface SanityProduct {
-  _id: string;
-  name: string;
-  slug: { current: string };
-  description: string;
-  price: number;
-  currency: string;
-  image: any;
-  affiliateUrl: string;
-  featured: boolean;
-  createdAt: string;
-}
-
-interface SanityService {
-  _id: string;
-  name: string;
-  slug: { current: string };
-  description: string;
-  price: number;
-  currency: string;
-  duration?: string;
-  image: any;
-  features?: string[];
-  contactUrl?: string;
-  whatsapp?: string;
-  featured: boolean;
-  createdAt: string;
+  _id: string
+  title: string
+  slug: { current: string }
+  description: string
+  price: number
+  originalPrice?: number
+  currency: string
+  image: any
+  featured: boolean
+  includes?: string[]
+  createdAt: string
 }
 
 interface SanityAmazonList {
-  _id: string;
-  title: string;
-  slug: { current: string };
-  description: string;
-  amazonUrl: string;
-  image: any;
-  price: string;
-  category: string;
-  rating: number;
-  reviewsCount?: number;
-  benefits?: string[];
-  keyFeatures?: string[];
-  featured: boolean;
-  isKeto: boolean;
-  createdAt: string;
+  _id: string
+  title: string
+  slug: { current: string }
+  description: string
+  amazonUrl: string
+  image: any
+  price: string
+  category: string
+  rating: number
+  reviewsCount?: number
+  benefits?: string[]
+  keyFeatures?: string[]
+  featured: boolean
+  isKeto: boolean
+  createdAt: string
 }
 
-interface ProductoUnificado {
-  _id: string;
-  tipo: 'producto' | 'servicio';
-  nombre: string;
-  descripcion: string;
-  precio: number;
-  imagen: any;
-  categoria: string;
-  destacado: boolean;
-  urlCompra?: string;
-  urlContacto?: string;
-  incluye?: string[];
-  beneficios?: string[];
-  rating?: number;
-  reviews?: number;
-}
-
-export default function ServiciosYProductos() {
-  const [categoriaSeleccionada, setCategoriaSeleccionada] = useState('Todos');
-  const [loading, setLoading] = useState(true);
-  const [productos, setProductos] = useState<SanityProduct[]>([]);
-  const [servicios, setServicios] = useState<SanityService[]>([]);
-  const [amazonLists, setAmazonLists] = useState<SanityAmazonList[]>([]);
-  const [error, setError] = useState<string | null>(null);
-  const [showPurchaseModal, setShowPurchaseModal] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState<any>(null);
-
-  const categorias = ['Todos', 'Productos', 'Servicios', 'Amazon'];
+// Expandable description component
+function ExpandableDescription({ description, maxLines = 4 }: { description: string, maxLines?: number }) {
+  const [isExpanded, setIsExpanded] = useState(false)
+  const [showToggle, setShowToggle] = useState(false)
 
   useEffect(() => {
-    loadData();
-  }, []);
+    // Check if description is long enough to need expansion
+    const lines = description.split('\n').length
+    setShowToggle(lines > maxLines)
+  }, [description, maxLines])
+
+  const formatDescription = (text: string) => {
+    return text.split('\n').map((line, index) => (
+      <div key={index} className="mb-2 last:mb-0">
+        {line}
+      </div>
+    ))
+  }
+
+  const truncatedDescription = description
+    .split('\n')
+    .slice(0, maxLines)
+    .join('\n')
+
+  return (
+    <div className="text-gray-600">
+      {formatDescription(isExpanded ? description : truncatedDescription)}
+      
+      {showToggle && (
+        <button
+          onClick={() => setIsExpanded(!isExpanded)}
+          className="text-green-600 hover:text-green-700 font-medium mt-2 flex items-center gap-1 text-sm"
+        >
+          {isExpanded ? (
+            <>
+              Mostrar menos <ChevronUpIcon className="w-4 h-4" />
+            </>
+          ) : (
+            <>
+              Mostrar más <ChevronDownIcon className="w-4 h-4" />
+            </>
+          )}
+        </button>
+      )}
+    </div>
+  )
+}
+
+export default function ProductosYAfiliados() {
+  const [categoriaSeleccionada, setCategoriaSeleccionada] = useState('Todos')
+  const [loading, setLoading] = useState(true)
+  const [productos, setProductos] = useState<SanityProduct[]>([])
+  const [amazonLists, setAmazonLists] = useState<SanityAmazonList[]>([])
+  const [error, setError] = useState<string | null>(null)
+  const [showPurchaseModal, setShowPurchaseModal] = useState(false)
+  const [selectedProduct, setSelectedProduct] = useState<any>(null)
+
+  const categorias = ['Todos', 'Productos', 'Afiliados']
+
+  useEffect(() => {
+    loadData()
+  }, [])
 
   const loadData = async () => {
     try {
-      setLoading(true);
-      setError(null);
-
-      console.log('🔍 Fetching products and services from APIs...');
+      setLoading(true)
       
-      // Use API endpoints like recipes do
-      const [productsRes, servicesRes] = await Promise.all([
-        fetch('/api/products'),
-        fetch('/api/services')
-      ]);
+      // Only load products and amazon lists - NO SERVICES
+      const [productosData, amazonData] = await Promise.all([
+        client.fetch(`
+          *[_type == "product"] | order(featured desc, createdAt desc) {
+            _id,
+            title,
+            slug,
+            description,
+            price,
+            originalPrice,
+            currency,
+            image,
+            featured,
+            includes,
+            createdAt
+          }
+        `),
+        client.fetch(`
+          *[_type == "amazonList"] | order(featured desc, createdAt desc) {
+            _id,
+            title,
+            slug,
+            description,
+            amazonUrl,
+            image,
+            price,
+            category,
+            rating,
+            reviewsCount,
+            benefits,
+            keyFeatures,
+            featured,
+            isKeto,
+            createdAt
+          }
+        `)
+      ])
 
-      const productsData = await productsRes.json();
-      const servicesData = await servicesRes.json();
-
-      const productosData = productsData.products || [];
-      const serviciosData = servicesData.services || [];
-      const amazonData: SanityAmazonList[] = []; // Keep empty for now
-
-      console.log('📦 Products:', productosData?.length || 0);
-      console.log('🎯 Services:', serviciosData?.length || 0);
-      console.log('📱 Amazon Lists:', amazonData?.length || 0);
-
-      setProductos(productosData || []);
-      setServicios(serviciosData || []);
-      setAmazonLists(amazonData || []);
-    } catch (err) {
-      console.error('❌ Error cargando datos:', err);
-      setError(err instanceof Error ? err.message : 'Error al cargar los datos');
+      setProductos(productosData || [])
+      setAmazonLists(amazonData || [])
+      
+    } catch (error) {
+      console.error('Error loading data:', error)
+      setError('Error al cargar los datos')
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
-  const getAllItems = (): ProductoUnificado[] => {
-    const items: ProductoUnificado[] = [];
+  const handlePurchaseProduct = (product: any) => {
+    // Convert to consistent format for modal
+    const productForModal = {
+      _id: product._id,
+      title: product.title,
+      name: product.title,
+      price: product.price || 14.75, // Ensure consistent pricing
+      originalPrice: product.originalPrice || 29.99,
+      image: product.image ? `/guia.png` : '/guia.png', // Use consistent image
+      description: product.description,
+      includes: product.includes || []
+    }
+    
+    setSelectedProduct(productForModal)
+    setShowPurchaseModal(true)
+  }
 
+  const filtrarItems = () => {
+    let items: any[] = []
+    
     if (categoriaSeleccionada === 'Todos' || categoriaSeleccionada === 'Productos') {
-      productos.forEach(producto => {
-        items.push({
-          ...producto,
-          tipo: 'producto',
-          nombre: producto.name,
-          descripcion: producto.description,
-          precio: producto.price,
-          imagen: producto.image,
-          categoria: 'Productos',
-          urlCompra: producto.affiliateUrl,
-          destacado: producto.featured
-        });
-      });
+      const productosConTipo = productos.map(p => ({ ...p, tipo: 'producto' }))
+      items = [...items, ...productosConTipo]
     }
-
-    if (categoriaSeleccionada === 'Todos' || categoriaSeleccionada === 'Servicios') {
-      servicios.forEach(servicio => {
-        items.push({
-          ...servicio,
-          tipo: 'servicio',
-          nombre: servicio.name,
-          descripcion: servicio.description,
-          precio: servicio.price,
-          imagen: servicio.image,
-          categoria: 'Servicios',
-          urlContacto: servicio.contactUrl || `https://wa.me/${servicio.whatsapp}`,
-          destacado: servicio.featured,
-          incluye: servicio.features || []
-        });
-      });
+    
+    if (categoriaSeleccionada === 'Todos' || categoriaSeleccionada === 'Afiliados') {
+      const amazonConTipo = amazonLists.map(a => ({ ...a, tipo: 'afiliado' }))
+      items = [...items, ...amazonConTipo]
     }
+    
+    return items.sort((a, b) => {
+      if (a.featured && !b.featured) return -1
+      if (!a.featured && b.featured) return 1
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    })
+  }
 
-    return items;
-  };
+  const items = filtrarItems()
 
-  const productosFiltrados = getAllItems();
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
+            <span className="ml-3 text-gray-600">Cargando productos...</span>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
-  const renderStars = (rating: number) => {
-    return Array.from({ length: 5 }, (_, i) => (
-      <StarSolid
-        key={i}
-        className={`h-4 w-4 ${
-          i < Math.floor(rating) ? 'text-yellow-400' : 'text-gray-300'
-        }`}
-      />
-    ));
-  };
-
-  const handlePurchase = (item: ProductoUnificado) => {
-    // Convertir el producto/servicio para que sea compatible con el modal
-    const modalProduct = {
-      _id: item._id,
-      name: item.nombre,
-      description: item.descripcion,
-      price: item.precio,
-      image: item.imagen ? urlFor(item.imagen).width(400).height(300).url() : undefined,
-      includes: item.incluye || []
-    };
-    setSelectedProduct(modalProduct);
-    setShowPurchaseModal(true);
-  };
-
-  const handleServiceContact = (item: ProductoUnificado) => {
-    // Para servicios, también abrir modal de pago
-    handlePurchase(item);
-  };
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <div className="text-red-600 text-xl mb-4">❌ Error</div>
+            <div className="text-gray-600">{error}</div>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Hero Section */}
-      <section className="bg-gradient-to-br from-green-50 via-white to-green-50 py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="mb-8">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-green-600 to-green-500 rounded-2xl text-white text-3xl mb-6">
-              🛍️
-            </div>
-            <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
-              Servicios y{' '}
-              <span className="bg-gradient-to-r from-green-600 to-green-500 bg-clip-text text-transparent">
-                Productos
-              </span>
+      {/* Header */}
+      <section className="bg-gradient-to-br from-green-50 to-emerald-50 py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <h1 className="text-4xl font-bold text-gray-900 mb-6">
+              Productos y Afiliados
             </h1>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
-              Acelera tu éxito keto con nuestros productos premium, guías exclusivas y 
-              herramientas profesionales seleccionadas especialmente para ti.
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Descubre nuestra selección de productos digitales y recomendaciones de afiliados 
+              cuidadosamente elegidos para tu éxito en la dieta keto.
             </p>
           </div>
         </div>
       </section>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-          {/* Contenido Principal */}
-          <div className="lg:col-span-3">
-            {/* Sección de Productos Propios */}
-            <section className="mb-16">
-              <div className="flex items-center justify-between mb-8">
-                <div>
-                  <h2 className="text-3xl font-bold text-gray-900 mb-2">
-                    Productos Premium
-                  </h2>
-                  <p className="text-gray-600">
-                    Herramientas y recursos creados por expertos para acelerar tus resultados
-                  </p>
-                </div>
-              </div>
-
-              {/* Filtros por categoría */}
-              <div className="flex flex-wrap gap-2 mb-8">
-                {categorias.map((categoria) => (
-                  <button
-                    key={categoria}
-                    onClick={() => setCategoriaSeleccionada(categoria)}
-                    className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
-                      categoriaSeleccionada === categoria
-                        ? 'bg-green-500 text-white shadow-lg'
-                        : 'bg-white text-gray-600 hover:bg-green-50 border border-gray-200'
-                    }`}
-                  >
-                    {categoria}
-                  </button>
-                ))}
-              </div>
-
-              {/* Grid de productos */}
-              {loading ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  {[...Array(4)].map((_, i) => (
-                    <div key={i} className="bg-white rounded-2xl shadow-lg p-6 animate-pulse">
-                      <div className="h-48 bg-gray-300 rounded-lg mb-4"></div>
-                      <div className="h-4 bg-gray-300 rounded mb-2"></div>
-                      <div className="h-4 bg-gray-300 rounded mb-4 w-3/4"></div>
-                      <div className="h-8 bg-gray-300 rounded"></div>
-                    </div>
-                  ))}
-                </div>
-              ) : error ? (
-                <div className="col-span-full text-center py-12">
-                  <div className="text-red-400 mb-4 text-6xl">❌</div>
-                  <h3 className="text-xl font-semibold text-red-700 mb-2">
-                    Error al cargar los datos
-                  </h3>
-                  <p className="text-red-500 mb-4">{error}</p>
-                  <button
-                    onClick={loadData}
-                    className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-colors"
-                  >
-                    Reintentar
-                  </button>
-                </div>
-              ) : productosFiltrados.length === 0 ? (
-                <div className="col-span-full text-center py-12">
-                  <div className="text-gray-400 mb-4 text-6xl">🛒</div>
-                  <h3 className="text-xl font-semibold text-gray-700 mb-2">
-                    No hay {categoriaSeleccionada === 'Todos' ? 'productos o servicios' : categoriaSeleccionada.toLowerCase()} disponibles
-                  </h3>
-                  <p className="text-gray-500">Pronto añadiremos más contenido para ti.</p>
-                  <p className="text-sm text-gray-400 mt-2">
-                    Debug: Products: {productos.length}, Services: {servicios.length}, Amazon: {amazonLists.length}
-                  </p>
-                </div>
-              ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  {productosFiltrados.map((item, index) => (
-                    <div
-                      key={item._id}
-                      className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group"
-                    >
-                      {/* Badge para destacados */}
-                      {(item as any).destacado && (
-                        <div className="absolute top-4 right-4 z-10">
-                          <span className="bg-yellow-400 text-yellow-900 px-3 py-1 rounded-full text-xs font-semibold">
-                            ⭐ Destacado
-                          </span>
-                        </div>
-                      )}
-
-                      {/* Imagen */}
-                      <div className="relative h-48 bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center overflow-hidden">
-                        {item.imagen ? (
-                          <Image 
-                            src={urlFor(item.imagen).width(400).height(300).url()}
-                            alt={item.nombre}
-                            fill
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                          />
-                        ) : (
-                          <div className="text-6xl">
-                            {item.tipo === 'servicio' ? '🎯' : '📦'}
-                          </div>
-                        )}
-                        <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-10 transition-opacity duration-300" />
-                      </div>
-
-                      <div className="p-6">
-                        {/* Header del item */}
-                        <div className="mb-4">
-                          <div className="flex items-center justify-between mb-2">
-                            <span className="text-sm text-green-600 font-medium">
-                              {item.categoria}
-                            </span>
-                            <div className="flex items-center">
-                              {renderStars(item.rating || 4.5)}
-                              <span className="ml-1 text-sm text-gray-500">({item.reviews || 0})</span>
-                            </div>
-                          </div>
-                          <h3 className="text-xl font-bold text-gray-900 mb-2">{item.nombre}</h3>
-                          <p className="text-gray-600 text-sm mb-4">{item.descripcion}</p>
-                        </div>
-
-                        {/* Características o beneficios */}
-                        <div className="mb-6">
-                          <ul className="space-y-2">
-                            {((item.tipo === 'servicio' ? (item as any).incluye : (item as any).beneficios) || []).slice(0, 3).map((feature: string, i: number) => (
-                              <li key={i} className="flex items-center text-sm text-gray-600">
-                                <CheckCircleIcon className="h-4 w-4 text-green-500 mr-2" />
-                                {feature}
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-
-                        {/* Precio y CTA */}
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <div className="flex items-center">
-                              <span className="text-2xl font-bold text-gray-900">
-                                ${item.precio}
-                              </span>
-                              {(item as any).precioOriginal && (
-                                <span className="ml-2 text-sm text-gray-500 line-through">
-                                  ${(item as any).precioOriginal}
-                                </span>
-                              )}
-                            </div>
-                            {(item as any).duracion && (
-                              <div className="text-sm text-green-600 font-medium">
-                                {(item as any).duracion}
-                              </div>
-                            )}
-                          </div>
-                          <button
-                            onClick={() => handlePurchase(item)}
-                            className={`px-6 py-2 rounded-lg font-semibold transition-colors duration-200 flex items-center text-white ${
-                              item.tipo === 'servicio' 
-                                ? 'bg-blue-500 hover:bg-blue-600' 
-                                : 'bg-green-500 hover:bg-green-600'
-                            }`}
-                          >
-                            <ShoppingCartIcon className="h-4 w-4 mr-2" />
-                            {item.tipo === 'servicio' ? 'Contratar' : 'Comprar'}
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </section>
-
-
-            {/* Sección de Productos de Amazon */}
-            {(categoriaSeleccionada === 'Todos' || categoriaSeleccionada === 'Amazon') && (
-              <section>
-                <div className="mb-8">
-                  <h2 className="text-3xl font-bold text-gray-900 mb-2">
-                    Productos Recomendados de Amazon
-                  </h2>
-                  <p className="text-gray-600">
-                    Los mejores productos keto seleccionados por nuestros expertos
-                  </p>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {amazonLists.map((producto) => (
-                    <div
-                      key={producto._id}
-                      className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 p-6"
-                    >
-                      <div className="flex space-x-4">
-                        {/* Imagen del producto */}
-                        <div className="flex-shrink-0 w-24 h-24 bg-gradient-to-br from-orange-400 to-orange-600 rounded-lg flex items-center justify-center overflow-hidden">
-                          {producto.image ? (
-                            <Image 
-                              src={urlFor(producto.image).url()}
-                              alt={producto.title}
-                              width={96}
-                              height={96}
-                              className="w-full h-full object-cover"
-                            />
-                          ) : (
-                            <span className="text-2xl">📦</span>
-                          )}
-                        </div>
-
-                        {/* Información del producto */}
-                        <div className="flex-1">
-                          <div className="mb-2">
-                            <span className="text-xs text-orange-600 font-medium bg-orange-50 px-2 py-1 rounded">
-                              {producto.category}
-                            </span>
-                          </div>
-                          <h3 className="font-semibold text-gray-900 mb-1 line-clamp-2">{producto.title}</h3>
-                          <p className="text-sm text-gray-600 mb-3 line-clamp-2">{producto.description}</p>
-                          
-                          {/* Rating y precio */}
-                          <div className="flex items-center justify-between mb-3">
-                            <div className="flex items-center">
-                              {renderStars(producto.rating)}
-                              <span className="ml-1 text-sm text-gray-500">{producto.rating}</span>
-                            </div>
-                            <span className="text-lg font-bold text-gray-900">{producto.price}</span>
-                          </div>
-
-                          {/* Beneficios */}
-                          <ul className="text-xs text-gray-600 mb-4 space-y-1">
-                            {(producto.benefits || []).slice(0, 2).map((beneficio, i) => (
-                              <li key={i} className="flex items-center">
-                                <CheckCircleIcon className="h-3 w-3 text-green-500 mr-1" />
-                                {beneficio}
-                              </li>
-                            ))}
-                          </ul>
-
-                          {/* CTA */}
-                          <a
-                            href={producto.amazonUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center text-sm bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200"
-                          >
-                            Ver en Amazon
-                            <ExternalLinkIcon className="ml-1 h-3 w-3" />
-                          </a>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                  
-                  {amazonLists.length === 0 && !loading && (
-                    <div className="col-span-2 text-center py-8">
-                      <p className="text-gray-500">No hay productos de Amazon disponibles en este momento.</p>
-                    </div>
-                  )}
-                </div>
-              </section>
-            )}
+      {/* Filters */}
+      <section className="py-8 bg-white border-b">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-wrap justify-center gap-4">
+            {categorias.map((categoria) => (
+              <button
+                key={categoria}
+                onClick={() => setCategoriaSeleccionada(categoria)}
+                className={`px-6 py-3 rounded-full font-medium transition-all duration-200 ${
+                  categoriaSeleccionada === categoria
+                    ? 'bg-green-600 text-white shadow-lg'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }`}
+              >
+                {categoria}
+              </button>
+            ))}
           </div>
-
-          {/* Sidebar */}
-          <div className="lg:col-span-1">
-            
-            {/* Widget de testimonio */}
-            <div className="bg-white rounded-2xl p-6 shadow-lg mb-6">
-              <div className="text-center">
-                <div className="flex justify-center mb-4">{[...Array(5)].map((_, i) => (
-                    <StarSolid key={i} className="h-5 w-5 text-yellow-400" />
-                  ))}
-                </div>
-                <blockquote className="text-gray-700 italic mb-4">
-                  "Los productos de Planeta Keto cambiaron mi vida. Perdí 15kg en 3 meses siguiendo sus guías."
-                </blockquote>
-                <cite className="text-sm font-semibold text-gray-900">
-                  - María González
-                </cite>
-              </div>
-            </div>
-
-            {/* Widget de garantía */}
-            <div className="bg-green-50 rounded-2xl p-6">
-              <div className="text-center">
-                <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <CheckCircleIcon className="h-6 w-6 text-white" />
-                </div>
-                <h3 className="font-bold text-gray-900 mb-2">
-                  Garantía de 30 días
-                </h3>
-                <p className="text-sm text-gray-600">
-                  Si no estás 100% satisfecho, te devolvemos tu dinero sin preguntas.
-                </p>
-              </div>
-            </div>
+          <div className="text-center mt-4 text-gray-600">
+            Mostrando {items.length} {items.length === 1 ? 'elemento' : 'elementos'}
           </div>
         </div>
-      </div>
+      </section>
+
+      {/* Products Grid */}
+      <section className="py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {items.length === 0 ? (
+            <div className="text-center py-20">
+              <div className="text-gray-400 text-6xl mb-4">📦</div>
+              <h3 className="text-xl font-semibold text-gray-600 mb-2">
+                No hay productos disponibles
+              </h3>
+              <p className="text-gray-500">
+                Por favor, revisa más tarde o contacta con soporte.
+              </p>
+            </div>
+          ) : (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {items.map((item) => (
+                <div key={item._id} className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow group">
+                  {/* Product Image */}
+                  <div className="relative aspect-square bg-gray-100">
+                    {item.image && (
+                      <Image
+                        src={item.tipo === 'producto' ? '/guia.png' : (item.image.asset?.url || '/placeholder.jpg')}
+                        alt={item.title}
+                        fill
+                        className="object-contain p-4 group-hover:scale-105 transition-transform duration-300"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      />
+                    )}
+                    {item.featured && (
+                      <div className="absolute top-4 left-4 bg-green-600 text-white px-3 py-1 rounded-full text-sm font-bold">
+                        ⭐ Destacado
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="p-6">
+                    {/* Title */}
+                    <h3 className="font-bold text-xl text-gray-900 mb-3 line-clamp-2">
+                      {item.title}
+                    </h3>
+
+                    {/* Description - Expandable */}
+                    <div className="mb-6">
+                      <ExpandableDescription description={item.description || 'Sin descripción disponible.'} />
+                    </div>
+
+                    {/* Features/Benefits */}
+                    {(item.includes || item.keyFeatures || item.benefits) && (
+                      <div className="mb-6">
+                        <h4 className="font-semibold text-gray-900 mb-2 text-sm">Qué incluye:</h4>
+                        <div className="space-y-1">
+                          {(item.includes || item.keyFeatures || item.benefits)?.slice(0, 3).map((feature: string, index: number) => (
+                            <div key={index} className="flex items-start space-x-2">
+                              <CheckCircleIcon className="text-green-500 mt-0.5 flex-shrink-0 w-4 h-4" />
+                              <span className="text-sm text-gray-600">{feature}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Rating for affiliates */}
+                    {item.rating && (
+                      <div className="flex items-center mb-4">
+                        <div className="flex items-center">
+                          {[...Array(5)].map((_, i) => (
+                            <StarSolid 
+                              key={i} 
+                              className={`w-4 h-4 ${i < Math.floor(item.rating) ? 'text-yellow-400' : 'text-gray-300'}`} 
+                            />
+                          ))}
+                        </div>
+                        <span className="ml-2 text-sm text-gray-600">
+                          {item.rating} {item.reviewsCount && `(${item.reviewsCount} reseñas)`}
+                        </span>
+                      </div>
+                    )}
+
+                    {/* Price and Action */}
+                    <div className="flex items-center justify-between">
+                      <div>
+                        {item.tipo === 'producto' ? (
+                          <div className="flex items-center gap-2">
+                            <span className="text-2xl font-bold text-gray-900">€14.75</span>
+                            {item.originalPrice && (
+                              <span className="text-lg text-gray-500 line-through">€{item.originalPrice}</span>
+                            )}
+                          </div>
+                        ) : (
+                          <div className="text-green-600 font-semibold">
+                            {item.price || 'Ver precio'}
+                          </div>
+                        )}
+                      </div>
+
+                      {item.tipo === 'producto' ? (
+                        <button
+                          onClick={() => handlePurchaseProduct(item)}
+                          className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-xl font-semibold transition-colors flex items-center gap-2"
+                        >
+                          <ShoppingCartIcon className="w-5 h-5" />
+                          Comprar
+                        </button>
+                      ) : (
+                        <a
+                          href={item.amazonUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-xl font-semibold transition-colors flex items-center gap-2"
+                        >
+                          <ExternalLinkIcon className="w-5 h-5" />
+                          Ver en Amazon
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
 
       {/* Purchase Modal */}
       {showPurchaseModal && selectedProduct && (
         <PurchaseModal
           product={selectedProduct}
           onClose={() => {
-            setShowPurchaseModal(false);
-            setSelectedProduct(null);
+            setShowPurchaseModal(false)
+            setSelectedProduct(null)
           }}
         />
       )}
     </div>
-  );
+  )
 }

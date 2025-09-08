@@ -77,7 +77,12 @@ export async function GET(request: NextRequest) {
 // POST endpoint for tracking custom events
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json()
+    const text = await request.text()
+    if (!text || text.trim() === '') {
+      return NextResponse.json({ error: 'Empty request body' }, { status: 400 })
+    }
+    
+    const body = JSON.parse(text)
     const { event, properties } = body
 
     // In a real implementation, you would:

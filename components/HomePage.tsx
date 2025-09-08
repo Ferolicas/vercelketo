@@ -1,20 +1,13 @@
 'use client'
 
-import { useState } from 'react'
+import React, { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { 
-  ClockIcon, 
-  HeartIcon,
-  TrophyIcon,
-  UsersIcon,
-  SparklesIcon,
-  ArrowRightIcon,
+  StarIcon as StarOutline,
+  CheckIcon,
   ShoppingCartIcon,
-  BookOpenIcon,
-  StarIcon as StarSolid,
-  FireIcon,
-  BoltIcon
+  PlayCircleIcon
 } from '@heroicons/react/24/outline'
 import { StarIcon } from '@heroicons/react/24/solid'
 import ProductRecommendations from './ProductRecommendations'
@@ -31,68 +24,86 @@ interface HomePageProps {
   }
 }
 
-// Book product data for modal - UPDATED with new description and pricing
+// Book product data for modal - Professional version
 const bookProduct = {
-  _id: 'planeta-keto-planificador-2025',
-  title: 'Planeta Keto - Planificador Completo 2025',
-  name: 'Planeta Keto - Planificador Completo 2025',
-  description: `🎯 ORGANIZA TU KETO DE UNA VEZ POR TODAS
+  _id: '83f184b6-1e92-4d97-ad0b-9273de28eadc',
+  title: 'Planeta Keto - Guía Completa 2025',
+  name: 'Planeta Keto - Guía Completa 2025',
+  price: 14.75,
+  originalPrice: 29.99,
+  image: '/guia.png',
+  description: `🎯 TRANSFORMA TU VIDA CON LA DIETA KETO
 
-✅ QUÉ INCLUYE ESTE PLANIFICADOR:
+✅ QUÉ INCLUYE ESTA GUÍA COMPLETA:
 
 📊 CALCULADORA DE MACROS PERSONALIZADA
-- Según tu peso, altura y objetivo
-- Cantidad exacta de proteína/grasa/carbos
+- Según tu peso, altura y objetivo específico
+- Cantidad exacta de proteína, grasa y carbohidratos
 
 📅 30 DÍAS COMPLETAMENTE PLANIFICADOS
-- Qué desayunar, almorzar y cenar cada día
-- Combinaciones que no se repiten
+- Menús diarios con desayuno, almuerzo y cena
+- Combinaciones que nunca se repiten
 - Todo keto ESTRICTO (sin harinas ni edulcorantes)
 
 🛒 4 LISTAS DE COMPRA SEMANALES
-- Cantidades exactas para 1, 2 o 4 personas
-- Organizado por secciones del super
-- Presupuesto estimado incluido
+- Organizadas por categorías para facilitar tu compra
+- Cantidades exactas para evitar desperdicios
 
 ⏰ SISTEMA BATCH COOKING
-- Cocina 2 horas el domingo
-- Come organizado toda la semana
-- Guía de congelación incluida
+- Prepara comida para toda la semana en 2 horas
+- Técnicas profesionales de conservación
 
 📝 PLANTILLAS DE SEGUIMIENTO
-- Control diario de cetosis
-- Registro de peso y medidas
-- Cómo saber si estás en cetosis
+- Control de peso y medidas
+- Registro de energía y estado de ánimo
 
-🎁 BONUS EXTRA:
+🎁 BONUS EXCLUSIVOS:
 - 10 snacks de emergencia keto
 - Qué comer fuera de casa
 - Soluciones a problemas comunes
 
-⚠️ IMPORTANTE:
-Este NO es un libro de recetas (esas las tienes gratis en mi canal).
-Es un SISTEMA DE ORGANIZACIÓN completo.
-
 💳 Pago seguro - Descarga inmediata
 📧 Soporte por email incluido
 ♻️ Actualizaciones gratis de por vida`,
-  price: 14.75,
-  originalPrice: 30.00,
-  image: '/book-cover-3d.jpg',
   includes: [
-    '📊 CALCULADORA DE MACROS PERSONALIZADA',
-    '📅 30 DÍAS COMPLETAMENTE PLANIFICADOS',
-    '🛒 4 LISTAS DE COMPRA SEMANALES', 
-    '⏰ SISTEMA BATCH COOKING',
-    '📝 PLANTILLAS DE SEGUIMIENTO',
-    '🎁 BONUS: 10 snacks de emergencia keto',
-    '🎁 BONUS: Qué comer fuera de casa',
-    '🎁 BONUS: Soluciones a problemas comunes',
-    '💳 Pago seguro - Descarga inmediata',
-    '📧 Soporte por email incluido',
-    '♻️ Actualizaciones gratis de por vida'
+    'Calculadora de macros personalizada',
+    '30 días de menús planificados',
+    '4 listas de compra semanales', 
+    'Sistema Batch Cooking completo',
+    'Plantillas de seguimiento',
+    '10 snacks de emergencia keto',
+    'Guía para comer fuera de casa',
+    'Soluciones a problemas comunes',
+    'Pago seguro - Descarga inmediata',
+    'Soporte por email incluido',
+    'Actualizaciones gratis de por vida'
   ]
 }
+
+// Professional testimonials
+const testimonials = [
+  {
+    id: 1,
+    name: 'María González',
+    rating: 5,
+    comment: 'Una guía completa que me ayudó a perder 12kg en 3 meses. Los menús son deliciosos y fáciles de seguir.',
+    verified: true
+  },
+  {
+    id: 2,
+    name: 'Carlos Ramírez', 
+    rating: 5,
+    comment: 'Excelente inversión. El sistema batch cooking me ahorra horas cada semana. Muy recomendado.',
+    verified: true
+  },
+  {
+    id: 3,
+    name: 'Ana Martín',
+    rating: 5, 
+    comment: 'Después de probar muchas dietas, esta guía fue la que realmente funcionó. Resultados desde la primera semana.',
+    verified: true
+  }
+]
 
 export default function HomePage({ 
   featuredRecipes = [], 
@@ -111,517 +122,359 @@ export default function HomePage({
         value: bookProduct.price,
         items: [{
           item_id: bookProduct._id,
-          item_name: bookProduct.name,
-          category: 'Digital Book',
+          item_name: bookProduct.title,
+          category: 'Ebooks',
           quantity: 1,
           price: bookProduct.price
         }]
       })
     }
+
+    fetch('/api/analytics', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        event: 'product_view',
+        properties: {
+          product_id: bookProduct._id,
+          product_name: bookProduct.title,
+          price: bookProduct.price,
+          source: 'homepage'
+        }
+      })
+    }).catch(() => {})
   }
-  
+
   return (
-    <>
-      
-      {/* Hero Section - Redesigned with Planeta Keto brand colors */}
-      <section className="relative bg-gradient-to-r from-green-600 via-green-500 to-emerald-600 pt-20 pb-16 overflow-hidden">
-        {/* Decorative background */}
-        <div className="absolute inset-0 bg-black/20"></div>
-        <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent"></div>
-        
-        {/* Floating elements */}
-        <div className="absolute top-10 left-10 w-20 h-20 bg-yellow-400/20 rounded-full animate-pulse"></div>
-        <div className="absolute bottom-10 right-20 w-16 h-16 bg-orange-400/20 rounded-full animate-bounce"></div>
-        <div className="absolute top-1/2 right-10 w-12 h-12 bg-red-400/20 rounded-full animate-ping"></div>
-        
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            {/* Left Column - Mensaje principal */}
-            <div className="text-center lg:text-left">
-              {/* Social proof badge */}
-              <div className="inline-flex items-center bg-white/20 backdrop-blur-sm rounded-full px-6 py-3 shadow-lg mb-8">
-                <div className="flex -space-x-2 mr-3">
-                  {[1,2,3,4,5].map(i => (
-                    <div key={i} className="w-8 h-8 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full border-2 border-white flex items-center justify-center text-white text-xs font-bold">
-                      {String.fromCharCode(65 + i)}
-                    </div>
-                  ))}
+    <div className="min-h-screen bg-white">
+      {/* Hero Section */}
+      <section className="bg-gradient-to-br from-emerald-50 to-green-100 py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            
+            {/* Left side - Book image */}
+            <div className="relative">
+              <div className="bg-white rounded-3xl p-8 shadow-2xl transform rotate-1 hover:rotate-0 transition-transform duration-300">
+                <Image
+                  src="/guia.png"
+                  alt="Planeta Keto - Guía Completa 2025"
+                  width={400}
+                  height={600}
+                  className="w-full h-auto rounded-2xl shadow-lg"
+                  priority
+                />
+                <div className="absolute -top-4 -right-4 bg-orange-500 text-white px-4 py-2 rounded-full text-sm font-bold shadow-lg">
+                  50% OFF
                 </div>
-                <div>
-                  <div className="flex text-yellow-400">
-                    {[1,2,3,4,5].map(i => (
-                      <StarIcon key={i} className="h-4 w-4" />
-                    ))}
-                  </div>
-                  <span className="text-sm text-white font-medium">+10.000 personas transformadas</span>
-                </div>
-              </div>
-              
-              <h1 className="text-4xl md:text-6xl lg:text-7xl font-black text-white mb-6 leading-tight">
-                Organiza tu
-                <span className="block bg-gradient-to-r from-yellow-300 to-orange-300 bg-clip-text text-transparent mt-2">
-                  Keto Completo
-                </span>
-                <span className="block text-3xl md:text-4xl font-light mt-2">
-                  de una vez por todas
-                </span>
-              </h1>
-              
-              <p className="text-xl md:text-2xl text-white/90 leading-relaxed font-light mb-8">
-                <span className="font-bold text-brand-yellow-400">¡NO vendemos recetas!</span> 
-                <span className="block mt-2">
-                  Las tienes GRATIS en nuestro YouTube, TikTok e Instagram.
-                </span>
-                <span className="block mt-2 font-medium text-planetaketo-200">
-                  Vendemos el <strong>PLANIFICADOR COMPLETO</strong> para organizarte paso a paso.
-                </span>
-              </p>
-              
-              {/* CTA Principal - Libro */}
-              <div className="bg-gradient-to-r from-brand-red-500 to-brand-orange-500 rounded-2xl p-6 mb-8">
-                <div className="flex items-center justify-center mb-3">
-                  <ClockIcon className="h-6 w-6 mr-2 animate-pulse text-white" />
-                  <span className="font-bold text-lg text-white">🔥 OFERTA LIMITADA - Solo hoy</span>
-                </div>
-                <div className="text-center mb-4">
-                  <div className="flex items-center justify-center gap-4">
-                    <span className="text-2xl font-bold line-through opacity-75 text-white">€30.00</span>
-                    <span className="text-4xl font-bold text-white">€14.75</span>
-                  </div>
-                  <div className="text-orange-200 text-lg">Ahorras €15.25 (51% descuento)</div>
-                </div>
-                <button
-                  onClick={handlePurchaseBook}
-                  className="w-full bg-white text-brand-red-600 font-bold py-4 px-8 rounded-xl text-xl hover:bg-gray-50 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 flex items-center justify-center mb-3"
-                >
-                  <ShoppingCartIcon className="h-6 w-6 mr-3" />
-                  🚀 CONSEGUIR MI PLANIFICADOR KETO AHORA
-                </button>
-                <div className="text-orange-200 text-sm text-center">
-                  ✅ Acceso inmediato • ✅ Garantía 30 días • ✅ Sistema completo de organización
-                </div>
-              </div>
-              
-              {/* CTAs secundarios */}
-              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                <Link
-                  href="/recetas"
-                  className="bg-white/20 backdrop-blur-sm border-2 border-white/30 text-white px-6 py-3 rounded-xl font-semibold hover:bg-white/30 transition-all duration-300 flex items-center justify-center"
-                >
-                  <span className="mr-2">🍽️</span>
-                  Ver {stats.totalRecipes} Recetas GRATIS
-                </Link>
-                <Link
-                  href="https://youtube.com/@PlanetaKeto"
-                  target="_blank"
-                  className="bg-brand-red-600/80 backdrop-blur-sm border-2 border-brand-red-500/30 text-white px-6 py-3 rounded-xl font-semibold hover:bg-brand-red-600 hover:border-brand-red-400 hover:shadow-lg transition-all duration-300 flex items-center justify-center cursor-pointer transform hover:scale-105"
-                >
-                  <span className="mr-2">📺</span>
-                  YouTube Canal
-                </Link>
               </div>
             </div>
-            
-            {/* Right Column - Libro mockup */}
-            <div className="relative lg:order-2">
-              <div className="relative max-w-sm mx-auto">
-                {/* Book mockup */}
-                <div className="relative transform rotate-6 hover:rotate-3 transition-transform duration-500">
-                  <div className="bg-gradient-to-br from-white to-gray-100 rounded-2xl shadow-2xl p-8 border border-white/20">
-                    <div className="text-center">
-                      <div className="text-5xl mb-4">📊</div>
-                      <h3 className="font-black text-2xl text-gray-900 mb-2">PLANETA KETO</h3>
-                      <h2 className="font-black text-3xl bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-4">
-                        PLANIFICADOR 2025
-                      </h2>
-                      <div className="text-sm text-gray-800 font-medium mb-6">
-                        ✅ Calculadora Macros Personalizada<br/>
-                        ✅ 30 Días Completamente Planificados<br/>
-                        ✅ 4 Listas Compra Semanales<br/>
-                        ✅ Sistema Batch Cooking<br/>
-                        ✅ 3 Bonus Incluidos GRATIS
-                      </div>
-                      <div className="bg-gradient-to-r from-brand-yellow-400 to-brand-orange-500 text-white px-4 py-2 rounded-lg text-sm font-bold mb-4">
-                        🏆 SISTEMA DE ORGANIZACIÓN #1
-                      </div>
-                      <div className="flex justify-center text-brand-yellow-400 mb-2">
-                        {[1,2,3,4,5].map(i => (
-                          <StarIcon key={i} className="h-5 w-5" />
-                        ))}
-                      </div>
-                      <div className="text-xs text-gray-800 font-medium">4.9/5 - Más de 2,000 usuarios satisfechos</div>
-                    </div>
+
+            {/* Right side - Content */}
+            <div className="space-y-8">
+              <div>
+                <div className="inline-flex items-center bg-green-100 text-green-800 px-4 py-2 rounded-full text-sm font-medium mb-4">
+                  ✨ Bestseller Keto
+                </div>
+                <h1 className="text-5xl font-bold text-gray-900 leading-tight">
+                  Transforma Tu Vida con 
+                  <span className="text-green-600"> Keto</span>
+                </h1>
+                <p className="text-xl text-gray-600 mt-4 leading-relaxed">
+                  La guía más completa para dominar la dieta cetogénica con menús planificados, 
+                  recetas deliciosas y resultados garantizados en 30 días.
+                </p>
+              </div>
+
+              {/* Features */}
+              <div className="grid sm:grid-cols-2 gap-4">
+                <div className="flex items-center space-x-3">
+                  <CheckIcon className="w-6 h-6 text-green-500 flex-shrink-0" />
+                  <span className="text-gray-700">30 días planificados</span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <CheckIcon className="w-6 h-6 text-green-500 flex-shrink-0" />
+                  <span className="text-gray-700">Calculadora de macros</span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <CheckIcon className="w-6 h-6 text-green-500 flex-shrink-0" />
+                  <span className="text-gray-700">Sistema Batch Cooking</span>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <CheckIcon className="w-6 h-6 text-green-500 flex-shrink-0" />
+                  <span className="text-gray-700">Soporte incluido</span>
+                </div>
+              </div>
+
+              {/* Pricing */}
+              <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <span className="text-3xl font-bold text-gray-900">€14.75</span>
+                    <span className="text-lg text-gray-500 line-through ml-2">€29.99</span>
                   </div>
-                  
-                  {/* Floating badges */}
-                  <div className="absolute -top-4 -left-4 bg-brand-red-500 text-white px-3 py-2 rounded-full text-sm font-bold transform -rotate-12 shadow-lg animate-pulse">
-                    🔥 51% OFF
-                  </div>
-                  <div className="absolute -bottom-4 -right-4 bg-planetaketo-500 text-white px-3 py-2 rounded-full text-sm font-bold shadow-lg">
-                    ✅ Garantizado
+                  <div className="text-right">
+                    <div className="text-orange-600 font-semibold">Ahorras €15.24</div>
+                    <div className="text-sm text-gray-500">50% descuento</div>
                   </div>
                 </div>
                 
-                {/* Stats floating */}
-                <div className="absolute -left-8 top-1/3 hidden lg:block">
-                  <div className="bg-white rounded-xl shadow-lg p-4 text-center">
-                    <div className="text-2xl font-bold text-planetaketo-600">10K+</div>
-                    <div className="text-xs text-gray-600">Transformados</div>
-                  </div>
-                </div>
-                <div className="absolute -right-8 top-1/4 hidden lg:block">
-                  <div className="bg-white rounded-xl shadow-lg p-4 text-center">
-                    <div className="text-2xl font-bold text-brand-blue-600">Sistema</div>
-                    <div className="text-xs text-gray-600">Completo</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Stats mejorados */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-16">
-            <div className="bg-white/20 backdrop-blur-sm rounded-2xl px-4 py-6 text-white text-center">
-              <div className="text-3xl mb-2">🍽️</div>
-              <div className="text-2xl font-bold">{stats.totalRecipes}</div>
-              <div className="text-sm opacity-90">Recetas GRATIS</div>
-            </div>
-            <div className="bg-white/20 backdrop-blur-sm rounded-2xl px-4 py-6 text-white text-center">
-              <div className="text-3xl mb-2">🎯</div>
-              <div className="text-2xl font-bold">{(stats.happyUsers / 1000).toFixed(0)}K+</div>
-              <div className="text-sm opacity-90">Transformados</div>
-            </div>
-            <div className="bg-white/20 backdrop-blur-sm rounded-2xl px-4 py-6 text-white text-center">
-              <div className="text-3xl mb-2">⭐</div>
-              <div className="text-2xl font-bold">{stats.avgRating}/5</div>
-              <div className="text-sm opacity-90">Rating Sistema</div>
-            </div>
-            <div className="bg-white/20 backdrop-blur-sm rounded-2xl px-4 py-6 text-white text-center">
-              <div className="text-3xl mb-2">💰</div>
-              <div className="text-2xl font-bold">51%</div>
-              <div className="text-sm opacity-90">Descuento</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Anuncio Header - Solo desktop */}
-      <AdPlacement 
-        position="header" 
-        className="py-4 bg-gray-50"
-        showOnMobile={false}
-        showOnDesktop={true}
-      />
-
-      {/* Sección de Acceso Rápido - Optimizada para conversión */}
-      <section className="py-16 bg-gradient-to-br from-gray-50 via-white to-green-50/30">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Banner de conversión libro */}
-          <div className="bg-gradient-to-r from-green-600 via-green-500 to-emerald-600 rounded-3xl p-8 mb-12 text-white text-center">
-            <h2 className="text-2xl md:text-3xl font-bold mb-4">
-              🎯 ¿Por qué necesitas el PLANIFICADOR si las recetas son gratis?
-            </h2>
-            <div className="grid md:grid-cols-3 gap-6 mb-6">
-              <div className="bg-white/20 backdrop-blur-sm rounded-xl p-6">
-                <div className="text-3xl mb-3">📅</div>
-                <h3 className="font-bold mb-2">ORGANIZACIÓN Total</h3>
-                <p className="text-sm">30 días completamente planificados con menús, listas y batch cooking</p>
-              </div>
-              <div className="bg-white/20 backdrop-blur-sm rounded-xl p-6">
-                <div className="text-3xl mb-3">📊</div>
-                <h3 className="font-bold mb-2">Personalización</h3>
-                <p className="text-sm">Calcula TUS macros exactos según tu peso, altura y objetivo</p>
-              </div>
-              <div className="bg-white/20 backdrop-blur-sm rounded-xl p-6">
-                <div className="text-3xl mb-3">⏰</div>
-                <h3 className="font-bold mb-2">Ahorro de Tiempo</h3>
-                <p className="text-sm">Sistema batch cooking: cocina 2h domingos, come organizado toda la semana</p>
-              </div>
-            </div>
-            <button
-              onClick={handlePurchaseBook}
-              className="bg-white text-brand-blue-600 font-bold py-4 px-8 rounded-xl text-xl hover:bg-gray-50 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
-            >
-              Ver Qué Incluye El Planificador →
-            </button>
-          </div>
-
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Acceso Rápido a Todo
-            </h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Recetas gratis, productos premium, comunidad y más
-            </p>
-          </div>
-
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {([
-              { name: 'Recetas GRATIS', emoji: '🍽️', count: `${stats.totalRecipes} recetas`, color: 'from-planetaketo-400 to-planetaketo-600', href: '/recetas', highlight: true, isBook: false, external: false },
-              { name: 'Mi Planificador Keto', emoji: '📊', count: '51% OFF hoy', color: 'from-brand-red-400 to-brand-orange-500', href: '/planificador-keto-2025', highlight: true, isBook: true, external: false },
-              { name: 'Productos Premium', emoji: '🛒', count: 'Herramientas', color: 'from-brand-blue-400 to-brand-blue-600', href: '/productos-y-servicios', highlight: false, isBook: false, external: false },
-              { name: 'Foro Comunidad', emoji: '💬', count: 'Apoyo 24/7', color: 'from-brand-blue-400 to-planetaketo-500', href: '/foro', highlight: false, isBook: false, external: false },
-              { name: 'Blog Keto', emoji: '📝', count: 'Artículos', color: 'from-brand-yellow-400 to-brand-orange-500', href: '/blog', highlight: false, isBook: false, external: false },
-              { name: 'Mi YouTube', emoji: '📺', count: 'Videos gratis', color: 'from-brand-red-500 to-brand-red-600', href: 'https://youtube.com/@PlanetaKeto', external: true, highlight: false, isBook: false },
-              { name: 'Bajar de Peso', emoji: '⚖️', count: 'Guías', color: 'from-planetaketo-400 to-brand-orange-500', href: '/bajar-de-peso', highlight: false, isBook: false, external: false },
-              { name: 'Quemar Grasa', emoji: '🔥', count: 'Estrategias', color: 'from-brand-orange-400 to-brand-red-500', href: '/quemar-grasa', highlight: false, isBook: false, external: false },
-            ] as const).map((category, index) => (
-              <div key={category.name} className={`relative ${category.highlight ? 'md:col-span-1' : ''}`}>
-                {category.highlight && (
-                  <div className="absolute -top-2 -right-2 bg-red-500 text-white px-2 py-1 rounded-full text-xs font-bold z-10 animate-pulse">
-                    HOT
-                  </div>
-                )}
-                {category.isBook ? (
-                  <button
-                    onClick={handlePurchaseBook}
-                    className="w-full text-left group"
-                  >
-                    <div className={`bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 group-hover:-translate-y-1 border-2 ${category.highlight ? 'border-brand-red-200 bg-gradient-to-br from-brand-red-50 to-brand-orange-50' : 'border-gray-100'}`}>
-                      <div className={`w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br ${category.color} flex items-center justify-center text-2xl`}>
-                        {category.emoji}
-                      </div>
-                      <h3 className="text-lg font-semibold text-gray-900 mb-1 text-center">
-                        {category.name}
-                      </h3>
-                      <p className="text-sm text-brand-red-600 font-medium text-center">
-                        {category.count}
-                      </p>
-                    </div>
-                  </button>
-                ) : (
-                  <Link
-                    href={category.href}
-                    className="block group"
-                    target={category.external ? '_blank' : '_self'}
-                  >
-                    <div className={`bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 group-hover:-translate-y-1 border-2 ${category.highlight ? 'border-planetaketo-200 bg-gradient-to-br from-planetaketo-50 to-brand-blue-50' : 'border-gray-100'}`}>
-                      <div className={`w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br ${category.color} flex items-center justify-center text-2xl`}>
-                        {category.emoji}
-                      </div>
-                      <h3 className="text-lg font-semibold text-gray-900 mb-1 text-center">
-                        {category.name}
-                      </h3>
-                      <p className={`text-sm text-center ${category.highlight ? 'text-planetaketo-600 font-medium' : 'text-gray-600'}`}>
-                        {category.count}
-                      </p>
-                    </div>
-                  </Link>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-
-      {/* Why Choose Keto */}
-      <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              ¿Por Qué Elegir la Dieta Keto?
-            </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Descubre los increíbles beneficios de la dieta cetogénica respaldados por la ciencia
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[
-              {
-                icon: '⚡',
-                title: 'Pérdida de Peso Rápida',
-                description: 'Pierde peso de forma eficiente quemando grasa como combustible principal',
-                color: 'from-yellow-400 to-orange-500'
-              },
-              {
-                icon: '🧠',
-                title: 'Mayor Claridad Mental',
-                description: 'Mejora tu concentración y función cerebral con cetonas',
-                color: 'from-blue-400 to-indigo-500'
-              },
-              {
-                icon: '💪',
-                title: 'Más Energía Sostenida',
-                description: 'Elimina los picos de azúcar y mantén energía constante todo el día',
-                color: 'from-green-400 to-green-600'
-              },
-              {
-                icon: '❤️',
-                title: 'Salud Cardiovascular',
-                description: 'Mejora tus niveles de colesterol y presión arterial',
-                color: 'from-red-400 to-pink-500'
-              },
-              {
-                icon: '🎯',
-                title: 'Control del Apetito',
-                description: 'Reduce naturalmente el hambre y los antojos',
-                color: 'from-purple-400 to-pink-500'
-              },
-              {
-                icon: '🔥',
-                title: 'Metabolismo Optimizado',
-                description: 'Convierte tu cuerpo en una máquina quema-grasa 24/7',
-                color: 'from-orange-400 to-red-500'
-              },
-            ].map((benefit, index) => (
-              <div
-                key={benefit.title}
-                className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
-              >
-                <div className={`w-12 h-12 mb-4 rounded-xl bg-gradient-to-br ${benefit.color} flex items-center justify-center text-2xl`}>
-                  {benefit.icon}
-                </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-3">
-                  {benefit.title}
-                </h3>
-                <p className="text-gray-600">
-                  {benefit.description}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Anuncio Content Middle */}
-      <div className="py-8 bg-gray-50">
-        <AdPlacement 
-          position="content-middle" 
-          className="max-w-4xl mx-auto px-4"
-        />
-      </div>
-
-      {/* CTA Section - Mega optimizado para libro */}
-      <section className="py-20 bg-gradient-to-r from-green-600 via-green-500 to-emerald-600 relative overflow-hidden">
-        {/* Efectos de fondo */}
-        <div className="absolute inset-0 bg-black/20"></div>
-        <div className="absolute top-10 left-10 w-32 h-32 bg-white/10 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-10 right-10 w-24 h-24 bg-white/10 rounded-full blur-2xl animate-bounce"></div>
-        
-        <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="mb-8">
-            <div className="text-6xl mb-6">🚀</div>
-            <h2 className="text-4xl md:text-5xl font-black text-white mb-6 leading-tight">
-              ¿Listo para organizar tu keto
-              <span className="block text-brand-yellow-300">de una vez por todas?</span>
-            </h2>
-            <p className="text-xl md:text-2xl text-orange-100 mb-8 max-w-4xl mx-auto leading-relaxed">
-              Deja de hacer keto "sin organización". Consigue el <span className="font-bold text-white">planificador completo</span> 
-              que ya usaron +10,000 personas para organizar su keto en 30 días.
-            </p>
-          </div>
-
-          {/* Mega CTA para el libro */}
-          <div className="bg-white rounded-3xl p-8 md:p-12 mb-8 shadow-2xl">
-            <div className="grid md:grid-cols-2 gap-8 items-center">
-              {/* Libro visual */}
-              <div className="text-center">
-                <div className="relative inline-block">
-                  <div className="bg-gradient-to-br from-green-600 to-emerald-600 rounded-2xl p-6 transform rotate-3 shadow-xl">
-                    <div className="text-4xl mb-3">📊</div>
-                    <h3 className="text-white font-black text-xl mb-2">PLANIFICADOR KETO COMPLETO</h3>
-                    <div className="text-planetaketo-100 text-sm">Sistema organización • 30 días planificados • Listas compras</div>
-                  </div>
-                  <div className="absolute -top-3 -right-3 bg-brand-red-500 text-white px-3 py-2 rounded-full text-sm font-bold animate-pulse">
-                    51% OFF
-                  </div>
-                </div>
-              </div>
-              
-              {/* CTA copy */}
-              <div className="text-left md:text-left">
-                <h3 className="text-2xl md:text-3xl font-black text-gray-900 mb-4">
-                  Solo por hoy: <span className="text-brand-red-600">€14.75</span>
-                  <span className="text-lg text-gray-500 line-through ml-2">€30.00</span>
-                </h3>
-                <ul className="text-gray-700 mb-6 space-y-2">
-                  <li className="flex items-center">
-                    <span className="text-planetaketo-600 mr-2">✅</span>
-                    Calculadora de macros personalizada
-                  </li>
-                  <li className="flex items-center">
-                    <span className="text-planetaketo-600 mr-2">✅</span>
-                    30 días completamente planificados
-                  </li>
-                  <li className="flex items-center">
-                    <span className="text-planetaketo-600 mr-2">✅</span>
-                    Sistema batch cooking completo
-                  </li>
-                  <li className="flex items-center">
-                    <span className="text-planetaketo-600 mr-2">✅</span>
-                    3 BONUS valorados en €25
-                  </li>
-                </ul>
                 <button
                   onClick={handlePurchaseBook}
-                  className="w-full bg-gradient-to-r from-orange-500 to-red-500 text-white font-bold py-4 px-8 rounded-2xl text-xl hover:from-orange-600 hover:to-red-600 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 flex items-center justify-center"
+                  className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 px-8 rounded-xl text-lg transition-all duration-200 shadow-lg hover:shadow-xl flex items-center justify-center space-x-3"
                 >
-                  <ShoppingCartIcon className="h-6 w-6 mr-3" />
-                  CONSEGUIR PLANIFICADOR COMPLETO AHORA
+                  <ShoppingCartIcon className="w-6 h-6" />
+                  <span>Conseguir Mi Guía Ahora</span>
                 </button>
-                <div className="text-center mt-3 text-sm text-gray-500">
-                  💳 Pago seguro • ⚡ Acceso inmediato • 🔄 Garantía 30 días
+                
+                <p className="text-center text-sm text-gray-500 mt-3">
+                  ✅ Descarga inmediata • ✅ Pago seguro • ✅ Garantía de satisfacción
+                </p>
+              </div>
+
+              {/* Stats */}
+              <div className="flex items-center space-x-8">
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-gray-900">10,000+</div>
+                  <div className="text-sm text-gray-600">Usuarios felices</div>
+                </div>
+                <div className="text-center">
+                  <div className="flex items-center justify-center mb-1">
+                    {[...Array(5)].map((_, i) => (
+                      <StarIcon key={i} className="w-5 h-5 text-yellow-400" />
+                    ))}
+                  </div>
+                  <div className="text-sm text-gray-600">4.8/5 estrellas</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-gray-900">38+</div>
+                  <div className="text-sm text-gray-600">Recetas incluidas</div>
                 </div>
               </div>
             </div>
           </div>
+        </div>
+      </section>
 
-          {/* CTAs secundarios */}
-          <div className="grid md:grid-cols-3 gap-6">
-            <Link
-              href="/recetas"
-              className="bg-white/20 backdrop-blur-sm border-2 border-white/30 text-white px-6 py-4 rounded-xl font-semibold text-lg hover:bg-white/30 transition-all duration-300 flex items-center justify-center"
-            >
-              <span className="mr-2">🍽️</span>
-              Recetas GRATIS
-            </Link>
-            <Link
-              href="https://youtube.com/@PlanetaKeto"
-              target="_blank"
-              className="bg-brand-red-600/80 backdrop-blur-sm border-2 border-brand-red-500/30 text-white px-6 py-4 rounded-xl font-semibold text-lg hover:bg-brand-red-600 transition-all duration-300 flex items-center justify-center"
-            >
-              <span className="mr-2">📺</span>
-              Mi YouTube
-            </Link>
-            <Link
-              href="/foro"
-              className="bg-white/20 backdrop-blur-sm border-2 border-white/30 text-white px-6 py-4 rounded-xl font-semibold text-lg hover:bg-white/30 transition-all duration-300 flex items-center justify-center"
-            >
-              <span className="mr-2">💬</span>
-              Únete al Foro
-            </Link>
+      {/* Testimonials Section */}
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+              Lo que dicen nuestros usuarios
+            </h2>
+            <p className="text-xl text-gray-600">
+              Miles de personas ya han transformado su vida con nuestra guía
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {testimonials.map((testimonial) => (
+              <div key={testimonial.id} className="bg-white p-8 rounded-2xl shadow-lg">
+                <div className="flex items-center mb-4">
+                  {[...Array(5)].map((_, i) => (
+                    <StarIcon key={i} className="w-5 h-5 text-yellow-400" />
+                  ))}
+                  {testimonial.verified && (
+                    <span className="ml-3 bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
+                      ✓ Verificado
+                    </span>
+                  )}
+                </div>
+                <p className="text-gray-700 mb-4 italic">"{testimonial.comment}"</p>
+                <div className="font-semibold text-gray-900">{testimonial.name}</div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Anuncio Footer */}
-      <div className="py-6 bg-white border-t">
-        <AdPlacement 
-          position="footer" 
-          className="max-w-6xl mx-auto px-4"
-        />
-      </div>
+      {/* About the Book */}
+      <section className="py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            <div>
+              <h2 className="text-4xl font-bold text-gray-900 mb-8">
+                Sobre la Guía
+              </h2>
+              <div className="space-y-6 text-lg text-gray-700 leading-relaxed">
+                <p>
+                  Esta guía, <strong>Planeta Keto</strong>, es perfecta para principiantes y cualquier persona 
+                  que quiera dominar la dieta cetogénica. Simplifica el keto con orientación paso a paso, 
+                  para que puedas lograr tus objetivos de salud con confianza.
+                </p>
+                <p>
+                  Descubre consejos, trucos y consejos de expertos para hacer que el keto sea agradable y 
+                  libre de estrés. Ya sea que estés comenzando o buscando mejorar tus resultados, 
+                  esta guía te tiene cubierto.
+                </p>
+              </div>
 
-      {/* Anuncio Mobile Sticky - Solo móviles */}
-      <AdPlacement 
-        position="mobile-sticky" 
-        showOnMobile={true}
-        showOnDesktop={false}
-      />
+              {/* Formats */}
+              <div className="mt-12 space-y-4">
+                <div className="flex items-center space-x-4 p-4 bg-blue-50 rounded-xl">
+                  <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                    📱
+                  </div>
+                  <div>
+                    <div className="font-semibold text-gray-900">Edición Digital</div>
+                    <div className="text-gray-600">Acceso instantáneo en cualquier dispositivo</div>
+                  </div>
+                </div>
+              </div>
 
-      {/* Sticky CTA para móviles - Libro */}
-      <div className="fixed bottom-4 left-4 right-4 z-50 md:hidden">
-        <button
-          onClick={handlePurchaseBook}
-          className="w-full bg-gradient-to-r from-orange-500 to-red-500 text-white font-bold py-4 px-6 rounded-xl shadow-2xl flex items-center justify-center text-lg"
-        >
-          <ShoppingCartIcon className="h-5 w-5 mr-2" />
-          Mi Planificador Keto €14.75 
-          <span className="ml-2 text-sm opacity-80 line-through">€30</span>
-        </button>
-      </div>
+              <button
+                onClick={handlePurchaseBook}
+                className="mt-8 bg-green-600 hover:bg-green-700 text-white font-bold py-4 px-8 rounded-xl text-lg transition-all duration-200 shadow-lg hover:shadow-xl"
+              >
+                Comprar Ahora
+              </button>
+            </div>
+
+            <div className="relative">
+              <div className="bg-gradient-to-br from-green-100 to-emerald-100 rounded-3xl p-8">
+                <Image
+                  src="/guia.png"
+                  alt="Vista detallada del libro"
+                  width={400}
+                  height={600}
+                  className="w-full h-auto rounded-2xl shadow-xl"
+                />
+                <div className="absolute top-4 right-4 bg-green-600 text-white p-3 rounded-full">
+                  <ShoppingCartIcon className="w-6 h-6" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Inside the Book */}
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+              Dentro de la Guía
+            </h2>
+            <p className="text-xl text-gray-600">
+              Consejos simples para transformar tu salud y bienestar
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="text-center">
+              <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                🥗
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Menús Planificados</h3>
+              <p className="text-gray-600">
+                Aprende a planificar y preparar menús keto deliciosos con instrucciones claras y fáciles.
+              </p>
+            </div>
+            
+            <div className="text-center">
+              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                📊
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Seguimiento Experto</h3>
+              <p className="text-gray-600">
+                Descubre consejos probados para hacer que tu progreso keto sea próspero, 
+                desde la preparación hasta el seguimiento.
+              </p>
+            </div>
+            
+            <div className="text-center">
+              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                🔧
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Soluciones Simples</h3>
+              <p className="text-gray-600">
+                Encuentra soluciones rápidas a desafíos comunes del keto, 
+                como la mejor salud intestinal.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Featured Recipes Section */}
+      {featuredRecipes && featuredRecipes.length > 0 && (
+        <section className="py-20">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex justify-between items-center mb-12">
+              <div>
+                <h2 className="text-4xl font-bold text-gray-900">Recetas Destacadas</h2>
+                <p className="text-xl text-gray-600 mt-2">Prueba algunas de nuestras recetas más populares</p>
+              </div>
+              <Link 
+                href="/recetas"
+                className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-xl font-semibold transition-colors"
+              >
+                Ver Todas →
+              </Link>
+            </div>
+            
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {featuredRecipes.slice(0, 6).map((recipe) => (
+                <Link key={recipe._id} href={`/recetas/${recipe.slug?.current}`}>
+                  <div className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow group">
+                    {recipe.mainImage && (
+                      <div className="relative h-48 overflow-hidden">
+                        <Image
+                          src={recipe.mainImage}
+                          alt={recipe.title}
+                          width={400}
+                          height={240}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                      </div>
+                    )}
+                    <div className="p-6">
+                      <h3 className="font-bold text-lg text-gray-900 mb-2 line-clamp-2">
+                        {recipe.title}
+                      </h3>
+                      <p className="text-gray-600 text-sm line-clamp-2 mb-4">
+                        {recipe.description}
+                      </p>
+                      {recipe.cookingTime && (
+                        <div className="flex items-center text-gray-500 text-sm">
+                          <span>⏱️ {recipe.cookingTime} min</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Final CTA */}
+      <section className="py-20 bg-gradient-to-r from-green-600 to-emerald-600">
+        <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
+          <h2 className="text-4xl font-bold text-white mb-6">
+            ¿Listo para Transformar tu Vida?
+          </h2>
+          <p className="text-xl text-green-100 mb-8">
+            Únete a miles de personas que ya han logrado sus objetivos con nuestra guía completa
+          </p>
+          <button
+            onClick={handlePurchaseBook}
+            className="bg-white text-green-600 font-bold py-4 px-12 rounded-xl text-xl hover:bg-gray-50 transition-all duration-200 shadow-lg hover:shadow-xl"
+          >
+            Conseguir Mi Guía Por €14.75
+          </button>
+          <p className="text-green-100 mt-4">
+            ✅ Descarga inmediata • ✅ Garantía de satisfacción • ✅ Soporte incluido
+          </p>
+        </div>
+      </section>
+
+      {/* Ad Placements */}
+      <AdPlacement position="homepage-bottom" />
+
+      {/* Product Recommendations */}
+      <ProductRecommendations />
 
       {/* Purchase Modal */}
       {showPurchaseModal && (
@@ -630,7 +483,6 @@ export default function HomePage({
           onClose={() => setShowPurchaseModal(false)}
         />
       )}
-
-    </>
+    </div>
   )
 }

@@ -390,11 +390,11 @@ export default function ContentPreviewSection() {
                 <div className="bg-white bg-opacity-20 backdrop-blur-sm rounded-2xl p-6 max-w-md mx-auto">
                   <div className="text-2xl font-bold mb-2">Valor Total</div>
                   <div className="flex items-center justify-center gap-4">
-                    <span className="text-3xl font-bold line-through opacity-75">€89</span>
-                    <span className="text-5xl font-bold">€29</span>
+                    <span className="text-3xl font-bold line-through opacity-75">€29.99</span>
+                    <span className="text-5xl font-bold">€14.75</span>
                   </div>
                   <div className="text-yellow-100 text-sm mt-2">
-                    Ahorro de €60 (67% descuento)
+                    Ahorro de €15.24 (51% descuento)
                   </div>
                 </div>
               </div>

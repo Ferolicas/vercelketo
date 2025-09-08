@@ -101,7 +101,10 @@
       "Read(//c/storeplanetaketo/lib/**)",
       "Read(//c/storeplanetaketo/components/**)",
       "mcp__sequential__sequentialthinking",
-      "WebFetch(domain:nas.io)"
+      "WebFetch(domain:nas.io)",
+      "Read(//c/storeplanetaketo/**)",
+      "Bash(taskkill:*)",
+      "Bash(del \"C:\\PLANETA KETO V2\\planetaketonext\\sanity\\schemaTypes\\service.ts\")"
     ],
     "deny": [],
     "ask": [],

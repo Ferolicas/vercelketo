@@ -23,27 +23,36 @@ interface BookUpsellWidgetProps {
   context?: string
 }
 
-// Book product data
+// Book product data - REAL DATA FROM SANITY
 const bookProduct = {
-  _id: 'guia-completa-keto-2025',
-  title: 'Guía Completa Keto 2025 - El Método Definitivo',
-  name: 'Guía Completa Keto 2025 - El Método Definitivo',
-  description: 'El ÚNICO libro que necesitas para dominar la dieta cetogénica y transformar tu cuerpo. +200 recetas, plan de 30 días, calculadora de macros y mucho más.',
-  price: 29.99,
-  originalPrice: 89.00,
-  image: '/book-cover-3d.jpg',
+  _id: '83f184b6-1e92-4d97-ad0b-9273de28eadc',
+  title: 'Planeta Keto - Guía Completa 2025',
+  name: 'Planeta Keto - Guía Completa 2025',
+  description: `🎯 TRANSFORMA TU VIDA CON LA DIETA KETO
+
+✅ QUÉ INCLUYE ESTA GUÍA COMPLETA:
+
+📊 CALCULADORA DE MACROS PERSONALIZADA
+📅 30 DÍAS COMPLETAMENTE PLANIFICADOS  
+🛒 4 LISTAS DE COMPRA SEMANALES
+⏰ SISTEMA BATCH COOKING
+📝 PLANTILLAS DE SEGUIMIENTO
+🎁 BONUS EXCLUSIVOS INCLUIDOS`,
+  price: 14.75,
+  originalPrice: 29.99,
+  image: '/guia.png',
   includes: [
-    'Más de 200 recetas keto probadas',
-    'Plan completo de menús para 30 días',
     'Calculadora de macros personalizada',
-    'Guía de alimentos permitidos',
-    'Estrategias para superar mesetas',
-    'BONUS: Guía de ejercicios keto',
-    'BONUS: 50 recetas express',
-    'BONUS: Lista de compras inteligente',
-    'BONUS: Tracker digital de progreso',
-    'Acceso inmediato tras la compra',
-    'Garantía de satisfacción de 30 días'
+    '30 días de menús planificados',
+    '4 listas de compra semanales', 
+    'Sistema Batch Cooking completo',
+    'Plantillas de seguimiento',
+    '10 snacks de emergencia keto',
+    'Guía para comer fuera de casa',
+    'Soluciones a problemas comunes',
+    'Pago seguro - Descarga inmediata',
+    'Soporte por email incluido',
+    'Actualizaciones gratis de por vida'
   ]
 }
 
@@ -148,8 +157,8 @@ export default function BookUpsellWidget({
             <div>
               <div className="mb-6">
                 <div className="flex items-center justify-center md:justify-start gap-4 mb-4">
-                  <span className="text-3xl font-bold text-red-600">€29.99</span>
-                  <span className="text-xl text-gray-500 line-through">€89.00</span>
+                  <span className="text-3xl font-bold text-red-600">€14.75</span>
+                  <span className="text-xl text-gray-500 line-through">€29.99</span>
                   <span className="bg-yellow-400 text-yellow-900 px-3 py-1 rounded-full text-sm font-bold">
                     Ahorras €59
                   </span>
@@ -232,8 +241,8 @@ export default function BookUpsellWidget({
 
             <div className="text-center mb-4">
               <div className="flex items-center justify-center gap-3">
-                <span className="text-2xl font-bold text-red-600">€29.99</span>
-                <span className="text-lg text-gray-500 line-through">€89</span>
+                <span className="text-2xl font-bold text-red-600">€14.75</span>
+                <span className="text-lg text-gray-500 line-through">€29.99</span>
               </div>
               <div className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-bold mt-2">
                 67% descuento HOY
@@ -298,13 +307,13 @@ export default function BookUpsellWidget({
                   Oferta Especial para ti
                 </h3>
                 <div className="flex items-center justify-center gap-4 mb-3">
-                  <span className="text-3xl font-bold text-red-600">€29.99</span>
-                  <span className="text-xl text-gray-500 line-through">€89.00</span>
+                  <span className="text-3xl font-bold text-red-600">€14.75</span>
+                  <span className="text-xl text-gray-500 line-through">€29.99</span>
                   <span className="bg-red-500 text-white px-3 py-2 rounded-full text-sm font-bold animate-pulse">
                     67% OFF
                   </span>
                 </div>
-                <p className="text-gray-700">Ahorras €59 - Solo válido HOY</p>
+                <p className="text-gray-700">Ahorras €15.24 - Solo válido HOY</p>
               </div>
 
               <button

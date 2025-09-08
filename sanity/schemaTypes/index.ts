@@ -2,7 +2,6 @@ import category from './category'
 import recipe from './recipe'
 import comment from './comment'
 import product from './product'
-import service from './service'
 import blogPost from './blogPost'
 import forumPost from './forumPost'
 import forumReply from './forumReply'
@@ -17,9 +16,8 @@ export const schemaTypes = [
   recipe,
   comment,
   
-  // Productos y servicios
+  // Productos y afiliados
   product,
-  service,
   amazonList,
   
   // Blog y foro

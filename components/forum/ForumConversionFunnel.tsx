@@ -34,7 +34,7 @@ export default function ForumConversionFunnel({
           
           <div className="mt-3 text-center">
             <span className="text-lg font-bold text-green-600">€14.75</span>
-            <span className="text-sm text-gray-500 line-through ml-2">€30</span>
+            <span className="text-sm text-gray-500 line-through ml-2">€29.99</span>
           </div>
         </div>
       </div>

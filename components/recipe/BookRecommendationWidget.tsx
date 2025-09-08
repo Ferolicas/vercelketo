@@ -26,62 +26,26 @@ interface BookRecommendationWidgetProps {
   priority?: 'high' | 'medium' | 'low'
 }
 
-// Mock data - En producción vendría de Sanity
+// REAL DATA FROM SANITY - Only show actual products
 const digitalBooks: DigitalBook[] = [
   {
-    id: 'guia-completa-keto-2025',
-    title: 'Guía Completa Keto 2025',
-    description: '500+ recetas, menús semanales y calculadora de macros. Todo lo que necesitas para dominar la dieta keto.',
-    price: 24.99,
-    originalPrice: 39.99,
-    coverImage: '/books/guia-keto-2025.webp',
-    rating: 4.9,
-    totalBuyers: 2847,
+    id: '83f184b6-1e92-4d97-ad0b-9273de28eadc',
+    title: 'Planeta Keto - Guía Completa 2025',
+    description: 'La guía más completa para dominar la dieta cetogénica con menús planificados, recetas deliciosas y resultados garantizados en 30 días.',
+    price: 14.75,
+    originalPrice: 29.99,
+    coverImage: '/guia.png',
+    rating: 4.8,
+    totalBuyers: 10000,
     category: 'general',
     features: [
-      '500+ recetas paso a paso',
-      'Menús semanales x 8 semanas',
-      'Calculadora de macros incluida',
-      'Lista de compras automatizada',
-      'Soporte por WhatsApp'
+      'Calculadora de macros personalizada',
+      '30 días de menús planificados',
+      '4 listas de compra semanales',
+      'Sistema Batch Cooking completo',
+      'Plantillas de seguimiento'
     ]
   },
-  {
-    id: 'recetas-keto-faciles-rapidas',
-    title: 'Recetas Keto Fáciles y Rápidas',
-    description: 'Las mejores recetas keto en menos de 30 minutos. Perfectas para el día a día.',
-    price: 19.99,
-    originalPrice: 29.99,
-    coverImage: '/books/recetas-faciles.webp', 
-    rating: 4.8,
-    totalBuyers: 1934,
-    category: 'recipes',
-    features: [
-      '200+ recetas rápidas',
-      'Videos tutoriales incluidos',
-      'Técnicas de meal prep',
-      'Ingredientes económicos',
-      'Actualizaciones de por vida'
-    ]
-  },
-  {
-    id: 'postres-keto-premium',
-    title: 'Postres Keto Premium',
-    description: 'Deliciosos postres keto sin culpa. Satisface tu antojo dulce mientras mantienes cetosis.',
-    price: 14.99,
-    originalPrice: 24.99,
-    coverImage: '/books/postres-keto.webp',
-    rating: 4.9,
-    totalBuyers: 1567,
-    category: 'desserts',
-    features: [
-      '100+ postres únicos',
-      'Técnicas de repostería keto',
-      'Sustitutos de azúcar explicados',
-      'Decoración profesional',
-      'Videos paso a paso'
-    ]
-  }
 ]
 
 function BookRecommendationWidget({ 
@@ -92,23 +56,8 @@ function BookRecommendationWidget({
 }: BookRecommendationWidgetProps) {
   const [isExpanded, setIsExpanded] = useState(false)
   
-  // Seleccionar libro basado en categoría de receta
-  const getRecommendedBook = (category: string): DigitalBook => {
-    const categoryMap: { [key: string]: string } = {
-      'postres': 'postres-keto-premium',
-      'desserts': 'postres-keto-premium', 
-      'desayuno': 'recetas-keto-faciles-rapidas',
-      'breakfast': 'recetas-keto-faciles-rapidas',
-      'cena': 'recetas-keto-faciles-rapidas',
-      'dinner': 'recetas-keto-faciles-rapidas',
-      'default': 'guia-completa-keto-2025'
-    }
-    
-    const bookId = categoryMap[category.toLowerCase()] || categoryMap.default
-    return digitalBooks.find(book => book.id === bookId) || digitalBooks[0]
-  }
-
-  const recommendedBook = getRecommendedBook(recipeCategory)
+  // Only show the real book from Sanity
+  const recommendedBook = digitalBooks[0] // Only one real book
   const savings = recommendedBook.originalPrice - recommendedBook.price
   const discountPercent = Math.round((savings / recommendedBook.originalPrice) * 100)
 

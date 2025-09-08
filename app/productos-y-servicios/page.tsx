@@ -1,12 +1,12 @@
 import { Suspense } from 'react';
 import { generateSEOMetadata } from '@/components/SEOHead';
-import ServiciosYProductos from '@/components/ServiciosYProductos';
+import ProductosYAfiliados from '@/components/ServiciosYProductos';
 
 export async function generateMetadata() {
   return generateSEOMetadata({
-    title: 'Productos y Servicios Keto | Tienda Cetogénica Premium',
-    description: '🛍️ Descubre los mejores productos keto, servicios especializados y listas curadas de Amazon para tu éxito cetogénico. Guías digitales, planes personalizados y productos recomendados por expertos.',
-    keywords: 'productos keto, servicios keto, tienda keto, guías keto, planes keto, coaching keto, productos cetogénicos, amazon keto, afiliados keto, calculadora keto, suplementos keto',
+    title: 'Productos y Afiliados Keto | Tienda Cetogénica Premium',
+    description: '🛍️ Descubre los mejores productos keto digitales y listas curadas de Amazon para tu éxito cetogénico. Guías exclusivas y productos recomendados por expertos.',
+    keywords: 'productos keto, tienda keto, guías keto, productos cetogénicos, amazon keto, afiliados keto, calculadora keto, planeta keto, libro keto',
     url: '/productos-y-servicios',
     type: 'website'
   });

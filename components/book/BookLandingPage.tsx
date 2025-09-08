@@ -25,43 +25,59 @@ import PurchaseModal from '../PurchaseModal'
 import TestimonialsSection from './TestimonialsSection'
 import ContentPreviewSection from './ContentPreviewSection'
 
-// Book product data for the modal
+// Book product data for the modal - CONSISTENT ACROSS ALL COMPONENTS
 const bookProduct = {
-  _id: 'guia-completa-keto-2025',
-  title: 'Guía Completa Keto 2025 - El Libro Definitivo',
-  name: 'Guía Completa Keto 2025 - El Libro Definitivo',
-  description: `El único libro que necesitas para dominar la dieta cetogénica y transformar tu cuerpo para siempre.
+  _id: '83f184b6-1e92-4d97-ad0b-9273de28eadc',
+  title: 'Planeta Keto - Guía Completa 2025',
+  name: 'Planeta Keto - Guía Completa 2025',
+  description: `🎯 TRANSFORMA TU VIDA CON LA DIETA KETO
 
-Más de 300 páginas de contenido premium que incluyen:
+✅ QUÉ INCLUYE ESTA GUÍA COMPLETA:
 
-• +200 recetas keto probadas y deliciosas
-• Plan de menús de 30 días completamente detallado  
-• Calculadora de macros personalizada paso a paso
-• Guía visual de alimentos permitidos y prohibidos
-• Estrategias comprobadas para superar mesetas
-• Manejo de efectos secundarios y keto flu
-• Tracking templates y herramientas digitales
+📊 CALCULADORA DE MACROS PERSONALIZADA
+- Según tu peso, altura y objetivo específico
+- Cantidad exacta de proteína, grasa y carbohidratos
 
-Escrito por expertos en nutrición cetogénica con más de 10 años de experiencia y resultados reales de más de 10,000 personas que ya transformaron su vida.
+📅 30 DÍAS COMPLETAMENTE PLANIFICADOS
+- Menús diarios con desayuno, almuerzo y cena
+- Combinaciones que nunca se repiten
+- Todo keto ESTRICTO (sin harinas ni edulcorantes)
 
-GARANTÍA TOTAL: Si no estás 100% satisfecho en los primeros 30 días, te devolvemos tu dinero sin preguntas.`,
-  price: 29.99,
-  originalPrice: 89.00,
-  image: '/book-cover-3d.jpg', // You'll need to add this image
+🛒 4 LISTAS DE COMPRA SEMANALES
+- Organizadas por categorías para facilitar tu compra
+- Cantidades exactas para evitar desperdicios
+
+⏰ SISTEMA BATCH COOKING
+- Prepara comida para toda la semana en 2 horas
+- Técnicas profesionales de conservación
+
+📝 PLANTILLAS DE SEGUIMIENTO
+- Control de peso y medidas
+- Registro de energía y estado de ánimo
+
+🎁 BONUS EXCLUSIVOS:
+- 10 snacks de emergencia keto
+- Qué comer fuera de casa
+- Soluciones a problemas comunes
+
+💳 Pago seguro - Descarga inmediata
+📧 Soporte por email incluido
+♻️ Actualizaciones gratis de por vida`,
+  price: 14.75,
+  originalPrice: 29.99,
+  image: '/guia.png',
   includes: [
-    'Más de 200 recetas keto probadas y fotografiadas',
-    'Plan completo de menús para 30 días',
     'Calculadora de macros personalizada',
-    'Guía visual de alimentos keto permitidos',
-    'Estrategias para superar mesetas de peso',
-    'Templates digitales de seguimiento',
-    'BONUS: Guía de ejercicios keto (valor €19)',
-    'BONUS: 50 recetas express de 15 minutos (valor €12)',
-    'BONUS: Lista de compras inteligente (valor €9)',
-    'BONUS: Tracker digital de progreso (valor €15)',
-    'Acceso inmediato tras la compra',
-    'Actualizaciones de por vida incluidas',
-    'Garantía de satisfacción de 30 días'
+    '30 días de menús planificados',
+    '4 listas de compra semanales', 
+    'Sistema Batch Cooking completo',
+    'Plantillas de seguimiento',
+    '10 snacks de emergencia keto',
+    'Guía para comer fuera de casa',
+    'Soluciones a problemas comunes',
+    'Pago seguro - Descarga inmediata',
+    'Soporte por email incluido',
+    'Actualizaciones gratis de por vida'
   ]
 }
 

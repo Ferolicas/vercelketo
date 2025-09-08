@@ -1,9 +1,8 @@
 import Stripe from 'stripe'
 
-// Initialize Stripe only if we have the secret key
-export const stripe = process.env.STRIPE_SECRET_KEY ? new Stripe(process.env.STRIPE_SECRET_KEY, {
-  apiVersion: '2025-08-27.basil',
-}) : null
+export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+  apiVersion: '2025-07-30.basil',
+})
 
 export const calculateTaxes = (amount: number) => {
   const stripeCommission = amount * 0.014 + 0.25
@@ -33,9 +32,6 @@ export const generateKetoCode = (status: 'success' | 'pending' | 'failed', numbe
 }
 
 export const createStripeCoupon = async (code: string, percentOff: number = 20) => {
-  if (!stripe) {
-    throw new Error('Stripe not configured')
-  }
   try {
     const coupon = await stripe.coupons.create({
       id: code,
@@ -52,10 +48,6 @@ export const createStripeCoupon = async (code: string, percentOff: number = 20) 
 }
 
 export const validateCoupon = async (code: string) => {
-  if (!stripe) {
-    console.log('Stripe not configured, cannot validate coupon')
-    return null
-  }
   try {
     const coupon = await stripe.coupons.retrieve(code)
     return coupon
