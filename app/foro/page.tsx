@@ -3,6 +3,7 @@ import { client, queries } from '@/lib/sanity';
 import type { ForumPost } from '@/types/sanity';
 import { Metadata } from 'next';
 import ForoContent from '@/components/ForoContent';
+import CreatePostButton from '@/components/CreatePostButton';
 
 export const metadata: Metadata = {
   title: "Foro Keto | Comunidad de Dieta Cetogénica #1 en Español 2024",
@@ -153,9 +154,14 @@ export default async function ForoPage({ searchParams }: PageProps) {
                 Foro Keto
               </h1>
               
-              <p className="text-lg md:text-xl text-green-50 max-w-2xl mx-auto leading-relaxed font-light">
+              <p className="text-lg md:text-xl text-green-50 max-w-2xl mx-auto leading-relaxed font-light mb-8">
                 La comunidad cetogénica más grande en español. Conecta, comparte y aprende con otros en tu viaje keto.
               </p>
+              
+              {/* Create Post Button */}
+              <div className="text-center">
+                <CreatePostButton className="bg-white/20 hover:bg-white/30 text-white px-8 py-4 rounded-xl font-semibold transition-all duration-300 backdrop-blur-sm border border-white/20 inline-flex items-center gap-2" />
+              </div>
             </div>
           </div>
 

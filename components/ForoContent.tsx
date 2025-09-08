@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ForumPost } from '@/types/sanity';
 import { Plus, MessageCircle, Eye, ThumbsUp, Clock, Pin, Users, Send, Search } from 'lucide-react';
@@ -192,18 +192,15 @@ export default function ForoContent({
     });
   };
 
+  // Expose the function to parent
+  React.useEffect(() => {
+    if (typeof window !== 'undefined') {
+      (window as any).openCreatePost = () => setShowCreatePost(true);
+    }
+  }, []);
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-      {/* Create Post Button */}
-      <div className="text-center mb-12">
-        <button
-          onClick={() => setShowCreatePost(true)}
-          className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-8 py-4 rounded-2xl font-semibold hover:from-green-600 hover:to-emerald-700 transition-all duration-300 transform hover:scale-105 shadow-lg inline-flex items-center"
-        >
-          <Plus className="mr-2" size={20} />
-          🗣️ Crear Nueva Publicación
-        </button>
-      </div>
 
       {/* Search Bar */}
       <div className="bg-white rounded-2xl shadow-lg p-6 mb-6">

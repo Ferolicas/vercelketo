@@ -110,9 +110,25 @@ export default async function BlogPage({ searchParams }: PageProps) {
                 Blog Keto
               </h1>
               
-              <p className="text-lg md:text-xl text-green-50 max-w-2xl mx-auto leading-relaxed font-light">
+              <p className="text-lg md:text-xl text-green-50 max-w-2xl mx-auto leading-relaxed font-light mb-8">
                 Guías, consejos y tips para dominar la dieta cetogénica. Tu fuente de información cetogénica de confianza.
               </p>
+              
+              {/* Navigation Buttons */}
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <a
+                  href="/recetas"
+                  className="bg-white/20 hover:bg-white/30 text-white px-8 py-4 rounded-xl font-semibold transition-all duration-300 backdrop-blur-sm border border-white/20"
+                >
+                  🥑 Ver Recetas
+                </a>
+                <a
+                  href="/foro"
+                  className="border-2 border-white/30 hover:border-white/50 text-white px-8 py-4 rounded-xl font-semibold hover:bg-white/10 transition-all duration-300 backdrop-blur-sm"
+                >
+                  💬 Únete al Foro
+                </a>
+              </div>
             </div>
           </div>
 
