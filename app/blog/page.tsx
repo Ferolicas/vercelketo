@@ -89,48 +89,49 @@ export default async function BlogPage({ searchParams }: PageProps) {
 
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-green-50/30">
-        {/* Header Section */}
-        <div className="relative bg-gradient-to-r from-green-600 via-green-500 to-emerald-600 py-12 overflow-hidden">
-          {/* Background decorative layers */}
-          <div className="absolute inset-0 bg-gradient-to-r from-green-700/20 via-transparent to-emerald-700/20"></div>
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.1),transparent)] opacity-50"></div>
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(255,255,255,0.1),transparent)] opacity-30"></div>
-          
-          {/* Floating elements */}
-          <div className="absolute top-10 left-10 w-4 h-4 bg-white/20 rounded-full animate-pulse"></div>
-          <div className="absolute top-32 right-20 w-6 h-6 bg-white/15 rounded-full animate-bounce delay-300"></div>
-          <div className="absolute bottom-10 left-1/4 w-3 h-3 bg-white/25 rounded-full animate-ping delay-700"></div>
-          <div className="absolute top-20 right-1/3 w-5 h-5 bg-white/10 rounded-full animate-pulse delay-500"></div>
-          
-          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <div className="inline-flex items-center justify-center w-20 h-20 bg-white/20 backdrop-blur-sm rounded-2xl mb-6">
-              <span className="text-4xl">📚</span>
-            </div>
+        <div className="pt-16">
+          {/* Header moderno */}
+          <div className="relative bg-gradient-to-r from-green-600 via-green-500 to-emerald-600 py-12 overflow-hidden">
+            {/* Decorative background */}
+            <div className="absolute inset-0 bg-black/10"></div>
+            <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent"></div>
             
-            <h1 className="text-4xl md:text-6xl font-bold text-white mb-4 drop-shadow-lg">
-              Blog Keto
-            </h1>
-            <p className="text-xl md:text-2xl text-white/90 max-w-3xl mx-auto leading-relaxed drop-shadow">
-              Guías, consejos y tips para dominar la dieta cetogénica
-            </p>
+            {/* Floating elements */}
+            <div className="absolute top-6 left-10 w-16 h-16 bg-white/10 rounded-full animate-pulse"></div>
+            <div className="absolute bottom-6 right-20 w-12 h-12 bg-white/10 rounded-full animate-bounce"></div>
+            <div className="absolute top-1/2 right-10 w-10 h-10 bg-white/10 rounded-full animate-ping"></div>
+            
+            <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+              <div className="inline-flex items-center justify-center w-20 h-20 bg-white/20 backdrop-blur-sm rounded-3xl text-white text-3xl mb-6 shadow-2xl">
+                📚
+              </div>
+              
+              <h1 className="text-4xl md:text-5xl font-black text-white mb-4 tracking-tight">
+                Blog Keto
+              </h1>
+              
+              <p className="text-lg md:text-xl text-green-50 max-w-2xl mx-auto leading-relaxed font-light">
+                Guías, consejos y tips para dominar la dieta cetogénica. Tu fuente de información cetogénica de confianza.
+              </p>
+            </div>
           </div>
-        </div>
 
-        <Suspense fallback={
-          <div className="flex justify-center items-center h-64">
-            <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-green-500"></div>
-          </div>
-        }>
-          <BlogContent 
-            blogPosts={blogPosts}
-            categories={categories}
-            featuredPosts={featuredPosts}
-            currentPage={currentPage}
-            totalPages={totalPages}
-            selectedCategory={selectedCategory}
-            totalPosts={totalPosts}
-          />
-        </Suspense>
+          <Suspense fallback={
+            <div className="flex justify-center items-center h-64">
+              <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-green-500"></div>
+            </div>
+          }>
+            <BlogContent 
+              blogPosts={blogPosts}
+              categories={categories}
+              featuredPosts={featuredPosts}
+              currentPage={currentPage}
+              totalPages={totalPages}
+              selectedCategory={selectedCategory}
+              totalPosts={totalPosts}
+            />
+          </Suspense>
+        </div>
       </div>
     );
   } catch (error) {
@@ -138,38 +139,39 @@ export default async function BlogPage({ searchParams }: PageProps) {
     
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-green-50/30">
-        {/* Header Section */}
-        <div className="relative bg-gradient-to-r from-green-600 via-green-500 to-emerald-600 py-12 overflow-hidden">
-          {/* Background decorative layers */}
-          <div className="absolute inset-0 bg-gradient-to-r from-green-700/20 via-transparent to-emerald-700/20"></div>
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.1),transparent)] opacity-50"></div>
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(255,255,255,0.1),transparent)] opacity-30"></div>
-          
-          {/* Floating elements */}
-          <div className="absolute top-10 left-10 w-4 h-4 bg-white/20 rounded-full animate-pulse"></div>
-          <div className="absolute top-32 right-20 w-6 h-6 bg-white/15 rounded-full animate-bounce delay-300"></div>
-          <div className="absolute bottom-10 left-1/4 w-3 h-3 bg-white/25 rounded-full animate-ping delay-700"></div>
-          <div className="absolute top-20 right-1/3 w-5 h-5 bg-white/10 rounded-full animate-pulse delay-500"></div>
-          
-          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <div className="inline-flex items-center justify-center w-20 h-20 bg-white/20 backdrop-blur-sm rounded-2xl mb-6">
-              <span className="text-4xl">📚</span>
-            </div>
+        <div className="pt-16">
+          {/* Header moderno */}
+          <div className="relative bg-gradient-to-r from-green-600 via-green-500 to-emerald-600 py-12 overflow-hidden">
+            {/* Decorative background */}
+            <div className="absolute inset-0 bg-black/10"></div>
+            <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent"></div>
             
-            <h1 className="text-4xl md:text-6xl font-bold text-white mb-4 drop-shadow-lg">
-              Blog Keto
-            </h1>
-            <p className="text-xl md:text-2xl text-white/90 max-w-3xl mx-auto leading-relaxed drop-shadow">
-              Guías, consejos y tips para dominar la dieta cetogénica
-            </p>
+            {/* Floating elements */}
+            <div className="absolute top-6 left-10 w-16 h-16 bg-white/10 rounded-full animate-pulse"></div>
+            <div className="absolute bottom-6 right-20 w-12 h-12 bg-white/10 rounded-full animate-bounce"></div>
+            <div className="absolute top-1/2 right-10 w-10 h-10 bg-white/10 rounded-full animate-ping"></div>
+            
+            <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+              <div className="inline-flex items-center justify-center w-20 h-20 bg-white/20 backdrop-blur-sm rounded-3xl text-white text-3xl mb-6 shadow-2xl">
+                📚
+              </div>
+              
+              <h1 className="text-4xl md:text-5xl font-black text-white mb-4 tracking-tight">
+                Blog Keto
+              </h1>
+              
+              <p className="text-lg md:text-xl text-green-50 max-w-2xl mx-auto leading-relaxed font-light">
+                Guías, consejos y tips para dominar la dieta cetogénica. Tu fuente de información cetogénica de confianza.
+              </p>
+            </div>
           </div>
-        </div>
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-          <div className="text-center">
-            <p className="text-gray-500">
-              Estamos cargando el contenido. Por favor, inténtalo de nuevo más tarde.
-            </p>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <div className="text-center">
+              <p className="text-gray-500">
+                Estamos cargando el contenido. Por favor, inténtalo de nuevo más tarde.
+              </p>
+            </div>
           </div>
         </div>
       </div>
