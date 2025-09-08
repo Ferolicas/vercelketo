@@ -152,7 +152,16 @@ export default function HomePage({
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-emerald-50 to-green-100 py-20">
+      <section className="relative bg-gradient-to-r from-green-600 via-green-500 to-emerald-600 py-20 overflow-hidden">
+        {/* Decorative background */}
+        <div className="absolute inset-0 bg-black/10"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent"></div>
+        
+        {/* Floating elements */}
+        <div className="absolute top-10 left-10 w-20 h-20 bg-white/10 rounded-full animate-pulse"></div>
+        <div className="absolute bottom-10 right-20 w-16 h-16 bg-white/10 rounded-full animate-bounce"></div>
+        <div className="absolute top-1/2 right-10 w-12 h-12 bg-white/10 rounded-full animate-ping"></div>
+        <div className="absolute top-20 left-1/3 w-8 h-8 bg-white/10 rounded-full animate-pulse delay-1000"></div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             
@@ -174,16 +183,16 @@ export default function HomePage({
             </div>
 
             {/* Right side - Content */}
-            <div className="space-y-8">
+            <div className="space-y-8 relative z-10">
               <div>
-                <div className="inline-flex items-center bg-green-100 text-green-800 px-4 py-2 rounded-full text-sm font-medium mb-4">
+                <div className="inline-flex items-center bg-white/20 backdrop-blur-sm text-white px-4 py-2 rounded-full text-sm font-medium mb-4 shadow-lg">
                   ✨ Bestseller Keto
                 </div>
-                <h1 className="text-5xl font-bold text-gray-900 leading-tight">
+                <h1 className="text-5xl font-bold text-white leading-tight drop-shadow-lg">
                   Transforma Tu Vida con 
-                  <span className="text-green-600"> Keto</span>
+                  <span className="bg-gradient-to-r from-yellow-300 to-orange-300 bg-clip-text text-transparent"> Keto</span>
                 </h1>
-                <p className="text-xl text-gray-600 mt-4 leading-relaxed">
+                <p className="text-xl text-green-50 mt-4 leading-relaxed drop-shadow">
                   La guía más completa para dominar la dieta cetogénica con menús planificados, 
                   recetas deliciosas y resultados garantizados en 30 días.
                 </p>
@@ -192,25 +201,25 @@ export default function HomePage({
               {/* Features */}
               <div className="grid sm:grid-cols-2 gap-4">
                 <div className="flex items-center space-x-3">
-                  <CheckIcon className="w-6 h-6 text-green-500 flex-shrink-0" />
-                  <span className="text-gray-700">30 días planificados</span>
+                  <CheckIcon className="w-6 h-6 text-yellow-300 flex-shrink-0 drop-shadow" />
+                  <span className="text-green-50 drop-shadow">30 días planificados</span>
                 </div>
                 <div className="flex items-center space-x-3">
-                  <CheckIcon className="w-6 h-6 text-green-500 flex-shrink-0" />
-                  <span className="text-gray-700">Calculadora de macros</span>
+                  <CheckIcon className="w-6 h-6 text-yellow-300 flex-shrink-0 drop-shadow" />
+                  <span className="text-green-50 drop-shadow">Calculadora de macros</span>
                 </div>
                 <div className="flex items-center space-x-3">
-                  <CheckIcon className="w-6 h-6 text-green-500 flex-shrink-0" />
-                  <span className="text-gray-700">Sistema Batch Cooking</span>
+                  <CheckIcon className="w-6 h-6 text-yellow-300 flex-shrink-0 drop-shadow" />
+                  <span className="text-green-50 drop-shadow">Sistema Batch Cooking</span>
                 </div>
                 <div className="flex items-center space-x-3">
-                  <CheckIcon className="w-6 h-6 text-green-500 flex-shrink-0" />
-                  <span className="text-gray-700">Soporte incluido</span>
+                  <CheckIcon className="w-6 h-6 text-yellow-300 flex-shrink-0 drop-shadow" />
+                  <span className="text-green-50 drop-shadow">Soporte incluido</span>
                 </div>
               </div>
 
               {/* Pricing */}
-              <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
+              <div className="bg-white/95 backdrop-blur-sm p-6 rounded-2xl shadow-2xl border border-white/20">
                 <div className="flex items-center justify-between mb-4">
                   <div>
                     <span className="text-3xl font-bold text-gray-900">€14.75</span>

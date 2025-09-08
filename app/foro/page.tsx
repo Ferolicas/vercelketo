@@ -131,41 +131,91 @@ export default async function ForoPage({ searchParams }: PageProps) {
     const totalPages = Math.ceil(totalPosts / postsPerPage);
 
     return (
-      <div className="min-h-screen bg-gray-50 pt-20">
-        <Suspense fallback={
-          <div className="flex justify-center items-center h-64">
-            <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-green-500"></div>
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-green-50/30">
+        <div className="pt-16">
+          {/* Header moderno */}
+          <div className="relative bg-gradient-to-r from-green-600 via-green-500 to-emerald-600 py-12 overflow-hidden">
+            {/* Decorative background */}
+            <div className="absolute inset-0 bg-black/10"></div>
+            <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent"></div>
+            
+            {/* Floating elements */}
+            <div className="absolute top-6 left-10 w-16 h-16 bg-white/10 rounded-full animate-pulse"></div>
+            <div className="absolute bottom-6 right-20 w-12 h-12 bg-white/10 rounded-full animate-bounce"></div>
+            <div className="absolute top-1/2 right-10 w-10 h-10 bg-white/10 rounded-full animate-ping"></div>
+            
+            <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+              <div className="inline-flex items-center justify-center w-20 h-20 bg-white/20 backdrop-blur-sm rounded-3xl text-white text-3xl mb-6 shadow-2xl">
+                🗣️
+              </div>
+              
+              <h1 className="text-4xl md:text-5xl font-black text-white mb-4 tracking-tight">
+                Foro Keto
+              </h1>
+              
+              <p className="text-lg md:text-xl text-green-50 max-w-2xl mx-auto leading-relaxed font-light">
+                La comunidad cetogénica más grande en español. Conecta, comparte y aprende con otros en tu viaje keto.
+              </p>
+            </div>
           </div>
-        }>
-          <ForoContent 
-            forumPosts={forumPosts}
-            categories={categories}
-            pinnedPosts={pinnedPosts}
-            currentPage={currentPage}
-            totalPages={totalPages}
-            selectedCategory={selectedCategory}
-            sortOrder={sortOrder}
-            totalPosts={totalPosts}
-          />
-        </Suspense>
+
+          <Suspense fallback={
+            <div className="flex justify-center items-center h-64">
+              <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-green-500"></div>
+            </div>
+          }>
+            <ForoContent 
+              forumPosts={forumPosts}
+              categories={categories}
+              pinnedPosts={pinnedPosts}
+              currentPage={currentPage}
+              totalPages={totalPages}
+              selectedCategory={selectedCategory}
+              sortOrder={sortOrder}
+              totalPosts={totalPosts}
+            />
+          </Suspense>
+        </div>
       </div>
     );
   } catch (error) {
     console.error('Error loading forum:', error);
     
     return (
-      <div className="min-h-screen bg-gray-50 pt-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-          <div className="text-center">
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-              🗣️ Foro Keto
-            </h1>
-            <p className="text-xl text-gray-600 mb-8">
-              La comunidad cetogénica más grande en español
-            </p>
-            <p className="text-gray-500">
-              Estamos cargando el contenido. Por favor, inténtalo de nuevo más tarde.
-            </p>
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-green-50/30">
+        <div className="pt-16">
+          {/* Header moderno */}
+          <div className="relative bg-gradient-to-r from-green-600 via-green-500 to-emerald-600 py-12 overflow-hidden">
+            {/* Decorative background */}
+            <div className="absolute inset-0 bg-black/10"></div>
+            <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent"></div>
+            
+            {/* Floating elements */}
+            <div className="absolute top-6 left-10 w-16 h-16 bg-white/10 rounded-full animate-pulse"></div>
+            <div className="absolute bottom-6 right-20 w-12 h-12 bg-white/10 rounded-full animate-bounce"></div>
+            <div className="absolute top-1/2 right-10 w-10 h-10 bg-white/10 rounded-full animate-ping"></div>
+            
+            <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+              <div className="inline-flex items-center justify-center w-20 h-20 bg-white/20 backdrop-blur-sm rounded-3xl text-white text-3xl mb-6 shadow-2xl">
+                🗣️
+              </div>
+              
+              <h1 className="text-4xl md:text-5xl font-black text-white mb-4 tracking-tight">
+                Foro Keto
+              </h1>
+              
+              <p className="text-lg md:text-xl text-green-50 max-w-2xl mx-auto leading-relaxed font-light">
+                La comunidad cetogénica más grande en español. Conecta, comparte y aprende con otros en tu viaje keto.
+              </p>
+            </div>
+          </div>
+
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <div className="text-center">
+              <p className="text-gray-500">
+                Estamos cargando el contenido. Por favor, inténtalo de nuevo más tarde.
+              </p>
+            </div>
           </div>
         </div>
       </div>
