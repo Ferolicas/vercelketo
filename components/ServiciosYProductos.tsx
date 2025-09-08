@@ -208,22 +208,7 @@ export default function ProductosYAfiliados() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <section className="bg-gradient-to-br from-green-50 to-emerald-50 py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h1 className="text-4xl font-bold text-gray-900 mb-6">
-              Productos y Afiliados
-            </h1>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Descubre nuestra selección de productos digitales y recomendaciones de afiliados 
-              cuidadosamente elegidos para tu éxito en la dieta keto.
-            </p>
-          </div>
-        </div>
-      </section>
-
+    <div>
       {/* Filters */}
       <section className="py-8 bg-white border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

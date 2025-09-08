@@ -20,28 +20,19 @@ export default function BlogContent({
 }: BlogContentProps) {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-      <div className="text-center mb-16">
-        <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
-          📝 Blog Keto
-        </h1>
-        <p className="text-xl text-gray-600 mb-8">
-          Consejos, guías y tips para dominar la dieta cetogénica
-        </p>
-        
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Link
-            href="/recetas"
-            className="bg-green-600 text-white px-8 py-4 rounded-xl font-semibold hover:bg-green-700 transition"
-          >
-            🥑 Ver Recetas
-          </Link>
-          <Link
-            href="/foro"
-            className="border-2 border-green-500 text-green-600 px-8 py-4 rounded-xl font-semibold hover:bg-green-50 transition"
-          >
-            💬 Únete al Foro
-          </Link>
-        </div>
+      <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
+        <Link
+          href="/recetas"
+          className="bg-green-600 text-white px-8 py-4 rounded-xl font-semibold hover:bg-green-700 transition"
+        >
+          🥑 Ver Recetas
+        </Link>
+        <Link
+          href="/foro"
+          className="border-2 border-green-500 text-green-600 px-8 py-4 rounded-xl font-semibold hover:bg-green-50 transition"
+        >
+          💬 Únete al Foro
+        </Link>
       </div>
 
 
