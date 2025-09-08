@@ -88,7 +88,7 @@ export default function PurchaseModal({ product, onClose }: PurchaseModalProps) 
     setLoadingIntent(true)
     try {
       // Retry logic for Turbopack hot reload timing issues
-      let response: Response
+      let response: Response | undefined
       let retries = 3
       
       while (retries > 0) {
@@ -112,6 +112,13 @@ export default function PurchaseModal({ product, onClose }: PurchaseModalProps) 
           console.log('Retrying API call due to 404...')
           await new Promise(resolve => setTimeout(resolve, 500))
         }
+      }
+      
+      if (!response) {
+        console.error('Failed to get response after retries')
+        alert('Error de conexión. Inténtalo de nuevo.')
+        onClose()
+        return
       }
 
       const data = await response.json()

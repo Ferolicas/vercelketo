@@ -40,6 +40,7 @@ const bookProduct = {
 🎁 BONUS EXCLUSIVOS INCLUIDOS`,
   price: 14.75,
   originalPrice: 29.99,
+  stripePriceId: 'price_1QMdJ3JiCY7fqO2f9aXZKhHp',
   image: '/guia.png',
   includes: [
     'Calculadora de macros personalizada',
@@ -53,7 +54,10 @@ const bookProduct = {
     'Pago seguro - Descarga inmediata',
     'Soporte por email incluido',
     'Actualizaciones gratis de por vida'
-  ]
+  ],
+  category: 'ebooks',
+  type: 'digital' as const,
+  createdAt: '2025-01-15T10:00:00.000Z'
 }
 
 const contextualMessages = {

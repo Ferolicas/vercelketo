@@ -31,6 +31,7 @@ const bookProduct = {
   name: 'Planeta Keto - Guía Completa 2025',
   price: 14.75,
   originalPrice: 29.99,
+  stripePriceId: 'price_1QMdJ3JiCY7fqO2f9aXZKhHp',
   image: '/guia.png',
   description: `🎯 TRANSFORMA TU VIDA CON LA DIETA KETO
 
@@ -77,7 +78,10 @@ const bookProduct = {
     'Pago seguro - Descarga inmediata',
     'Soporte por email incluido',
     'Actualizaciones gratis de por vida'
-  ]
+  ],
+  category: 'ebooks',
+  type: 'digital' as const,
+  createdAt: '2025-01-15T10:00:00.000Z'
 }
 
 // Professional testimonials
@@ -471,7 +475,7 @@ export default function HomePage({
       </section>
 
       {/* Ad Placements */}
-      <AdPlacement position="homepage-bottom" />
+      <AdPlacement position="content-bottom" />
 
       {/* Product Recommendations */}
       <ProductRecommendations />

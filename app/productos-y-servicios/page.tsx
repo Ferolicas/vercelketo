@@ -20,7 +20,7 @@ export default function ProductosYServiciosPage() {
           <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-green-500"></div>
         </div>
       }>
-        <ServiciosYProductos />
+        <ProductosYAfiliados />
       </Suspense>
     </div>
   );
