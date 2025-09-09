@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server'
 import { client } from '@/lib/sanity'
 
-const SITE_URL = process.env.SITE_URL || 'https://www.planetaketo.es'
+// Hardcoded URL to avoid any environment variable conflicts
+const SITE_URL = 'https://www.planetaketo.es'
 
 // Categories and taxonomies sitemap
 export async function GET() {
