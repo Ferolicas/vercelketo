@@ -1,21 +1,77 @@
 # https://www.robotstxt.org/robotstxt.html
+# Optimized robots.txt for Planeta Keto - SEO 2025
+
 User-agent: *
 Allow: /
 
-# Sitemap
+# Primary Sitemap (Index)
 Sitemap: https://planetaketo.es/sitemap.xml
 
-# Disallow admin routes
+# Individual Sitemaps for better crawling
+Sitemap: https://planetaketo.es/sitemap-static.xml
+Sitemap: https://planetaketo.es/sitemap-recipes.xml
+Sitemap: https://planetaketo.es/sitemap-blog.xml
+Sitemap: https://planetaketo.es/sitemap-forum.xml
+Sitemap: https://planetaketo.es/sitemap-products.xml
+Sitemap: https://planetaketo.es/sitemap-categories.xml
+
+# Block admin and API routes
 Disallow: /admin/
 Disallow: /api/
+Disallow: /test/
+Disallow: /test-stripe/
+Disallow: /offline/
+Disallow: /_next/
+Disallow: /node_modules/
 
-# Allow important SEO pages
+# Block query parameters that don't add value
+Disallow: /*?utm_*
+Disallow: /*?ref=*
+Disallow: /*?source=*
+Disallow: /*?fbclid=*
+Disallow: /*?gclid=*
+
+# Explicitly allow high-value content
 Allow: /recetas/
 Allow: /blog/
 Allow: /foro/
-Allow: /productos/
-Allow: /servicios/
-Allow: /categorias/
+Allow: /productos-y-servicios/
+Allow: /categoria/
+Allow: /afiliados/
 
-# Crawl delay for better server performance
+# Allow specific SEO landing pages
+Allow: /dieta-keto
+Allow: /dieta-cetogenica
+Allow: /dieta-baja-carbohidratos
+Allow: /bajar-de-peso
+Allow: /quemar-grasa
+Allow: /recetas-keto
+Allow: /recetas-saludables
+Allow: /tienda-keto
+
+# Special bot configurations
+User-agent: Googlebot
+Crawl-delay: 0.5
+Allow: /
+
+User-agent: Bingbot
 Crawl-delay: 1
+Allow: /
+
+User-agent: facebookexternalhit
+Crawl-delay: 0
+Allow: /
+
+User-agent: Twitterbot
+Crawl-delay: 0
+Allow: /
+
+# Block unwanted bots
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /

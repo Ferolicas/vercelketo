@@ -104,7 +104,8 @@
       "WebFetch(domain:nas.io)",
       "Read(//c/storeplanetaketo/**)",
       "Bash(taskkill:*)",
-      "Bash(del \"C:\\PLANETA KETO V2\\planetaketonext\\sanity\\schemaTypes\\service.ts\")"
+      "Bash(del \"C:\\PLANETA KETO V2\\planetaketonext\\sanity\\schemaTypes\\service.ts\")",
+      "Bash(del \"C:\\PLANETA KETO V2\\planetaketonext\\public\\sitemap.xml\")"
     ],
     "deny": [],
     "ask": [],
