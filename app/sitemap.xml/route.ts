@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { client } from '@/lib/sanity'
 
-const SITE_URL = process.env.SITE_URL || 'https://planetaketo.es'
+const SITE_URL = process.env.SITE_URL || 'https://www.planetaketo.es'
 
 // Main sitemap index - follows Google's latest recommendations
 export async function GET(request: NextRequest) {
@@ -9,27 +9,27 @@ export async function GET(request: NextRequest) {
     const sitemapIndex = `<?xml version="1.0" encoding="UTF-8"?>
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <sitemap>
-    <loc>${SITE_URL}/sitemap-static.xml</loc>
+    <loc>https://www.planetaketo.es/sitemap-static.xml</loc>
     <lastmod>${new Date().toISOString()}</lastmod>
   </sitemap>
   <sitemap>
-    <loc>${SITE_URL}/sitemap-recipes.xml</loc>
+    <loc>https://www.planetaketo.es/sitemap-recipes.xml</loc>
     <lastmod>${new Date().toISOString()}</lastmod>
   </sitemap>
   <sitemap>
-    <loc>${SITE_URL}/sitemap-blog.xml</loc>
+    <loc>https://www.planetaketo.es/sitemap-blog.xml</loc>
     <lastmod>${new Date().toISOString()}</lastmod>
   </sitemap>
   <sitemap>
-    <loc>${SITE_URL}/sitemap-forum.xml</loc>
+    <loc>https://www.planetaketo.es/sitemap-forum.xml</loc>
     <lastmod>${new Date().toISOString()}</lastmod>
   </sitemap>
   <sitemap>
-    <loc>${SITE_URL}/sitemap-products.xml</loc>
+    <loc>https://www.planetaketo.es/sitemap-products.xml</loc>
     <lastmod>${new Date().toISOString()}</lastmod>
   </sitemap>
   <sitemap>
-    <loc>${SITE_URL}/sitemap-categories.xml</loc>
+    <loc>https://www.planetaketo.es/sitemap-categories.xml</loc>
     <lastmod>${new Date().toISOString()}</lastmod>
   </sitemap>
 </sitemapindex>`

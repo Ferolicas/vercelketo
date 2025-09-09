@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { client } from '@/lib/sanity'
 
-const SITE_URL = process.env.SITE_URL || 'https://planetaketo.es'
+const SITE_URL = process.env.SITE_URL || 'https://www.planetaketo.es'
 
 // Forum posts sitemap - limited to most important posts
 export async function GET() {

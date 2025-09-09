@@ -5,15 +5,15 @@ User-agent: *
 Allow: /
 
 # Primary Sitemap (Index)
-Sitemap: https://planetaketo.es/sitemap.xml
+Sitemap: https://www.planetaketo.es/sitemap.xml
 
 # Individual Sitemaps for better crawling
-Sitemap: https://planetaketo.es/sitemap-static.xml
-Sitemap: https://planetaketo.es/sitemap-recipes.xml
-Sitemap: https://planetaketo.es/sitemap-blog.xml
-Sitemap: https://planetaketo.es/sitemap-forum.xml
-Sitemap: https://planetaketo.es/sitemap-products.xml
-Sitemap: https://planetaketo.es/sitemap-categories.xml
+Sitemap: https://www.planetaketo.es/sitemap-static.xml
+Sitemap: https://www.planetaketo.es/sitemap-recipes.xml
+Sitemap: https://www.planetaketo.es/sitemap-blog.xml
+Sitemap: https://www.planetaketo.es/sitemap-forum.xml
+Sitemap: https://www.planetaketo.es/sitemap-products.xml
+Sitemap: https://www.planetaketo.es/sitemap-categories.xml
 
 # Block admin and API routes
 Disallow: /admin/

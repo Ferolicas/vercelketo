@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 
-const SITE_URL = process.env.SITE_URL || 'https://planetaketo.es'
+const SITE_URL = process.env.SITE_URL || 'https://www.planetaketo.es'
 
 // Static pages sitemap
 export async function GET() {
