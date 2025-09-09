@@ -10,7 +10,13 @@ export async function GET() {
         slug,
         description,
         amazonUrl,
-        image,
+        image{
+          asset->{
+            _id,
+            url
+          },
+          alt
+        },
         price,
         category,
         rating,

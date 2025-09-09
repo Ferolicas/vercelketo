@@ -252,10 +252,10 @@ export default function ProductosYAfiliados() {
                 <div key={item._id} className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow group">
                   {/* Product Image */}
                   <div className="relative aspect-square bg-gray-100">
-                    {item.image && (
+                    {item.image?.asset?.url && (
                       <Image
-                        src={item.tipo === 'producto' ? '/guia.png' : (item.image.asset?.url || '/placeholder.jpg')}
-                        alt={item.title}
+                        src={item.image.asset.url}
+                        alt={item.image.alt || item.title}
                         fill
                         className="object-contain p-4 group-hover:scale-105 transition-transform duration-300"
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -276,7 +276,7 @@ export default function ProductosYAfiliados() {
 
                     {/* Description - Expandable */}
                     <div className="mb-6">
-                      <ExpandableDescription description={item.description || 'Sin descripción disponible.'} />
+                      <ExpandableDescription description={item.description || item.image?.alt || 'Sin descripción disponible.'} />
                     </div>
 
                     {/* Features/Benefits */}
@@ -323,7 +323,7 @@ export default function ProductosYAfiliados() {
                           </div>
                         ) : (
                           <div className="text-green-600 font-semibold">
-                            {item.price || 'Ver precio'}
+                            Amazon
                           </div>
                         )}
                       </div>

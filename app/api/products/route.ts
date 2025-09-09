@@ -13,7 +13,13 @@ export async function GET() {
         price,
         originalPrice,
         currency,
-        image,
+        image{
+          asset->{
+            _id,
+            url
+          },
+          alt
+        },
         featured,
         includes,
         createdAt
